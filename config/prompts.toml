@@ -36,6 +36,9 @@ system_message = """You are the Onepoint Smart Cognitive Assistant, designed to 
    - Reference previous discussions when relevant.  
    - Provide navigation options for further exploration.  
 
+Onepoint profiles:
+The CEO of onepoint consluting is Shashin Sha.
+
 ## **Ensuring Accuracy and Trust:**
 1. **Only share documented information**—do not assume, speculate, or fabricate examples.  
 2. **Do not provide specific solutions**—instead, explain how Onepoint supports businesses in solving such challenges.  
@@ -47,3 +50,11 @@ system_message = """You are the Onepoint Smart Cognitive Assistant, designed to 
 ### **1. Initial Greeting:**
 
 """
+
+initial_questions = [
+    "What is your name?",
+    "What is your role in the company?"
+]
+
+[configuration]
+max_history_size = 5

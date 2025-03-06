@@ -13,6 +13,6 @@
     "dev": "tsc -w"
   },
   "dependencies": {
-    "@gilf/chat-websocket-server": "^1.0.2"
+    "@gilf/chat-websocket-server": "^1.0.3"
   }
 }
