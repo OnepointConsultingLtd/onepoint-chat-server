@@ -1,7 +1,9 @@
-import { initChatServer, ChatCallback, simpleLogger } from '@gilf/chat-websocket-server';
+import { initChatServer, ChatCallback } from '@gilf/chat-websocket-server';
+import { onepointCallback } from './callbacks/onepoint';
 
 async function main() {
-    initChatServer([new ChatCallback("simpleChat", simpleLogger)]);
+    console.log("Starting Onepoint Chat Server...");
+    initChatServer([new ChatCallback("onepoint", onepointCallback)]);
 }
 
 main(); 
