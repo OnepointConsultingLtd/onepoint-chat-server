@@ -1,27 +1,43 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onepointCallback = onepointCallback;
-const loadKnowledgeBase_1 = __importDefault(require("../loadKnowledgeBase"));
+const conversationAnalyzer_1 = require("../utils/conversationAnalyzer");
+const api_1 = require("../api");
 /**
- * Q
+ * Enhances OSCA's response based on conversation analysis
  */
+function contextAdapter(response) {
+    if (response.success) {
+        return response.data.context_text;
+    }
+    return response.data;
+}
 async function onepointCallback(chatHistory) {
+    const analysis = (0, conversationAnalyzer_1.analyzeConversation)(chatHistory);
     const lastMessage = chatHistory.slice(-1)[0];
-    const knowledgeBase = await (0, loadKnowledgeBase_1.default)();
-    console.log("chatHistory ->", chatHistory);
-    // Create a structured response using the knowledge base
-    lastMessage.content = `This is the context information about OnePoint Consulting which you can use to answer the user's question, if it makes sense to do so:
+    const contextResponse = await (0, api_1.getContext)(lastMessage.content);
+    const knowledgeBase = contextAdapter(contextResponse);
+    console.log("knowledgeBase ->", knowledgeBase);
+    console.log("analysis ->", analysis);
+    console.log("lastMessage ->", lastMessage);
+    // Enhance the last message with context and analysis
+    lastMessage.content = `
+    Context Information:
+    
+    ${knowledgeBase}
 
-  ${knowledgeBase["home-page"]}
-  ${knowledgeBase["architect-for-outcomes"]}
-  Also refine the response to be more concise and to the point.
+    Conversation Analysis:
+    - Identified Persona: ${analysis.persona}
+    - Relevant Services: ${analysis.services.join(', ')}
+    - Initial Questions Complete: ${analysis.isInitialQuestionsComplete}
 
-  This is what the user said:
-  ${lastMessage.content}
-  `;
-    // Return the updated chat history with the new message
+    User Message:
+    ${lastMessage.content}
+
+    Remember to:
+    1. Use appropriate follow-up questions for the ${analysis.persona} persona
+    2. Reference relevant case studies and services
+    3. Guide toward expert connection after sufficient information gathering
+`;
     return [...chatHistory];
 }

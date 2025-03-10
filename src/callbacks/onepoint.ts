@@ -1,28 +1,53 @@
-import { ChatMessage, ChatCallback } from '@gilf/chat-websocket-server';
+import { ChatMessage } from '@gilf/chat-websocket-server';
 import loadKnowledgeBase from '../loadKnowledgeBase';
+import { analyzeConversation } from '../utils/conversationAnalyzer';
+import { getContext } from '../api';
 
 /**
- * Q
+ * Enhances OSCA's response based on conversation analysis
  */
+
+function contextAdapter(response: any) {
+  if (response.success) {
+    return response.data.context_text;
+  }
+
+  return response.data;
+
+}
+
 export async function onepointCallback(
   chatHistory: ChatMessage[],
 ): Promise<ChatMessage[]> {
+  const analysis = analyzeConversation(chatHistory);
   const lastMessage = chatHistory.slice(-1)[0];
-  const knowledgeBase = await loadKnowledgeBase();
-  console.log("chatHistory ->", chatHistory);
+  const contextResponse = await getContext(lastMessage.content);
+  const knowledgeBase = contextAdapter(contextResponse);
 
+  console.log("knowledgeBase ->", knowledgeBase);
 
-  // Create a structured response using the knowledge base
-  lastMessage.content = `This is the context information about OnePoint Consulting which you can use to answer the user's question, if it makes sense to do so:
+  console.log("analysis ->", analysis);
+  console.log("lastMessage ->", lastMessage)
 
-  ${knowledgeBase["home-page"]}
-  ${knowledgeBase["architect-for-outcomes"]}
-  Also refine the response to be more concise and to the point.
+  // Enhance the last message with context and analysis
+  lastMessage.content = `
+    Context Information:
+    
+    ${knowledgeBase}
 
-  This is what the user said:
-  ${lastMessage.content}
-  `;
+    Conversation Analysis:
+    - Identified Persona: ${analysis.persona}
+    - Relevant Services: ${analysis.services.join(', ')}
+    - Initial Questions Complete: ${analysis.isInitialQuestionsComplete}
 
-  // Return the updated chat history with the new message
+    User Message:
+    ${lastMessage.content}
+
+    Remember to:
+    1. Use appropriate follow-up questions for the ${analysis.persona} persona
+    2. Reference relevant case studies and services
+    3. Guide toward expert connection after sufficient information gathering
+`;
+
   return [...chatHistory];
 }

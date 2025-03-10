@@ -65,3 +65,7 @@ package-lock.json
 *v8.log
 /lib/
 .env
+config/prompt_notes.toml
+example_conversations/t-1.md
+
+dist
