@@ -68,4 +68,3 @@ package-lock.json
 config/prompt_notes.toml
 example_conversations/t-1.md
 
-dist

@@ -10,30 +10,35 @@ if (!CONTEXT_API_URL) {
 }
 
 export async function getContext(question: string) {
-	const url = CONTEXT_API_URL?.replace("{question}", encodeURIComponent(question));
-	console.log("This is the url: ", url);
+	try {
+		const url = CONTEXT_API_URL?.replace("{question}", encodeURIComponent(question));
+		console.log("This is the url: ", url);
 
-	const response = await fetch(url!, {
-		headers: {
-			"Authorization": `Bearer ${API_KEY!}`
+		const response = await fetch(url!, {
+			headers: {
+				"Authorization": `Bearer ${API_KEY!}`
+			}
+		})
+
+		if (response.ok) {
+			const data = await response.json();
+			return {
+				data: data,
+				success: true,
+			};
+		} else {
+			console.error("Error fetching context:", response.statusText);
+			return {
+				data: `Can not find data regarding this: ${question} - ${response.statusText} `,
+				success: false,
+			};
 		}
-	})
-
-	if (response.ok) {
-		const data = await response.json();
+	} catch (error: unknown) {
+		const errorMessage = error instanceof Error ? error.message : String(error);
+		console.error("Exception in getContext:", errorMessage);
 		return {
-			data: data,
-			success: true,
-		};
-	} else {
-		console.error("Error fetching context:", response.statusText);
-		return {
-			data: `Can not find data regarding this: ${question} - ${response.statusText} `,
+			data: `Error processing request: ${errorMessage}`,
 			success: false,
 		};
 	}
-}
-
-function base64Encode(str: string) {
-	return Buffer.from(str).toString('base64');
 }

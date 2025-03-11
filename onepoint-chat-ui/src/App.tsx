@@ -1,17 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React from 'react'
 import './App.css'
-
-interface Question {
-  id: number;
-  text: string;
-}
-
-interface Message {
-  id: string;
-  text: string;
-  type: 'user' | 'agent';
-  timestamp: Date;
-}
+import { useChat, Question } from './hooks/useChat'
 
 function App() {
   const initialQuestions: Question[] = [
@@ -21,57 +10,14 @@ function App() {
     { id: 4, text: "Can you show me some examples?" },
   ];
 
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [inputText, setInputText] = useState('');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const handleQuestionClick = (question: Question) => {
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: question.text,
-      type: 'user',
-      timestamp: new Date()
-    };
-
-    const agentMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      text: `I'll help you with "${question.text}" Please provide more details about what you'd like to know.`,
-      type: 'agent',
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage, agentMessage]);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (inputText.trim()) {
-      const userMessage: Message = {
-        id: Date.now().toString(),
-        text: inputText,
-        type: 'user',
-        timestamp: new Date()
-      };
-
-      const agentMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "I'm processing your request. How can I assist you further?",
-        type: 'agent',
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, userMessage, agentMessage]);
-      setInputText('');
-    }
-  };
+  const {
+    messages,
+    inputText,
+    setInputText,
+    messagesEndRef,
+    handleQuestionClick,
+    handleSubmit
+  } = useChat();
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
