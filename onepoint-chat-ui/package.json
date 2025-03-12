@@ -7,13 +7,15 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "cd dist && npx http-server"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.12",
     "isomorphic-ws": "^5.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
     "socket.io-client": "^4.8.1",
     "ws": "^8.18.1"
   },

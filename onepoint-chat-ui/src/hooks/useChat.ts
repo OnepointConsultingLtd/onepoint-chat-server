@@ -18,14 +18,14 @@ function sendMessage(
     socket: WebSocket | null,
     event: string,
     message: string
-  ) {
+) {
     if (!!socket) {
-      socket.send(JSON.stringify({ type: event, content: message }));
-      console.info(`Sent ${event} ${message}!`);
+        socket.send(JSON.stringify({ type: event, content: message }));
+        console.info(`Sent ${event} ${message}!`);
     } else {
-      console.warn(`Socket is null, cannot send ${event} message.`);
+        console.warn(`Socket is null, cannot send ${event} message.`);
     }
-  }
+}
 
 
 function messageFactoryAgent(text: string): Message {
@@ -40,6 +40,7 @@ function messageFactoryAgent(text: string): Message {
 export function useChat() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputText, setInputText] = useState('');
+    const [isThinking, setIsThinking] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const wsRef = useRef<WebSocket | null>(null);
     const wsOpen = useRef<boolean>(false);
@@ -48,40 +49,50 @@ export function useChat() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    useEffect(() => {
-        // Create WebSocket connection only once
+    const setupWebSocket = () => {
+        // Close existing connection if any
+        if (wsOpen.current && wsRef.current) {
+            wsRef.current.close();
+            wsOpen.current = false;
+        }
+
+        // Create new WebSocket connection
         wsRef.current = new WebSocket(`ws://${window.location.hostname}:4000`);
         const ws = wsRef.current;
 
-        // Browser WebSocket uses 'onopen' instead of 'on("open")'
         ws.onopen = () => {
-            const connectionMessage: Message = messageFactoryAgent("Connected to server");
+            const connectionMessage: Message = messageFactoryAgent("OSCA at your service!");
             setMessages(prev => [...prev, connectionMessage]);
             wsOpen.current = true;
         };
 
-        // Browser WebSocket uses 'onmessage' instead of 'on("message")'
         ws.onmessage = (event: any) => {
             try {
                 const message = JSON.parse(event.data);
-                console.log("message", message)
+
                 switch (message.type) {
                     case "stream-start":
-                        setMessages(prev => [...prev, messageFactoryAgent("")]);
+                        setIsThinking(true);
                         break;
                     case "stream-chunk":
+                        setIsThinking(false);
                         setMessages(prev => {
-                            const lastMessage = {...prev[prev.length - 1]};
+                            const lastMessage = { ...prev[prev.length - 1] };
+                            if (!lastMessage || lastMessage.type !== 'agent') {
+                                return [...prev, messageFactoryAgent(message.chunk)];
+                            }
                             lastMessage.text += message.chunk;
                             return [...prev.slice(0, -1), lastMessage];
                         });
                         break;
                     case "stream-end":
+                        setIsThinking(false);
                         if (message.subType === "streamEndError") {
                             setMessages(prev => [...prev, messageFactoryAgent(message.message)]);
                         }
                         break;
                     case "message":
+                        setIsThinking(false);
                         setMessages(prev => [...prev, messageFactoryAgent(message.message.content)]);
                         break;
                 }
@@ -90,33 +101,43 @@ export function useChat() {
             }
         };
 
-        // Use 'onerror' instead of 'on("error")'
         ws.onerror = (error) => {
             console.error("WebSocket error:", error);
             const errorMessage: Message = messageFactoryAgent(`Connection error: Unable to connect to server`);
             setMessages(prev => [...prev, errorMessage]);
         };
 
-        // Use 'onclose' instead of 'on("close")'
         ws.onclose = () => {
             const closeMessage: Message = messageFactoryAgent("Connection closed");
             setMessages(prev => [...prev, closeMessage]);
             wsOpen.current = false;
         };
+    };
 
+    const handleRestart = () => {
+        setMessages([]);
+        setInputText('');
+        setIsThinking(false);
+        setupWebSocket();
+    };
+
+    useEffect(() => {
+        setupWebSocket();
         return () => {
-            // Clean up WebSocket
-            if(wsOpen.current && wsRef.current) {
+            if (wsOpen.current && wsRef.current) {
                 wsRef.current.close();
             }
         };
     }, []);
 
     useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+        if (isThinking) {
+            scrollToBottom();
+        }
+    }, [messages, isThinking]);
 
     const handleQuestionClick = (question: Question) => {
+        setIsThinking(true);
         const userMessage: Message = {
             id: Date.now().toString(),
             text: question.text,
@@ -130,6 +151,9 @@ export function useChat() {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!inputText.trim()) return;
+
+        setIsThinking(true);
         const userMessage: Message = {
             id: Date.now().toString(),
             text: inputText,
@@ -148,6 +172,8 @@ export function useChat() {
         setInputText,
         messagesEndRef,
         handleQuestionClick,
-        handleSubmit
+        handleSubmit,
+        handleRestart,
+        isThinking
     };
 } 

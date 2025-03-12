@@ -4,13 +4,13 @@ import path from 'path';
 async function loadKnowledgeBase(): Promise<{ [key: string]: string }> {
     console.log("Starting to load knowledge base...");
     const knowledgeBase: { [key: string]: string } = {};
-    const files = fs.readdirSync('./src/knowledge-base');
+    const files = fs.readdirSync('../docs/knowledge-base');
 
-    console.log("Found knowledge base files:", files); 
+    console.info("Found knowledge base files:", files);
 
     for (const file of files) {
         if (file.endsWith('.md')) {
-            const content = fs.readFileSync(path.join('./src/knowledge-base', file), 'utf-8');
+            const content = fs.readFileSync(path.join('../docs/knowledge-base', file), 'utf-8');
             knowledgeBase[file.replace('.md', '')] = content;
         }
     }

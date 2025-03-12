@@ -9,6 +9,16 @@ from tqdm import tqdm
 import time
 from datetime import datetime
 
+"""
+This script is used to scrape the Onepoint website and save the data to a Markdown file.
+
+It uses both requests and Selenium to scrape the data.
+
+It also uses the BeautifulSoup library to parse the HTML and extract the data.
+
+"""
+
+
 def print_header():
     print("\n" + "="*80)
     print("Onepoint Website Scraper")
