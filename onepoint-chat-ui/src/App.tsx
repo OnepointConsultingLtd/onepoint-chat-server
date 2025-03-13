@@ -47,7 +47,7 @@ function App() {
           </div>
         </div>
         {/* Chat Messages */}
-        <div className="bg-white mb-4 flex flex-col h-full mt-12">
+        <div className="bg-white mb-4 py-[5rem] flex flex-col h-full mt-12">
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
               <div
@@ -139,6 +139,14 @@ function App() {
                       height:
                         Math.min(48 + 24 * inputText.split("\n").length, 200) +
                         "px",
+                    }}
+                    onKeyDown={(
+                      e: React.KeyboardEvent<HTMLTextAreaElement>
+                    ) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSubmit(e);
+                      }
                     }}
                   />
                   <button
