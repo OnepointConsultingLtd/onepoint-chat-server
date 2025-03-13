@@ -44,6 +44,7 @@ export function useChat() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const wsRef = useRef<WebSocket | null>(null);
     const wsOpen = useRef<boolean>(false);
+    const [isRestarting, setIsRestarting] = useState(false);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -115,10 +116,11 @@ export function useChat() {
     };
 
     const handleRestart = () => {
+        setIsRestarting(true);
         setMessages([]);
         setInputText('');
         setIsThinking(false);
-        setupWebSocket();
+        setIsRestarting(!isRestarting);
     };
 
     useEffect(() => {
@@ -128,7 +130,7 @@ export function useChat() {
                 wsRef.current.close();
             }
         };
-    }, []);
+    }, [isRestarting]);
 
     useEffect(() => {
         if (isThinking) {

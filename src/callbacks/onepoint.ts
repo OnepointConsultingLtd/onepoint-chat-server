@@ -24,8 +24,6 @@ export async function onepointCallback(
   const contextResponse = await getContext(lastMessage.content);
   const knowledgeBase = contextAdapter(contextResponse);
 
-  console.log("knowledgeBase ->", knowledgeBase);
-
   console.log("analysis ->", analysis);
   console.log("lastMessage ->", lastMessage)
 
