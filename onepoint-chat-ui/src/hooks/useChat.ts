@@ -11,6 +11,8 @@ export interface Message {
     text: string;
     type: 'user' | 'agent';
     timestamp: Date;
+    isSidebarOpen?: boolean;
+    toggleSidebar?: () => void;
 }
 
 
@@ -45,6 +47,10 @@ export function useChat() {
     const wsRef = useRef<WebSocket | null>(null);
     const wsOpen = useRef<boolean>(false);
     const [isRestarting, setIsRestarting] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -176,6 +182,8 @@ export function useChat() {
         handleQuestionClick,
         handleSubmit,
         handleRestart,
-        isThinking
+        isThinking,
+        isSidebarOpen,
+        toggleSidebar
     };
 } 

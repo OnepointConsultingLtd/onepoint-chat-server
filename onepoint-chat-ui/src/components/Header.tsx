@@ -1,20 +1,13 @@
-import { Question, useChat } from "../hooks/useChat";
-import initialQuestions from "../lib/initialQuestions";
-
 interface HeaderProps {
-  onQuestionClick: (question: Question) => void;
   handleRestart: () => void;
 }
 
-export default function Header({
-  onQuestionClick,
-  handleRestart,
-}: HeaderProps) {
+export default function Header({ handleRestart }: HeaderProps) {
   return (
-    <header className="bg-white p-3 border-b border-[#e2e8f0] w-full">
+    <header className="bg-white p-3 w-full relative !-50">
       <div className="flex items-center space-x-4 w-full justify-between">
         <div className="flex items-center space-x-4 pr-4">
-          <div className="w-12 h-12 bg-[#0ea5e9] rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-[#0ea5e9] rounded-full flex items-center justify-center">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -33,7 +26,7 @@ export default function Header({
             <h1 className="text-xl md:text-3xl font-bold text-[#0284c7]">
               OSCA
             </h1>
-            <p className="text-[#64748b]">
+            <p className="text-[#64748b] lg:text-base text-sm">
               Onepoint's Smart Cognitive Assistant
             </p>
           </div>
@@ -61,24 +54,6 @@ export default function Header({
           </button>
         </div>
       </div>
-
-      {/* Initial Questions */}
-      {/* <div className="!grid !grid-cols-1 lg:!grid-cols-2 gap-4">
-        {initialQuestions.map((question) => (
-          <button
-            key={question.id}
-            className="group relative rounded-xl transition-all duration-300 text-left border border-[#bae6fd] hover:border-[#7dd3fc] shadow-lg hover:shadow-xl hover:-translate-y-1 overflow-hidden w-full cursor-pointer"
-            onClick={() => onQuestionClick(question)}
-          >
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#0ea5e9] to-[#38bdf8] transform origin-left transition-transform duration-300 scale-x-0 group-hover:scale-x-100"></div>
-            <div className="flex items-start gap-4">
-              <p className="text-[#0369a1] text-base md:text-lg font-semibold md:font-medium group-hover:text-[#0284c7] transition-colors duration-300">
-                {question.text}
-              </p>
-            </div>
-          </button>
-        ))}
-      </div> */}
     </header>
   );
 }
