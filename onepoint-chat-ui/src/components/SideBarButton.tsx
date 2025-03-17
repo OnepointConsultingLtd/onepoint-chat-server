@@ -4,7 +4,7 @@ export default function SideBarButton({
   toggleSidebar: () => void;
 }) {
   return (
-    <div className="!w-fit h-auto w-full lg:pl-5 lg:static sticky top-0 z-50 flex items-center justify-start">
+    <div className="!w-fit h-auto w-full pl-3 lg:pl-5 lg:static sticky top-0 z-50 flex items-center justify-start">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
