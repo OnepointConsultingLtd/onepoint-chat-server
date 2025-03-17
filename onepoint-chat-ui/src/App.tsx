@@ -38,34 +38,28 @@ function App() {
   return (
     <main className="relative w-full h-full flex">
       {/* Sidebar Container */}
-      <div className="h-screen lg:!sticky top-0">
-        <div className="flex flex-col h-full">
-          {/* Mobile Sidebar */}
-          <Sidebar
-            isOpen={isSidebarOpen}
-            onClose={toggleSidebar}
-            questions={initialQuestions}
-            onQuestionClick={handleQuestionClick}
-          />
-        </div>
-      </div>
+
+      {/* Mobile Sidebar */}
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={toggleSidebar}
+        questions={initialQuestions}
+        onQuestionClick={handleQuestionClick}
+      />
 
       {/* Main Content */}
       <div className="min-h-screen relative mx-auto grow">
         <div className="mx-auto flex flex-col gap-4 min-h-screen">
           <div className="sticky top-0 flex border-b border-[#e2e8f0]  items-center justify-between z-10 mx-auto w-full backdrop-blur-lg bg-white/80">
             <SideBarButton toggleSidebar={toggleSidebar} />
-
-            <div className="w-full max-w-6xl mx-auto">
-              <div className="flex justify-between items-center">
-                <Header handleRestart={handleRestart} />
-              </div>
-            </div>
+            <Header handleRestart={handleRestart} />
           </div>
 
           {/* Chat Messages */}
           <div className="bg-transparent flex flex-col !min-h-screen max-w-6xl mx-auto w-full">
-            <div className={`flex-1 overflow-y-auto p-4 px-4 md:px-8 space-y-6  ${isThinking ? "mb-[30rem]" : "mb-[10rem]"}`}>
+            <div
+              className={`flex-1 overflow-y-auto p-4 px-4 md:px-8 space-y-6  ${isThinking ? "mb-[30rem]" : "mb-[1rem]"}`}
+            >
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -156,11 +150,11 @@ function App() {
                         height:
                           Math.min(
                             48 + 24 * inputText.split("\n").length,
-                            200
+                            200,
                           ) + "px",
                       }}
                       onKeyDown={(
-                        e: React.KeyboardEvent<HTMLTextAreaElement>
+                        e: React.KeyboardEvent<HTMLTextAreaElement>,
                       ) => {
                         if (e.key === "Enter" && !e.shiftKey) {
                           e.preventDefault();
