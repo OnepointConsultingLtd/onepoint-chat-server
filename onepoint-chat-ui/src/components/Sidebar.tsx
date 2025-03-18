@@ -23,7 +23,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           onClick={onClose}
         >
           <div
-            className={`fixed inset-y-0 ${isOpen ? "left-0 w-[280px] lg:!w-[385px]" : "-left-[1180px] w-0"} transition-all duration-300 lg:!bg-blue-50 lg:!relative bg-white z-50 flex flex-col h-full`}
+            className={`fixed inset-y-0 ${isOpen ? "block left-0 w-[280px] lg:!w-[385px]" : "-left-[1180px] w-0 hidden"} transition-all duration-300 lg:!bg-blue-50 lg:!relative bg-white z-50 flex flex-col h-full`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Mobile Header */}
