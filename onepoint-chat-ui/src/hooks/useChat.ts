@@ -11,12 +11,10 @@ export interface Message {
   text: string;
   type: "user" | "agent";
   timestamp: Date;
-  isSidebarOpen?: boolean;
-  toggleSidebar?: () => void;
 }
 
 function sendMessage(socket: WebSocket | null, event: string, message: string) {
-  if (!!socket) {
+  if (socket) {
     socket.send(JSON.stringify({ type: event, content: message }));
     console.info(`Sent ${event} ${message}!`);
   } else {
@@ -42,6 +40,13 @@ export function useChat() {
   const wsOpen = useRef<boolean>(false);
   const [isRestarting, setIsRestarting] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isFloatingOpen, setIsFloatingOpen] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleFloatingBtn = () => {
+    setIsFloatingOpen(!isFloatingOpen);
+  };
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -178,6 +183,17 @@ export function useChat() {
     setInputText("");
   };
 
+
+  const handleCopy = async (text: string, id: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
   return {
     messages,
     inputText,
@@ -189,5 +205,10 @@ export function useChat() {
     isThinking,
     isSidebarOpen,
     toggleSidebar,
+    handleFloatingBtn,
+    isFloatingOpen,
+    copiedId,
+    handleCopy
+
   };
 }

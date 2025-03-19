@@ -7,7 +7,7 @@ import SideBarButton from "./components/SideBarButton";
 import { useChat } from "./hooks/useChat";
 import initialQuestions from "./lib/initialQuestions";
 
-function App() {
+function Home() {
   const {
     messages,
     inputText,
@@ -20,7 +20,6 @@ function App() {
     isSidebarOpen,
     toggleSidebar,
   } = useChat();
-
 
   return (
     <main className="flex">
@@ -59,4 +58,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
