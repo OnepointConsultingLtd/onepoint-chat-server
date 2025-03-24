@@ -8,7 +8,6 @@ import { personaMappings, serviceMappings } from '../data/mappings';
 
 
 export function analyzeConversation(chatHistory: ChatMessage[]): ConversationAnalysis {
-	// Get the last two messages (initial question responses)
 	const lastTwoMessages = chatHistory.slice(-2);
 	const combinedText = lastTwoMessages.map(msg => msg.content.toLowerCase()).join(' ');
 

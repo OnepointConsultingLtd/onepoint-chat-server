@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
 import WebSocket from "isomorphic-ws";
+import { useEffect, useRef, useState } from "react";
+import { MessageEvent } from "ws";
 
 export interface Question {
   id: number;
@@ -31,6 +32,18 @@ function messageFactoryAgent(text: string): Message {
   };
 }
 
+// TODO: get user id from web socket.
+const getUserId = () => {
+  let userId = localStorage.getItem("userId");
+  if (!userId) {
+    userId = crypto.randomUUID();
+    localStorage.setItem("userId", userId);
+  }
+  return userId;
+};
+
+
+
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
@@ -42,6 +55,9 @@ export function useChat() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isFloatingOpen, setIsFloatingOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const userId = getUserId();
+
+  console.log("userId", userId);
 
   const handleFloatingBtn = () => {
     setIsFloatingOpen(!isFloatingOpen);
@@ -74,9 +90,9 @@ export function useChat() {
       wsOpen.current = true;
     };
 
-    ws.onmessage = (event: any) => {
+    ws.onmessage = (event: MessageEvent) => {
       try {
-        const message = JSON.parse(event.data);
+        const message = JSON.parse(event.data.toString());
 
         switch (message.type) {
           case "stream-start":
