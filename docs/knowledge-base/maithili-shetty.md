@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/discover-onepoint/meet-our-team/maithili-shetty
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -38,7 +36,7 @@ Meet Our Team[9]
 
 ### Chief Operations Officer
 
-- 
+-
 
 Maithili has been working with Onepoint since 2008 and is currently managing the operations in the India office.
 
@@ -103,7 +101,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/techtalk/unlocking-the-power-of-real-time-data-replay
 
-*Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
+_Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better._
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -278,7 +276,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

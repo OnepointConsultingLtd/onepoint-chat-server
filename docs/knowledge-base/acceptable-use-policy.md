@@ -1,4 +1,4 @@
-# Acceptable Use Policy
+Title: Acceptable Use Policy
 
 This acceptable use policy sets out the terms between you and us under which you may access our website [https://www.onepointltd.com/](https://www.onepointltd.com/) ("our site"). This acceptable use policy applies to all users of, and visitors to, our site.
 
@@ -38,11 +38,13 @@ These content standards apply to any and all material which you contribute to ou
 You must comply with the spirit and the letter of the following standards. The standards apply to each part of any contribution as well as to its whole.
 
 Contributions must:
+
 - Be accurate (where they state facts).
 - Reflect genuinely held beliefs (where they state opinions).
 - Comply with applicable law in the UK and in any country from which they are posted.
 
 Contributions must not:
+
 - Contain any material which is defamatory of any person.
 - Contain any material which is obscene, offensive, hateful or inflammatory.
 - Promote sexually explicit material.
@@ -90,6 +92,7 @@ We exclude liability for actions taken in response to breaches of this acceptabl
 ## Main Navigation
 
 - **What we do**
+
   - [Do data better](https://www.onepointltd.com/do-data-better)
   - [Innovate with AI & more](https://www.onepointltd.com/innovate-with-ai-more/)
   - [Architect for Outcomes](https://www.onepointltd.com/architect-for-outcomes/)
@@ -97,6 +100,7 @@ We exclude liability for actions taken in response to breaches of this acceptabl
   - [Onepoint Labs](https://www.onepointltd.com/onepoint-labs/)
 
 - **Resources**
+
   - [Onepoint Data Wellness™ Suite](https://www.onepointltd.com/data-wellness/)
   - [Onepoint TechTalk](https://www.onepointltd.com/techtalk)
   - [Onepoint Oneness](https://www.onepointltd.com/oneness/)

@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/discover-onepoint/meet-our-team/chris-wray-2
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -38,7 +36,7 @@ Meet Our Team[9]
 
 ### Senior Advisor
 
-- 
+-
 
 An experienced business consultant with 35′ years strategic, financial, information technology and operational consulting experience (including 20 years as a partner) across a variety of service delivery, account management and practice management roles within Arthur Andersen, Accenture, Price Waterhouse, Deloitte and Kemp Little.
 
@@ -115,7 +113,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

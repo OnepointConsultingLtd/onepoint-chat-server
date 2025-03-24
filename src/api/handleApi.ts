@@ -1,5 +1,6 @@
 import { getCollection } from "./mongoClient";
 
+// TODO: Implement this function
 export async function getChatHistory(id: string) {
   try {
     const collection = await getCollection();
@@ -30,24 +31,23 @@ function extractUserMessage(chatHistory: any[]) {
   return userMessage.trim()
 }
 
-export async function saveChatHistory(chatHistory: any[], id: string) {
+export async function saveChatHistory(chatHistory: any[], id: string, clientId: string) {
   try {
     const collection = await getCollection();
 
     await collection.updateOne(
-      { id },
+      { conversationId: id },
       {
         $set:
         {
-          userMessage: extractUserMessage(chatHistory),
+          clientId,
           chatHistory,
+          userMessage: extractUserMessage(chatHistory),
           timestamp: new Date().toISOString()
         }
       },
       { upsert: true }
     );
-
-    console.info("Getting  id->", id);
     console.log("Conversation saved/updated in MongoDB.");
   } catch (error) {
     console.error("Error saving conversation:", error);

@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/client-stories/nrt-key-performance-indicator
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -33,13 +31,13 @@ Client Stories[7]
 Network Rail Telecom (NRT) is Network Rail’s national telecoms asset management and service provision division. It provides telecommunication network services to Network Rail and the passenger and freight operating companies it serves. NRT was created to form a single, unified telecoms organisation to improve the effectiveness of deployment and use of resources. NRT presently owns all of the company’s telecoms assets on the network side of the service demarcation point. Based in Milton Keynes, the HQ of Network Rail alongside other Network Rail services, NRT currently employs some 3,000 specialist telecommunications workers.
 
 - To establish NRT as the rail industry’s
- number one service provider of choice and to expand operations to 
-become a significant player within the UK telecommunications sector.
-- The performance 
-indicators used should be ‘living’, implying the need to replace or 
-reframe the indicators as the business matures and strategic priorities 
-change, both within individual business areas and collectively as a 
-tier-one telecommunications business.
+  number one service provider of choice and to expand operations to
+  become a significant player within the UK telecommunications sector.
+- The performance
+  indicators used should be ‘living’, implying the need to replace or
+  reframe the indicators as the business matures and strategic priorities
+  change, both within individual business areas and collectively as a
+  tier-one telecommunications business.
 
 - or the performance indicators across the NRT business to be integrated.
 - To devise clearly measurable indicators which can be tracked through robust standard operating procedures and ultimately automated. This will allow a more comprehensive management of the business, enabling universal communication, including the acceptance or rebuttal of performance parameters derived from external suppliers and collaborators of NRT.
@@ -142,7 +140,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

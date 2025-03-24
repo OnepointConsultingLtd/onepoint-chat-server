@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/discover-onepoint/meet-our-team/shashin-shah
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -38,7 +36,7 @@ Meet Our Team[9]
 
 ### Founder and Chief Executive Officer
 
-- 
+-
 
 Shashin Shah has over 35 years’ experience in delivering technology and strategies, architectures and systems. He is a creative and inspiring leader.
 
@@ -117,7 +115,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

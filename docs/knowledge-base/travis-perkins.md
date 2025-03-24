@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/client-stories/travis-perkins
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -32,10 +30,10 @@ Client Stories[7]
 
 - Use its size to offer competitive pricing to customers
 - Use its network of 2,000 branches to conveniently offer products for collection
-or delivery to customers anywhere in the UK
+  or delivery to customers anywhere in the UK
 - Superior access to the broadest product range and excellent availability
 - Excellent relationships with suppliers ensure the Group benefits from product
-innovation and keen prices
+  innovation and keen prices
 - Provide excellent customer service
 
 - Replace and/or consolidate its legacy core systems
@@ -55,20 +53,20 @@ Sparx Enterprise Architect was used as the Enterprise Architecture Management to
 
 In addition to supporting Travis Perkins with modelling the current architecture, Onepoint consultants were instrumental in shaping Travis Perkins’ application integration strategy and defining the high level conceptual data model.
 
-Onepoint 
-consultants used the defined architecture content meta model to produce 
+Onepoint
+consultants used the defined architecture content meta model to produce
 current architecture models for 3 businesses (Travis Perkins, Wickes and
- Benchmarx). These models provide a common understanding of how the 
-businesses currently operate and the solutions required for transition 
+Benchmarx). These models provide a common understanding of how the
+businesses currently operate and the solutions required for transition
 to the planned future state.
 
-The Application 
-Integration strategy enabled Travis Perkins to select an Application 
-Integration product and provided a set of best practices for selecting 
+The Application
+Integration strategy enabled Travis Perkins to select an Application
+Integration product and provided a set of best practices for selecting
 and designing applications and data services.
 
 The conceptual data
- model served as a key enabler to define the common business vocabulary 
+model served as a key enabler to define the common business vocabulary
 and the initial set of required data services.
 
 ## Case Studies Category
@@ -148,7 +146,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

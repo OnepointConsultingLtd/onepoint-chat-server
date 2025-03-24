@@ -1,7 +1,6 @@
 import { ChatMessage } from '@gilf/chat-websocket-server';
-import loadKnowledgeBase from '../loadKnowledgeBase';
-import { analyzeConversation } from '../utils/conversationAnalyzer';
 import { getContext } from '../api';
+import { analyzeConversation } from '../utils/conversationAnalyzer';
 
 /**
  * Enhances OSCA's response based on conversation analysis

@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/client-stories/samza-poc-telco-case-study
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -55,18 +53,18 @@ The high level flow is as follows:
 - Streaming events are ingested and analysed by the platform. If the aggregated/ filtered events constitute a business event of interest then the platform will raise a business event and send to the Campaign Management platform to act on.
 
 The PoC was able
- to demonstrate analysis and action on streaming data. As part of this 
-PoC, the Campaign Manager defined campaigns on the following business 
+to demonstrate analysis and action on streaming data. As part of this
+PoC, the Campaign Manager defined campaigns on the following business
 events:
 
 - 4th call in the last 10 minute interval
 - 1GB of data used in the last 10 minute interval
 
-The CPE platform was able to ingest 
-usage information and push events to the Campaign Management platform 
-when the ingested usage information fulfilled rules constituting the 
-business event. The PoC executed in AWS small machine in single Docker 
-container, events were injected 100/sec, Kettle Job timer was 10 sec. 
+The CPE platform was able to ingest
+usage information and push events to the Campaign Management platform
+when the ingested usage information fulfilled rules constituting the
+business event. The PoC executed in AWS small machine in single Docker
+container, events were injected 100/sec, Kettle Job timer was 10 sec.
 The system was demonstrated with 4 campaigns/expressions.
 
 ## Case Studies Category
@@ -146,7 +144,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

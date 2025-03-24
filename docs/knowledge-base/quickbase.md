@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/quickbase
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -60,7 +58,6 @@ There’s no obligation to continue the journey with us.
 A fresh, independent perspective on innovative options, approaches and recommendations are yours to keep!
 
 Get in touch with us using the form below.
-
 
 My name is,  and I work at
 
@@ -135,7 +132,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

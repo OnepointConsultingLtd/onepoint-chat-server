@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/client-stories/travel-and-leisure-client
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -48,15 +46,15 @@ In order to prove that Talend can improve the overall data quality of the TUI cl
 - We successfully implemented bi-directional updates between the SAP Cloud based CRM system and the Talend MDM. As a consequence;
 - A new customer record created within the CRM system is also created within the MDM system as a golden record.
 - When
- a new customer record was created in the CRM system and matched a 
-record already present on the MDM system, the golden record within the 
-MDM was updated and a merge command was sent to the CRM system to 
-consolidate the two records into a new master retaining both versions 
-for historical purposes.
+  a new customer record was created in the CRM system and matched a
+  record already present on the MDM system, the golden record within the
+  MDM was updated and a merge command was sent to the CRM system to
+  consolidate the two records into a new master retaining both versions
+  for historical purposes.
 - The
- PoC involved the creation of 60+ million records within the MDM and an 
-external fast-matching elastic search was used to narrow down potential 
-matches before detail matching was conducted within the Talend MDM.
+  PoC involved the creation of 60+ million records within the MDM and an
+  external fast-matching elastic search was used to narrow down potential
+  matches before detail matching was conducted within the Talend MDM.
 
 The successful PoC has confirmed the selection of Talend for the MDM and new project.
 
@@ -137,7 +135,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

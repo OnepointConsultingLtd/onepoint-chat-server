@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/discover-onepoint/meet-our-team/christy-kulasingam-2
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -38,7 +36,7 @@ Meet Our Team[9]
 
 ### Strategic Advisor and Mentor
 
-- 
+-
 
 Christy Kulasingam is a strategic business advisor with top-tier global management consulting and interim management experience. He advises blue-chip organisations to fledgeling startups on realising the ideas of the digital age.
 
@@ -107,7 +105,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

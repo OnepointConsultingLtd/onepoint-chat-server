@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/onepoint-labs/our-innovation/talend-spark-kudu-components
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -73,7 +71,7 @@ These components can be installed in Talend Studio in the following way:
 
 1. Unpack the provided zip file into a local folder ()2. Start Talend Studio3. Go to Menu “Window” -> “Preferences”4. Type “Component” in the search field on the top left side of this dialogue:
 
-5. Click on “Components” in the tree on the left panel6. Write the path to in the field with label “User component folder:”7. Click on “Talend Component Designer” in the tree on the left panel8. Write the path to in the field with label “Component project:”9. Click the “OK” button
+2. Click on “Components” in the tree on the left panel6. Write the path to in the field with label “User component folder:”7. Click on “Talend Component Designer” in the tree on the left panel8. Write the path to in the field with label “Component project:”9. Click the “OK” button
 
 Click here to contact us for tKuduOutput component[10]
 
@@ -136,7 +134,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

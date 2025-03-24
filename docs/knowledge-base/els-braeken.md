@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/discover-onepoint/meet-our-team/els-braeken
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -38,7 +36,7 @@ Meet Our Team[9]
 
 ### Head of Risk & Governance
 
-- 
+-
 
 Els is a GDPR Certified Practitioner, who, having championed Data Protection for charities over the last decade, joined Onepoint in March 2018 to oversee compliance, risk management, and Information governance for both Onepoint and its clients.
 
@@ -105,7 +103,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

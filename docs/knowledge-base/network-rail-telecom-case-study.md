@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/client-stories/network-rail-telecom-case-study
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -58,9 +56,9 @@ The essence of our findings while carrying out the work was that for the System 
 - Establish a governance and risk management framework based on ISO38500 and COBIT ensuring IT is aligned to business objectives and provides services compliant to regulations and within specified budgetary constraints
 - Evaluate and procure systems/ tools to improve and optimise the above capabilities
 
-The recommendations lead to the 
-creation of an organized structure to operate the recommended 
-capabilities, measuring and continuously improving processes to execute 
+The recommendations lead to the
+creation of an organized structure to operate the recommended
+capabilities, measuring and continuously improving processes to execute
 the said capabilities.
 
 ## Case Studies Category
@@ -140,7 +138,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/client-stories
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our clients, Autovista, Axalta, Flight Centre, Vision express, Network rail, frontline, Dixons carphone, SITA, TP, MEGGITT*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our clients, Autovista, Axalta, Flight Centre, Vision express, Network rail, frontline, Dixons carphone, SITA, TP, MEGGITT_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -88,7 +86,6 @@ Read all client stories
 
 ## Get in touch
 
-
 My name is,  and I work at
 
 We are looking into
@@ -158,7 +155,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

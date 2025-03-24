@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/do-data-better
 
-*Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
+_Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better._
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -117,9 +115,10 @@ Get in touch with an expert
 [Get in touch with an expert](/contact-us/)
 
 ## Start your
-journey with a 
+
+journey with a
 Onepoint
-Springboard™ 
+Springboard™
 Data workshop
 
 Explore your data challenges — and opportunities — with our senior advisors and technologists during a half-day structured workshop held at our offices in London, or virtually.
@@ -243,7 +242,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

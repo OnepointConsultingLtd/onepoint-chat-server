@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/discover-onepoint
 
-*Onepoint - We collaborate with our clients and partners to slice through business and technological complexity.*
+_Onepoint - We collaborate with our clients and partners to slice through business and technological complexity._
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -83,7 +81,6 @@ Read more[9]
 
 ## Get in touch
 
-
 My name is,  and I work at
 
 We are looking into
@@ -153,7 +150,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

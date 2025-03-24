@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/contact-us-2
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -32,7 +30,7 @@ We are looking into
 
 You can reach me at my email address
 
-,  or call me at
+, or call me at
 
 Onepoint as a Data Controller will process your personal data in line with the General Data Protection Regulations (GDPR). For further details, please see ourprivacy notice.
 
@@ -111,7 +109,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

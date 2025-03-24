@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/client-stories/eventra
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -55,13 +53,13 @@ Application integration was based on well-defined and emerging standards such as
 The key business benefits delivered were:
 
 - Avoiding vendor lock-in to proprietary software. Using open source and standard based systems will enable Eventra to work with a variety of fax and EDI
-gateways, including Open Source products like Asterisk. Currently they
-are locked into proprietary systems.
+  gateways, including Open Source products like Asterisk. Currently they
+  are locked into proprietary systems.
 - Reduced cost of implementation and deployment – using open source products has reduced
-the cost base and will enable Eventra to deploy these gateways in
-multiple geographic regions at much lower cost Application has been
-architected to support a geographically distributed deployments in
-service provider environments.
+  the cost base and will enable Eventra to deploy these gateways in
+  multiple geographic regions at much lower cost Application has been
+  architected to support a geographically distributed deployments in
+  service provider environments.
 - Modular architecture allows phased incremental delivery building on proven foundation.
 - A scalable architecture that can expand as required to meet business growth.
 - Enhanced functionality such as better number management.
@@ -143,7 +141,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

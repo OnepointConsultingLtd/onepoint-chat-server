@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/onepoint-labs/our-innovation
 
-*At Onepoint, our expertise goes far beyond connecting, fitting and building with off-the-shelf products.Our components and innovations have fostered much greater compatibility between Talend and various Google platforms and APIs, as well as solutions in Aerospike and Kudu.Over the years, collaborators have come to rely and trust Onepoint’s bespoke components.*
+_At Onepoint, our expertise goes far beyond connecting, fitting and building with off-the-shelf products.Our components and innovations have fostered much greater compatibility between Talend and various Google platforms and APIs, as well as solutions in Aerospike and Kudu.Over the years, collaborators have come to rely and trust Onepoint’s bespoke components._
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -127,7 +125,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

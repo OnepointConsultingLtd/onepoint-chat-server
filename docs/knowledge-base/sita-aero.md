@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/client-stories/sita-aero
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -45,19 +43,19 @@ Our client was undergoing a significant organisation transformation. In order to
 - Improve efficiency of project delivery without increasing technology debt
 - Use advances in technology to innovate
 
-Until recently 
-the client was a dominant player within its domain and hence had little 
-or no need to transform significantly. The advent of new players 
-providing cost-effective and innovative technology-based solutions 
-within the domain has slightly dented the dominance of our client. Our 
+Until recently
+the client was a dominant player within its domain and hence had little
+or no need to transform significantly. The advent of new players
+providing cost-effective and innovative technology-based solutions
+within the domain has slightly dented the dominance of our client. Our
 client needed to transform significantly in order to compete in this new
- world of innovative technology solutions.
+world of innovative technology solutions.
 
-One of the several 
-functions that was identified as requiring transformation was the 
-architecture function within IT. It was deemed that the architecture 
-function could help our client to innovate, align IT transformation to 
-business objectives, reuse existing assets and support the business 
+One of the several
+functions that was identified as requiring transformation was the
+architecture function within IT. It was deemed that the architecture
+function could help our client to innovate, align IT transformation to
+business objectives, reuse existing assets and support the business
 decision-making process.
 
 Onepoint adopted the following value stream process: Understand -> Analyse -> Decide -> Respond in order to assess the existing architecture capability, define the vision for the architecture team and produce an action plan (roadmap) to reach the target state. A capability assessment-based approach was used to identify the current maturity and the required maturity across the identified capabilities.
@@ -139,7 +137,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 

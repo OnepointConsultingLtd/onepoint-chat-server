@@ -2,16 +2,14 @@
 
 Source: https://www.onepointltd.com/purpose-beyond-profit
 
-*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!*
+_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our Innovative Open Source Software solutions and Consultancy can reduce TCO by 30%. Contact us!_
 
 ## Content
 
 - Do data better
 - Innovate with AI & more
 - Architect for Outcomes
-- 
-- 
-- 
+
 - Search for:Search
 
 Do data better[1]
@@ -36,6 +34,7 @@ Onepoint has always stood for doing right by all our stakeholders. Our founding 
 Onepoint has always stood for doing right by all our stakeholders. Our founding team shared many core values, having met through their charity projects. These values have led to the formation of our unique company culture and our continued commitment to making a positive impact on society.
 
 ## Investing in young
+
 people’s futures
 
 We believe in helping talented people kick start their careers.
@@ -65,6 +64,7 @@ Our clients and partners say that something about Onepoint HQ feels special. It 
 We encourage experimentation and continuous learning, team building, and in-real-life social activities — not just geeking out in front of screens!
 
 ## Giving back through
+
 great causes
 
 We believe in contributing to efforts that make the world a better place.
@@ -152,7 +152,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
 
 ## Sources
 
