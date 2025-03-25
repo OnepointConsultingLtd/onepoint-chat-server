@@ -9,6 +9,7 @@ export async function saveConversation(conversation: Conversation): Promise<void
     return;
   }
 
+  console.log("checking chatHistory ->", chatHistory);
   console.log("Saving conversation with client ID:", clientId);
   await saveChatHistory(chatHistory, id, clientId);
 }

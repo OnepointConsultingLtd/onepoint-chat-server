@@ -25,6 +25,7 @@ export async function onepointCallback(
 
   console.log("analysis ->", analysis);
   console.log("lastMessage ->", lastMessage)
+  console.log("The chatHistory ->", chatHistory)
 
   // Enhance the last message with context and analysis
   lastMessage.content = `
