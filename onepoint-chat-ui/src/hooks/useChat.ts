@@ -16,7 +16,7 @@ export interface Message {
 }
 
 function sendMessage(socket: WebSocket | null, event: string, message: string, clientId: string) {
-  if (socket) {
+  if (socket && socket.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify({ type: event, content: message, clientId }));
     console.info(`Sent ${event} ${message}!`);
   } else {
@@ -62,8 +62,8 @@ export function useChat() {
   const setupWebSocket = () => {
     // Close existing connection if any
     if (wsOpen.current && wsRef.current) {
-      wsRef.current.close();
-      wsOpen.current = false;
+      debugger
+      return
     }
 
     // Create new WebSocket connection
@@ -147,6 +147,7 @@ export function useChat() {
   };
 
   const handleRestart = () => {
+    wsRef.current = null
     setIsRestarting(true);
     setMessages([]);
     setInputText("");
