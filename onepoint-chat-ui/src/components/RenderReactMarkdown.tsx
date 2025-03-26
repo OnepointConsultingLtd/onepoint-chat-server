@@ -1,16 +1,10 @@
 import ReactMarkdown from "react-markdown";
 import { useChat } from "../hooks/useChat";
 import CopyButton from "./CopyButton";
-
-export interface Message {
-  id: string;
-  text: string;
-  type: "user" | "agent";
-  timestamp: Date;
-}
+import { Message } from "../type/types";
 
 interface RenderReactMarkdownProps {
-  children: string; // <-- Update this line
+  children: string;
   message: Message;
   handleFloatingBtn?: () => void;
 }

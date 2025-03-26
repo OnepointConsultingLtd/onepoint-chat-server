@@ -1,85 +1,65 @@
 import WebSocket from "isomorphic-ws";
 import { useEffect, useRef, useState } from "react";
 import { MessageEvent } from "ws";
+import { messageFactoryAgent, messageFactoryUser } from "../lib/messageFactory";
+import { Message, Question } from "../type/types";
+import { fetchChatHistory } from "../utils/fetchChatHistory";
+import { useChatContext } from "./useChatContext";
+import { createWebSocket, sendMessage } from "../lib/websocket";
 
-export interface Question {
-  id: number;
-  text: string;
-}
-
-export interface Message {
-  id: string;
-  text: string;
-  type: "user" | "agent";
-  timestamp: Date;
-  clientId: string;
-}
-
-function sendMessage(socket: WebSocket | null, event: string, message: string, clientId: string) {
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify({ type: event, content: message, clientId }));
-    console.info(`Sent ${event} ${message}!`);
-  } else {
-    console.warn(`Socket is null, cannot send ${event} message.`);
-  }
-}
-
-function messageFactoryAgent(text: string, clientId: string): Message {
-  return {
-    id: Date.now().toString(),
-    text,
-    type: "agent",
-    timestamp: new Date(),
-    clientId
-  };
-}
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [inputText, setInputText] = useState("");
-  const [clientId, setClientId] = useState<string>("");
-  const [isThinking, setIsThinking] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const wsOpen = useRef<boolean>(false);
-  const [isRestarting, setIsRestarting] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isFloatingOpen, setIsFloatingOpen] = useState(false);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const handleFloatingBtn = () => {
-    setIsFloatingOpen(!isFloatingOpen);
-  };
+  const {
+    isRestarting,
+    setIsRestarting,
+    copiedId,
+    setCopiedId,
+    isThinking,
+    setIsThinking,
+    clientId,
+    setClientId,
+    inputText,
+    setInputText,
+    messagesEndRef,
+  } = useChatContext();
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Fetch chat history from the server
+  const loadChatHistory = async (clientId: string) => {
+    const formattedMessages = await fetchChatHistory(clientId);
+    setMessages(formattedMessages);
+  };
+
   const setupWebSocket = () => {
-    // Close existing connection if any
     if (wsOpen.current && wsRef.current) {
-      debugger
-      return
+      return;
     }
 
     // Create new WebSocket connection
-    wsRef.current = new WebSocket(`ws://${window.location.hostname}:4000`);
+    wsRef.current = createWebSocket();
     const ws = wsRef.current;
 
     ws.onopen = () => {
       wsOpen.current = true;
+      const getCurrentClientId = localStorage.getItem("clientId");
+      if (getCurrentClientId) {
+        console.log(
+          "Using existing client ID from localStorage:",
+          getCurrentClientId,
+        );
 
-      // Check localStorage for existing client ID
-      const storedClientId = localStorage.getItem("clientId");
-      if (storedClientId) {
-        setClientId(storedClientId);
-        setMessages((prev) => [...prev]);
+        setClientId(getCurrentClientId);
+        loadChatHistory(getCurrentClientId);
       } else {
-        sendMessage(wsRef.current, "request-client-id", "", "");
+        sendMessage(ws, "request-client-id", "", "");
       }
     };
 
@@ -97,7 +77,7 @@ export function useChat() {
             setMessages((prev) => {
               const lastMessage = { ...prev[prev.length - 1] };
               if (!lastMessage || lastMessage.type !== "agent") {
-                return [...prev, messageFactoryAgent(message.chunk, message.clientId || clientId)];
+                return [...prev, messageFactoryAgent(message.chunk)];
               }
               lastMessage.text += message.chunk;
               return [...prev.slice(0, -1), lastMessage];
@@ -108,7 +88,7 @@ export function useChat() {
             if (message.subType === "streamEndError") {
               setMessages((prev) => [
                 ...prev,
-                messageFactoryAgent(message.message, message.clientId || clientId),
+                messageFactoryAgent(message.message),
               ]);
             }
             break;
@@ -116,13 +96,13 @@ export function useChat() {
             setIsThinking(false);
             setMessages((prev) => [
               ...prev,
-              messageFactoryAgent(message.message.content, message.clientId || clientId),
+              messageFactoryAgent(message.message.content),
             ]);
             break;
           case "client-id":
             newClientId = message.clientId;
             setClientId(newClientId);
-            setMessages((prev) => [...prev]);
+            localStorage.setItem("clientId", newClientId);
             break;
         }
       } catch (error) {
@@ -134,13 +114,13 @@ export function useChat() {
       console.error("WebSocket error:", error);
       const errorMessage: Message = messageFactoryAgent(
         `Connection error: Unable to connect to server`,
-        clientId
       );
       setMessages((prev) => [...prev, errorMessage]);
     };
 
     ws.onclose = () => {
-      const closeMessage: Message = messageFactoryAgent("Connection closed", clientId);
+      console.log("WebSocket connection closed");
+      const closeMessage: Message = messageFactoryAgent("Connection closed");
       setMessages((prev) => [...prev, closeMessage]);
       wsOpen.current = false;
     };
@@ -152,7 +132,7 @@ export function useChat() {
     setMessages([]);
     setInputText("");
     setIsThinking(false);
-    setClientId(""); // Reset client ID on restart
+    setClientId("");
     setIsRestarting(!isRestarting);
   };
 
@@ -163,7 +143,7 @@ export function useChat() {
         wsRef.current.close();
       }
     };
-  }, [isRestarting]); // Removed clientId dependency
+  }, [isRestarting]);
 
   useEffect(() => {
     if (isThinking) {
@@ -178,13 +158,7 @@ export function useChat() {
     }
 
     setIsThinking(true);
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: question.text,
-      type: "user",
-      timestamp: new Date(),
-      clientId
-    };
+    const userMessage: Message = messageFactoryUser(question.text, clientId);
 
     sendMessage(wsRef.current, "message", question.text, clientId);
     setMessages((prev) => [...prev, userMessage]);
@@ -195,14 +169,7 @@ export function useChat() {
     if (!inputText.trim() || !clientId) return;
 
     setIsThinking(true);
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: inputText,
-      type: "user",
-      timestamp: new Date(),
-      clientId
-    };
-
+    const userMessage: Message = messageFactoryUser(inputText, clientId);
     sendMessage(wsRef.current, "message", inputText, clientId);
     setMessages((prev) => [...prev, userMessage]);
     setInputText("");
@@ -227,11 +194,7 @@ export function useChat() {
     handleSubmit,
     handleRestart,
     isThinking,
-    isSidebarOpen,
-    toggleSidebar,
-    handleFloatingBtn,
-    isFloatingOpen,
     copiedId,
-    handleCopy
+    handleCopy,
   };
 }

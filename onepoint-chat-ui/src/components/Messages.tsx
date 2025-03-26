@@ -1,21 +1,22 @@
 import React from "react";
-import { Message } from "../hooks/useChat";
+import { useChatContext } from "../hooks/useChatContext";
+import { Message } from "../type/types";
 import RenderReactMarkdown from "./RenderReactMarkdown";
 import ThinkingIndicator from "./ThinkingIndicator";
 
 interface MessagesProps {
   messages: Message[];
-  isThinking: boolean;
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
   isFloating?: boolean;
 }
 
 const Messages: React.FC<MessagesProps> = ({
   messages,
-  isThinking,
   messagesEndRef,
   isFloating = false,
 }) => {
+  const { isThinking } = useChatContext();
+
   return (
     <div className="flex-1 overflow-hidden !min-h-screen overflow-y-auto flex-col mb-[8rem]">
       <div className="h-full overflow-y-auto">

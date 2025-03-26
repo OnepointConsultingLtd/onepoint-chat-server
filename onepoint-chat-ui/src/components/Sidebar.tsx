@@ -1,29 +1,25 @@
 import React from "react";
-import { Question } from "../hooks/useChat";
+import { useChatContext } from "../hooks/useChatContext";
 import QuestionItem from "./QuestionItem";
+import { Question } from "../type/types";
 
 interface SidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
   questions: Question[];
   onQuestionClick: (question: Question) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({
-  isOpen,
-  onClose,
-  questions,
-  onQuestionClick,
-}) => {
+const Sidebar: React.FC<SidebarProps> = ({ questions, onQuestionClick }) => {
+  const { isSidebarOpen, toggleSidebar } = useChatContext();
+
   return (
     <div className="h-screen lg:!sticky top-0 z-[120]">
       <div className="flex flex-col h-full">
         <div
-          className={`${isOpen ? "!w-full opacity-100" : "!w-0 opacity-0"} transition-all duration-300 lg:bg-transparent fixed inset-0 bg-black/50 z-[85] lg:!relative`}
-          onClick={onClose}
+          className={`${isSidebarOpen ? "!w-full opacity-100" : "!w-0 opacity-0"} transition-all duration-300 lg:bg-transparent fixed inset-0 bg-black/50 z-[85] lg:!relative`}
+          onClick={toggleSidebar}
         >
           <div
-            className={`fixed inset-y-0 ${isOpen ? "block left-0 w-[280px] lg:!w-[385px]" : "-left-[1180px] w-0 hidden"} transition-all duration-300 lg:!bg-blue-50 lg:!relative bg-white z-50 flex flex-col h-full`}
+            className={`fixed inset-y-0 ${isSidebarOpen ? "block left-0 w-[280px] lg:!w-[385px]" : "-left-[1180px] w-0 hidden"} transition-all duration-300 lg:!bg-blue-50 lg:!relative bg-white z-50 flex flex-col h-full`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Mobile Header */}
@@ -31,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div className="flex items-center justify-between px-4 h-14">
                 <h1 className="text-lg font-semibold text-gray-900">OSCA</h1>
                 <button
-                  onClick={onClose}
+                  onClick={toggleSidebar}
                   className="p-2 rounded-md hover:bg-gray-100"
                 >
                   <svg
@@ -64,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                       question={question}
                       onClick={() => {
                         onQuestionClick(question);
-                        onClose();
+                        toggleSidebar();
                       }}
                     />
                   ))}

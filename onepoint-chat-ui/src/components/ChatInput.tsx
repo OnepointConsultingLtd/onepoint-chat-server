@@ -1,18 +1,19 @@
 import React from "react";
+import { useChatContext } from "../hooks/useChatContext";
 
 interface ChatInputProps {
   inputText: string;
   setInputText: (text: string) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  isThinking: boolean;
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({
   inputText,
   setInputText,
   handleSubmit,
-  isThinking,
 }) => {
+  const { isThinking } = useChatContext();
+
   return (
     <div className=" bg-white sticky bottom-0">
       <div className="max-w-6xl mx-auto w-full px-4 py-4">
