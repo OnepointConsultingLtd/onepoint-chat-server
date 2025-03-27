@@ -7,6 +7,49 @@ Quick notes about the setup.
 - Frontend: `onepoint-chat-ui` directory
 - Backend: root directory files
 
+## Building
+
+Backend:
+
+```bash
+yarn
+yarn run build
+```
+
+Frontend:
+
+```bash
+cd ./onepoint-chat-ui
+yarn
+yarn run build
+```
+
+## Running
+
+You will need to start three servers:
+
+The GraphRAG Server which you can find here:
+
+https://github.com/OnepointConsultingLtd/graphrag_kb_server.git
+
+You will need to install and run this project. See the project README.
+
+You will need then to execute on the root folder on one console:
+
+```bash
+yarn run start
+```
+
+And on another console:
+
+```bash
+cd onepoint-chat-ui
+# Production mode
+yarn run start
+# Development mode#
+yarn run dev
+```
+
 ## Servers
 
 - Main Chat Server: Port 4000 (WebSocket server for chat functionality)
