@@ -1,24 +1,31 @@
-import React from "react";
-import { useChatContext } from "../hooks/useChatContext";
+import React, { useMemo, useState } from "react";
 
 interface ChatInputProps {
-  inputText: string;
-  setInputText: (text: string) => void;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleSubmit: (text: string) => void;
+  isThinking: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({
-  inputText,
-  setInputText,
-  handleSubmit,
-}) => {
-  const { isThinking } = useChatContext();
+const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
+  const [inputText, setInputText] = useState("");
+
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    handleSubmit(inputText);
+    setInputText("");
+  }
+
+  const textareaStyle = useMemo(
+    () => ({
+      height: Math.min(48 + 24 * inputText.split("\n").length, 200) + "px",
+    }),
+    [inputText],
+  );
 
   return (
     <div className=" bg-white sticky bottom-0">
       <div className="max-w-6xl mx-auto w-full px-4 py-4">
         <div className="flex flex-col gap-2">
-          <form onSubmit={handleSubmit} className="relative">
+          <form onSubmit={onSubmit} className="relative">
             <textarea
               value={inputText}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
@@ -27,10 +34,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
               placeholder="Type your message here..."
               className="w-full p-4 pr-24 overflow-hidden transition-all duration-300 bg-white border-2 shadow-sm outline-none resize-none rounded-xl border-sky-100 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isThinking}
-              style={{
-                height:
-                  Math.min(48 + 24 * inputText.split("\n").length, 200) + "px",
-              }}
+              style={textareaStyle}
               onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();

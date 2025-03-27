@@ -1,16 +1,20 @@
 import React from "react";
-import { useChatContext } from "../hooks/useChatContext";
-import QuestionItem from "./QuestionItem";
 import { Question } from "../type/types";
+import QuestionItem from "./QuestionItem";
 
 interface SidebarProps {
   questions: Question[];
   onQuestionClick: (question: Question) => void;
+  toggleSidebar: () => void;
+  isSidebarOpen: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ questions, onQuestionClick }) => {
-  const { isSidebarOpen, toggleSidebar } = useChatContext();
-
+const Sidebar: React.FC<SidebarProps> = ({
+  questions,
+  onQuestionClick,
+  toggleSidebar,
+  isSidebarOpen,
+}) => {
   return (
     <div className="h-screen lg:!sticky top-0 z-[120]">
       <div className="flex flex-col h-full">

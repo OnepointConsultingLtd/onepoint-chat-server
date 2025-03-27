@@ -19,17 +19,16 @@ export function messageFactoryAgent(text: string): Message {
 /**
  * Factory function to create a message for the user
  * @param text - The text of the message
- * @param clientId - The client ID of the user
+ * @param conversationId - The conversation ID of the user
  * @returns A message object
  */
 
-
-export function messageFactoryUser(text: string, clientId: string): Message {
+export function messageFactoryUser(text: string, conversationId: string): Message {
 	return {
 		id: uuidv4(),
 		text,
 		type: "user",
 		timestamp: new Date(),
-		clientId,
+		conversationId,
 	};
 }

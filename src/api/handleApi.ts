@@ -18,53 +18,61 @@ function extractUserMessageContent(content: string): string {
   return userMessage.trim();
 }
 
-export async function getChatHistory(clientId: string) {
+export async function getChatHistory(conversationId: string) {
   try {
     const collection = await getCollection();
 
-    const conversation = await collection
-      .find({ clientId })
+    const conversation = await collection.findOne({ conversationId });
+
+    if (conversation) {
+      return formatConversationHistory(conversation);
+    }
+
+    // If conversation not found, find the last valid conversation
+    const lastConversation = await collection
+      .find({})
       .sort({ timestamp: -1 })
       .limit(1)
       .toArray();
 
-    console.log("conversation ->", conversation);
-
-    if (conversation.length === 0) return [];
-
-    // Filter out system messages and clean up user messages
-    const filteredHistory = conversation[0].chatHistory
-      .filter((msg: any) => msg.role === "assistant" || msg.role === "user")
-      .map((msg: any) => {
-        if (msg.role === "user") {
-          return {
-            ...msg,
-            content: extractUserMessageContent(msg.content)
-          };
-        }
-        return msg;
-      });
-
-    console.log("filteredHistory ->", filteredHistory);
-
-    return filteredHistory;
+    if (lastConversation.length > 0) {
+      return formatConversationHistory(lastConversation[0]);
+    }
+    console.log("No conversations found in database");
+    return [];
   } catch (error) {
     console.error("Error retrieving conversation:", error);
     return [];
   }
 }
 
-export async function saveChatHistory(chatHistory: any[], id: string, clientId: string) {
-  console.log("chatHistory ->", chatHistory);
+function formatConversationHistory(conversation: any) {
+  return conversation.chatHistory
+    .filter((msg: any) => msg.role === "assistant" || msg.role === "user")
+    .map((msg: any) => {
+      if (msg.role === "user") {
+        return {
+          ...msg,
+          content: extractUserMessageContent(msg.content),
+          conversationId: conversation.conversationId
+        };
+      }
+      return {
+        ...msg,
+        conversationId: conversation.conversationId
+      };
+    });
+}
+
+export async function saveChatHistory(chatHistory: any[], conversationId: string) {
   try {
     const collection = await getCollection();
 
     await collection.updateOne(
-      { conversationId: id },
+      { conversationId },
       {
-        $set:
-        {
-          clientId,
+        $set: {
+          conversationId,
           chatHistory,
           userMessage: extractUserMessageContent(chatHistory[chatHistory.length - 1].content),
           timestamp: new Date().toISOString()

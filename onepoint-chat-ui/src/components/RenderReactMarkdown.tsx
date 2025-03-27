@@ -1,19 +1,28 @@
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useChat } from "../hooks/useChat";
-import CopyButton from "./CopyButton";
 import { Message } from "../type/types";
+import CopyButton from "./CopyButton";
 
 interface RenderReactMarkdownProps {
   children: string;
   message: Message;
-  handleFloatingBtn?: () => void;
 }
 
 export default function RenderReactMarkdown({
   children,
   message,
 }: RenderReactMarkdownProps) {
-  const { copiedId, handleCopy } = useChat();
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopy = async (message: Message) => {
+    try {
+      await navigator.clipboard.writeText(message.text);
+      setCopiedId(message.id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
 
   return (
     <>
@@ -61,7 +70,7 @@ export default function RenderReactMarkdown({
             text={message.text}
             id={message.id}
             copiedId={copiedId}
-            onCopy={handleCopy}
+            onCopy={() => handleCopy(message)}
           />
         )}
       </div>

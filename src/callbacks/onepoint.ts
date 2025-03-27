@@ -23,10 +23,6 @@ export async function onepointCallback(
   const contextResponse = await getContext(lastMessage.content);
   const knowledgeBase = contextAdapter(contextResponse);
 
-  console.log("analysis ->", analysis);
-  console.log("lastMessage ->", lastMessage)
-  console.log("The chatHistory ->", chatHistory)
-
   // Enhance the last message with context and analysis
   lastMessage.content = `
     Context Information:

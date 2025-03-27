@@ -2,46 +2,37 @@ import WebSocket from "isomorphic-ws";
 import { useEffect, useRef, useState } from "react";
 import { MessageEvent } from "ws";
 import { messageFactoryAgent, messageFactoryUser } from "../lib/messageFactory";
+import { getTheLastConversationId, saveConversationId } from "../lib/persistence";
+import { createWebSocket, sendMessage } from "../lib/websocket";
 import { Message, Question } from "../type/types";
 import { fetchChatHistory } from "../utils/fetchChatHistory";
-import { useChatContext } from "./useChatContext";
-import { createWebSocket, sendMessage } from "../lib/websocket";
-
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
   const wsOpen = useRef<boolean>(false);
-
-  const {
-    isRestarting,
-    setIsRestarting,
-    copiedId,
-    setCopiedId,
-    isThinking,
-    setIsThinking,
-    clientId,
-    setClientId,
-    inputText,
-    setInputText,
-    messagesEndRef,
-  } = useChatContext();
-
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [isThinking, setIsThinking] = useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
+  const currentConversationId = useRef<string | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   // Fetch chat history from the server
-  const loadChatHistory = async (clientId: string) => {
-    const formattedMessages = await fetchChatHistory(clientId);
+  const loadChatHistory = async (conversationId: string) => {
+    const formattedMessages = await fetchChatHistory(conversationId);
     setMessages(formattedMessages);
+    currentConversationId.current = conversationId;
   };
 
   const setupWebSocket = () => {
-    if (wsOpen.current && wsRef.current) {
+    if (window.barrier) {
       return;
     }
+
+    window.barrier = true;
 
     // Create new WebSocket connection
     wsRef.current = createWebSocket();
@@ -49,24 +40,18 @@ export function useChat() {
 
     ws.onopen = () => {
       wsOpen.current = true;
-      const getCurrentClientId = localStorage.getItem("clientId");
-      if (getCurrentClientId) {
-        console.log(
-          "Using existing client ID from localStorage:",
-          getCurrentClientId,
-        );
 
-        setClientId(getCurrentClientId);
-        loadChatHistory(getCurrentClientId);
+      const lastConversationId = getTheLastConversationId();
+      if (lastConversationId) {
+        loadChatHistory(lastConversationId);
       } else {
-        sendMessage(ws, "request-client-id", "", "");
+        sendMessage(ws, "request-conversation-id", "", "");
       }
     };
 
     ws.onmessage = (event: MessageEvent) => {
       try {
         const message = JSON.parse(event.data.toString());
-        let newClientId: string;
 
         switch (message.type) {
           case "stream-start":
@@ -99,10 +84,9 @@ export function useChat() {
               messageFactoryAgent(message.message.content),
             ]);
             break;
-          case "client-id":
-            newClientId = message.clientId;
-            setClientId(newClientId);
-            localStorage.setItem("clientId", newClientId);
+          case "conversation-id":
+            currentConversationId.current = message.conversationId;
+            saveConversationId(message.conversationId);
             break;
         }
       } catch (error) {
@@ -127,20 +111,23 @@ export function useChat() {
   };
 
   const handleRestart = () => {
-    wsRef.current = null
+    wsRef.current = null;
+    window.barrier = false;
     setIsRestarting(true);
     setMessages([]);
-    setInputText("");
     setIsThinking(false);
-    setClientId("");
+    currentConversationId.current = null;
     setIsRestarting(!isRestarting);
   };
 
   useEffect(() => {
     setupWebSocket();
     return () => {
-      if (wsOpen.current && wsRef.current) {
-        wsRef.current.close();
+      const socket = wsRef.current;
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        if (wsOpen.current && socket) {
+          socket.close();
+        }
       }
     };
   }, [isRestarting]);
@@ -152,49 +139,37 @@ export function useChat() {
   }, [messages, isThinking]);
 
   const handleQuestionClick = (question: Question) => {
-    if (!clientId) {
-      console.warn("No client ID available");
+    if (!currentConversationId.current) {
+      console.warn("No conversation ID available");
       return;
     }
 
     setIsThinking(true);
-    const userMessage: Message = messageFactoryUser(question.text, clientId);
-
-    sendMessage(wsRef.current, "message", question.text, clientId);
+    const userMessage: Message = messageFactoryUser(question.text, currentConversationId.current);
+    sendMessage(wsRef.current, "message", question.text, currentConversationId.current);
     setMessages((prev) => [...prev, userMessage]);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!inputText.trim() || !clientId) return;
+  const handleSubmit = (text: string) => {
+    if (!text.trim()) return;
+    if (!currentConversationId.current) {
+      console.warn("No conversation ID available");
+      return;
+    }
 
     setIsThinking(true);
-    const userMessage: Message = messageFactoryUser(inputText, clientId);
-    sendMessage(wsRef.current, "message", inputText, clientId);
+    const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
+    sendMessage(wsRef.current, "message", text, currentConversationId.current);
     setMessages((prev) => [...prev, userMessage]);
-    setInputText("");
-  };
-
-  const handleCopy = async (text: string, id: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-    }
   };
 
   return {
     messages,
-    inputText,
-    setInputText,
     messagesEndRef,
     handleQuestionClick,
     handleSubmit,
     handleRestart,
     isThinking,
-    copiedId,
-    handleCopy,
+    isRestarting,
   };
 }

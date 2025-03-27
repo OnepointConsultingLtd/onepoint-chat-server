@@ -2,16 +2,17 @@ import express, { RequestHandler } from "express";
 import { getChatHistory } from "./handleApi";
 import cors from "cors";
 
+/**
+ * This is the server that will be used to fetch the chat history for a client ID
+ */
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Get chat history for a client ID
-app.get("/api/chat/:clientId", (async (req, res) => {
+app.get("/api/chat/:conversationId", (async (req, res) => {
 	try {
-		const { clientId } = req.params;
-		console.log("Fetching chat history for client ID:", clientId);
-		const history = await getChatHistory(clientId);
+		const { conversationId } = req.params;
+		const history = await getChatHistory(conversationId);
 		res.json(history);
 	} catch (error) {
 		console.error("Error fetching chat history:", error);

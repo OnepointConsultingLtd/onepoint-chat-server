@@ -1,1 +1,29 @@
-{"root":["./src/chat.tsx","./src/index.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/chatinput.tsx","./src/components/copybutton.tsx","./src/components/header.tsx","./src/components/messages.tsx","./src/components/questionitem.tsx","./src/components/renderreactmarkdown.tsx","./src/components/sidebarbutton.tsx","./src/components/sidebar.tsx","./src/components/thinkingindicator.tsx","./src/components/floatingchat/floatingchatmain.tsx","./src/hooks/usechat.ts","./src/lib/initialquestions.ts"],"version":"5.7.3"}
+{
+  "root": [
+    "./src/chat.tsx",
+    "./src/index.tsx",
+    "./src/main.tsx",
+    "./src/vite-env.d.ts",
+    "./src/components/chatcontainer.tsx",
+    "./src/components/chatinput.tsx",
+    "./src/components/copybutton.tsx",
+    "./src/components/header.tsx",
+    "./src/components/messages.tsx",
+    "./src/components/questionitem.tsx",
+    "./src/components/renderreactmarkdown.tsx",
+    "./src/components/sidebarbutton.tsx",
+    "./src/components/sidebar.tsx",
+    "./src/components/thinkingindicator.tsx",
+    "./src/components/floatingchat/floatingchatmain.tsx",
+    "./src/context/chatcontextdefinition.ts",
+    "./src/hooks/usechat.ts",
+    "./src/lib/initialquestions.ts",
+    "./src/lib/messagefactory.ts",
+    "./src/lib/persistence.ts",
+    "./src/lib/websocket.ts",
+    "./src/type/types.ts",
+    "./src/type/window.d.ts",
+    "./src/utils/fetchchathistory.ts"
+  ],
+  "version": "5.7.3"
+}
