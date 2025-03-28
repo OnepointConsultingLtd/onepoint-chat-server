@@ -28,7 +28,6 @@ export async function getChatHistory(conversationId: string) {
       return formatConversationHistory(conversation);
     }
 
-    // If conversation not found, find the last valid conversation
     const lastConversation = await collection
       .find({})
       .sort({ timestamp: -1 })

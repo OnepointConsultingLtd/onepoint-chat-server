@@ -2,7 +2,12 @@ import WebSocket from "isomorphic-ws";
 import { useEffect, useRef, useState } from "react";
 import { MessageEvent } from "ws";
 import { messageFactoryAgent, messageFactoryUser } from "../lib/messageFactory";
-import { getTheLastConversationId, saveConversationId } from "../lib/persistence";
+import {
+  clearChatData,
+  getTheLastConversationId,
+  markChatAsActive,
+  saveConversationId
+} from "../lib/persistence";
 import { createWebSocket, sendMessage } from "../lib/websocket";
 import { Message, Question } from "../type/types";
 import { fetchChatHistory } from "../utils/fetchChatHistory";
@@ -15,6 +20,8 @@ export function useChat() {
   const [isThinking, setIsThinking] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
   const currentConversationId = useRef<string | null>(null);
+  const hasInitialized = useRef<boolean>(false);
+  const messageQueue = useRef<{ text: string }[]>([]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -23,29 +30,36 @@ export function useChat() {
   // Fetch chat history from the server
   const loadChatHistory = async (conversationId: string) => {
     const formattedMessages = await fetchChatHistory(conversationId);
-    setMessages(formattedMessages);
-    currentConversationId.current = conversationId;
+    if (formattedMessages && formattedMessages.length > 0) {
+      setMessages(formattedMessages);
+      currentConversationId.current = conversationId;
+      markChatAsActive();
+      hasInitialized.current = true;
+    }
+  };
+
+  const initializeChat = () => {
+    if (!hasInitialized.current && currentConversationId.current) {
+      markChatAsActive();
+      saveConversationId(currentConversationId.current);
+      hasInitialized.current = true;
+    }
   };
 
   const setupWebSocket = () => {
-    if (window.barrier) {
-      return;
-    }
-
+    if (window.barrier) return;
     window.barrier = true;
 
-    // Create new WebSocket connection
     wsRef.current = createWebSocket();
     const ws = wsRef.current;
 
-    ws.onopen = () => {
+    ws.onopen = async () => {
+      console.log("WebSocket connection opened");
       wsOpen.current = true;
 
       const lastConversationId = getTheLastConversationId();
       if (lastConversationId) {
-        loadChatHistory(lastConversationId);
-      } else {
-        sendMessage(ws, "request-conversation-id", "", "");
+        await loadChatHistory(lastConversationId);
       }
     };
 
@@ -111,12 +125,15 @@ export function useChat() {
   };
 
   const handleRestart = () => {
+    clearChatData();
     wsRef.current = null;
     window.barrier = false;
     setIsRestarting(true);
     setMessages([]);
     setIsThinking(false);
     currentConversationId.current = null;
+    hasInitialized.current = false;
+    messageQueue.current = [];
     setIsRestarting(!isRestarting);
   };
 
@@ -124,10 +141,8 @@ export function useChat() {
     setupWebSocket();
     return () => {
       const socket = wsRef.current;
-      if (socket && socket.readyState === WebSocket.OPEN) {
-        if (wsOpen.current && socket) {
-          socket.close();
-        }
+      if (socket && socket.readyState === WebSocket.OPEN && wsOpen.current) {
+        socket.close();
       }
     };
   }, [isRestarting]);
@@ -139,28 +154,44 @@ export function useChat() {
   }, [messages, isThinking]);
 
   const handleQuestionClick = (question: Question) => {
+    if (!wsRef.current) {
+      console.warn("WebSocket not ready");
+      return;
+    }
+
     if (!currentConversationId.current) {
-      console.warn("No conversation ID available");
+      messageQueue.current.push({ text: question.text });
+      sendMessage(wsRef.current, "request-conversation-id", "", "");
       return;
     }
 
     setIsThinking(true);
     const userMessage: Message = messageFactoryUser(question.text, currentConversationId.current);
-    sendMessage(wsRef.current, "message", question.text, currentConversationId.current);
     setMessages((prev) => [...prev, userMessage]);
+    sendMessage(wsRef.current, "message", question.text, currentConversationId.current);
+
+    if (!hasInitialized.current) {
+      initializeChat();
+    }
   };
 
   const handleSubmit = (text: string) => {
-    if (!text.trim()) return;
+    if (!text.trim() || !wsRef.current) return;
+
     if (!currentConversationId.current) {
-      console.warn("No conversation ID available");
+      messageQueue.current.push({ text: text.trim() });
+      sendMessage(wsRef.current, "request-conversation-id", "", "");
       return;
     }
 
     setIsThinking(true);
     const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
-    sendMessage(wsRef.current, "message", text, currentConversationId.current);
     setMessages((prev) => [...prev, userMessage]);
+    sendMessage(wsRef.current, "message", text, currentConversationId.current);
+
+    if (!hasInitialized.current) {
+      initializeChat();
+    }
   };
 
   return {

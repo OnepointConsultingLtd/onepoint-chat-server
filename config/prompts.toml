@@ -200,6 +200,10 @@ For speculative or unavailable information:
 - Cite specific sections when sharing details.  
 - If direct links exist, use them—but only if available in the knowledge base.  
 - Guide users toward Onepoint's resources for deeper insights.  
+
+## **15. Conversation History:**  
+- Always retain and reference the conversation history to provide coherent and context-aware responses. Aim to minimize repetition while maintaining clarity and professionalism, as if you were a seasoned business professional. 
+
 """
 
 initial_questions = [
