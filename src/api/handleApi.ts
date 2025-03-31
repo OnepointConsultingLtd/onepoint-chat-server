@@ -1,14 +1,20 @@
 import { getCollection } from "./mongoClient";
 
+const MESSAGE_START_STRING = "    User Message:"
+const MESSAGE_END_STRING = "    Remember to:"
+
 function extractUserMessageContent(content: string): string {
+  if (!content.includes(MESSAGE_START_STRING)) {
+    return content
+  }
   const lines = content.split('\n');
   let isCapturing = false;
   let userMessage = "";
 
   for (const line of lines) {
-    if (!isCapturing && line.includes("    User Message:")) {
+    if (!isCapturing && line.includes(MESSAGE_START_STRING)) {
       isCapturing = true;
-    } else if (isCapturing && line.includes("    Remember to:")) {
+    } else if (isCapturing && line.includes(MESSAGE_END_STRING)) {
       isCapturing = false;
       break;
     } else if (isCapturing) {
@@ -49,15 +55,9 @@ function formatConversationHistory(conversation: any) {
   const history = conversation.chatHistory
     .filter((msg: any) => ["assistant", "user"].includes(msg.role))
     .map((msg: any) => {
-      if (msg.role === "user") {
-        return {
-          ...msg,
-          content: extractUserMessageContent(msg.content),
-          conversationId: conversation.conversationId
-        };
-      }
       return {
         ...msg,
+        content: extractUserMessageContent(msg.content),
         conversationId: conversation.conversationId
       };
     });

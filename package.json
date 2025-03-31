@@ -19,7 +19,7 @@
     "test:integration": "jest --config jest.config.js --testMatch \"**/__tests__/integration/**/*.test.ts\""
   },
   "dependencies": {
-    "@gilf/chat-websocket-server": "^1.0.7",
+    "@gilf/chat-websocket-server": "^1.0.8",
     "@types/cors": "^2.8.17",
     "@types/uuid": "^10.0.0",
     "cors": "^2.8.5",
