@@ -1,23 +1,23 @@
 import React from "react";
-import { Message } from "../hooks/useChat";
+import { Message } from "../type/types";
 import RenderReactMarkdown from "./RenderReactMarkdown";
 import ThinkingIndicator from "./ThinkingIndicator";
 
 interface MessagesProps {
   messages: Message[];
-  isThinking: boolean;
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
   isFloating?: boolean;
+  isThinking: boolean;
 }
 
 const Messages: React.FC<MessagesProps> = ({
   messages,
-  isThinking,
   messagesEndRef,
   isFloating = false,
+  isThinking,
 }) => {
   return (
-    <div className="flex-1 overflow-hidden !min-h-screen overflow-y-auto flex-col mb-[8rem]">
+    <div className="flex-1 flex-col mb-[4rem]">
       <div className="h-full overflow-y-auto">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col gap-6 p-4 md:px-8">

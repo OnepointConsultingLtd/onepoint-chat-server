@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import FloatingChatMain from "./components/FloatingChat/FloatingChatMain";
-import { useChat } from "./hooks/useChat";
 
 interface FloatingChatButtonProps {
   click: () => void;
@@ -52,7 +52,11 @@ const chatVariants = {
 };
 
 function Chat() {
-  const { isFloatingOpen, handleFloatingBtn } = useChat();
+  const [isFloatingOpen, setIsFloatingOpen] = useState(false);
+
+  const handleFloatingBtn = () => {
+    setIsFloatingOpen(!isFloatingOpen);
+  };
 
   return (
     <div className="!bg-gray-900 w-full min-h-screen">

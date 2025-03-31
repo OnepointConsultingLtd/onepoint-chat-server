@@ -13,13 +13,10 @@ const CopyButton: React.FC<CopyButtonProps> = ({
   id,
   copiedId,
   onCopy,
-  isUserMessage,
 }) => {
   const isActive = copiedId === id;
 
-  const baseColorClass = isUserMessage
-    ? "text-white hover:text-[#e0f2fe]"
-    : "text-[#64748b] hover:text-[#0ea5e9]";
+  const baseColorClass = "text-[#64748b] hover:text-[#0ea5e9]";
 
   return (
     <button

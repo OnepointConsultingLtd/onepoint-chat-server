@@ -1,5 +1,5 @@
 import React from "react";
-import { Question } from "../hooks/useChat";
+import { Question } from "../type/types";
 
 interface QuestionItemProps {
   question: Question;

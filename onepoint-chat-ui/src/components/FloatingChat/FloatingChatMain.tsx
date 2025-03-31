@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useChat } from "../../hooks/useChat";
 import initialQuestions from "../../lib/initialQuestions";
 import Messages from "../Messages";
@@ -10,14 +11,20 @@ function FloatingChatMain({
 }) {
   const {
     messages,
-    inputText,
-    setInputText,
     messagesEndRef,
-    handleSubmit,
     handleRestart,
     handleQuestionClick,
     isThinking,
+    handleSubmit,
   } = useChat();
+
+  const [inputText, setInputText] = useState("");
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSubmit(inputText);
+    setInputText("");
+  };
 
   return (
     <div className="flex sm:!h-[calc(100vh-130px)] sm:!w-[436px] rounded-xl sm:bg-transparent sm:p-1 !h-[calc(100dvh)] !pt-[4vh]">
@@ -87,16 +94,16 @@ function FloatingChatMain({
           </div>
           <Messages
             messages={messages}
-            isThinking={isThinking}
             messagesEndRef={messagesEndRef}
             isFloating={true}
+            isThinking={isThinking}
           />
         </div>
         {/* Input Container */}
         <div className="sticky bottom-0 bg-white">
           <div className="w-full px-4 py-3 mx-auto">
             <div className="flex flex-col gap-2">
-              <form onSubmit={handleSubmit} className="relative">
+              <form onSubmit={onSubmit} className="relative">
                 <textarea
                   value={inputText}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>

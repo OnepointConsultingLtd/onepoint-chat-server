@@ -1,4 +1,4 @@
-import { Question } from "../hooks/useChat";
+import { Question } from "../type/types";
 
 const initialQuestions: Question[] = [
   {
