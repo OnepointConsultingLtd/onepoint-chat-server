@@ -46,8 +46,8 @@ export async function getChatHistory(conversationId: string) {
 }
 
 function formatConversationHistory(conversation: any) {
-  return conversation.chatHistory
-    .filter((msg: any) => msg.role === "assistant" || msg.role === "user")
+  const history = conversation.chatHistory
+    .filter((msg: any) => ["assistant", "user"].includes(msg.role))
     .map((msg: any) => {
       if (msg.role === "user") {
         return {
@@ -61,6 +61,7 @@ function formatConversationHistory(conversation: any) {
         conversationId: conversation.conversationId
       };
     });
+  return history
 }
 
 export async function saveChatHistory(chatHistory: any[], conversationId: string) {
