@@ -12,6 +12,7 @@ Quick notes about the setup.
 Backend:
 
 ```bash
+# nvm use v22.12.0
 yarn
 yarn run build
 ```
