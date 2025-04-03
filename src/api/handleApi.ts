@@ -1,14 +1,20 @@
 import { getCollection } from "./mongoClient";
 
+const MESSAGE_START_STRING = "    User Message:"
+const MESSAGE_END_STRING = "    Remember to:"
+
 function extractUserMessageContent(content: string): string {
+  if (!content.includes(MESSAGE_START_STRING)) {
+    return content
+  }
   const lines = content.split('\n');
   let isCapturing = false;
   let userMessage = "";
 
   for (const line of lines) {
-    if (!isCapturing && line.includes("    User Message:")) {
+    if (!isCapturing && line.includes(MESSAGE_START_STRING)) {
       isCapturing = true;
-    } else if (isCapturing && line.includes("    Remember to:")) {
+    } else if (isCapturing && line.includes(MESSAGE_END_STRING)) {
       isCapturing = false;
       break;
     } else if (isCapturing) {
@@ -28,7 +34,6 @@ export async function getChatHistory(conversationId: string) {
       return formatConversationHistory(conversation);
     }
 
-    // If conversation not found, find the last valid conversation
     const lastConversation = await collection
       .find({})
       .sort({ timestamp: -1 })
@@ -47,21 +52,16 @@ export async function getChatHistory(conversationId: string) {
 }
 
 function formatConversationHistory(conversation: any) {
-  return conversation.chatHistory
-    .filter((msg: any) => msg.role === "assistant" || msg.role === "user")
+  const history = conversation.chatHistory
+    .filter((msg: any) => ["assistant", "user"].includes(msg.role))
     .map((msg: any) => {
-      if (msg.role === "user") {
-        return {
-          ...msg,
-          content: extractUserMessageContent(msg.content),
-          conversationId: conversation.conversationId
-        };
-      }
       return {
         ...msg,
+        content: extractUserMessageContent(msg.content),
         conversationId: conversation.conversationId
       };
     });
+  return history
 }
 
 export async function saveChatHistory(chatHistory: any[], conversationId: string) {
