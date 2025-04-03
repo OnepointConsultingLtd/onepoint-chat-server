@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface ChatInputProps {
   handleSubmit: (text: string) => void;
@@ -7,12 +7,18 @@ interface ChatInputProps {
 
 const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
   const [inputText, setInputText] = useState("");
-
+  
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     handleSubmit(inputText);
     setInputText("");
   }
+
+  useEffect(() => {
+    if (!isThinking) {
+      document.getElementById("chat-input")?.focus();
+    }
+  }, [isThinking]);
 
   const textareaStyle = useMemo(
     () => ({
@@ -27,6 +33,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
         <div className="flex flex-col gap-2">
           <form onSubmit={onSubmit} className="relative">
             <textarea
+              id="chat-input"
               value={inputText}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                 setInputText(e.target.value)
