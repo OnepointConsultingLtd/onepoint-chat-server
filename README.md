@@ -55,6 +55,9 @@ yarn run dev
 
 - Main Chat Server: Port 4000 (WebSocket server for chat functionality)
 - History Server: Port 5000 (REST server for fetching chat history)
+- You can also run the development server using vite during development time.
+- 
+
 
 ## Config Files
 
@@ -73,7 +76,7 @@ GEMINI_MODEL=gemini-1.5-flash
 
 # Server Settings
 PORT=4000  # Main WebSocket server
-HISTORY_PORT=5000  # Chat history REST server
+REST_API_PORT=5000  # Chat history REST server
 
 # RAG Configuration
 PROMPT_FILE=config/prompts.toml

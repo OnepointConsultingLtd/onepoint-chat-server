@@ -13,4 +13,4 @@ describe('getContext Integration Tests', () => {
 		console.log("This is the result: ", result);
 	});
 
-}); 
+});

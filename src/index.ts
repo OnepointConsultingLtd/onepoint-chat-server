@@ -3,6 +3,7 @@ import { onepointCallback } from './callbacks/onepoint';
 import { saveConversation } from './callbacks/saveConversationHistory';
 import { handleClientId } from './callbacks/handleClientId';
 import { ConversationCallback } from '@gilf/chat-websocket-server/dist/callback';
+import './logger'
 import './api/server';
 
 async function main() {

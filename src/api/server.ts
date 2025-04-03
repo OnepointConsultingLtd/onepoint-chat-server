@@ -1,6 +1,7 @@
 import express, { RequestHandler } from "express";
 import { getChatHistory } from "./handleApi";
 import cors from "cors";
+import path from "path";
 
 /**
  * This is the server that will be used to fetch the chat history for a client ID
@@ -8,6 +9,11 @@ import cors from "cors";
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Serve static files from the dist directory
+const static_files_path = path.join(__dirname, '../../onepoint-chat-ui/dist');
+app.use(express.static(static_files_path));
+console.log(`Serving static files from ${static_files_path}`);
 
 app.get("/api/chat/:conversationId", (async (req, res) => {
 	try {
