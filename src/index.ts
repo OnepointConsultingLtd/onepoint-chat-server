@@ -9,9 +9,9 @@ import './api/server';
 async function main() {
     console.log("Starting Onepoint Chat Server...");
     initChatServer([
-        new ChatCallback("onepoint", onepointCallback),
-        new ConversationCallback("saveConversation", saveConversation),
-        new ConversationCallback("handleClientId", handleClientId)
+        new ChatCallback("onepoint", onepointCallback, true),
+        new ConversationCallback("saveConversation", saveConversation, false),
+        new ConversationCallback("handleClientId", handleClientId, false)
     ]);
     console.log("Started Onepoint Chat Server...");
 }

@@ -48,13 +48,14 @@ export function useChat() {
 
   const setupWebSocket = () => {
     if (window.barrier) return;
+    console.info("Setting up WebSocket connection");
     window.barrier = true;
 
     wsRef.current = createWebSocket();
     const ws = wsRef.current;
 
     ws.onopen = async () => {
-      console.log("WebSocket connection opened");
+      console.info("WebSocket connection opened");
       wsOpen.current = true;
 
       const lastConversationId = getTheLastConversationId();
