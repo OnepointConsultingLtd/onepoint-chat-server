@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Change to the script's directory
+cd "$(dirname "$0")"
+
+# Set yarn path
+alias yarn='/home/ubuntu/.nvm/versions/node/v22.12.0/bin/yarn'
+
 # Compile the UI
 cd onepoint-chat-ui
 yarn
