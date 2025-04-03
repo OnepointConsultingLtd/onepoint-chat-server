@@ -1,6 +1,6 @@
 // Persistence keys
 enum PersistenceKeys {
-	CONVERSATION_ID_HISTORY = "sessionId",
+	SESSION_ID = "sessionId",
 	HAS_ACTIVE_CHAT = "activeSession"
 }
 
@@ -12,7 +12,7 @@ export function isChatActive(): boolean {
 // Save the conversation ID only when user has actually started a chat
 export function saveConversationId(conversationId: string | null) {
 	if (!conversationId) return;
-	localStorage.setItem(PersistenceKeys.CONVERSATION_ID_HISTORY, JSON.stringify(conversationId));
+	localStorage.setItem(PersistenceKeys.SESSION_ID, JSON.stringify(conversationId));
 }
 
 // When the user starts a chat, we need to mark it as active
@@ -24,8 +24,9 @@ export function markChatAsActive() {
 
 // Get the conversation ID history
 export function getConversationIdHistory(): string | null {
+	debugger
 	try {
-		const history = localStorage.getItem(PersistenceKeys.CONVERSATION_ID_HISTORY);
+		const history = localStorage.getItem(PersistenceKeys.SESSION_ID);
 		if (!history) return null;
 		return JSON.parse(history);
 	} catch (error) {
@@ -42,6 +43,6 @@ export function getTheLastConversationId(): string | null {
 
 // Clear all chat-related data from local storage
 export function clearChatData() {
-	localStorage.removeItem(PersistenceKeys.CONVERSATION_ID_HISTORY);
+	localStorage.removeItem(PersistenceKeys.SESSION_ID);
 	localStorage.removeItem(PersistenceKeys.HAS_ACTIVE_CHAT);
 }

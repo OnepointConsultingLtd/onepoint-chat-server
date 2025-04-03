@@ -34,16 +34,7 @@ export async function getChatHistory(conversationId: string) {
       return formatConversationHistory(conversation);
     }
 
-    const lastConversation = await collection
-      .find({})
-      .sort({ timestamp: -1 })
-      .limit(1)
-      .toArray();
-
-    if (lastConversation.length > 0) {
-      return formatConversationHistory(lastConversation[0]);
-    }
-    console.log("No conversations found in database");
+    console.warn(`No conversations found in database for ${conversationId}`);
     return [];
   } catch (error) {
     console.error("Error retrieving conversation:", error);
