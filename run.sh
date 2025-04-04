@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PATH=/home/ubuntu/.nvm/versions/node/v22.12.0/bin:$PATH
+
 # Change to the script's directory
 cd "$(dirname "$0")"
 
@@ -21,4 +23,4 @@ cd ..
 $YARN_PATH
 $YARN_PATH build
 # Run the server
-$YARN_PATH start 
+$YARN_PATH start
