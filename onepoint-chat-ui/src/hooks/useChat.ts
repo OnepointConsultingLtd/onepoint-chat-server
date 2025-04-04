@@ -4,13 +4,13 @@ import { MessageEvent } from "ws";
 import { messageFactoryAgent, messageFactoryUser } from "../lib/messageFactory";
 import {
   clearChatData,
-  getTheLastConversationId,
+  getConversationId,
   markChatAsActive,
   saveConversationId
 } from "../lib/persistence";
 import { createWebSocket, sendMessage } from "../lib/websocket";
-import { Message, Question } from "../type/types";
-import { fetchChatHistory } from "../utils/fetchChatHistory";
+import { Message, Question, ServerMessage } from "../type/types";
+import { fetchChatHistory, fetchRawHistory } from "../utils/fetchChatHistory";
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -28,14 +28,16 @@ export function useChat() {
   };
 
   // Fetch chat history from the server
-  const loadChatHistory = async (conversationId: string) => {
-    const formattedMessages = await fetchChatHistory(conversationId);
+  async function loadChatHistory (conversationId: string): Promise<ServerMessage[]>  {
+    const rawHistory = await fetchRawHistory(conversationId);
+    const formattedMessages = await fetchChatHistory(conversationId, rawHistory);
     if (formattedMessages && formattedMessages.length > 0) {
       setMessages(formattedMessages);
       currentConversationId.current = conversationId;
       markChatAsActive();
       hasInitialized.current = true;
     }
+    return rawHistory
   };
 
   const initializeChat = () => {
@@ -57,11 +59,6 @@ export function useChat() {
     ws.onopen = async () => {
       console.info("WebSocket connection opened");
       wsOpen.current = true;
-
-      const lastConversationId = getTheLastConversationId();
-      if (lastConversationId) {
-        await loadChatHistory(lastConversationId);
-      }
     };
 
     ws.onmessage = (event: MessageEvent) => {
@@ -100,8 +97,26 @@ export function useChat() {
             ]);
             break;
           case "conversation-id":
-            currentConversationId.current = message.conversationId;
-            saveConversationId(message.conversationId);
+            console.info("Conversation ID received:", message.conversationId);
+            const { conversationId } = message;
+            const lastConversationId = getConversationId();
+            if(lastConversationId !== conversationId) {
+              currentConversationId.current = conversationId;
+              saveConversationId(conversationId);
+              if(conversationId && lastConversationId) {
+                // Here we should send a request to the server to get the chat history and 
+                // also to prefill the history of the new session on the server and client
+                loadChatHistory(lastConversationId)
+                  .then((serverMessages: ServerMessage[]) => {
+                    if(wsRef.current) {
+                      sendMessage(wsRef.current, "import-history", {"history": serverMessages}, conversationId);
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error loading chat history:", error);
+                  });
+              }
+            }
             break;
         }
       } catch (error) {

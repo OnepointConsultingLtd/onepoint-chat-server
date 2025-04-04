@@ -11,7 +11,7 @@ async function main() {
     initChatServer([
         new ChatCallback("onepoint", onepointCallback, true),
         new ConversationCallback("saveConversation", saveConversation, false),
-        new ConversationCallback("handleClientId", handleClientId, false)
+        // new ConversationCallback("handleClientId", handleClientId, false)
     ]);
     console.log("Started Onepoint Chat Server...");
 }
