@@ -14,13 +14,23 @@ export default function RenderReactMarkdown({
 }: RenderReactMarkdownProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const handleCopy = async (message: Message) => {
+  const copyToClipboard = async (message: Message) => {
     try {
-      await navigator.clipboard.writeText(message.text);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(message.text);
+      } else {
+        // Fallback for browsers that don't support clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = message.text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
       setCopiedId(message.id);
       setTimeout(() => setCopiedId(null), 2000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
+    } catch (error) {
+      console.error('Failed to copy text:', error);
     }
   };
 
@@ -70,7 +80,7 @@ export default function RenderReactMarkdown({
             text={message.text}
             id={message.id}
             copiedId={copiedId}
-            onCopy={() => handleCopy(message)}
+            onCopy={() => copyToClipboard(message)}
           />
         )}
       </div>
