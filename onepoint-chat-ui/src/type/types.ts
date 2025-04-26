@@ -1,3 +1,5 @@
+import CustomNode from "../components/flow/CustomNode";
+
 export interface Question {
 	id: number;
 	text: string;
@@ -36,3 +38,16 @@ declare global {
 		};
 	}
 }
+
+
+
+export interface FlowProps {
+	messages: Message[];
+	isThinking: boolean;
+	handleSubmit: (text: string) => void;
+	messagesEndRef: React.RefObject<HTMLDivElement | null>;
+}
+
+export const nodeTypes = {
+	custom: CustomNode,
+};

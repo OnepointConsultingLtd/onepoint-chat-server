@@ -20,8 +20,10 @@ export async function getContext(question: string) {
 			}
 		})
 
+
 		if (response.ok) {
 			const data = await response.json();
+			console.log("This is the data: ", data);
 			return {
 				data: data,
 				success: true,

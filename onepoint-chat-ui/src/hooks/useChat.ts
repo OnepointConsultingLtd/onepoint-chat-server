@@ -72,7 +72,6 @@ export function useChat() {
             setIsThinking(true);
             break;
           case "stream-chunk":
-            setIsThinking(false);
             setMessages((prev) => {
               const lastMessage = { ...prev[prev.length - 1] };
               if (!lastMessage || lastMessage.type !== "agent") {

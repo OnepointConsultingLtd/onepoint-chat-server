@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useChat } from "../hooks/useChat";
 import initialQuestions from "../lib/initialQuestions";
-import ChatInput from "./ChatInput";
 import Header from "./Header";
 import Messages from "./Messages";
 import Sidebar from "./Sidebar";
@@ -45,10 +44,11 @@ export default function ChatContainer() {
           messages={messages}
           messagesEndRef={messagesEndRef}
           isThinking={isThinking}
+          handleSubmit={handleSubmit}
         />
 
         {/* Input Container */}
-        <ChatInput handleSubmit={handleSubmit} isThinking={isThinking} />
+        {/* <ChatInput handleSubmit={handleSubmit} isThinking={isThinking} /> */}
       </div>
     </main>
   );

@@ -1,6 +1,11 @@
-import "./App.css";
-import ChatContainer from "./components/ChatContainer";
+import { ReactFlowProvider } from '@xyflow/react';
+import './App.css';
+import ChatContainer from './components/ChatContainer';
 
 export default function Home() {
-  return <ChatContainer />;
+  return (
+    <ReactFlowProvider>
+      <ChatContainer />;
+    </ReactFlowProvider>
+  );
 }

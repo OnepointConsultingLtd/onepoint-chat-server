@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState } from 'react';
 
 interface ChatInputProps {
   handleSubmit: (text: string) => void;
@@ -6,37 +6,35 @@ interface ChatInputProps {
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState('');
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     handleSubmit(inputText);
-    setInputText("");
+    setInputText('');
   }
 
   const textareaStyle = useMemo(
     () => ({
-      height: Math.min(48 + 24 * inputText.split("\n").length, 200) + "px",
+      height: Math.min(30 + 24 * inputText.split('\n').length, 200) + 'px',
     }),
-    [inputText],
+    [inputText]
   );
 
   return (
-    <div className=" bg-white sticky bottom-0">
+    <div className="bg-white absolute bottom-[-8rem] right-0 left-0 p-3 border-t border-gray-200">
       <div className="max-w-6xl mx-auto w-full px-4 py-4">
         <div className="flex flex-col gap-2">
           <form onSubmit={onSubmit} className="relative">
             <textarea
               value={inputText}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setInputText(e.target.value)
-              }
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputText(e.target.value)}
               placeholder="Type your message here..."
-              className="w-full p-4 pr-24 overflow-hidden transition-all duration-300 bg-white border-2 shadow-sm outline-none resize-none rounded-xl border-sky-100 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full p-2 pr-24 overflow-hidden transition-all duration-300 bg-white border-2 shadow-sm outline-none resize-none rounded-xl border-sky-100 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isThinking}
               style={textareaStyle}
               onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-                if (e.key === "Enter" && !e.shiftKey) {
+                if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
                   const form = e.currentTarget.form;
                   if (form) form.requestSubmit();
@@ -45,12 +43,12 @@ const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
             />
             <button
               type="submit"
-              className="absolute flex items-center gap-2 p-3 text-white transition-all duration-300 rounded-lg shadow-md cursor-pointer right-2 bottom-2 bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
+              className="absolute flex items-center gap-2 p-1 text-white transition-all duration-300 rounded shadow-md cursor-pointer right-2 bottom-2 bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
               disabled={isThinking}
             >
               <svg
-                width="24"
-                height="24"
+                width="15"
+                height="15"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
