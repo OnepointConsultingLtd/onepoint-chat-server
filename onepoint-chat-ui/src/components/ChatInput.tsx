@@ -22,8 +22,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
   );
 
   return (
-    <div className="bg-white absolute bottom-[-8rem] right-0 left-0 p-3 border-t border-gray-200">
-      <div className="max-w-6xl mx-auto w-full px-4 py-4">
+    <div className="bg-white p-3">
+      <div className="w-full px-2 py-2">
         <div className="flex flex-col gap-2">
           <form onSubmit={onSubmit} className="relative">
             <textarea
@@ -43,7 +43,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
             />
             <button
               type="submit"
-              className="absolute flex items-center gap-2 p-1 text-white transition-all duration-300 rounded shadow-md cursor-pointer right-2 bottom-2 bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
+              className="absolute flex items-center gap-2 p-1 text-white transition-all duration-300 rounded shadow-md cursor-pointer right-2 bottom-[1.3rem] bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group rotate-90"
               disabled={isThinking}
             >
               <svg
