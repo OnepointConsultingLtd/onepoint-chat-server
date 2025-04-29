@@ -28,7 +28,7 @@ ${lastMessage.content}
 
   // Build system-level instructions
   const systemInstructions: ChatMessage = {
-    role: 'system',
+    role: 'system' as any,
     content: `
 You are a digital transformation assistant for **Onepoint**, a UK-based consulting firm founded in 2005, with offices in **London** and **Pune**. Your role is to support clients, prospects, or internal teams in understanding Onepoint’s services and guiding them toward suitable solutions.
 

@@ -95,7 +95,7 @@
   margin-bottom: 12px;
   background: linear-gradient(275deg, #000000 25%, #0ea5e9 50%, #efefef 117%);
   background-size: 200% 100%;
-  animation: skeleton-loading 3s infinite;
+  animation: skeleton-loading 2s infinite;
 }
 
 .skeleton-line:last-child {
