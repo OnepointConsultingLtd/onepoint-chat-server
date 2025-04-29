@@ -38,7 +38,6 @@ function Flow({ messages, isThinking, handleSubmit, messagesEndRef }: FlowProps)
     previousMessagesLengthRef.current = messages.length;
   }, [messages, isThinking, reactFlowInstance]);
 
-  // Simple handlers required by ReactFlow
   const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
 
@@ -50,7 +49,6 @@ function Flow({ messages, isThinking, handleSubmit, messagesEndRef }: FlowProps)
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
-        fitView={false} // Disable automatic fitView
         nodesDraggable={false}
         minZoom={MIN_ZOOM}
         maxZoom={MAX_ZOOM}

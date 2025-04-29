@@ -1,20 +1,14 @@
-import { useState } from "react";
-import { useChat } from "../hooks/useChat";
-import initialQuestions from "../lib/initialQuestions";
-import Header from "./Header";
-import Messages from "./Messages";
-import Sidebar from "./Sidebar";
-import SideBarButton from "./SideBarButton";
+import { useState } from 'react';
+import { useChat } from '../hooks/useChat';
+import initialQuestions from '../lib/initialQuestions';
+import Header from './Header';
+import Messages from './Messages';
+import Sidebar from './Sidebar';
+import SideBarButton from './SideBarButton';
 
 export default function ChatContainer() {
-  const {
-    messages,
-    messagesEndRef,
-    handleQuestionClick,
-    handleSubmit,
-    handleRestart,
-    isThinking,
-  } = useChat();
+  const { messages, messagesEndRef, handleQuestionClick, handleSubmit, handleRestart, isThinking } =
+    useChat();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -46,9 +40,6 @@ export default function ChatContainer() {
           isThinking={isThinking}
           handleSubmit={handleSubmit}
         />
-
-        {/* Input Container */}
-        {/* <ChatInput handleSubmit={handleSubmit} isThinking={isThinking} /> */}
       </div>
     </main>
   );

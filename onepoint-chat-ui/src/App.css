@@ -72,39 +72,6 @@
   display: none !important;
 }
 
-.loader {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  position: relative;
-  background: rgba(75, 74, 74, 0.8);
-}
-.loader:before , .loader:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #0f0f0f;
-  animation: slide 1s infinite linear alternate;
-  opacity: 0.5;
-}
-.loader:after {
-  animation: slide2 1s infinite linear alternate;
-  opacity: 1;
-
-}
-@keyframes slide {
-  0% , 20% {  transform: translate(0, 0)  }
-  80% , 100% { transform: translate(15px, 15px) }
-}
-@keyframes slide2 {
-  0% , 20% {  transform: translate(0, 0) }
-  80% , 100% { transform: translate(-15px, -15px) }
-}
-
 /* Skeleton Loader Styles */
 @keyframes skeleton-loading {
   0% {
@@ -117,30 +84,32 @@
 
 .skeleton-container {
   width: 100%;
-  background-color: #000000;
+  background-color: #405d7e;
   padding: 16px;
   border-radius: 8px;
 }
 
 .skeleton-line {
-  height: 5px;
+  height: 2px;
   border-radius: 4px;
   margin-bottom: 12px;
-  background: linear-gradient(90deg, #a9a9a9 25%, #4e4e4e 50%, #efefef 75%);
+  background: linear-gradient(275deg, #000000 25%, #0ea5e9 50%, #efefef 117%);
   background-size: 200% 100%;
-  animation: skeleton-loading 1.5s infinite;
+  animation: skeleton-loading 3s infinite;
 }
 
 .skeleton-line:last-child {
-  width: 75%;
+  width: 80%;
   margin-bottom: 0;
 }
 
 .skeleton-line:nth-child(2) {
   width: 90%;
 }
+.skeleton-line:nth-child(3) {
+  width: 80%;
+}
 
-
-.react-flow__panel react-flow__controls vertical bottom left {
+.react-flow__panel {
   display: none !important;
 }

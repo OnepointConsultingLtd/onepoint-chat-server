@@ -2,6 +2,7 @@ import { Node } from '@xyflow/react';
 import { Message } from '../../type/types';
 import MessageCard from './MessageCard';
 import { CARD_GAP, CARD_WIDTH, CARD_Y_POSITION } from './constants';
+import { getConversationStartIndex } from '../../utils/messageUtils';
 
 /**
  * Creates flow nodes from the messages
@@ -14,13 +15,20 @@ export const createNodes = (
 ): Node[] => {
   const nodes: Node[] = [];
 
-  const startIndex = messages.length > 1 ? 1 : 0;
+  if (!messages || messages.length === 0) {
+    return [];
+  }
+
+  /**
+   * Use the shared utility function to determine if we should skip the first message
+   */
+  const startIndex = getConversationStartIndex(messages);
 
   // Create cards for each user-agent message pair
   for (let i = startIndex; i < messages.length; i += 2) {
     const userMessage = messages[i];
     const agentMessage = i + 1 < messages.length ? messages[i + 1] : null;
-    const cardIndex = Math.floor(i / 2);
+    const cardIndex = Math.floor((i - startIndex) / 2);
     const isLastCard = i >= messages.length - 2;
 
     nodes.push({
