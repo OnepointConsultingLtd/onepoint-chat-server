@@ -10,9 +10,9 @@ export function getConversationStartIndex(messages: Message[]): number {
 		return 0;
 	}
 
-	// Check if first message is a welcome/system message or from agent
-	const firstIsWelcome = messages[0].text.includes('Welcome to Onepoint');
+	// Check if first message is a welcome/system message
+	const firstIsWelcome = messages[0]?.text?.includes('Welcome to Onepoint');
 
-	// Skip the first message if it's a welcome message or from the agent
+	// Skip the first message if it's a welcome message
 	return (firstIsWelcome) ? 1 : 0;
 } 
