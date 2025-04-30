@@ -26,4 +26,7 @@ jobs:
       run: yarn build
 
     - name: Run tests
+      env:
+        CONTEXT_API_KEY: ${{ secrets.CONTEXT_API_KEY }}
+        # Add other required environment variables here
       run: yarn test 
