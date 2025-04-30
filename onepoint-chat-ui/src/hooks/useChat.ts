@@ -124,7 +124,7 @@ export function useChat() {
       }
     };
 
-    ws.onerror = (error) => {
+    ws.onerror = (error: any) => {
       console.error("WebSocket error:", error);
       const errorMessage: Message = messageFactoryAgent(
         `Connection error: Unable to connect to server`,
