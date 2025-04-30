@@ -6,7 +6,6 @@ import { Message } from "../type/types";
  * @param text - The text of the message
  * @returns A message object
  */
-
 export function messageFactoryAgent(text: string): Message {
 	return {
 		id: uuidv4(),
@@ -22,7 +21,6 @@ export function messageFactoryAgent(text: string): Message {
  * @param conversationId - The conversation ID of the user
  * @returns A message object
  */
-
 export function messageFactoryUser(text: string, conversationId: string): Message {
 	return {
 		id: uuidv4(),

@@ -11,13 +11,23 @@ interface RenderReactMarkdownProps {
 export default function RenderReactMarkdown({ children, message }: RenderReactMarkdownProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const handleCopy = async (message: Message) => {
+  const copyToClipboard = async (message: Message) => {
     try {
-      await navigator.clipboard.writeText(message.text);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(message.text);
+      } else {
+        // Fallback for browsers that don't support clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = message.text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
       setCopiedId(message.id);
       setTimeout(() => setCopiedId(null), 2000);
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
+    } catch (error) {
+      console.error('Failed to copy text:', error);
     }
   };
 
@@ -50,14 +60,22 @@ export default function RenderReactMarkdown({ children, message }: RenderReactMa
         {children}
       </ReactMarkdown>
       <div className="flex items-center justify-between mt-2 text-xs">
-        <p className={message.type === 'user' ? 'text-purple-400' : 'text-slate-400'}></p>
+        <p
+          className={
+            message.type === "user" ? "text-purple-100" : "text-slate-400"
+          }
+        >
+          {message.timestamp.toLocaleTimeString()}
+        </p>
 
-        <CopyButton
-          text={message.text}
-          id={message.id}
-          copiedId={copiedId}
-          onCopy={() => handleCopy(message)}
-        />
+        {message.type === "agent" && (
+          <CopyButton
+            text={message.text}
+            id={message.id}
+            copiedId={copiedId}
+            onCopy={() => copyToClipboard(message)}
+          />
+        )}
       </div>
     </>
   );
