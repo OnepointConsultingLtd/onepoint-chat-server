@@ -1,7 +1,7 @@
 import { ChatMessage } from '@gilf/chat-websocket-server';
 import { getContext } from '../api';
 import { analyzeConversation } from '../utils/conversationAnalyzer';
-import fs from 'fs';
+
 function contextAdapter(response: any) {
   if (response.success) {
     return response.data.context_text;

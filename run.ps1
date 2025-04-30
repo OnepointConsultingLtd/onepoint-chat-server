@@ -10,3 +10,5 @@ yarn build
 
 # Run the server
 yarn start
+
+# The server will run on http://localhost:<REST_API_PORT>

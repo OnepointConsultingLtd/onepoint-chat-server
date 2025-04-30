@@ -26,5 +26,5 @@ app.get("/api/chat/:conversationId", (async (req, res) => {
 	}
 }) as RequestHandler);
 
-const PORT = 5000;
+const PORT = process.env.REST_API_PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -28,7 +28,7 @@ export function useChat() {
   };
 
   // Fetch chat history from the server
-  async function loadChatHistory(conversationId: string): Promise<ServerMessage[]> {
+  async function loadChatHistory (conversationId: string): Promise<ServerMessage[]>  {
     const rawHistory = await fetchRawHistory(conversationId);
     const formattedMessages = await fetchChatHistory(conversationId, rawHistory);
     if (formattedMessages && formattedMessages.length > 0) {
@@ -100,16 +100,16 @@ export function useChat() {
             console.info("Conversation ID received:", message.conversationId);
             const { conversationId } = message;
             const lastConversationId = getConversationId();
-            if (lastConversationId !== conversationId) {
+            if(lastConversationId !== conversationId) {
               currentConversationId.current = conversationId;
               saveConversationId(conversationId);
-              if (conversationId && lastConversationId) {
+              if(conversationId && lastConversationId) {
                 // Here we should send a request to the server to get the chat history and 
                 // also to prefill the history of the new session on the server and client
                 loadChatHistory(lastConversationId)
                   .then((serverMessages: ServerMessage[]) => {
-                    if (wsRef.current) {
-                      sendMessage(wsRef.current, "import-history", { "history": serverMessages }, conversationId);
+                    if(wsRef.current) {
+                      sendMessage(wsRef.current, "import-history", {"history": serverMessages}, conversationId);
                     }
                   })
                   .catch((error) => {
