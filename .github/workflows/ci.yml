@@ -28,5 +28,7 @@ jobs:
     - name: Run tests
       env:
         CONTEXT_API_KEY: ${{ secrets.CONTEXT_API_KEY }}
+        CONTEXT_API_URL: ${{ secrets.CONTEXT_API_URL }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         # Add other required environment variables here
       run: yarn test 
