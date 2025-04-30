@@ -97,7 +97,6 @@ export function useChat() {
             ]);
             break;
           case "conversation-id":
-            console.info("Conversation ID received:", message.conversationId);
             const { conversationId } = message;
             const lastConversationId = getConversationId();
             if (lastConversationId !== conversationId) {

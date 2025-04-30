@@ -30,31 +30,35 @@ const MessageCard: React.FC<MessageCardProps> = ({
 
   return (
     <div
-      className="flex flex-col w-full overflow-hidden rounded-lg shadow group relative"
+      className="flex flex-col w-full overflow-hidden rounded-xl bg-white border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 group relative animate-fade-in"
       onMouseEnter={() => !isInitialMessage && setShowButton(true)}
       onMouseLeave={() => !isInitialMessage && setShowButton(false)}
     >
       {/* User message */}
-      <UserMessage message={userMessage} />
+      <div className="transition-all duration-300 transform hover:scale-[1.01]">
+        <UserMessage message={userMessage} isInitialMessage={isInitialMessage}/>
+      </div>
 
       {/* Agent message or thinking indicator */}
       {agentMessage ? (
-        <AgentMessage message={agentMessage} />
+        <div className="transition-all duration-300 transform hover:scale-[1.01]">
+          <AgentMessage message={agentMessage} />
+        </div>
       ) : isLastCard && isThinking ? (
-        <div className="border-l-4 border-green-400 bg-green-50">
+        <div className="border-l-4 border-blue-400 bg-blue-50 transition-all duration-300">
           <ThinkingIndicator />
         </div>
       ) : null}
 
       {showInput && !isThinking && isLastCard && (
-        <div className="border-t border-gray-200">
+        <div className="border-t border-gray-200 bg-gray-50 rounded-b-xl transition-all duration-300">
           <ChatInput handleSubmit={handleSubmit} isThinking={isThinking} />
         </div>
       )}
 
       {!isInitialMessage && showButton && !showInput && !isThinking && isLastCard && (
         <div
-          className="fixed left-1/2 transform -translate-x-1/2 transition-opacity duration-300"
+          className="fixed left-1/2 transform -translate-x-1/2 transition-all duration-300 opacity-0 group-hover:opacity-100 animate-fade-up"
           style={{
             bottom: '-15px',
             zIndex: 9999,
@@ -62,11 +66,11 @@ const MessageCard: React.FC<MessageCardProps> = ({
         >
           <button
             onClick={handleClick}
-            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium px-5 py-2.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 !cursor-pointer flex items-center space-x-2"
+            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
+              className="h-5 w-5 mr-1"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
