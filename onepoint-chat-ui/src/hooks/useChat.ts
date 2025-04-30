@@ -119,7 +119,7 @@ export function useChat() {
             }
             break;
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error parsing message:", error);
       }
     };
