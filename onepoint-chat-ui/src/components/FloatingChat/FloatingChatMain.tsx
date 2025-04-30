@@ -1,29 +1,20 @@
-import { useState } from "react";
-import { useChat } from "../../hooks/useChat";
-import initialQuestions from "../../lib/initialQuestions";
-import Messages from "../Messages";
-import QuestionItem from "../QuestionItem";
+import { useState } from 'react';
+import { useChat } from '../../hooks/useChat';
+import initialQuestions from '../../lib/initialQuestions';
+import Messages from '../Messages';
+import QuestionItem from '../QuestionItem';
 
-function FloatingChatMain({
-  handleFloatingBtn,
-}: {
-  handleFloatingBtn: () => void;
-}) {
-  const {
-    messages,
-    messagesEndRef,
-    handleRestart,
-    handleQuestionClick,
-    isThinking,
-    handleSubmit,
-  } = useChat();
+// This functionality is not activated in this version of the chat
+function FloatingChatMain({ handleFloatingBtn }: { handleFloatingBtn: () => void }) {
+  const { messages, messagesEndRef, handleRestart, handleQuestionClick, isThinking, handleSubmit } =
+    useChat();
 
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState('');
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleSubmit(inputText);
-    setInputText("");
+    setInputText('');
   };
 
   return (
@@ -32,9 +23,7 @@ function FloatingChatMain({
         {/* Header */}
         <header className="sticky top-0 z-10 w-full p-3 py-2 bg-white">
           <div className="flex items-center justify-between w-full space-x-4">
-            <h1 className="text-xl md:text-3xl font-bold text-[#0284c7]">
-              OSCA
-            </h1>
+            <h1 className="text-xl md:text-3xl font-bold text-[#0284c7]">OSCA</h1>
 
             <button
               className="flex justify-center py-3 cursor-pointer group"
@@ -84,7 +73,7 @@ function FloatingChatMain({
         {/* Messages Container */}
         <div className="h-screen overflow-y-auto !bg-white">
           <div className="px-3 space-y-2">
-            {initialQuestions.map((question) => (
+            {initialQuestions.map(question => (
               <QuestionItem
                 key={question.id}
                 question={question}
@@ -95,8 +84,8 @@ function FloatingChatMain({
           <Messages
             messages={messages}
             messagesEndRef={messagesEndRef}
-            isFloating={true}
             isThinking={isThinking}
+            handleSubmit={handleSubmit}
           />
         </div>
         {/* Input Container */}
@@ -113,12 +102,10 @@ function FloatingChatMain({
                   className="w-full p-2 pr-24 overflow-hidden transition-all duration-300 bg-white border-2 border-purple-100 shadow-sm outline-none resize-none rounded-xl focus:border-purple-400 focus:ring-4 focus:ring-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={isThinking}
                   style={{
-                    height:
-                      Math.min(48 + 24 * inputText.split("\n").length, 200) +
-                      "px",
+                    height: Math.min(48 + 24 * inputText.split('\n').length, 200) + 'px',
                   }}
                   onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
                       const form = e.currentTarget.form;
                       if (form) form.requestSubmit();
