@@ -30,7 +30,7 @@ export default function ChatContainer() {
         {/* Header */}
         <div className="flex items-center border-b border-[#e2e8f0] bg-white/80 backdrop-blur-lg sticky top-0 z-[100]">
           <SideBarButton toggleSidebar={toggleSidebar} />
-          <Header handleRestart={handleRestart} />
+          <Header handleRestart={handleRestart} chatHistory={messages} />
         </div>
 
         {/* Messages Container */}

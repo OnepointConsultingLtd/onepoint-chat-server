@@ -1,13 +1,19 @@
+import { Message } from '../type/types';
+import { exportChatToMarkdown } from '../utils/exportChatToMarkdown';
+import GradientButton from './GradientButton';
+
 interface HeaderProps {
   handleRestart: () => void;
+  chatHistory: Message[];
 }
 
-export default function Header({ handleRestart }: HeaderProps) {
+export default function Header({ handleRestart, chatHistory }: HeaderProps) {
   return (
     <div className="w-full max-w-6xl mx-auto">
       <div className="flex justify-between items-center">
         <header className="bg-white p-4 w-full relative">
           <div className="flex items-center space-x-4 w-full justify-between">
+            {/* Logo, title and description */}
             <div className="flex items-center space-x-4 pr-4">
               <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full hidden md:flex items-center justify-center shadow-lg">
                 <svg
@@ -28,32 +34,58 @@ export default function Header({ handleRestart }: HeaderProps) {
                 <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 text-transparent bg-clip-text">
                   OSCA
                 </h1>
-                <p className="text-gray-600 lg:text-base text-sm">
+                <p className="text-gray-600 lg:text-base text-sm md:block hidden">
                   Onepoint's Smart Cognitive Assistant
                 </p>
               </div>
             </div>
 
-            <div className="flex justify-start">
-              <button
+            <div className="flex justify-start md:flex-row flex-col gap-4 space-x-2">
+              <GradientButton
                 onClick={handleRestart}
-                className="group px-2 md:px-4 py-2 md:py-3 bg-gradient-to-r from-blue-500 cursor-pointer to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2.5 transform hover:scale-[1.03] animate-fade-in"
+                icon={
+                  <svg
+                    className="w-4 h-4 md:w-5 md:h-5 transition-transform duration-500 ease-out group-hover:rotate-90"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                }
               >
-                <svg
-                  className="w-4 h-4 md:w-5 md:h-5 transition-transform duration-500 ease-out group-hover:rotate-90"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                <span className="md:font-medium font-light text-xs md:text-base">New Chat</span>
-              </button>
+                New Chat
+              </GradientButton>
+
+              <GradientButton
+                onClick={() => {
+                  const date = new Date().toISOString().split('T')[0];
+                  exportChatToMarkdown(chatHistory, `chat-history-${date}.md`);
+                }}
+                title="Export chat history to Markdown file"
+                icon={
+                  <svg
+                    className="w-4 h-4 md:w-5 md:h-5 transition-transform duration-500 ease-out group-hover:scale-110"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                }
+              >
+                Download Chat
+              </GradientButton>
             </div>
           </div>
         </header>
