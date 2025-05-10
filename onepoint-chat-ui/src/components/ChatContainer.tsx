@@ -9,7 +9,7 @@ import SideBarButton from './SideBarButton';
 export default function ChatContainer() {
   const { messages, messagesEndRef, handleQuestionClick, handleSubmit, handleRestart, isThinking } =
     useChat();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

@@ -1,3 +1,4 @@
+import { nameDescription, siteName } from '../lib/constants';
 import { Message } from '../type/types';
 import { exportChatToMarkdown } from '../utils/exportChatToMarkdown';
 import GradientButton from './GradientButton';
@@ -32,10 +33,10 @@ export default function Header({ handleRestart, chatHistory }: HeaderProps) {
               </div>
               <div className="text-left">
                 <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 text-transparent bg-clip-text">
-                  OSCA
+                  {siteName}
                 </h1>
                 <p className="text-gray-600 lg:text-base text-sm md:block hidden">
-                  Onepoint's Smart Cognitive Assistant
+                  {nameDescription}
                 </p>
               </div>
             </div>

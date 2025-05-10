@@ -60,22 +60,12 @@ export default function RenderReactMarkdown({ children, message }: RenderReactMa
         {children}
       </ReactMarkdown>
       <div className="flex items-center justify-between mt-2 text-xs">
-        <p
-          className={
-            message.type === "user" ? "text-purple-100" : "text-slate-400"
-          }
-        >
-          {message.timestamp.toLocaleTimeString()}
-        </p>
-
-        {message.type === "agent" && (
-          <CopyButton
-            text={message.text}
-            id={message.id}
-            copiedId={copiedId}
-            onCopy={() => copyToClipboard(message)}
-          />
-        )}
+        <CopyButton
+          text={message.text}
+          id={message.id}
+          copiedId={copiedId}
+          onCopy={() => copyToClipboard(message)}
+        />
       </div>
     </>
   );

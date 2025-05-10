@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from 'react';
 
 interface ChatInputProps {
   handleSubmit: (text: string) => void;
@@ -6,8 +6,8 @@ interface ChatInputProps {
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
-  const [inputText, setInputText] = useState("");
-  
+  const [inputText, setInputText] = useState('');
+
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     handleSubmit(inputText);
@@ -16,7 +16,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
 
   useEffect(() => {
     if (!isThinking) {
-      document.getElementById("chat-input")?.focus();
+      document.getElementById('chat-input')?.focus();
     }
   }, [isThinking]);
 
@@ -72,7 +72,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
           </form>
 
           <span className="text-xs text-center text-slate-500">
-            Powered by Onepoint's Smart Cognitive Assistant
+            OSCA can make mistakes. Check important information with your Onepoint adviser.
           </span>
         </div>
       </div>
