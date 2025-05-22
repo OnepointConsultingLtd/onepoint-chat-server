@@ -72,7 +72,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
           </form>
 
           <span className="text-xs text-center text-slate-500">
-            OSCA can make mistakes. Check important information with your Onepoint adviser.
+            OSCA can make mistakes. Check important information with your Onepoint advisor.
           </span>
         </div>
       </div>
