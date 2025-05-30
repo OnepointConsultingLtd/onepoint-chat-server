@@ -1,12 +1,8 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
-import FloatingChatMain from "./components/FloatingChat/FloatingChatMain";
+import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
+import FloatingChatMain from './components/FloatingChat/FloatingChatMain';
 
-interface FloatingChatButtonProps {
-  click: () => void;
-}
-
-const FloatingChatButton: React.FC<FloatingChatButtonProps> = ({ click }) => {
+function FloatingChatButton({ click }: { click: () => void }) {
   return (
     <button
       onClick={click}
@@ -18,14 +14,14 @@ const FloatingChatButton: React.FC<FloatingChatButtonProps> = ({ click }) => {
       </div>
     </button>
   );
-};
+}
 
 const chatVariants = {
   hidden: {
     opacity: 0,
     scale: 0.5,
-    x: "20%",
-    y: "20%",
+    x: '20%',
+    y: '20%',
   },
   visible: {
     opacity: 1,
@@ -34,7 +30,7 @@ const chatVariants = {
     y: 0,
     transition: {
       duration: 0.4,
-      type: "spring",
+      type: 'spring',
       stiffness: 260,
       damping: 20,
     },
@@ -42,16 +38,16 @@ const chatVariants = {
   exit: {
     opacity: 0,
     scale: 0.5,
-    x: "20%",
-    y: "20%",
+    x: '20%',
+    y: '20%',
     transition: {
       duration: 0.2,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
 };
 
-function Chat() {
+export default function Chat() {
   const [isFloatingOpen, setIsFloatingOpen] = useState(false);
 
   const handleFloatingBtn = () => {
@@ -79,5 +75,3 @@ function Chat() {
     </div>
   );
 }
-
-export default Chat;

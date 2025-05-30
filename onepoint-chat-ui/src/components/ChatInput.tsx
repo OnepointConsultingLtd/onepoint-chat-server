@@ -1,30 +1,30 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from 'react';
 
 interface ChatInputProps {
   handleSubmit: (text: string) => void;
   isThinking: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
-  const [inputText, setInputText] = useState("");
-  
+export default function ChatInput({ handleSubmit, isThinking }: ChatInputProps) {
+  const [inputText, setInputText] = useState('');
+
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     handleSubmit(inputText);
-    setInputText("");
+    setInputText('');
   }
 
   useEffect(() => {
     if (!isThinking) {
-      document.getElementById("chat-input")?.focus();
+      document.getElementById('chat-input')?.focus();
     }
   }, [isThinking]);
 
   const textareaStyle = useMemo(
     () => ({
-      height: Math.min(48 + 24 * inputText.split("\n").length, 200) + "px",
+      height: Math.min(48 + 24 * inputText.split('\n').length, 200) + 'px',
     }),
-    [inputText],
+    [inputText]
   );
 
   return (
@@ -35,15 +35,13 @@ const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
             <textarea
               id="chat-input"
               value={inputText}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setInputText(e.target.value)
-              }
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputText(e.target.value)}
               placeholder="Type your message here..."
               className="w-full p-4 pr-24 overflow-hidden transition-all duration-300 bg-white border-2 shadow-sm outline-none resize-none rounded-xl border-sky-100 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isThinking}
               style={textareaStyle}
               onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-                if (e.key === "Enter" && !e.shiftKey) {
+                if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
                   const form = e.currentTarget.form;
                   if (form) form.requestSubmit();
@@ -80,6 +78,4 @@ const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
       </div>
     </div>
   );
-};
-
-export default ChatInput;
+}

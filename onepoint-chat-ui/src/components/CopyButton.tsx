@@ -1,22 +1,14 @@
-import React from "react";
-
-interface CopyButtonProps {
-  text: string;
+type CopyButtonProps = {
   id: string;
+  text: string;
   copiedId: string | null;
   onCopy: (text: string, id: string) => void;
-  isUserMessage?: boolean;
-}
+};
 
-const CopyButton: React.FC<CopyButtonProps> = ({
-  text,
-  id,
-  copiedId,
-  onCopy,
-}) => {
+export default function CopyButton({ text, id, copiedId, onCopy }: CopyButtonProps) {
   const isActive = copiedId === id;
 
-  const baseColorClass = "text-[#64748b] hover:text-[#0ea5e9]";
+  const baseColorClass = 'text-[#64748b] hover:text-[#0ea5e9]';
 
   return (
     <button
@@ -31,7 +23,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({
         cursor-pointer
         relative
       `}
-      title={isActive ? "Copied!" : "Copy to clipboard"}
+      title={isActive ? 'Copied!' : 'Copy to clipboard'}
     >
       <span className="relative block w-4 h-4 transition-all duration-300 hover:scale-110">
         {isActive ? (
@@ -68,6 +60,4 @@ const CopyButton: React.FC<CopyButtonProps> = ({
       </span>
     </button>
   );
-};
-
-export default CopyButton;
+}

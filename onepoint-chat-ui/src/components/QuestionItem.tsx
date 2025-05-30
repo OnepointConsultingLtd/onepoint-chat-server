@@ -1,12 +1,11 @@
-import React from "react";
-import { Question } from "../type/types";
+import { Question } from '../type/types';
 
-interface QuestionItemProps {
+type QuestionItemProps = {
   question: Question;
   onClick: () => void;
-}
+};
 
-const QuestionItem: React.FC<QuestionItemProps> = ({ question, onClick }) => {
+export default function QuestionItem({ question, onClick }: QuestionItemProps) {
   return (
     <button
       className="group w-full p-4 text-left bg-[#f8fafc] cursor-pointer hover:bg-[#f1f5f9] rounded-lg transition-colors duration-200"
@@ -25,16 +24,9 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ question, onClick }) => {
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </div>
     </button>
   );
-};
-
-export default QuestionItem;
+}

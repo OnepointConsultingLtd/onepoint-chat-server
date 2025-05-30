@@ -1,8 +1,4 @@
-interface HeaderProps {
-  handleRestart: () => void;
-}
-
-export default function Header({ handleRestart }: HeaderProps) {
+export default function Header({ handleRestart }: { handleRestart: () => void }) {
   return (
     <div className="w-full max-w-6xl mx-auto">
       <div className="flex justify-between items-center">
@@ -25,9 +21,7 @@ export default function Header({ handleRestart }: HeaderProps) {
                 </svg>
               </div>
               <div className="text-left">
-                <h1 className="text-xl md:text-3xl font-bold text-[#0284c7]">
-                  OSCA
-                </h1>
+                <h1 className="text-xl md:text-3xl font-bold text-[#0284c7]">OSCA</h1>
                 <p className="text-[#64748b] lg:text-base text-sm">
                   Onepoint's Smart Cognitive Assistant
                 </p>
