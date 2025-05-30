@@ -1,11 +1,7 @@
 import { Handle, Position } from '@xyflow/react';
 import React from 'react';
 
-interface CustomNodeData {
-  content: React.ReactNode;
-}
-
-export default function CustomNode({ data }: { data: CustomNodeData }) {
+export default function CustomNode({ data }: { data: { content: React.ReactNode } }) {
   return (
     <div className="custom-node rounded-md overflow-hidden">
       {data.content}

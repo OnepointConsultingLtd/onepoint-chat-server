@@ -8,11 +8,11 @@ import { getConversationStartIndex } from '../../utils/messageUtils';
  * Creates flow nodes from the messages
  */
 
-export const createNodes = (
+export function createNodes(
   messages: Message[],
   isThinking: boolean,
   handleSubmit: (text: string) => void
-): Node[] => {
+): Node[] {
   const nodes: Node[] = [];
 
   if (!messages || messages.length === 0) {
@@ -54,4 +54,4 @@ export const createNodes = (
   }
 
   return nodes;
-};
+}

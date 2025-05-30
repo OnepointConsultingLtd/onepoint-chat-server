@@ -5,13 +5,13 @@ import { FlowProps, nodeTypes } from '../../type/types';
 import { createEdges } from './EdgeCreator';
 import { createNodes } from './NodeCreator';
 import { focusOnLatestNode } from './ViewportManager';
-import { DEFAULT_ZOOM, MIN_ZOOM, MAX_ZOOM } from './constants';
+import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM } from './constants';
 
 /**
- * Flow component that displays the chat conversation as a flowing diagram
+ * Flow component that displays the chat conversation as a flowing diagram.
  */
 
-function Flow({ messages, isThinking, handleSubmit, messagesEndRef }: FlowProps) {
+export default function Flow({ messages, isThinking, handleSubmit, messagesEndRef }: FlowProps) {
   const reactFlowInstance = useReactFlow();
   const previousMessagesLengthRef = useRef<number>(0);
 
@@ -62,5 +62,3 @@ function Flow({ messages, isThinking, handleSubmit, messagesEndRef }: FlowProps)
     </div>
   );
 }
-
-export default Flow;

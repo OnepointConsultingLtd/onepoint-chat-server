@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 
-interface GradientButtonProps {
+type GradientButtonProps = {
   onClick: () => void;
   icon?: ReactNode;
   title?: string;
   children: ReactNode;
-}
+};
 
 export default function GradientButton({ onClick, icon, title, children }: GradientButtonProps) {
   return (

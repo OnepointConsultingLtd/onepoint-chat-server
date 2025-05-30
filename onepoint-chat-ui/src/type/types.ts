@@ -1,18 +1,18 @@
 import CustomNode from "../components/flow/CustomNode";
 
-export interface Question {
+export type Question = {
 	id: number;
 	text: string;
 }
 
-export interface ServerMessage {
+export type ServerMessage = {
 	role: "user" | "assistant" | "operator" | "system";
 	content: string;
 	id?: string;
 	timestamp?: Date;
 }
 
-export interface Message {
+export type Message = {
 	id: string;
 	text: string;
 	type: "user" | "agent";
@@ -41,7 +41,7 @@ declare global {
 
 
 
-export interface FlowProps {
+export type FlowProps = {
 	messages: Message[];
 	isThinking: boolean;
 	handleSubmit: (text: string) => void;

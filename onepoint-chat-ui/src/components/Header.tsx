@@ -10,11 +10,11 @@ interface HeaderProps {
 }
 
 // Mini button component for dropdown items
-interface MiniGradientButtonProps {
+type MiniGradientButtonProps = {
   onClick: () => void;
   icon: ReactNode;
   children: ReactNode;
-}
+};
 
 const MiniGradientButton = ({ onClick, icon, children }: MiniGradientButtonProps) => {
   return (

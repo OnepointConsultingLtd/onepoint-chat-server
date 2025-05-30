@@ -1,7 +1,6 @@
-import React from 'react';
+import { nameDescription, siteName } from '../lib/constants';
 import { Question } from '../type/types';
 import QuestionItem from './QuestionItem';
-import { nameDescription, siteName } from '../lib/constants';
 
 interface SidebarProps {
   questions: Question[];
@@ -10,12 +9,12 @@ interface SidebarProps {
   isSidebarOpen: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({
+export default function Sidebar({
   questions,
   onQuestionClick,
   toggleSidebar,
   isSidebarOpen,
-}) => {
+}: SidebarProps) {
   return (
     <div className="h-screen lg:!sticky top-0 z-[120]">
       <div className="flex flex-col h-screen">
@@ -150,6 +149,4 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
     </div>
   );
-};
-
-export default Sidebar;
+}

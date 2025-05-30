@@ -5,7 +5,7 @@ interface ChatInputProps {
   isThinking: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
+export default function ChatInput({ handleSubmit, isThinking }: ChatInputProps) {
   const [inputText, setInputText] = useState('');
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -78,6 +78,4 @@ const ChatInput: React.FC<ChatInputProps> = ({ handleSubmit, isThinking }) => {
       </div>
     </div>
   );
-};
-
-export default ChatInput;
+}

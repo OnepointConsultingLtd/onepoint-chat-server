@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Message } from '../../type/types';
 import ChatInput from '../ChatInput';
 import ThinkingIndicator from '../ThinkingIndicator';
-import UserMessage from './UserMessage';
 import AgentMessage from './AgentMessage';
+import UserMessage from './UserMessage';
 
-interface MessageCardProps {
+type MessageCardProps = {
   userMessage: Message;
   agentMessage: Message | null;
   isLastCard: boolean;
   isThinking: boolean;
   handleSubmit: (text: string) => void;
-}
+};
 
-const MessageCard: React.FC<MessageCardProps> = ({
+export default function MessageCard({
   userMessage,
   agentMessage,
   isLastCard,
   isThinking,
   handleSubmit,
-}) => {
+}: MessageCardProps) {
   const isInitialMessage = userMessage.text.includes('Welcome to Onepoint');
   const [showInput, setShowInput] = useState(isInitialMessage && isLastCard);
   const [showButton, setShowButton] = useState(false);
@@ -36,7 +36,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
     >
       {/* User message */}
       <div className="transition-all duration-300 transform hover:scale-[1.01]">
-        <UserMessage message={userMessage} isInitialMessage={isInitialMessage}/>
+        <UserMessage message={userMessage} isInitialMessage={isInitialMessage} />
       </div>
 
       {/* Agent message or thinking indicator */}
@@ -88,6 +88,4 @@ const MessageCard: React.FC<MessageCardProps> = ({
       )}
     </div>
   );
-};
-
-export default MessageCard;
+}

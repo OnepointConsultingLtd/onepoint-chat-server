@@ -5,7 +5,8 @@ import { getConversationStartIndex } from '../../utils/messageUtils';
 /**
  * Creates edges between conversation cards
  */
-export const createEdges = (messages: Message[]): Edge[] => {
+
+export function createEdges(messages: Message[]): Edge[] {
 	const edges: Edge[] = [];
 	const startIndex = getConversationStartIndex(messages);
 
@@ -35,4 +36,4 @@ export const createEdges = (messages: Message[]): Edge[] => {
 	}
 
 	return edges;
-}; 
+}

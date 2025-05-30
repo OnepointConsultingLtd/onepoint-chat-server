@@ -4,11 +4,10 @@ import { Message } from '../type/types';
 import CopyButton from './CopyButton';
 
 interface RenderReactMarkdownProps {
-  children: string;
   message: Message;
 }
 
-export default function RenderReactMarkdown({ children, message }: RenderReactMarkdownProps) {
+export default function RenderReactMarkdown({ message }: RenderReactMarkdownProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const copyToClipboard = async (message: Message) => {
@@ -33,7 +32,6 @@ export default function RenderReactMarkdown({ children, message }: RenderReactMa
 
   return (
     <>
-      {' '}
       <ReactMarkdown
         components={{
           a: ({ ...props }) => (
@@ -57,7 +55,7 @@ export default function RenderReactMarkdown({ children, message }: RenderReactMa
           ),
         }}
       >
-        {children}
+        {message.text}
       </ReactMarkdown>
       <div className="flex items-center justify-between mt-2 text-xs">
         <CopyButton

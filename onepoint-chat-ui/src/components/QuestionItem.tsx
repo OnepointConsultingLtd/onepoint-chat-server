@@ -1,12 +1,11 @@
-import React from 'react';
 import { Question } from '../type/types';
 
-interface QuestionItemProps {
+type QuestionItemProps = {
   question: Question;
   onClick: () => void;
-}
+};
 
-const QuestionItem: React.FC<QuestionItemProps> = ({ question, onClick }) => {
+export default function QuestionItem({ question, onClick }: QuestionItemProps) {
   // Map categories to icons
   const getCategoryIcon = () => {
     // Default icon if no specific category is matched
@@ -50,6 +49,4 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ question, onClick }) => {
       </div>
     </button>
   );
-};
-
-export default QuestionItem;
+}
