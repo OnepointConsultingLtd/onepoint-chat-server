@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BiMessageRoundedDots } from 'react-icons/bi';
 import { Message } from '../../type/types';
 import ChatInput from '../ChatInput';
 import ThinkingIndicator from '../ThinkingIndicator';
@@ -51,7 +52,7 @@ export default function MessageCard({
       ) : null}
 
       {showInput && !isThinking && isLastCard && (
-        <div className="border-t border-gray-200 bg-gray-50 rounded-b-xl transition-all duration-300">
+        <div className="border-t rounded-b-xl transition-all duration-300">
           <ChatInput handleSubmit={handleSubmit} isThinking={isThinking} />
         </div>
       )}
@@ -68,20 +69,7 @@ export default function MessageCard({
             onClick={handleClick}
             className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-              />
-            </svg>
+            <BiMessageRoundedDots />
             <span>Ask a follow up question</span>
           </button>
         </div>

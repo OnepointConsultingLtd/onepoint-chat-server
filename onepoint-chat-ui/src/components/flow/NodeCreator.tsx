@@ -1,7 +1,7 @@
 import { Node } from '@xyflow/react';
 import { Message } from '../../type/types';
 import MessageCard from './MessageCard';
-import { CARD_GAP, CARD_WIDTH, CARD_Y_POSITION } from './constants';
+import { CARD_GAP, CARD_WIDTH, CARD_Y_POSITION } from '../../lib/constants';
 import { getConversationStartIndex } from '../../utils/messageUtils';
 
 /**

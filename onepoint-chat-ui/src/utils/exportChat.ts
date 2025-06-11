@@ -1,19 +1,26 @@
 import { Message } from "../type/types";
-import jsPDF from 'jspdf';
 
-// Simple function to convert markdown to plain text
-function markdownToPlainText(markdown: string): string {
-	// Replace bold/italic markers
-	let text = markdown.replace(/\*\*(.*?)\*\*/g, '$1');
-	text = text.replace(/\*(.*?)\*/g, '$1');
-
-	// Replace headers
-	text = text.replace(/^#{1,6}\s+(.+)$/gm, '$1');
-
-	// Replace bullet points
-	text = text.replace(/^[\s-]*[-•*]\s+(.+)$/gm, '• $1');
-
-	return text;
+function markdownToHtml(text: string): string {
+	return text
+		// Convert bold text
+		.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+		// Convert italic text
+		.replace(/\*(.*?)\*/g, '<em>$1</em>')
+		// Convert numbered lists
+		.replace(/^\d+\.\s+(.*)$/gm, '<li>$1</li>')
+		// Convert newlines
+		.replace(/\n/g, '<br>')
+		// Escape HTML
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		// Restore HTML tags we want to keep
+		.replace(/&lt;strong&gt;/g, '<strong>')
+		.replace(/&lt;\/strong&gt;/g, '</strong>')
+		.replace(/&lt;em&gt;/g, '<em>')
+		.replace(/&lt;\/em&gt;/g, '</em>')
+		.replace(/&lt;li&gt;/g, '<li>')
+		.replace(/&lt;\/li&gt;/g, '</li>')
+		.replace(/&lt;br&gt;/g, '<br>');
 }
 
 export function exportChatToMarkdown(chatHistory: Message[], filename = 'chat-history.md') {
@@ -48,74 +55,131 @@ export function exportChatToMarkdown(chatHistory: Message[], filename = 'chat-hi
 }
 
 // export to pdf
-export function exportChatToPDF(chatHistory: Message[], filename = 'chat-history.pdf') {
+export async function exportChatToPDF(chatHistory: Message[], filename = 'chat-history.pdf') {
 	if (!chatHistory.length) {
 		console.log("No chat history to export");
 		return;
 	}
 
-	// Create a new PDF document
-	const doc = new jsPDF();
+	try {
+		// Create HTML content with proper styling for wkhtmltopdf
+		const htmlContent = `
+			<!DOCTYPE html>
+			<html>
+				<head>
+					<meta charset="UTF-8">
+					<style>
+						@page {
+							margin: 20mm;
+							size: A4;
+						}
+						body {
+							font-family: Arial, sans-serif;
+							line-height: 1.6;
+							color: #333;
+							margin: 0;
+							padding: 20px;
+						}
+						.header {
+							text-align: center;
+							margin-bottom: 30px;
+							padding-bottom: 20px;
+							border-bottom: 2px solid #eee;
+						}
+						.logo-container {
+							text-align: center;
+							margin-bottom: 20px;
+						}
+						.logo {
+							max-width: 200px;
+							height: auto;
+						}
+						.header h1 {
+							color: #2c3e50;
+							margin: 0;
+							font-size: 24px;
+							font-weight: bold;
+						}
+						.header p {
+							color: #7f8c8d;
+							margin: 10px 0 0;
+							font-size: 14px;
+						}
+						.message {
+							margin-bottom: 20px;
+							page-break-inside: avoid;
+						}
+						.sender {
+							font-weight: bold;
+							color: #2c3e50;
+							margin-bottom: 5px;
+							font-size: 14px;
+						}
+						.content {
+							margin-left: 20px;
+							font-size: 13px;
+							white-space: pre-wrap;
+						}
+						.separator {
+							border-top: 1px solid #eee;
+							margin: 20px 0;
+						}
+						@media print {
+							body {
+								-webkit-print-color-adjust: exact;
+								print-color-adjust: exact;
+							}
+						}
+					</style>
+				</head>
+				<body>
+					<div class="header">
+						<div class="logo-container">
+							<img src="https://www.onepointltd.com/wp-content/uploads/2020/06/logo-one-point.png" alt="OnePoint Logo" class="logo">
+						</div>
+						<h1>OSCA Chat History</h1>
+						<p>Exported on ${new Date().toLocaleString()}</p>
+					</div>
+					${chatHistory.map(message => `
+						<div class="message">
+							<div class="sender">${message.type === "user" ? "User" : "OSCA"}</div>
+							<div class="content">${markdownToHtml(message.text)}</div>
+						</div>
+						<div class="separator"></div>
+					`).join('')}
+				</body>
+			</html>
+		`;
 
-	// Set the font
-	doc.setFont('Arial', 'normal');
+		// Send request to server
+		const response = await fetch(`${window.oscaConfig.httpUrl}/api/export/pdf`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ htmlContent }),
+		});
 
-	// Add title
-	doc.setFontSize(16);
-	doc.text('OSCA Chat History', 20, 20);
-
-	// Add export date
-	doc.setFontSize(10);
-	doc.text(`Exported on ${new Date().toLocaleString()}`, 20, 30);
-
-	doc.setFontSize(12);
-
-	let yPosition = 40;
-	const pageWidth = doc.internal.pageSize.getWidth();
-	const margin = 20;
-	const textWidth = pageWidth - 2 * margin;
-
-	// Add messages
-	chatHistory.forEach((message) => {
-		const sender = message.type === "user" ? "User" : "OSCA";
-
-		// Add sender
-		doc.setFont('Arial', 'bold');
-		doc.text(sender, margin, yPosition);
-		yPosition += 7;
-
-		// Add message text - convert markdown to plain text for better readability
-		doc.setFont('Arial', 'normal');
-
-		// Convert markdown to plain text
-		const plainText = markdownToPlainText(message.text);
-
-		// Split text to fit within page width
-		const textLines = doc.splitTextToSize(plainText, textWidth);
-
-		// Check if we need a new page
-		if (yPosition + textLines.length * 7 > doc.internal.pageSize.getHeight() - margin) {
-			doc.addPage();
-			yPosition = 20;
+		if (!response.ok) {
+			throw new Error('Failed to generate PDF');
 		}
 
-		doc.text(textLines, margin, yPosition);
-		yPosition += textLines.length * 7 + 10;
+		// Get the PDF blob
+		const pdfBlob = await response.blob();
 
-		// Add separator line
-		doc.setDrawColor(200, 200, 200);
-		doc.line(margin, yPosition - 5, pageWidth - margin, yPosition - 5);
-		yPosition += 10;
+		// Create download link
+		const url = window.URL.createObjectURL(pdfBlob);
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = filename;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		window.URL.revokeObjectURL(url);
 
-		// Check if we need a new page for next message
-		if (yPosition > doc.internal.pageSize.getHeight() - 30) {
-			doc.addPage();
-			yPosition = 20;
-		}
-	});
-
-	// Save the PDF
-	doc.save(filename);
-
-	console.log(`Exporting chat history to ${filename}`);
+		console.log(`Exporting chat history to ${filename}`);
+	} catch (error) {
+		console.error('Error generating PDF:', error);
+		alert('Failed to generate PDF. Please try again.');
+	}
 }
