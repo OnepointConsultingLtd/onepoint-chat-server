@@ -1,6 +1,6 @@
-# Onepoint Techtalk | Onepoint - Do data better | Innovate with AI & more | Architect for Outcomes
+# The future of enterprise data access — Webinar — Onepoint TechTalk | Onepoint - Do data better | Innovate with AI & more | Architect for Outcomes
 
-Source: https://www.onepointltd.com/techtalk/
+Source: https://www.onepointltd.com/techtalk/the-future-of-enterprise-data-access/
 
 *Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
 
@@ -21,6 +21,29 @@ Do data better[2]
 Innovate with AI & more[3]
 
 Home[4]
+
+Onepoint Techtalk[5]
+
+## The future of enterprise data access- RAG, GraphRAG and beyond
+
+In this session we will explore cutting-edge enhancements to RAG, shaping the future of business automation, data analysis, and customer engagement.
+
+This event was livestreamed and recorded
+
+- The basics of RAG (Retrieval-Augmented Generation)and its potential for transforming business processes
+- How to enhance RAGfor greater efficiency and impact
+- Knowledge Graph and RAGs – GraphRAG
+- Incorporating enterprise knowledge into LLMs
+
+This webinar is the 5thsession of our Decoding AI Series. While not mandatory, familiarity with basics of LLMs will be useful. You can watch a replay of all the webinars of Decoding AI Serieshere.
+
+[here](/techtalk#replay/)
+
+This webinar is designed for AI specialists, data scientists, CTOs, and technology leaders looking to maximise the potential of LLMs in their organisations. Business leaders will also benefit from the discussion, especially on what the ‘art of the possible’ is on applying LLMs.
+
+Onepoint as a Data Controller will process your personal data in line with the General Data Protection Regulations (GDPR). For further details, please see ourprivacy notice.
+
+privacy notice[6]
 
 ### Upcoming webinar
 
@@ -60,7 +83,7 @@ In this sessionwe look at the fundamentals of Generative AI and Large Language M
 
 In partnership withGigaspaces, join our panelof highly experienced digital transformation and data integration specialists who will provide you with invaluable insights and actionable solutions on how to unlock the power of real-time data for digital transformation and AI decisioning.
 
-Gigaspaces[5]
+Gigaspaces[7]
 
 [Watch now](/techtalk/unlocking-the-power-of-real-time-data)
 
@@ -69,38 +92,6 @@ Gigaspaces[5]
 For more webinar replays, visitOnepoint TechTalk
 
 [Onepoint TechTalk](/techtalk#replay)
-
-### Upcoming webinar
-
-In this third session of the Decoding AI series, delve into the hidden potential of untapped data, like clickstream data, application logs, email communications, customer call records, and Internet of Things (IoT) data.
-
-[Register now](/techtalk/spotlight-on-dark-data-with-ai/)
-
-In this session we explore more ways to get the most out of LLMs. Beyond the chat interface, which we covered last time, workflows and complex interactions are advanced ways to optimise the utility and efficiency of LLMs.
-
-[Register now](/techtalk/unleashing-the-power-of-large-language-models-part-2-workflows-and-complex-interactions/)
-
-### Webinar replays
-
-Ready to dive deeper into the world of Large Language Models (LLMs)? This webinar, the second in our Decoding AI series, builds on our previous session on LLM fundamentals.
-
-[Watch now](/techtalk/unleashing-the-power-of-large-language-models-direct-interactions/)
-
-Are you ready to maximise the impact of your AI initiatives? Join Boomi and Onepoint for an executive-level webinar exploring the critical intersection of AI and Master Data Management.
-
-[Watch now](/techtalk/ai-and-master-data-management-a-synergy-for-success/)
-
-In this sessionwe look at the fundamentals of Generative AI and Large Language Models (LLMs) — one of the most transformative AI technologies to emerge in recent years.
-
-[Watch now](/techtalk/fundamentals-of-large-language-models)
-
-In partnership withGigaspaces, join our panelof highly experienced digital transformation and data integration specialists who will provide you with invaluable insights and actionable solutions on how to unlock the power of real-time data for digital transformation and AI decisioning.
-
-Gigaspaces[6]
-
-[Watch now](/techtalk/unlocking-the-power-of-real-time-data)
-
-### Coming soon
 
 - What we doArchitect for outcomesDo data betterInnovate with AI & moreSpringboard™ WorkshopOnepoint Labs
 
@@ -181,11 +172,12 @@ Contact us
 [2] Do data better: https://www.onepointltd.com/do-data-better
 [3] Innovate with AI & more: https://www.onepointltd.com/innovate-with-ai-more
 [4] Home: https://www.onepointltd.com
-[5] Gigaspaces: https://www.gigaspaces.com/
-[6] Gigaspaces: https://www.gigaspaces.com/
+[5] Onepoint Techtalk: https://www.onepointltd.com/techtalk/
+[6] privacy notice: https://www.onepointltd.com/policies/privacy-policy/
+[7] Gigaspaces: https://www.gigaspaces.com/
 
 ## Metadata
 
-- URL: https://www.onepointltd.com/techtalk/
-- Last Scraped: 2025-07-02 13:21:39
+- URL: https://www.onepointltd.com/techtalk/the-future-of-enterprise-data-access/
+- Last Scraped: 2025-07-02 13:22:02
 - Content Type: Web Page

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BiMessageRoundedDots } from 'react-icons/bi';
-import { Message } from '../../type/types';
+import { Message, Topic, Topics } from '../../type/types';
 import ChatInput from '../ChatInput';
 import ThinkingIndicator from '../ThinkingIndicator';
 import AgentMessage from './AgentMessage';
 import UserMessage from './UserMessage';
+import { fetchTopics } from '../../lib/apiClient';
 
 type MessageCardProps = {
   userMessage: Message;
@@ -24,10 +25,28 @@ export default function MessageCard({
   const isInitialMessage = userMessage.text.includes('Welcome to Onepoint');
   const [showInput, setShowInput] = useState(isInitialMessage && isLastCard);
   const [showButton, setShowButton] = useState(false);
+  const [topics, setTopics] = useState<Topics>({ topics: [] });
 
   const handleClick = () => {
     setShowInput(true);
   };
+
+  const handleTopicClick = (topic: Topic) => {
+    const questionText =
+      topic.questions && topic.questions.length > 0
+        ? topic.questions[0]
+        : `Tell me more about ${topic.name}`;
+
+    handleSubmit(questionText);
+  };
+
+  useEffect(() => {
+    try {
+      fetchTopics().then(setTopics);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   return (
     <div
@@ -37,7 +56,12 @@ export default function MessageCard({
     >
       {/* User message */}
       <div className="transition-all duration-300 transform hover:scale-[1.01]">
-        <UserMessage message={userMessage} isInitialMessage={isInitialMessage} />
+        <UserMessage
+          message={userMessage}
+          isInitialMessage={isInitialMessage}
+          topics={topics}
+          onTopicClick={handleTopicClick}
+        />
       </div>
 
       {/* Agent message or thinking indicator */}

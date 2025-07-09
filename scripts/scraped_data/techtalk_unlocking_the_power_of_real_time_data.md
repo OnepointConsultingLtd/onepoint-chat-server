@@ -1,6 +1,6 @@
-# Onepoint Techtalk | Onepoint - Do data better | Innovate with AI & more | Architect for Outcomes
+# Unlocking the power of real-time data — Webinar — Onepoint TechTalk | Onepoint - Do data better | Innovate with AI & more | Architect for Outcomes
 
-Source: https://www.onepointltd.com/techtalk/
+Source: https://www.onepointltd.com/techtalk/unlocking-the-power-of-real-time-data/
 
 *Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
 
@@ -21,6 +21,25 @@ Do data better[2]
 Innovate with AI & more[3]
 
 Home[4]
+
+Onepoint Techtalk[5]
+
+## Unlocking the power of real-time data for digital transformation and AI decisioning
+
+In partnership withGigaspaces Technologies, we bought together a panel of highly experienced digital transformation and data integration specialists to share practical tips, best practices, and actionable techniques for unlocking the power of real-time data for digital transformation and AI decisioning.
+
+This event was livestreamed and recorded
+
+1. Gain practical advice on utilizing real-time data effectively.
+2. Learn the best practices for integrating and managing real-time data to drive digital transformation.
+
+- How does real-time data enhance digital transformation efforts in various industries?
+- What are the key challenges in integrating real-time data into existing IT infrastructures?
+- What are the different case studies where real-time data significantly impacted business outcomes?
+
+Onepoint as a Data Controller will process your personal data in line with the General Data Protection Regulations (GDPR). For further details, please see ourprivacy notice.
+
+privacy notice[6]
 
 ### Upcoming webinar
 
@@ -60,7 +79,7 @@ In this sessionwe look at the fundamentals of Generative AI and Large Language M
 
 In partnership withGigaspaces, join our panelof highly experienced digital transformation and data integration specialists who will provide you with invaluable insights and actionable solutions on how to unlock the power of real-time data for digital transformation and AI decisioning.
 
-Gigaspaces[5]
+Gigaspaces[7]
 
 [Watch now](/techtalk/unlocking-the-power-of-real-time-data)
 
@@ -69,38 +88,6 @@ Gigaspaces[5]
 For more webinar replays, visitOnepoint TechTalk
 
 [Onepoint TechTalk](/techtalk#replay)
-
-### Upcoming webinar
-
-In this third session of the Decoding AI series, delve into the hidden potential of untapped data, like clickstream data, application logs, email communications, customer call records, and Internet of Things (IoT) data.
-
-[Register now](/techtalk/spotlight-on-dark-data-with-ai/)
-
-In this session we explore more ways to get the most out of LLMs. Beyond the chat interface, which we covered last time, workflows and complex interactions are advanced ways to optimise the utility and efficiency of LLMs.
-
-[Register now](/techtalk/unleashing-the-power-of-large-language-models-part-2-workflows-and-complex-interactions/)
-
-### Webinar replays
-
-Ready to dive deeper into the world of Large Language Models (LLMs)? This webinar, the second in our Decoding AI series, builds on our previous session on LLM fundamentals.
-
-[Watch now](/techtalk/unleashing-the-power-of-large-language-models-direct-interactions/)
-
-Are you ready to maximise the impact of your AI initiatives? Join Boomi and Onepoint for an executive-level webinar exploring the critical intersection of AI and Master Data Management.
-
-[Watch now](/techtalk/ai-and-master-data-management-a-synergy-for-success/)
-
-In this sessionwe look at the fundamentals of Generative AI and Large Language Models (LLMs) — one of the most transformative AI technologies to emerge in recent years.
-
-[Watch now](/techtalk/fundamentals-of-large-language-models)
-
-In partnership withGigaspaces, join our panelof highly experienced digital transformation and data integration specialists who will provide you with invaluable insights and actionable solutions on how to unlock the power of real-time data for digital transformation and AI decisioning.
-
-Gigaspaces[6]
-
-[Watch now](/techtalk/unlocking-the-power-of-real-time-data)
-
-### Coming soon
 
 - What we doArchitect for outcomesDo data betterInnovate with AI & moreSpringboard™ WorkshopOnepoint Labs
 
@@ -181,11 +168,12 @@ Contact us
 [2] Do data better: https://www.onepointltd.com/do-data-better
 [3] Innovate with AI & more: https://www.onepointltd.com/innovate-with-ai-more
 [4] Home: https://www.onepointltd.com
-[5] Gigaspaces: https://www.gigaspaces.com/
-[6] Gigaspaces: https://www.gigaspaces.com/
+[5] Onepoint Techtalk: https://www.onepointltd.com/techtalk/
+[6] privacy notice: https://www.onepointltd.com/policies/privacy-policy/
+[7] Gigaspaces: https://www.gigaspaces.com/
 
 ## Metadata
 
-- URL: https://www.onepointltd.com/techtalk/
-- Last Scraped: 2025-07-02 13:21:39
+- URL: https://www.onepointltd.com/techtalk/unlocking-the-power-of-real-time-data/
+- Last Scraped: 2025-07-02 13:22:25
 - Content Type: Web Page

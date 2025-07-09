@@ -1,15 +1,24 @@
-import { Message } from '../../type/types';
+import { Message, Topic, Topics } from '../../type/types';
 import BaseMessage from './BaseMessage';
 
-interface UserMessageProps {
+type UserMessageProps = {
   message: Message;
-  isInitialMessage: boolean;
-}
+  isInitialMessage?: boolean;
+  topics?: Topics;
+  onTopicClick?: (topic: Topic) => void;
+};
 
-export default function UserMessage({ message, isInitialMessage }: UserMessageProps) {
+export default function UserMessage({
+  message,
+  isInitialMessage,
+  topics,
+  onTopicClick,
+}: UserMessageProps) {
   const header = !isInitialMessage ? (
     <div className="text-xs font-medium text-blue-600 uppercase tracking-wider">You</div>
   ) : null;
+
+  console.log('topics', topics);
 
   return (
     <BaseMessage
@@ -20,6 +29,8 @@ export default function UserMessage({ message, isInitialMessage }: UserMessagePr
       proseColor="blue"
       header={header}
       showTimestamp={!isInitialMessage}
+      topics={topics}
+      onTopicClick={onTopicClick}
     />
   );
 }

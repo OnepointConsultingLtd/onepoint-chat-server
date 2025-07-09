@@ -1,7 +1,8 @@
 import React from 'react';
-import { Message } from '../../type/types';
+import { Message, Topic, Topics } from '../../type/types';
 import RenderReactMarkdown from '../RenderReactMarkdown';
 import MessageTimestamp from './MessageTimestamp';
+import TopicButtons from '../TopicButtons';
 
 type BaseMessageProps = {
   message: Message;
@@ -11,6 +12,8 @@ type BaseMessageProps = {
   proseColor: string;
   header?: React.ReactNode;
   showTimestamp?: boolean;
+  topics?: Topics;
+  onTopicClick?: (topic: Topic) => void;
 };
 
 export default function BaseMessage({
@@ -20,6 +23,8 @@ export default function BaseMessage({
   gradientTo,
   proseColor,
   header,
+  topics,
+  onTopicClick,
 }: BaseMessageProps) {
   return (
     <div
@@ -38,6 +43,9 @@ export default function BaseMessage({
         <div className={`prose prose-${proseColor} max-w-none`}>
           <RenderReactMarkdown message={message} />
         </div>
+        {topics && onTopicClick && (
+          <TopicButtons topics={topics.topics} onTopicClick={onTopicClick} />
+        )}
       </div>
     </div>
   );

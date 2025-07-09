@@ -8,6 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from tqdm import tqdm
 import time
 from datetime import datetime
+import re
 
 """
 This script is used to scrape the Onepoint website and save the data to a Markdown file.
@@ -143,107 +144,66 @@ def save_to_markdown(content, filename):
     with open(filename, "w", encoding="utf-8") as file:
         file.write(content)
 
+def generate_filename(url):
+    """Generate a unique filename for a URL"""
+    # Remove protocol and domain
+    path = url.replace("https://www.onepointltd.com", "").replace("http://www.onepointltd.com", "")
+    
+    # Remove trailing slash
+    if path.endswith('/'):
+        path = path[:-1]
+    
+    # If path is empty (homepage), use 'home'
+    if not path:
+        path = 'home'
+    
+    # Remove leading slash
+    if path.startswith('/'):
+        path = path[1:]
+    
+    # Replace slashes with underscores and clean up
+    filename = path.replace('/', '_').replace(' ', '_').replace('-', '_')
+    
+    # Remove any special characters that might cause issues
+    filename = re.sub(r'[^\w\-_.]', '', filename)
+    
+    # Ensure filename is not too long
+    if len(filename) > 100:
+        filename = filename[:100]
+    
+    return filename + ".md"
+
 # List of URLs to scrape
 urls_to_scrape = [
     # Main pages
-    "https://www.onepointltd.com/",
-    "https://www.onepointltd.com/innovate-with-ai-more",
-    "https://www.onepointltd.com/architect-for-outcomes",
-    "https://www.onepointltd.com/do-data-better",
-    "https://www.onepointltd.com/solve-with-design-thinking",
-    "https://www.onepointltd.com/purpose-beyond-profit",
-    
-    # Services and Solutions
-    "https://www.onepointltd.com/onepoint-data-wellness",
-    "https://www.onepointltd.com/onepoint-d-well",
-    "https://www.onepointltd.com/onepoint-d-wise",
-    "https://www.onepointltd.com/rapid-health-check",
-    "https://www.onepointltd.com/transformation-roadmap",
-    "https://www.onepointltd.com/boomi-consulting-services-uk",
-    "https://www.onepointltd.com/ai-consultancy-services-uk",
-    "https://www.onepointltd.com/quickbase",
-    "https://www.onepointltd.com/talend-2",
-    
-    # Team and Careers
-    "https://www.onepointltd.com/career-opportunities",
-    "https://www.onepointltd.com/discover-onepoint/meet-our-team",
-    "https://www.onepointltd.com/discover-onepoint/meet-our-team/shashin-shah",
-    "https://www.onepointltd.com/discover-onepoint/meet-our-team/chris-wray-2",
-    "https://www.onepointltd.com/discover-onepoint/meet-our-team/christy-kulasingam-2",
-    "https://www.onepointltd.com/discover-onepoint/meet-our-team/els-braeken",
-    "https://www.onepointltd.com/discover-onepoint/meet-our-team/maithili-shetty",
-    "https://www.onepointltd.com/discover-onepoint/meet-our-team/matthew-earl-3",
-    "https://www.onepointltd.com/discover-onepoint/meet-our-team/sangeetha-viswanathan",
-    
-    # Client Stories
-    "https://www.onepointltd.com/client-stories",
-    "https://www.onepointltd.com/client-stories/4g-telco-case-study",
-    "https://www.onepointltd.com/client-stories/automotive-architecture-transformation-client",
-    "https://www.onepointltd.com/client-stories/belfast-city-council",
-    "https://www.onepointltd.com/client-stories/british-food-and-energy",
-    "https://www.onepointltd.com/client-stories/carphone-warehouse-case-study",
-    "https://www.onepointltd.com/client-stories/data-services-client-case-study",
-    "https://www.onepointltd.com/client-stories/eventra",
-    "https://www.onepointltd.com/client-stories/flight-centre-case-study",
-    "https://www.onepointltd.com/client-stories/frontline-case-study",
-    "https://www.onepointltd.com/client-stories/global-coatings-company-case-study",
-    "https://www.onepointltd.com/client-stories/google-migration-case-study",
-    "https://www.onepointltd.com/client-stories/indian-telcom-sdl-case-study",
-    "https://www.onepointltd.com/client-stories/japanese-electronics",
-    "https://www.onepointltd.com/client-stories/meggitt-case-study",
-    "https://www.onepointltd.com/client-stories/multimedia-client-case-study",
-    "https://www.onepointltd.com/client-stories/network-rail-telecom-case-study",
-    "https://www.onepointltd.com/client-stories/nrt-key-performance-indicator",
-    "https://www.onepointltd.com/client-stories/nrt-quicksilver-case-study",
-    "https://www.onepointltd.com/client-stories/samza-poc-telco-case-study",
-    "https://www.onepointltd.com/client-stories/sita-aero",
-    "https://www.onepointltd.com/client-stories/travel-and-leisure-client",
-    "https://www.onepointltd.com/client-stories/travis-perkins",
-    "https://www.onepointltd.com/client-stories/vision-express-case-study",
-    
-    # TechTalk and Blog
-    "https://www.onepointltd.com/techtalk",
-    "https://www.onepointltd.com/techtalk/ai-and-master-data-management-a-synergy-for-success-replay",
-    "https://www.onepointltd.com/techtalk/fundamentals-of-large-language-models-replay",
-    "https://www.onepointltd.com/techtalk/the-future-of-enterprise-data-access-replay",
-    "https://www.onepointltd.com/techtalk/unleashing-the-power-of-large-language-models-direct-interactions-replay",
-    "https://www.onepointltd.com/techtalk/unleashing-the-power-of-large-language-models-part-2-workflows-and-complex-interactions-replay",
-    "https://www.onepointltd.com/techtalk/unlocking-the-power-of-real-time-data-replay",
-    "https://www.onepointltd.com/techtalk/spotlight-on-dark-data-with-ai-replay",
-    "https://www.onepointltd.com/blog",
-    
-    # Innovation and Labs
-    "https://www.onepointltd.com/onepoint-labs",
-    "https://www.onepointltd.com/onepoint-labs/our-innovation",
-    "https://www.onepointltd.com/onepoint-labs/our-innovation/kudu-and-talend-data-integration",
-    "https://www.onepointltd.com/onepoint-labs/our-innovation/talend-spark-kudu-components",
-    "https://www.onepointltd.com/onepoint-labs/random-text-generator",
-    "https://www.onepointltd.com/onepoint-labs/sentiment-analysis",
-    "https://www.onepointltd.com/onepoint-labs/text-generator",
-    
-    # Policies and Legal
-    "https://www.onepointltd.com/policies",
-    "https://www.onepointltd.com/privacy-policy",
-    "https://www.onepointltd.com/acceptable-use-policy",
-    "https://www.onepointltd.com/cookie-policy",
-    "https://www.onepointltd.com/copyright-policies",
-    "https://www.onepointltd.com/disclaimer",
-    "https://www.onepointltd.com/privacy-notice",
-    "https://www.onepointltd.com/terms-of-website-use",
-    
-    # Contact and About
-    "https://www.onepointltd.com/contact-us-2",
-    "https://www.onepointltd.com/discover-onepoint",
-    "https://www.onepointltd.com/discover-onepoint/our-approach",
-    "https://www.onepointltd.com/discover-onepoint/our-tech",
-    
-    # PDF Documents
-    "https://www.onepointltd.com/wp-content/uploads/2022/10/PUNE_JD2022-10_IN.004-Lowcode-Developer.pdf",
-    "https://www.onepointltd.com/wp-content/uploads/2022/10/PUNE_JD2022-10_IN.006-Junior-Test-Engineer.pptx.pdf",
-    "https://www.onepointltd.com/wp-content/uploads/2022/10/UK_JD2022-10_UK.002-Boomi-Developer.pdf",
-    "https://www.onepointltd.com/wp-content/uploads/2022/10/UK_JD2022-10_UK.004-Lowcode-Developer.pptx.pdf",
-    "https://www.onepointltd.com/wp-content/uploads/2024/09/Terms-of-Use-for-Onepoint-D-Well™-The-Data-Wellness-Companion.pdf",
-    "https://www.onepointltd.com/wp-content/uploads/2024/09/Terms-of-Use-for-Onepoint-D-Wise™-The-Data-Wellness-Self-Diagnostic.pdf"
+   
+"https://www.onepointltd.com/",
+"https://www.onepointltd.com/boomi/",
+"https://www.onepointltd.com/contact-us/",
+"https://www.onepointltd.com/data-wellness/",
+
+"https://www.onepointltd.com/data-wellness/onepoint-d-well/",
+"https://www.onepointltd.com/data-wellness/onepoint-d-wise/",
+"https://www.onepointltd.com/data-wellness/rapid-health-check/",
+"https://www.onepointltd.com/data-wellness/transformation-roadmap/",
+"https://www.onepointltd.com/innovate-with-ai-more/",
+"https://www.onepointltd.com/techtalk/",
+"https://www.onepointltd.com/techtalk/ai-and-master-data-management-a-synergy-for-success/",
+"https://www.onepointltd.com/techtalk/fundamentals-of-large-language-models/",
+"https://www.onepointltd.com/techtalk/the-future-of-enterprise-data-access/",
+"https://www.onepointltd.com/techtalk/unleashing-the-power-of-large-language-models-direct-interactions/",
+"https://www.onepointltd.com/techtalk/unleashing-the-power-of-large-language-models-part-2-workflows-and-complex-interactions/",
+"https://www.onepointltd.com/techtalk/unlocking-the-power-of-real-time-data/",
+"https://www.onepointltd.com/wp-content/uploads/2024/09/Terms-of-Use-for-Onepoint-D-Well%E2%84%A2-The-Data-Wellness-Companion.pdf",
+"https://www.onepointltd.com/wp-content/uploads/2024/09/Terms-of-Use-for-Onepoint-D-Wise%E2%84%A2-The-Data-Wellness-Self-Diagnostic.pdf",
+"https://www.onepointltd.com/techtalk/ai-and-master-data-management-a-synergy-for-success-replay/",
+"https://www.onepointltd.com/techtalk/fundamentals-of-large-language-models-replay/",
+"https://www.onepointltd.com/techtalk/the-future-of-enterprise-data-access-replay/",
+"https://www.onepointltd.com/techtalk/unleashing-the-power-of-large-language-models-direct-interactions-replay/",
+"https://www.onepointltd.com/techtalk/unleashing-the-power-of-large-language-models-part-2-workflows-and-complex-interactions-replay/",
+"https://www.onepointltd.com/techtalk/unlocking-the-power-of-real-time-data-replay/",
+"https://www.onepointltd.com/techtalk/spotlight-on-dark-data-with-ai/",
+"https://www.onepointltd.com/techtalk/spotlight-on-dark-data-with-ai-replay/"
 ]
 
 def main():
@@ -274,8 +234,9 @@ def main():
             content = scrape_page_selenium(url)
         
         if content:
-            filename = os.path.join(output_dir, url.split("/")[-1] + ".md")
-            save_to_markdown(content, filename)
+            filename = generate_filename(url)
+            filepath = os.path.join(output_dir, filename)
+            save_to_markdown(content, filepath)
             successful_scrapes += 1
             pbar.write(f"✅ Saved: {filename}")
         else:

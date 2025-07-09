@@ -11,7 +11,9 @@ if (!CONTEXT_API_URL) {
 
 export async function getContext(question: string) {
 	try {
-		const url = CONTEXT_API_URL?.replace("{question}", encodeURIComponent(question));
+		const baseUrl = CONTEXT_API_URL?.replace("{question}", encodeURIComponent(question));
+		const url = `${baseUrl}${baseUrl?.includes('?') ? '&' : '?'}engine=lightrag`;
+
 		console.log("This is the url: ", url);
 
 		const response = await fetch(url!, {

@@ -6,6 +6,7 @@ import { createEdges } from './EdgeCreator';
 import { createNodes } from './NodeCreator';
 import { focusOnLatestNode } from './ViewportManager';
 import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../../lib/constants';
+import ErrorCard from './ErrorCard';
 
 /**
  * Flow component that displays the chat conversation as a flowing diagram.
@@ -41,23 +42,32 @@ export default function Flow({ messages, isThinking, handleSubmit, messagesEndRe
   const onNodesChange = useCallback(() => {}, []);
   const onEdgesChange = useCallback(() => {}, []);
 
+  const isError = messages.some(message => message.text.includes('Connection error'));
+
   return (
     <div style={{ height: '100%', width: '100%' }}>
-      <ReactFlow
-        nodes={flowNodes}
-        edges={flowEdges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        nodeTypes={nodeTypes}
-        nodesDraggable={false}
-        minZoom={MIN_ZOOM}
-        maxZoom={MAX_ZOOM}
-        defaultViewport={{ x: 0, y: 0, zoom: DEFAULT_ZOOM }}
-        proOptions={{ hideAttribution: true }}
-      >
-        <Background color="#f1f5f9" variant={BackgroundVariant.Dots} gap={20} size={1} />
-        <Controls showInteractive={false} />
-      </ReactFlow>
+      {isError ? (
+        <ErrorCard
+          title="Connection Error"
+          message="We were unable to connect to the server. Please check your internet connection or try again later."
+        />
+      ) : (
+        <ReactFlow
+          nodes={flowNodes}
+          edges={flowEdges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          nodeTypes={nodeTypes}
+          nodesDraggable={false}
+          minZoom={MIN_ZOOM}
+          maxZoom={MAX_ZOOM}
+          defaultViewport={{ x: 0, y: 0, zoom: DEFAULT_ZOOM }}
+          proOptions={{ hideAttribution: true }}
+        >
+          <Background color="#f1f5f9" variant={BackgroundVariant.Dots} gap={20} size={1} />
+          <Controls showInteractive={false} />
+        </ReactFlow>
+      )}
       <div ref={messagesEndRef} />
     </div>
   );
