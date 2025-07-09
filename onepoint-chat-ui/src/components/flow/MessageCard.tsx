@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { BiMessageRoundedDots } from 'react-icons/bi';
-import { Message, Topic, Topics } from '../../type/types';
+import { Message, Topic } from '../../type/types';
 import ChatInput from '../ChatInput';
 import ThinkingIndicator from '../ThinkingIndicator';
 import AgentMessage from './AgentMessage';
 import UserMessage from './UserMessage';
-import { fetchTopics } from '../../lib/apiClient';
+import useChatStore from '../../context/chatStore';
 
 type MessageCardProps = {
   userMessage: Message;
@@ -22,14 +22,25 @@ export default function MessageCard({
   isThinking,
   handleSubmit,
 }: MessageCardProps) {
-  const isInitialMessage = userMessage.text.includes('Welcome to Onepoint');
-  const [showInput, setShowInput] = useState(isInitialMessage && isLastCard);
-  const [showButton, setShowButton] = useState(false);
-  const [topics, setTopics] = useState<Topics>({ topics: [] });
-
-  const handleClick = () => {
-    setShowInput(true);
-  };
+  const {
+    topics,
+    loadTopics,
+    showInput,
+    showButton,
+    isInitialMessage,
+    setIsInitialMessage,
+    setShowButton,
+    handleClick,
+  } = useChatStore(state => ({
+    topics: state.topics,
+    loadTopics: state.loadTopics,
+    showInput: state.showInput,
+    showButton: state.showButton,
+    isInitialMessage: state.isInitialMessage,
+    setIsInitialMessage: state.setIsInitialMessage,
+    setShowButton: state.setShowButton,
+    handleClick: state.handleClick,
+  }));
 
   const handleTopicClick = (topic: Topic) => {
     const questionText =
@@ -41,12 +52,12 @@ export default function MessageCard({
   };
 
   useEffect(() => {
-    try {
-      fetchTopics().then(setTopics);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+    loadTopics();
+  }, [loadTopics]);
+
+  useEffect(() => {
+    setIsInitialMessage(userMessage, isLastCard);
+  }, [userMessage, isLastCard, setIsInitialMessage]);
 
   return (
     <div
@@ -59,7 +70,7 @@ export default function MessageCard({
         <UserMessage
           message={userMessage}
           isInitialMessage={isInitialMessage}
-          topics={topics}
+          topics={topics || undefined}
           onTopicClick={handleTopicClick}
         />
       </div>
