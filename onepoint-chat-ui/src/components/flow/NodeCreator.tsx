@@ -8,11 +8,7 @@ import { getConversationStartIndex } from '../../utils/messageUtils';
  * Creates flow nodes from the messages
  */
 
-export function createNodes(
-  messages: Message[],
-  isThinking: boolean,
-  handleSubmit: (text: string) => void
-): Node[] {
+export function createNodes(messages: Message[]): Node[] {
   const nodes: Node[] = [];
 
   if (!messages || messages.length === 0) {
@@ -26,8 +22,6 @@ export function createNodes(
 
   // Create cards for each user-agent message pair
   for (let i = startIndex; i < messages.length; i += 2) {
-    const userMessage = messages[i];
-    const agentMessage = i + 1 < messages.length ? messages[i + 1] : null;
     const cardIndex = Math.floor((i - startIndex) / 2);
     const isLastCard = i >= messages.length - 2;
 
@@ -35,15 +29,7 @@ export function createNodes(
       id: `card-${cardIndex}`,
       type: 'custom',
       data: {
-        content: (
-          <MessageCard
-            userMessage={userMessage}
-            agentMessage={agentMessage}
-            isLastCard={isLastCard}
-            isThinking={isThinking}
-            handleSubmit={handleSubmit}
-          />
-        ),
+        content: <MessageCard userMessageIndex={i} isLastCard={isLastCard} />,
       },
       position: {
         x: cardIndex * (CARD_WIDTH + CARD_GAP),

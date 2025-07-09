@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import useChatStore from '../context/chatStore';
 
-interface ChatInputProps {
-  handleSubmit: (text: string) => void;
-  isThinking: boolean;
-}
+export default function ChatInput() {
+  const { isThinking, handleSubmit } = useChatStore(state => ({
+    isThinking: state.isThinking,
+    handleSubmit: state.handleSubmit,
+  }));
 
-export default function ChatInput({ handleSubmit, isThinking }: ChatInputProps) {
   const [inputText, setInputText] = useState('');
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {

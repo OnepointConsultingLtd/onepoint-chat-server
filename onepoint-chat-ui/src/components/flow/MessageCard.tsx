@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { BiMessageRoundedDots } from 'react-icons/bi';
-import { Message, Topic } from '../../type/types';
+import { Topic } from '../../type/types';
 import ChatInput from '../ChatInput';
 import ThinkingIndicator from '../ThinkingIndicator';
 import AgentMessage from './AgentMessage';
@@ -8,39 +8,38 @@ import UserMessage from './UserMessage';
 import useChatStore from '../../context/chatStore';
 
 type MessageCardProps = {
-  userMessage: Message;
-  agentMessage: Message | null;
+  userMessageIndex: number;
   isLastCard: boolean;
-  isThinking: boolean;
-  handleSubmit: (text: string) => void;
 };
 
-export default function MessageCard({
-  userMessage,
-  agentMessage,
-  isLastCard,
-  isThinking,
-  handleSubmit,
-}: MessageCardProps) {
+export default function MessageCard({ userMessageIndex, isLastCard }: MessageCardProps) {
   const {
-    topics,
+    messages,
     loadTopics,
     showInput,
     showButton,
     isInitialMessage,
+    isThinking,
     setIsInitialMessage,
     setShowButton,
     handleClick,
+    handleSubmit,
   } = useChatStore(state => ({
-    topics: state.topics,
+    messages: state.messages,
     loadTopics: state.loadTopics,
     showInput: state.showInput,
     showButton: state.showButton,
     isInitialMessage: state.isInitialMessage,
+    isThinking: state.isThinking,
     setIsInitialMessage: state.setIsInitialMessage,
     setShowButton: state.setShowButton,
     handleClick: state.handleClick,
+    handleSubmit: state.handleSubmit,
   }));
+
+  const userMessage = messages[userMessageIndex];
+  const agentMessage =
+    userMessageIndex + 1 < messages.length ? messages[userMessageIndex + 1] : null;
 
   const handleTopicClick = (topic: Topic) => {
     const questionText =
@@ -56,8 +55,12 @@ export default function MessageCard({
   }, [loadTopics]);
 
   useEffect(() => {
-    setIsInitialMessage(userMessage, isLastCard);
+    if (userMessage) {
+      setIsInitialMessage(userMessage, isLastCard);
+    }
   }, [userMessage, isLastCard, setIsInitialMessage]);
+
+  if (!userMessage) return null;
 
   return (
     <div
@@ -70,7 +73,6 @@ export default function MessageCard({
         <UserMessage
           message={userMessage}
           isInitialMessage={isInitialMessage}
-          topics={topics || undefined}
           onTopicClick={handleTopicClick}
         />
       </div>
@@ -88,7 +90,7 @@ export default function MessageCard({
 
       {showInput && !isThinking && isLastCard && (
         <div className="border-t rounded-b-xl transition-all duration-300">
-          <ChatInput handleSubmit={handleSubmit} isThinking={isThinking} />
+          <ChatInput />
         </div>
       )}
 

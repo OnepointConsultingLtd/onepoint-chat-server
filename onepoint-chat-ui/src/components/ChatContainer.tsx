@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useChat } from '../hooks/useChat';
+import useChatStore from '../context/chatStore';
 import initialQuestions from '../lib/initialQuestions';
 import Header from './Header';
 import Messages from './Messages';
@@ -7,8 +7,12 @@ import Sidebar from './Sidebar';
 import SideBarButton from './SideBarButton';
 
 export default function ChatContainer() {
-  const { messages, messagesEndRef, handleQuestionClick, handleSubmit, handleRestart, isThinking } =
-    useChat();
+  const { messages, handleQuestionClick, handleRestart } = useChatStore(state => ({
+    messages: state.messages,
+    handleQuestionClick: state.handleQuestionClick,
+    handleRestart: state.handleRestart,
+  }));
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -34,12 +38,7 @@ export default function ChatContainer() {
         </div>
 
         {/* Messages Container */}
-        <Messages
-          messages={messages}
-          messagesEndRef={messagesEndRef}
-          isThinking={isThinking}
-          handleSubmit={handleSubmit}
-        />
+        <Messages />
       </div>
     </main>
   );

@@ -1,34 +1,30 @@
 import { Background, BackgroundVariant, Controls, ReactFlow, useReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { FlowProps, nodeTypes } from '../../type/types';
+import { nodeTypes } from '../../type/types';
 import { createEdges } from './EdgeCreator';
 import { createNodes } from './NodeCreator';
 import { focusOnLatestNode } from './ViewportManager';
 import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../../lib/constants';
 import ErrorCard from './ErrorCard';
+import useChatStore from '../../context/chatStore';
 
 /**
  * Flow component that displays the chat conversation as a flowing diagram.
  */
 
-export default function Flow({ messages, isThinking, handleSubmit, messagesEndRef }: FlowProps) {
+export default function Flow() {
+  const { messages, isThinking, messagesEndRef } = useChatStore(state => ({
+    messages: state.messages,
+    isThinking: state.isThinking,
+    messagesEndRef: state.messagesEndRef,
+  }));
+
   const reactFlowInstance = useReactFlow();
   const previousMessagesLengthRef = useRef<number>(0);
 
-  // Create a handler that will submit the message and focus on the latest node
-  const handleSubmitWithFocus = useCallback(
-    (text: string) => {
-      handleSubmit(text);
-    },
-    [handleSubmit]
-  );
-
   // Create the nodes for the flow diagram
-  const flowNodes = useMemo(
-    () => createNodes(messages, isThinking, handleSubmitWithFocus),
-    [messages, isThinking, handleSubmitWithFocus]
-  );
+  const flowNodes = useMemo(() => createNodes(messages), [messages]);
 
   // Create the edges between nodes
   const flowEdges = useMemo(() => createEdges(messages), [messages]);

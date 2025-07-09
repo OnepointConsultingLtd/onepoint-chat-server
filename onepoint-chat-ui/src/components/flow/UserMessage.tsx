@@ -1,19 +1,18 @@
-import { Message, Topic, Topics } from '../../type/types';
+import { Message, Topic } from '../../type/types';
 import BaseMessage from './BaseMessage';
+import useChatStore from '../../context/chatStore';
 
 type UserMessageProps = {
   message: Message;
   isInitialMessage?: boolean;
-  topics?: Topics;
   onTopicClick?: (topic: Topic) => void;
 };
 
-export default function UserMessage({
-  message,
-  isInitialMessage,
-  topics,
-  onTopicClick,
-}: UserMessageProps) {
+export default function UserMessage({ message, isInitialMessage, onTopicClick }: UserMessageProps) {
+  const { topics } = useChatStore(state => ({
+    topics: state.topics,
+  }));
+
   const header = !isInitialMessage ? (
     <div className="text-xs font-medium text-blue-600 uppercase tracking-wider">You</div>
   ) : null;
@@ -29,7 +28,7 @@ export default function UserMessage({
       proseColor="blue"
       header={header}
       showTimestamp={!isInitialMessage}
-      topics={topics}
+      topics={topics || undefined}
       onTopicClick={onTopicClick}
     />
   );
