@@ -1,11 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import useChatStore from '../context/chatStore';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function ChatInput() {
-  const { isThinking, handleSubmit } = useChatStore(state => ({
-    isThinking: state.isThinking,
-    handleSubmit: state.handleSubmit,
-  }));
+  const { isThinking, handleSubmit } = useChatStore(
+    useShallow(state => ({
+      isThinking: state.isThinking,
+      handleSubmit: state.handleSubmit,
+    }))
+  );
 
   const [inputText, setInputText] = useState('');
 

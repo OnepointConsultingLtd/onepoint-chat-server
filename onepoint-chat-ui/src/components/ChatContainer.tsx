@@ -1,17 +1,20 @@
 import { useState } from 'react';
-import useChatStore from '../context/chatStore';
 import initialQuestions from '../lib/initialQuestions';
 import Header from './Header';
 import Messages from './Messages';
 import Sidebar from './Sidebar';
 import SideBarButton from './SideBarButton';
+import useChatStore from '../context/chatStore';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function ChatContainer() {
-  const { messages, handleQuestionClick, handleRestart } = useChatStore(state => ({
-    messages: state.messages,
-    handleQuestionClick: state.handleQuestionClick,
-    handleRestart: state.handleRestart,
-  }));
+  const { messages, handleQuestionClick, handleRestart } = useChatStore(
+    useShallow(state => ({
+      messages: state.messages,
+      handleQuestionClick: state.handleQuestionClick,
+      handleRestart: state.handleRestart,
+    }))
+  );
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 

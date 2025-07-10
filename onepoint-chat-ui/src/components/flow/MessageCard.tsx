@@ -6,7 +6,7 @@ import ThinkingIndicator from '../ThinkingIndicator';
 import AgentMessage from './AgentMessage';
 import UserMessage from './UserMessage';
 import useChatStore from '../../context/chatStore';
-
+import { useShallow } from 'zustand/react/shallow';
 type MessageCardProps = {
   userMessageIndex: number;
   isLastCard: boolean;
@@ -24,18 +24,20 @@ export default function MessageCard({ userMessageIndex, isLastCard }: MessageCar
     setShowButton,
     handleClick,
     handleSubmit,
-  } = useChatStore(state => ({
-    messages: state.messages,
-    loadTopics: state.loadTopics,
-    showInput: state.showInput,
-    showButton: state.showButton,
-    isInitialMessage: state.isInitialMessage,
-    isThinking: state.isThinking,
-    setIsInitialMessage: state.setIsInitialMessage,
-    setShowButton: state.setShowButton,
-    handleClick: state.handleClick,
-    handleSubmit: state.handleSubmit,
-  }));
+  } = useChatStore(
+    useShallow(state => ({
+      messages: state.messages,
+      loadTopics: state.loadTopics,
+      showInput: state.showInput,
+      showButton: state.showButton,
+      isInitialMessage: state.isInitialMessage,
+      isThinking: state.isThinking,
+      setIsInitialMessage: state.setIsInitialMessage,
+      setShowButton: state.setShowButton,
+      handleClick: state.handleClick,
+      handleSubmit: state.handleSubmit,
+    }))
+  );
 
   const userMessage = messages[userMessageIndex];
   const agentMessage =

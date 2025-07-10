@@ -8,17 +8,19 @@ import { focusOnLatestNode } from './ViewportManager';
 import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../../lib/constants';
 import ErrorCard from './ErrorCard';
 import useChatStore from '../../context/chatStore';
-
+import { useShallow } from 'zustand/react/shallow';
 /**
  * Flow component that displays the chat conversation as a flowing diagram.
  */
 
 export default function Flow() {
-  const { messages, isThinking, messagesEndRef } = useChatStore(state => ({
-    messages: state.messages,
-    isThinking: state.isThinking,
-    messagesEndRef: state.messagesEndRef,
-  }));
+  const { messages, isThinking, messagesEndRef } = useChatStore(
+    useShallow(state => ({
+      messages: state.messages,
+      isThinking: state.isThinking,
+      messagesEndRef: state.messagesEndRef,
+    }))
+  );
 
   const reactFlowInstance = useReactFlow();
   const previousMessagesLengthRef = useRef<number>(0);
