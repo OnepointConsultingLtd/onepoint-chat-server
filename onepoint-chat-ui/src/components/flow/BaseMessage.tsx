@@ -1,7 +1,6 @@
 import React from 'react';
 import { Message } from '../../type/types';
 import RenderReactMarkdown from '../RenderReactMarkdown';
-import TopicButtons from '../TopicButtons';
 import MessageTimestamp from './MessageTimestamp';
 
 type BaseMessageProps = {
@@ -31,14 +30,13 @@ export default function BaseMessage({
             {header}
             <>
               <div className="ml-2 h-1 w-1 rounded-full bg-gray-300"></div>
-              <MessageTimestamp timestamp={message.timestamp.toISOString()} />
+              <MessageTimestamp timestamp={message.timestamp} />
             </>
           </div>
         )}
         <div className={`prose prose-${proseColor} max-w-none`}>
           <RenderReactMarkdown message={message} />
         </div>
-        <TopicButtons />
       </div>
     </div>
   );

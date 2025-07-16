@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Message } from '../type/types';
 import CopyButton from './CopyButton';
+import TopicButtons from './TopicButtons';
 
 export default function RenderReactMarkdown({ message }: { message: Message }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -34,6 +35,8 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
       >
         {message.text}
       </ReactMarkdown>
+      <div>{message.type === 'agent' && <TopicButtons />}</div>
+
       <div className="flex items-center justify-between mt-2 text-xs">
         <CopyButton
           text={message.text}

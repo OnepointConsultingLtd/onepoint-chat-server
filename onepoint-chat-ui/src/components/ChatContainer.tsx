@@ -1,15 +1,36 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useChat } from '../hooks/useChat';
 import initialQuestions from '../lib/initialQuestions';
+import useChatStore from '../store/chatStore';
 import Header from './Header';
 import Messages from './Messages';
 import Sidebar from './Sidebar';
 import SideBarButton from './SideBarButton';
 
 export default function ChatContainer() {
-  const { messages, messagesEndRef, handleQuestionClick, handleSubmit, handleRestart, isThinking } =
-    useChat();
+  const { messagesEndRef, handleQuestionClick, handleRestart, handleSubmit } = useChat();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const { messages, isThinking, loadTopics, topics, setHandleSubmit } = useChatStore(
+    useShallow(state => ({
+      messages: state.messages,
+      isThinking: state.isThinking,
+      loadTopics: state.loadTopics,
+      topics: state.topics,
+      setHandleSubmit: state.setHandleSubmit,
+    }))
+  );
+
+  useEffect(() => {
+    if (!topics) {
+      loadTopics();
+    }
+  }, [topics, loadTopics]);
+
+  useEffect(() => {
+    setHandleSubmit(handleSubmit);
+  }, [handleSubmit, setHandleSubmit]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

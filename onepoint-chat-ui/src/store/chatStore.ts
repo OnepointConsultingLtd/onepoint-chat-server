@@ -22,14 +22,15 @@ type ChatStore = {
 	setIsInitialMessage: (message: Message, isLastCard: boolean) => void;
 	setShowInput: (show: boolean) => void;
 	setShowButton: (show: boolean) => void;
-	setMessages: (messages: Message[]) => void;
-	setIsThinking: (value: boolean) => void;
+	setMessages: (messagesOrUpdater: Message[] | ((prev: Message[]) => Message[])) => void;
+	setIsThinking: (valueOrUpdater: boolean | ((prev: boolean) => boolean)) => void;
 	setIsRestarting: (value: boolean) => void;
 	setHandleSubmit: (cb: (text: string) => void) => void;
 
 	// actions
 	handleClick: () => void;
 	handleTopicClick: (topic: Topic) => void;
+	handleSubmit: (text: string) => void;
 };
 
 const useChatStore = create<ChatStore>()(
@@ -72,13 +73,19 @@ const useChatStore = create<ChatStore>()(
 
 			setShowInput: (show: boolean) => set({ showInput: show }),
 			setShowButton: (show: boolean) => set({ showButton: show }),
-			setMessages: (messages: Message[]) => set({ messages }),
-			setIsThinking: (value: boolean) => set({ isThinking: value }),
+			setMessages: (messagesOrUpdater: Message[] | ((prev: Message[]) => Message[])) =>
+				set((state) => ({ messages: typeof messagesOrUpdater === 'function' ? (messagesOrUpdater as (prev: Message[]) => Message[])(state.messages) : messagesOrUpdater })),
+			setIsThinking: (valueOrUpdater: boolean | ((prev: boolean) => boolean)) =>
+				set((state) => ({ isThinking: typeof valueOrUpdater === 'function' ? (valueOrUpdater as (prev: boolean) => boolean)(state.isThinking) : valueOrUpdater })),
 			setIsRestarting: (value: boolean) => set({ isRestarting: value }),
 			setHandleSubmit: (cb: (text: string) => void) => set({ handleSubmitCallback: cb }),
 
 			// actions
 			handleClick: () => set({ showInput: true }),
+			handleSubmit: (text: string) => {
+				// TODO: Integrate with websocket logic or whatever is needed
+				console.log('handleSubmit from store:', text);
+			},
 
 			// Topics
 			handleTopicClick: (topic: Topic) => {
@@ -95,6 +102,8 @@ const useChatStore = create<ChatStore>()(
 			name: "chat-store-test1",
 			partialize: (state) => ({
 				topics: state.topics,
+				messages: state.messages,
+				isThinking: state.isThinking,
 			}),
 		}
 	)

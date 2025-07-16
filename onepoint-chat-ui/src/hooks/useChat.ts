@@ -11,14 +11,23 @@ import {
 import { createWebSocket, sendMessage } from "../lib/websocket";
 import { Message, Question, ServerMessage } from "../type/types";
 import { fetchChatHistory, fetchRawHistory } from "../utils/fetchChatHistory";
-import { useChatStore } from "../store/chatStore";
+import useChatStore from "../store/chatStore";
+import { useShallow } from "zustand/react/shallow";
 
 export function useChat() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isThinking, setIsThinking] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
 
-  // const { messages, setMessages, isThinking, setIsThinking, isRestarting, setIsRestarting } = useChatStore()
+  const {
+    messages,
+    isThinking,
+    setMessages,
+    setIsThinking,
+  } = useChatStore(useShallow(state => ({
+    messages: state.messages,
+    isThinking: state.isThinking,
+    setMessages: state.setMessages,
+    setIsThinking: state.setIsThinking,
+  })));
 
   const wsRef = useRef<WebSocket | null>(null);
   const wsOpen = useRef<boolean>(false);
@@ -75,7 +84,7 @@ export function useChat() {
             break;
           case "stream-chunk":
             setIsThinking(false);
-            setMessages((prev) => {
+            setMessages((prev: Message[]) => {
               const lastMessage = { ...prev[prev.length - 1] };
               if (!lastMessage || lastMessage.type !== "agent") {
                 return [...prev, messageFactoryAgent(message.chunk)];
@@ -87,7 +96,7 @@ export function useChat() {
           case "stream-end":
             setIsThinking(false);
             if (message.subType === "streamEndError") {
-              setMessages((prev) => [
+              setMessages((prev: Message[]) => [
                 ...prev,
                 messageFactoryAgent(message.message),
               ]);
@@ -95,7 +104,7 @@ export function useChat() {
             break;
           case "message":
             setIsThinking(false);
-            setMessages((prev) => [
+            setMessages((prev: Message[]) => [
               ...prev,
               messageFactoryAgent(message.message.content),
             ]);
@@ -122,23 +131,23 @@ export function useChat() {
             }
             break;
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error("Error parsing message:", error);
       }
     };
 
-    ws.onerror = (error: any) => {
+    ws.onerror = (error) => {
       console.error("WebSocket error:", error);
       const errorMessage: Message = messageFactoryAgent(
         `Connection error: Unable to connect to server`,
       );
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev: Message[]) => [...prev, errorMessage]);
     };
 
     ws.onclose = () => {
       console.log("WebSocket connection closed");
       const closeMessage: Message = messageFactoryAgent("Connection closed");
-      setMessages((prev) => [...prev, closeMessage]);
+      setMessages((prev: Message[]) => [...prev, closeMessage]);
       wsOpen.current = false;
     };
   };
@@ -186,7 +195,7 @@ export function useChat() {
 
     setIsThinking(true);
     const userMessage: Message = messageFactoryUser(question.text, currentConversationId.current);
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev: Message[]) => [...prev, userMessage]);
     sendMessage(wsRef.current, "message", question.text, currentConversationId.current);
 
     if (!hasInitialized.current) {
@@ -205,7 +214,7 @@ export function useChat() {
 
     setIsThinking(true);
     const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev: Message[]) => [...prev, userMessage]);
     sendMessage(wsRef.current, "message", text, currentConversationId.current);
 
     if (!hasInitialized.current) {
@@ -213,7 +222,6 @@ export function useChat() {
     }
   };
 
-  console.log('messages', messages);
   return {
     messages,
     messagesEndRef,

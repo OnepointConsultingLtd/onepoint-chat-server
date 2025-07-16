@@ -8,6 +8,7 @@ export default function TopicButtons() {
       topics: state.topics,
     }))
   );
+  console.log('test', topics);
 
   if (!topics || topics.topics.length === 0) {
     return null;
@@ -18,7 +19,7 @@ export default function TopicButtons() {
       <div className="flex items-center gap-2 mb-3">
         <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
         <span className="text-sm font-medium text-gray-700 uppercase tracking-wider">
-          Related Topics
+          Select a Topic
         </span>
       </div>
 

@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { BiMessageRoundedDots } from 'react-icons/bi';
+import { useShallow } from 'zustand/react/shallow';
+import useChatStore from '../../store/chatStore';
 import { Message } from '../../type/types';
 import ChatInput from '../ChatInput';
 import ThinkingIndicator from '../ThinkingIndicator';
 import AgentMessage from './AgentMessage';
 import UserMessage from './UserMessage';
-import useChatStore from '../../store/chatStore';
-import { useShallow } from 'zustand/react/shallow';
 
 type MessageCardProps = {
   userMessage: Message;
@@ -29,7 +29,6 @@ export default function MessageCard({
     isInitialMessage,
     setShowButton,
     setIsInitialMessage,
-    setHandleSubmit,
     handleClick,
   } = useChatStore(
     useShallow(state => ({
@@ -38,15 +37,13 @@ export default function MessageCard({
       isInitialMessage: state.isInitialMessage,
       setShowButton: state.setShowButton,
       setIsInitialMessage: state.setIsInitialMessage,
-      setHandleSubmit: state.setHandleSubmit,
       handleClick: state.handleClick,
     }))
   );
 
   useEffect(() => {
     setIsInitialMessage(userMessage, isLastCard);
-    setHandleSubmit(handleSubmit);
-  }, [userMessage, isLastCard, setIsInitialMessage, handleSubmit, setHandleSubmit]);
+  }, [userMessage, isLastCard, setIsInitialMessage]);
 
   return (
     <div
