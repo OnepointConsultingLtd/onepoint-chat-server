@@ -1,18 +1,20 @@
-import { Topic } from '../type/types';
+import useChatStore from '../store/chatStore';
+import { useShallow } from 'zustand/react/shallow';
 
-type TopicButtonsProps = {
-  topics: Topic[];
-  onTopicClick: (topic: Topic) => void;
-  className?: string;
-};
+export default function TopicButtons() {
+  const { handleTopicClick, topics } = useChatStore(
+    useShallow(state => ({
+      handleTopicClick: state.handleTopicClick,
+      topics: state.topics,
+    }))
+  );
 
-export default function TopicButtons({ topics, onTopicClick, className = '' }: TopicButtonsProps) {
-  if (!topics || topics.length === 0) {
+  if (!topics || topics.topics.length === 0) {
     return null;
   }
 
   return (
-    <div className={`mt-4 space-y-3 ${className}`}>
+    <div className={`mt-4 space-y-3 `}>
       <div className="flex items-center gap-2 mb-3">
         <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
         <span className="text-sm font-medium text-gray-700 uppercase tracking-wider">
@@ -21,10 +23,10 @@ export default function TopicButtons({ topics, onTopicClick, className = '' }: T
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {topics?.map((topic, index) => (
+        {topics?.topics?.map((topic, index) => (
           <button
             key={`${topic.name}-${index}`}
-            onClick={() => onTopicClick(topic)}
+            onClick={() => handleTopicClick(topic)}
             className="group relative overflow-hidden bg-white border border-gray-200 hover:border-blue-300 rounded-xl px-4 py-2.5 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
           >
             {/* Gradient background on hover */}

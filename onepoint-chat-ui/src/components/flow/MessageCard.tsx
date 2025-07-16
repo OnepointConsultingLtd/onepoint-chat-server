@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { BiMessageRoundedDots } from 'react-icons/bi';
-import { Message, Topic, Topics } from '../../type/types';
+import { Message } from '../../type/types';
 import ChatInput from '../ChatInput';
 import ThinkingIndicator from '../ThinkingIndicator';
 import AgentMessage from './AgentMessage';
 import UserMessage from './UserMessage';
-import { fetchTopics } from '../../lib/apiClient';
+import useChatStore from '../../store/chatStore';
+import { useShallow } from 'zustand/react/shallow';
 
 type MessageCardProps = {
   userMessage: Message;
@@ -22,31 +23,30 @@ export default function MessageCard({
   isThinking,
   handleSubmit,
 }: MessageCardProps) {
-  const isInitialMessage = userMessage.text.includes('Welcome to Onepoint');
-  const [showInput, setShowInput] = useState(isInitialMessage && isLastCard);
-  const [showButton, setShowButton] = useState(false);
-  const [topics, setTopics] = useState<Topics>({ topics: [] });
-
-  const handleClick = () => {
-    setShowInput(true);
-  };
-
-  const handleTopicClick = (topic: Topic) => {
-    const questionText =
-      topic.questions && topic.questions.length > 0
-        ? topic.questions[0]
-        : `Tell me more about ${topic.name}`;
-
-    handleSubmit(questionText);
-  };
+  const {
+    showInput,
+    showButton,
+    isInitialMessage,
+    setShowButton,
+    setIsInitialMessage,
+    setHandleSubmit,
+    handleClick,
+  } = useChatStore(
+    useShallow(state => ({
+      showInput: state.showInput,
+      showButton: state.showButton,
+      isInitialMessage: state.isInitialMessage,
+      setShowButton: state.setShowButton,
+      setIsInitialMessage: state.setIsInitialMessage,
+      setHandleSubmit: state.setHandleSubmit,
+      handleClick: state.handleClick,
+    }))
+  );
 
   useEffect(() => {
-    try {
-      fetchTopics().then(setTopics);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+    setIsInitialMessage(userMessage, isLastCard);
+    setHandleSubmit(handleSubmit);
+  }, [userMessage, isLastCard, setIsInitialMessage, handleSubmit, setHandleSubmit]);
 
   return (
     <div
@@ -56,12 +56,7 @@ export default function MessageCard({
     >
       {/* User message */}
       <div className="transition-all duration-300 transform hover:scale-[1.01]">
-        <UserMessage
-          message={userMessage}
-          isInitialMessage={isInitialMessage}
-          topics={topics}
-          onTopicClick={handleTopicClick}
-        />
+        <UserMessage message={userMessage} isInitialMessage={isInitialMessage} />
       </div>
 
       {/* Agent message or thinking indicator */}

@@ -11,14 +11,18 @@ import {
 import { createWebSocket, sendMessage } from "../lib/websocket";
 import { Message, Question, ServerMessage } from "../type/types";
 import { fetchChatHistory, fetchRawHistory } from "../utils/fetchChatHistory";
+import { useChatStore } from "../store/chatStore";
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isThinking, setIsThinking] = useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
+
+  // const { messages, setMessages, isThinking, setIsThinking, isRestarting, setIsRestarting } = useChatStore()
+
   const wsRef = useRef<WebSocket | null>(null);
   const wsOpen = useRef<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const [isThinking, setIsThinking] = useState(false);
-  const [isRestarting, setIsRestarting] = useState(false);
   const currentConversationId = useRef<string | null>(null);
   const hasInitialized = useRef<boolean>(false);
   const messageQueue = useRef<{ text: string }[]>([]);
@@ -28,7 +32,7 @@ export function useChat() {
   };
 
   // Fetch chat history from the server
-  async function loadChatHistory (conversationId: string): Promise<ServerMessage[]>  {
+  async function loadChatHistory(conversationId: string): Promise<ServerMessage[]> {
     const rawHistory = await fetchRawHistory(conversationId);
     const formattedMessages = await fetchChatHistory(conversationId, rawHistory);
     if (formattedMessages && formattedMessages.length > 0) {
@@ -99,16 +103,16 @@ export function useChat() {
           case "conversation-id":
             const { conversationId } = message;
             const lastConversationId = getConversationId();
-            if(lastConversationId !== conversationId) {
+            if (lastConversationId !== conversationId) {
               currentConversationId.current = conversationId;
               saveConversationId(conversationId);
-              if(conversationId && lastConversationId) {
+              if (conversationId && lastConversationId) {
                 // Here we should send a request to the server to get the chat history and 
                 // also to prefill the history of the new session on the server and client
                 loadChatHistory(lastConversationId)
                   .then((serverMessages: ServerMessage[]) => {
-                    if(wsRef.current) {
-                      sendMessage(wsRef.current, "import-history", {"history": serverMessages}, conversationId);
+                    if (wsRef.current) {
+                      sendMessage(wsRef.current, "import-history", { "history": serverMessages }, conversationId);
                     }
                   })
                   .catch((error) => {
@@ -209,6 +213,7 @@ export function useChat() {
     }
   };
 
+  console.log('messages', messages);
   return {
     messages,
     messagesEndRef,
