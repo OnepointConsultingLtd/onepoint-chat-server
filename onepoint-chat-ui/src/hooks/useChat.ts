@@ -1,32 +1,32 @@
 import WebSocket from "isomorphic-ws";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { MessageEvent } from "ws";
+import { useShallow } from "zustand/react/shallow";
 import { messageFactoryAgent, messageFactoryUser } from "../lib/messageFactory";
 import {
-  clearChatData,
   getConversationId,
   markChatAsActive,
   saveConversationId
 } from "../lib/persistence";
 import { createWebSocket, sendMessage } from "../lib/websocket";
-import { Message, Question, ServerMessage } from "../type/types";
-import { fetchChatHistory, fetchRawHistory } from "../utils/fetchChatHistory";
 import useChatStore from "../store/chatStore";
-import { useShallow } from "zustand/react/shallow";
+import { Message, ServerMessage } from "../type/types";
+import { fetchChatHistory, fetchRawHistory } from "../utils/fetchChatHistory";
 
 export function useChat() {
-  const [isRestarting, setIsRestarting] = useState(false);
-
   const {
     messages,
     isThinking,
     setMessages,
     setIsThinking,
+    isRestarting,
   } = useChatStore(useShallow(state => ({
     messages: state.messages,
     isThinking: state.isThinking,
     setMessages: state.setMessages,
     setIsThinking: state.setIsThinking,
+    isRestarting: state.isRestarting,
+    setIsRestarting: state.setIsRestarting,
   })));
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -109,7 +109,7 @@ export function useChat() {
               messageFactoryAgent(message.message.content),
             ]);
             break;
-          case "conversation-id":
+          case "conversation-id": {
             const { conversationId } = message;
             const lastConversationId = getConversationId();
             if (lastConversationId !== conversationId) {
@@ -129,6 +129,9 @@ export function useChat() {
                   });
               }
             }
+            break;
+          }
+          default:
             break;
         }
       } catch (error) {
@@ -152,19 +155,6 @@ export function useChat() {
     };
   };
 
-  const handleRestart = () => {
-    clearChatData();
-    wsRef.current = null;
-    window.barrier = false;
-    setIsRestarting(true);
-    setMessages([]);
-    setIsThinking(false);
-    currentConversationId.current = null;
-    hasInitialized.current = false;
-    messageQueue.current = [];
-    setIsRestarting(!isRestarting);
-  };
-
   useEffect(() => {
     setupWebSocket();
     return () => {
@@ -180,28 +170,6 @@ export function useChat() {
       scrollToBottom();
     }
   }, [messages, isThinking]);
-
-  const handleQuestionClick = (question: Question) => {
-    if (!wsRef.current) {
-      console.warn("WebSocket not ready");
-      return;
-    }
-
-    if (!currentConversationId.current) {
-      messageQueue.current.push({ text: question.text });
-      sendMessage(wsRef.current, "request-conversation-id", "", "");
-      return;
-    }
-
-    setIsThinking(true);
-    const userMessage: Message = messageFactoryUser(question.text, currentConversationId.current);
-    setMessages((prev: Message[]) => [...prev, userMessage]);
-    sendMessage(wsRef.current, "message", question.text, currentConversationId.current);
-
-    if (!hasInitialized.current) {
-      initializeChat();
-    }
-  };
 
   const handleSubmit = (text: string) => {
     if (!text.trim() || !wsRef.current) return;
@@ -225,9 +193,7 @@ export function useChat() {
   return {
     messages,
     messagesEndRef,
-    handleQuestionClick,
     handleSubmit,
-    handleRestart,
     isThinking,
     isRestarting,
   };

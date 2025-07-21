@@ -1,42 +1,34 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Topics, Message, Topic } from "../type/types";
-import { fetchTopics } from "../lib/apiClient";
+import { Message, Topic, Question, Topics } from "../type/types";
+import { fetchRelatedTopics } from "../lib/apiClient";
+import { clearChatData } from "../lib/persistence";
+import { ChatStore } from "../type/chatStore";
 
-type ChatStore = {
-	// state
-	topics: Topics | null;
-	error: string | null;
-	showInput: boolean;
-	showButton: boolean;
-	isInitialMessage: boolean;
-	messages: Message[];
-	isThinking: boolean;
-	isRestarting: boolean;
-	// handlers
-	handleSubmitCallback: ((text: string) => void) | null;
 
-	// setters
-	setTopics: (topics: Topics) => void;
-	loadTopics: () => Promise<void>;
-	setIsInitialMessage: (message: Message, isLastCard: boolean) => void;
-	setShowInput: (show: boolean) => void;
-	setShowButton: (show: boolean) => void;
-	setMessages: (messagesOrUpdater: Message[] | ((prev: Message[]) => Message[])) => void;
-	setIsThinking: (valueOrUpdater: boolean | ((prev: boolean) => boolean)) => void;
-	setIsRestarting: (value: boolean) => void;
-	setHandleSubmit: (cb: (text: string) => void) => void;
+function newChat() {
+	return {
+		messages: [],
+		isThinking: false,
+		isRestarting: false,
+		isSidebarOpen: true,
+		handleSubmitCallback: null,
+		selectedTopic: null,
+		relatedTopics: null,
+		relatedTopicsLoading: false,
+		lastMessage: null,
+		currentMessage: null,
+		error: null,
+		isInitialMessage: false,
+		showInput: false,
+		showButton: false,
+	}
+}
 
-	// actions
-	handleClick: () => void;
-	handleTopicClick: (topic: Topic) => void;
-	handleSubmit: (text: string) => void;
-};
 
 const useChatStore = create<ChatStore>()(
 	persist(
 		(set, get) => ({
-			topics: null,
 			error: null,
 			showInput: false,
 			showButton: false,
@@ -44,50 +36,62 @@ const useChatStore = create<ChatStore>()(
 			messages: [],
 			isThinking: false,
 			isRestarting: false,
+			isSidebarOpen: true,
 			handleSubmitCallback: null,
-
-			// handle data
-			loadTopics: async () => {
-				set({ error: null });
-				try {
-					const topics = await fetchTopics();
-					set({ topics, error: null });
-				} catch (error) {
-					console.error('Failed to fetch topics:', error);
-					set({
-						error: error instanceof Error ? error.message : 'Failed to fetch topics'
-					});
-				}
-			},
+			selectedTopic: null,
+			relatedTopics: null,
+			relatedTopicsLoading: false,
+			lastMessage: null,
+			currentMessage: null,
 
 			// setters
-			setTopics: (topics: Topics) => set({ topics, error: null }),
 			setIsInitialMessage: (message: Message, isLastCard: boolean) => {
 				const isInitialMessage = message.text.includes('Welcome to Onepoint');
 				set({
+					isInitialMessage,
 					showInput: isInitialMessage && isLastCard,
 					showButton: false
 				});
 			},
-
-
 			setShowInput: (show: boolean) => set({ showInput: show }),
 			setShowButton: (show: boolean) => set({ showButton: show }),
 			setMessages: (messagesOrUpdater: Message[] | ((prev: Message[]) => Message[])) =>
-				set((state) => ({ messages: typeof messagesOrUpdater === 'function' ? (messagesOrUpdater as (prev: Message[]) => Message[])(state.messages) : messagesOrUpdater })),
+				set((state) => {
+					const newMessages = typeof messagesOrUpdater === 'function'
+						? messagesOrUpdater(state.messages)
+						: messagesOrUpdater;
+					return {
+						messages: newMessages,
+						currentMessage: newMessages.at(-1) || null,
+					};
+				}),
+
 			setIsThinking: (valueOrUpdater: boolean | ((prev: boolean) => boolean)) =>
 				set((state) => ({ isThinking: typeof valueOrUpdater === 'function' ? (valueOrUpdater as (prev: boolean) => boolean)(state.isThinking) : valueOrUpdater })),
 			setIsRestarting: (value: boolean) => set({ isRestarting: value }),
+			setIsSidebarOpen: (open: boolean) => set({ isSidebarOpen: open }),
+			setHandleQuestionClick: (cb: (question: Question) => void) => set({ _handleQuestionClick: cb }),
+			setSelectedTopic: (topic: Topic) => set({ selectedTopic: topic }),
+			setRelatedTopics: (topics: Topics) => set({ relatedTopics: topics }),
+			setRelatedTopicsLoading: (loading: boolean) => set({ relatedTopicsLoading: loading }),
+			setLastMessage: (message: Message | null) => set({ lastMessage: message }),
+			setCurrentMessage: (message: Message | null) => set({ currentMessage: message }),
 			setHandleSubmit: (cb: (text: string) => void) => set({ handleSubmitCallback: cb }),
+
+			fetchRelatedTopics: async (topicName: string) => {
+				set({ relatedTopicsLoading: true });
+				const data = await fetchRelatedTopics(topicName);
+				set({ relatedTopics: data, relatedTopicsLoading: false });
+			},
 
 			// actions
 			handleClick: () => set({ showInput: true }),
+
 			handleSubmit: (text: string) => {
-				// TODO: Integrate with websocket logic or whatever is needed
-				console.log('handleSubmit from store:', text);
+				const { handleSubmitCallback } = get();
+				if (handleSubmitCallback) handleSubmitCallback(text);
 			},
 
-			// Topics
 			handleTopicClick: (topic: Topic) => {
 				const { handleSubmitCallback } = get();
 				if (!handleSubmitCallback) return;
@@ -95,15 +99,39 @@ const useChatStore = create<ChatStore>()(
 					topic.questions && topic.questions.length > 0
 						? topic.questions[0]
 						: `Tell me more about ${topic.name}`;
+				set({ selectedTopic: topic });
 				handleSubmitCallback(questionText);
 			},
+
+			handleQuestionClick: (question: Question) => {
+				const { handleSubmitCallback } = get();
+				if (!handleSubmitCallback) return;
+				handleSubmitCallback(question.text);
+			},
+
+
+			handleRestart: () => {
+				localStorage.removeItem("osca-store");
+				clearChatData();
+				window.location.reload();
+
+				set(() => ({
+					...newChat(),
+				}));
+			},
+			toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
+			_handleQuestionClick: undefined,
 		}),
 		{
-			name: "chat-store-test1",
+			name: "osca-store",
 			partialize: (state) => ({
-				topics: state.topics,
 				messages: state.messages,
 				isThinking: state.isThinking,
+				isSidebarOpen: state.isSidebarOpen,
+				selectedTopic: state.selectedTopic,
+				relatedTopics: state.relatedTopics,
+				relatedTopicsLoading: state.relatedTopicsLoading,
+				lastMessage: state.messages.length > 0 ? state.messages[state.messages.length - 1] : null,
 			}),
 		}
 	)

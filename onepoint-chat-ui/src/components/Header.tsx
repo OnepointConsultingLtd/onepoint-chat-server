@@ -2,18 +2,21 @@ import { useState } from 'react';
 import { CiExport } from 'react-icons/ci';
 import { FaMarkdown } from 'react-icons/fa';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
+import { useShallow } from 'zustand/react/shallow';
 import { nameDescription, siteName } from '../lib/constants';
+import useChatStore from '../store/chatStore';
 import { Message } from '../type/types';
 import { exportChatToMarkdown, exportChatToPDF } from '../utils/exportChat';
 import GradientButton, { MiniGradientButton } from './GradientButton';
 
 interface HeaderProps {
-  handleRestart: () => void;
   chatHistory: Message[];
 }
 
-export default function Header({ handleRestart, chatHistory }: HeaderProps) {
+export default function Header({ chatHistory }: HeaderProps) {
   const [showDropdown, setShowDropdown] = useState(false);
+
+  const handleRestart = useChatStore(useShallow(state => state.handleRestart));
 
   const handleExport = (type: 'markdown' | 'pdf') => {
     const date = new Date().toISOString().split('T')[0];

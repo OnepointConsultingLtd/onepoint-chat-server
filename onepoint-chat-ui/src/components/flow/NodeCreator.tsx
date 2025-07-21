@@ -1,8 +1,8 @@
 import { Node } from '@xyflow/react';
-import { Message } from '../../type/types';
-import MessageCard from './MessageCard';
 import { CARD_GAP, CARD_WIDTH, CARD_Y_POSITION } from '../../lib/constants';
+import { Message } from '../../type/types';
 import { getConversationStartIndex } from '../../utils/messageUtils';
+import MessageCard from './MessageCard';
 
 /**
  * Creates flow nodes from the messages

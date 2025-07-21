@@ -3,9 +3,19 @@ import ReactMarkdown from 'react-markdown';
 import { Message } from '../type/types';
 import CopyButton from './CopyButton';
 import TopicButtons from './TopicButtons';
+import useChatStore from '../store/chatStore';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function RenderReactMarkdown({ message }: { message: Message }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const { currentMessage } = useChatStore(
+    useShallow(state => ({
+      currentMessage: state.currentMessage,
+    }))
+  );
+
+  console.log('currentMessage', currentMessage);
 
   const copyToClipboard = async (message: Message) => {
     try {
@@ -35,7 +45,11 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
       >
         {message.text}
       </ReactMarkdown>
-      <div>{message.type === 'agent' && <TopicButtons />}</div>
+      <div>
+        {message.type === 'agent' && currentMessage && message.id === currentMessage.id && (
+          <TopicButtons />
+        )}
+      </div>
 
       <div className="flex items-center justify-between mt-2 text-xs">
         <CopyButton

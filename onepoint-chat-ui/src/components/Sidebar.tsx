@@ -1,20 +1,22 @@
+import { useShallow } from 'zustand/react/shallow';
 import { nameDescription, siteName } from '../lib/constants';
+import useChatStore from '../store/chatStore';
 import { Question } from '../type/types';
 import QuestionItem from './QuestionItem';
 
 interface SidebarProps {
   questions: Question[];
-  onQuestionClick: (question: Question) => void;
-  toggleSidebar: () => void;
-  isSidebarOpen: boolean;
 }
 
-export default function Sidebar({
-  questions,
-  onQuestionClick,
-  toggleSidebar,
-  isSidebarOpen,
-}: SidebarProps) {
+export default function Sidebar({ questions }: SidebarProps) {
+  const { isSidebarOpen, toggleSidebar, handleQuestionClick } = useChatStore(
+    useShallow(state => ({
+      isSidebarOpen: state.isSidebarOpen,
+      toggleSidebar: state.toggleSidebar,
+      handleQuestionClick: state.handleQuestionClick,
+    }))
+  );
+
   return (
     <div className="h-screen lg:!sticky top-0 z-[120]">
       <div className="flex flex-col h-screen">
@@ -94,7 +96,7 @@ export default function Sidebar({
                       key={question.id}
                       question={question}
                       onClick={() => {
-                        onQuestionClick(question);
+                        handleQuestionClick(question);
                         toggleSidebar();
                       }}
                     />
