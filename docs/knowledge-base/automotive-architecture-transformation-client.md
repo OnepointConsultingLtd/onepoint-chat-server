@@ -1,14 +1,17 @@
 # Automotive Architecture Transformation Client
 
 ## Overview
+
 Our client is the leading European provider of automotive data, insight and business intelligence services to global manufacturers, insurers, dealers, bodyshops and fleet and finance companies.
 
 ## Business Challenge
+
 Due to intense competitive market pressures, the client needed a comprehensive audit of its business model and supporting technology strategy. The new senior management was tasked with creating a transformational roadmap to expand the business and streamline global operations, primarily in Europe.
 
 The existing technological capabilities couldn't support the strategic business goals due to underinvestment. While multiple initiatives were addressing specific technology gaps, many were temporary tactical fixes lacking a holistic or strategically sustainable approach.
 
 ## Project Objectives
+
 The Application & Data Architecture Transformation aimed to deliver a holistic target architecture that would:
 
 - Support faster implementation of new products and services for customers
@@ -21,6 +24,7 @@ The Application & Data Architecture Transformation aimed to deliver a holistic t
 - Ensure governance through a company-wide design authority
 
 ## Onepoint's Approach
+
 Onepoint provided an experienced team with expertise in architecture, open source solution stacks, and subject matter expertise in business process, data, application, integration, and infrastructure. The 8-week program included:
 
 - Focusing on business-critical application areas
@@ -30,6 +34,7 @@ Onepoint provided an experienced team with expertise in architecture, open sourc
 - Understanding 3rd party interfaces
 
 ## Key Inputs
+
 - Business priorities & capabilities
 - Issues & constraints
 - Current and planned projects & initiatives
@@ -39,6 +44,7 @@ Onepoint provided an experienced team with expertise in architecture, open sourc
 - Previous initiatives & strategies
 
 ## Key Deliverables
+
 - Enterprise Architecture Blueprint defining high-level logical and conceptual architecture
 - Non-Functional Requirements Document
 - Architecture decision papers
@@ -48,6 +54,7 @@ Onepoint provided an experienced team with expertise in architecture, open sourc
   - 12-24 months
 
 ## Outcomes
+
 - Better understanding of business challenges and technology solutions
 - Costed transformation roadmap and business case
 - Iterative implementation roadmap
@@ -56,15 +63,19 @@ Onepoint provided an experienced team with expertise in architecture, open sourc
 - Initiation of key sub-projects across the business
 
 ## Client Industry
+
 Automotive
 
 ## Solution Type
+
 Digital Transformation
 
 ## Service Provided
+
 Architecture Services
 
 ## Related Links
+
 - [Do data better](https://www.onepointltd.com/do-data-better)
 - [Innovate with AI & more](https://www.onepointltd.com/innovate-with-ai)
 - [Architect for Outcomes](https://www.onepointltd.com/architect-for-outcomes/)
@@ -81,4 +92,5 @@ Architecture Services
 - [Privacy Notice](https://www.onepointltd.com/policies/privacy-policy/)
 
 ## Source
+
 Original case study: [Automotive Architecture Transformation Client](https://www.onepointltd.com/client-stories/automotive-architecture-transformation-client)

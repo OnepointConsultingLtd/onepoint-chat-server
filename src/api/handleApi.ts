@@ -53,7 +53,7 @@ function formatConversationHistory(conversation: any) {
 
 export async function saveChatHistory(
   chatHistory: any[],
-  conversationId: string
+  conversationId: string,
 ) {
   try {
     const collection = await getCollection();
@@ -65,12 +65,12 @@ export async function saveChatHistory(
           conversationId,
           chatHistory,
           userMessage: extractUserMessageContent(
-            chatHistory[chatHistory.length - 1].content
+            chatHistory[chatHistory.length - 1].content,
           ),
           timestamp: new Date().toISOString(),
         },
       },
-      { upsert: true }
+      { upsert: true },
     );
     console.log("Conversation saved/updated in MongoDB.");
   } catch (error) {

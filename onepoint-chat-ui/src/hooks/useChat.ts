@@ -1,33 +1,25 @@
-import WebSocket from "isomorphic-ws";
-import { useEffect, useRef } from "react";
-import { MessageEvent } from "ws";
-import { useShallow } from "zustand/react/shallow";
-import { messageFactoryAgent, messageFactoryUser } from "../lib/messageFactory";
-import {
-  getConversationId,
-  markChatAsActive,
-  saveConversationId
-} from "../lib/persistence";
-import { createWebSocket, sendMessage } from "../lib/websocket";
-import useChatStore from "../store/chatStore";
-import { Message, ServerMessage } from "../type/types";
-import { fetchChatHistory, fetchRawHistory } from "../utils/fetchChatHistory";
+import WebSocket from 'isomorphic-ws';
+import { useEffect, useRef } from 'react';
+import { MessageEvent } from 'ws';
+import { useShallow } from 'zustand/react/shallow';
+import { messageFactoryAgent, messageFactoryUser } from '../lib/messageFactory';
+import { getConversationId, markChatAsActive, saveConversationId } from '../lib/persistence';
+import { createWebSocket, sendMessage } from '../lib/websocket';
+import useChatStore from '../store/chatStore';
+import { Message, ServerMessage } from '../type/types';
+import { fetchChatHistory, fetchRawHistory } from '../utils/fetchChatHistory';
 
 export function useChat() {
-  const {
-    messages,
-    isThinking,
-    setMessages,
-    setIsThinking,
-    isRestarting,
-  } = useChatStore(useShallow(state => ({
-    messages: state.messages,
-    isThinking: state.isThinking,
-    setMessages: state.setMessages,
-    setIsThinking: state.setIsThinking,
-    isRestarting: state.isRestarting,
-    setIsRestarting: state.setIsRestarting,
-  })));
+  const { messages, isThinking, setMessages, setIsThinking, isRestarting } = useChatStore(
+    useShallow(state => ({
+      messages: state.messages,
+      isThinking: state.isThinking,
+      setMessages: state.setMessages,
+      setIsThinking: state.setIsThinking,
+      isRestarting: state.isRestarting,
+      setIsRestarting: state.setIsRestarting,
+    }))
+  );
 
   const wsRef = useRef<WebSocket | null>(null);
   const wsOpen = useRef<boolean>(false);
@@ -37,7 +29,7 @@ export function useChat() {
   const messageQueue = useRef<{ text: string }[]>([]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   // Fetch chat history from the server
@@ -50,8 +42,8 @@ export function useChat() {
       markChatAsActive();
       hasInitialized.current = true;
     }
-    return rawHistory
-  };
+    return rawHistory;
+  }
 
   const initializeChat = () => {
     if (!hasInitialized.current && currentConversationId.current) {
@@ -63,14 +55,14 @@ export function useChat() {
 
   const setupWebSocket = () => {
     if (window.barrier) return;
-    console.info("Setting up WebSocket connection");
+    console.info('Setting up WebSocket connection');
     window.barrier = true;
 
     wsRef.current = createWebSocket();
     const ws = wsRef.current;
 
     ws.onopen = async () => {
-      console.info("WebSocket connection opened");
+      console.info('WebSocket connection opened');
       wsOpen.current = true;
     };
 
@@ -79,53 +71,55 @@ export function useChat() {
         const message = JSON.parse(event.data.toString());
 
         switch (message.type) {
-          case "stream-start":
+          case 'stream-start':
             setIsThinking(true);
             break;
-          case "stream-chunk":
+          case 'stream-chunk':
             setIsThinking(false);
             setMessages((prev: Message[]) => {
               const lastMessage = { ...prev[prev.length - 1] };
-              if (!lastMessage || lastMessage.type !== "agent") {
+              if (!lastMessage || lastMessage.type !== 'agent') {
                 return [...prev, messageFactoryAgent(message.chunk)];
               }
               lastMessage.text += message.chunk;
               return [...prev.slice(0, -1), lastMessage];
             });
             break;
-          case "stream-end":
+          case 'stream-end':
             setIsThinking(false);
-            if (message.subType === "streamEndError") {
-              setMessages((prev: Message[]) => [
-                ...prev,
-                messageFactoryAgent(message.message),
-              ]);
+            if (message.subType === 'streamEndError') {
+              setMessages((prev: Message[]) => [...prev, messageFactoryAgent(message.message)]);
             }
             break;
-          case "message":
+          case 'message':
             setIsThinking(false);
             setMessages((prev: Message[]) => [
               ...prev,
               messageFactoryAgent(message.message.content),
             ]);
             break;
-          case "conversation-id": {
+          case 'conversation-id': {
             const { conversationId } = message;
             const lastConversationId = getConversationId();
             if (lastConversationId !== conversationId) {
               currentConversationId.current = conversationId;
               saveConversationId(conversationId);
               if (conversationId && lastConversationId) {
-                // Here we should send a request to the server to get the chat history and 
+                // Here we should send a request to the server to get the chat history and
                 // also to prefill the history of the new session on the server and client
                 loadChatHistory(lastConversationId)
                   .then((serverMessages: ServerMessage[]) => {
                     if (wsRef.current) {
-                      sendMessage(wsRef.current, "import-history", { "history": serverMessages }, conversationId);
+                      sendMessage(
+                        wsRef.current,
+                        'import-history',
+                        { history: serverMessages },
+                        conversationId
+                      );
                     }
                   })
-                  .catch((error) => {
-                    console.error("Error loading chat history:", error);
+                  .catch(error => {
+                    console.error('Error loading chat history:', error);
                   });
               }
             }
@@ -135,21 +129,21 @@ export function useChat() {
             break;
         }
       } catch (error) {
-        console.error("Error parsing message:", error);
+        console.error('Error parsing message:', error);
       }
     };
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
+    ws.onerror = error => {
+      console.error('WebSocket error:', error);
       const errorMessage: Message = messageFactoryAgent(
-        `Connection error: Unable to connect to server`,
+        `Connection error: Unable to connect to server`
       );
       setMessages((prev: Message[]) => [...prev, errorMessage]);
     };
 
     ws.onclose = () => {
-      console.log("WebSocket connection closed");
-      const closeMessage: Message = messageFactoryAgent("Connection closed");
+      console.log('WebSocket connection closed');
+      const closeMessage: Message = messageFactoryAgent('Connection closed');
       setMessages((prev: Message[]) => [...prev, closeMessage]);
       wsOpen.current = false;
     };
@@ -176,14 +170,14 @@ export function useChat() {
 
     if (!currentConversationId.current) {
       messageQueue.current.push({ text: text.trim() });
-      sendMessage(wsRef.current, "request-conversation-id", "", "");
+      sendMessage(wsRef.current, 'request-conversation-id', '', '');
       return;
     }
 
     setIsThinking(true);
     const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
     setMessages((prev: Message[]) => [...prev, userMessage]);
-    sendMessage(wsRef.current, "message", text, currentConversationId.current);
+    sendMessage(wsRef.current, 'message', text, currentConversationId.current);
 
     if (!hasInitialized.current) {
       initializeChat();

@@ -1,29 +1,27 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/webp" href="/favicon.webp" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OSCA - Onepoint Smart Company Advisor</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/webp" href="/favicon.webp" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OSCA - Onepoint Smart Company Advisor</title>
-</head>
+  <body>
+    <div id="root"></div>
 
-<body>
-  <div id="root"></div>
+    <script>
+      const server = 'localhost';
+      const port = 4000;
+      const restPort = 5000;
+      const protocol = window.location.protocol;
+      const wsProtocol = protocol === 'https' ? 'wss' : 'ws';
+      window.oscaConfig = {
+        websocketUrl: `${wsProtocol}://${server}:${port}`,
+        httpUrl: `${protocol}//${server}:${restPort}`,
+      };
+    </script>
 
-  <script>
-    const server = "localhost";
-    const port = 4000;
-    const restPort = 5000;
-    const protocol = window.location.protocol;
-    const wsProtocol = protocol === 'https' ? 'wss' : 'ws';
-    window.oscaConfig = {
-      websocketUrl: `${wsProtocol}://${server}:${port}`,
-      httpUrl: `${protocol}//${server}:${restPort}`,
-    };
-  </script>
-
-  <script type="module" src="/src/main.tsx"></script>
-</body>
-
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

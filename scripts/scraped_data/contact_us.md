@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/contact-us/
 
-*Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients.*
+_Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients._
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- 
-- 
-- 
+-
+-
+-
 - Search for:Search
 
 Architect for outcomes[1]
@@ -23,7 +23,6 @@ Innovate with AI & more[3]
 Home[4]
 
 ## Get in touch
-
 
 My name is,  and I work at
 
@@ -118,7 +117,6 @@ Contact us
 [cky_video_placeholder_title]
 
 [cky_video_placeholder_title]
-
 
 ## Sources
 

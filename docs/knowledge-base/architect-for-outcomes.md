@@ -3,6 +3,7 @@
 # Architect for Outcomes — Architecture Consulting Services
 
 ## Main Navigation
+
 - [Do data better](https://www.onepointltd.com/do-data-better)
 - [Innovate with AI & more](https://www.onepointltd.com/innovate-with-ai)
 - [Architect for Outcomes](https://www.onepointltd.com/architect-for-outcomes/)
@@ -45,7 +46,7 @@ Architecting is not about technology for technology's sake. It's about defining 
 - **Enable innovation**
 
 Onepoint's architects are trusted by clients, including:
-*(Client logos would appear here)*
+_(Client logos would appear here)_
 
 Want to explore how modern architectures can accelerate your outcomes with Onepoint's enterprise architecture consulting services?
 
@@ -54,7 +55,7 @@ Want to explore how modern architectures can accelerate your outcomes with Onepo
 ## ARCHITECTURE MATTERS
 
 > "Architecture is the bridge between business ambition and technical reality. It's about creating the conditions for enduring business success."
-> 
+>
 > Shashin Shah, Founder & CEO
 
 ## BEYOND TECHNICAL ARCHITECTURE
@@ -90,6 +91,7 @@ Explore our expert architecture services, from strategic guidance to hands-on im
 Make informed technology investment decisions by comprehensively assessing technical assets, capabilities, and risks. Get clear insights into the technology landscape before significant transactions or partnerships.
 
 Perfect for organisations that:
+
 - Are considering investments, acquisitions, or mergers
 - Need to evaluate the technical capabilities of potential partners
 - Want to understand technology-related risks and opportunities
@@ -102,6 +104,7 @@ Next step: Arrange a confidential Discovery Call.
 **Architecture Advisory**
 
 Perfect for organisations that:
+
 - Need to align technology decisions with business strategy
 - Are planning major digital transformation initiatives
 - Want to modernise legacy systems
@@ -112,6 +115,7 @@ Perfect for organisations that:
 **Architecture Assessment**
 
 Perfect for organisations that:
+
 - Want to understand their technical debt
 - Need a clear plan for architecture modernisation
 - Are concerned about performance, scalability, or security
@@ -122,6 +126,7 @@ Perfect for organisations that:
 **Solution Architecture**
 
 Perfect for organisations that:
+
 - Are launching new digital products or services
 - Need to design scalable cloud solutions
 - Want to implement a microservices architecture
@@ -132,6 +137,7 @@ Perfect for organisations that:
 **Architecture Governance**
 
 Perfect for organisations that:
+
 - Want to maintain architectural consistency
 - Need to establish technical standards and governance processes
 - Are scaling AI, data, and technology teams
@@ -142,6 +148,7 @@ Perfect for organisations that:
 **Performance Engineering**
 
 Perfect for organisations that:
+
 - Experience performance challenges
 - Need to scale for growth
 - Want to optimise AI and cloud costs
@@ -152,6 +159,7 @@ Perfect for organisations that:
 **Application Modernisation**
 
 Perfect for organisations that:
+
 - Need to modernise legacy applications
 - Want to move to the cloud
 - Seek to adopt microservices
@@ -211,6 +219,7 @@ Next step: Arrange a confidential Discovery Call.
 ### Enterprise Architecture Advisory
 
 Perfect for organisations that:
+
 - Need to align technology decisions with business strategy
 - Are planning major digital transformation initiatives
 - Want to modernise legacy systems
@@ -221,6 +230,7 @@ Perfect for organisations that:
 ### Architecture Assessment
 
 Perfect for organisations that:
+
 - Want to understand their technical debt
 - Need a clear plan for architecture modernisation
 - Are concerned about performance, scalability, or security
@@ -231,6 +241,7 @@ Perfect for organisations that:
 ### Solution Architecture
 
 Perfect for organisations that:
+
 - Are launching new digital products or services
 - Need to design scalable cloud solutions
 - Want to implement a microservices architecture
@@ -241,6 +252,7 @@ Perfect for organisations that:
 ### Architecture Governance
 
 Perfect for organisations that:
+
 - Want to maintain architectural consistency
 - Need to establish technical standards and governance processes
 - Are scaling AI, data, and technology teams
@@ -251,6 +263,7 @@ Perfect for organisations that:
 ### Performance Engineering
 
 Perfect for organisations that:
+
 - Experience performance challenges
 - Need to scale for growth
 - Want to optimise AI and cloud costs
@@ -261,6 +274,7 @@ Perfect for organisations that:
 ### Application Modernisation
 
 Perfect for organisations that:
+
 - Need to modernise legacy applications
 - Want to move to the cloud
 - Seek to adopt microservices
@@ -273,54 +287,63 @@ Perfect for organisations that:
 ## Featured team members
 
 ### Shashin Shah
+
 Enterprise Architecture Director  
 London
 
 Shashin is a visionary enterprise architect with 40+ years of experience designing and delivering scalable, business-aligned technology architectures across complex and mission-critical systems.
 
 ### Alexander(Sasha) Polev
+
 Chief Architect  
 London
 
 Sasha is an enterprise architect with 20+ years of experience designing and implementing scalable, enterprise-grade architecture solutions in cloud, data, and AI in numerous sectors.
 
 ### Allan Schweitz
+
 Principal Enterprise Architect  
 London
 
 Allan is an enterprise architect with 25+ years' of experience designing high-performance, scalable architectures for data platforms, transactional systems, and enterprise integration solutions across diverse industries.
 
 ### Garima Dosi
+
 Solution Architect  
 Pune
 
 Garima is a solution architect with expertise in data engineering, systems integration, and software architecture, designing scalable solutions that help enterprises harness and secure their data.
 
 ### Miguel Vale
+
 Solution Architect  
 London
 
 Miguel is a solution architect with 20 years of experience designing and delivering high-performance integration, workflow, and business process solutions for large-scale organisations.
 
 ### Simon Blandford
+
 Infrastructure Architect  
 London
 
 Simon is an infrastructure architect with decades of experience designing and deploying cloud, DevOps, and SysOps solutions, specialising in scalable, high-performance enterprise architectures.
 
 ### Gil Fernandes
+
 AI Architect  
 London
 
 Gil is an AI architect with 25+ years of experience in software development, specialising in AI, deep learning, and data integration, designing intelligent, scalable solutions for enterprise systems.
 
 ### Madassar Manzoor
+
 Business Architect  
 London
 
 Madassar is a business architect skilled in aligning technology with business strategy, and designing scalable, efficient enterprise solutions that drive innovation and operational excellence.
 
 ### Christy Kulasingam
+
 Transformation Architect  
 London
 

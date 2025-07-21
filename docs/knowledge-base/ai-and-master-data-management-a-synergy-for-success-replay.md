@@ -1,9 +1,11 @@
 # AI and Master Data Management: A Synergy for Success
 
 ## Overview
+
 This knowledge base document contains insights from a webinar hosted by Boomi and Onepoint exploring the critical intersection of AI and Master Data Management (MDM). The session features Dr. Madassar Manzoor (Principal Data Architect, Onepoint) and Tom Clarke (Data Management Lead, Boomi).
 
 ## Key Topics
+
 - How master data quality directly impacts AI effectiveness
 - Strategies to create and maintain accurate 'golden' records
 - AI-powered approaches to simplify master data management
@@ -13,11 +15,12 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 ## The Evolving AI Landscape
 
 ### Rapidly Evolving AI Applications
+
 1. **Natural Language Chatbots**: Advanced AI-powered chatbots using LLMs like ChatGPT-4, Gemini, and Llama that communicate in natural language without menu options, capable of resolving queries as effectively as experienced customer service representatives.
 
 2. **Document Processing Automation**: Large Language Models automating document processing for applications, proof of identity/address/income, transferring information into risk assessment or underwriting systems, and contract generation.
 
-3. **Advanced Predictive Models**: 
+3. **Advanced Predictive Models**:
    - Evolution from simple rule-based models to ML-based adaptive models
    - Improved cross-sell, upsell, and churn prediction
    - Better risk assessment and fraud detection
@@ -32,6 +35,7 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 ## The Master Data Challenge
 
 ### Universal Weaknesses in Master Data
+
 - Master data recorded in multiple systems with different structures
 - Inconsistent reference codes across systems
 - Free text fields without validation
@@ -42,6 +46,7 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 ### Real-World Examples of Master Data Issues
 
 #### Banking Example - Mortgage Campaign
+
 - 96 customers on campaign list
 - 20 duplicates identified (21%)
 - 13 customers had no mortgage (14%)
@@ -51,6 +56,7 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 - Campaign considered "successful" with 7% take-up rate despite these data issues
 
 #### Retail Example - Product Data
+
 - Fashion retailer spent millions on new ERP system but still lacked unified product data
 - Buyer team maintained style, size, season, color data
 - POS team added barcodes, descriptions, price data (but no VAT information)
@@ -59,6 +65,7 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 - Result: Labor-intensive manual processes for VAT calculations and reporting
 
 #### Healthcare Example - Data Quality
+
 - NHS provider with 160,000 patient records
 - Title field analysis found 755 distinct values for what should be Dr/Mr/Mrs
 - Over 33% of records had blank titles
@@ -66,12 +73,14 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 - Users repurposed fields to store information they found more useful
 
 #### International Business Example - Reference Data Standardization
+
 - Media company with 40 different ways of representing "Netherlands" in just one system
 - Impossible to identify all customers in a specific country for cross-selling
 
 ## The Solution: Master Data Management Process
 
 ### MDM Implementation Process
+
 1. **Data Extraction**: Extract data from all systems where master data is held
 2. **Data Profiling**: Most critical step - analyze every column to understand distribution of data
 3. **Data Cleaning & Standardization**: Define rules based on profiling insights
@@ -82,6 +91,7 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 8. **Data Distribution**: Synchronize golden records back to source systems
 
 ### Case Study: Municipal Council Revenue Optimization
+
 - Council with 500,000 residents seeking to identify revenue leakage
 - Combined internal property occupancy data with:
   - Post office address file
@@ -92,6 +102,7 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 - Potential 25% revenue increase by collecting correct business rates
 
 ### Case Study: Travel Business Customer Data
+
 - Travel business with £10 billion annual revenue across Western Europe
 - 60 million customer records to match and deduplicate
 - Implementation of match pools to make comparison manageable
@@ -99,6 +110,7 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 - Data stewards handling suspect matches that can't be automatically resolved
 
 ### Case Study: Solar Farm Asset Management
+
 - Company with 160 solar farms worldwide
 - Used Boomi MDM for sites, projects, IT systems and legal entities
 - Process: Extraction → Boomi MDM Hub → Data Stewards → Golden Records
@@ -107,6 +119,7 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 ## The Future: AI-Enhanced Master Data Management
 
 ### How AI Will Improve MDM
+
 1. **Data Profiling**: Remains manual but generates training data for AI models
 2. **Canonical Data Models**: LLMs like ChatGPT generating data models and mappings
 3. **Cleaning & Standardization**: Machine learning models built on organizational data
@@ -118,7 +131,6 @@ This knowledge base document contains insights from a webinar hosted by Boomi an
 - **Business Impact**: Clean master data directly impacts revenue generation, customer experience, and operational efficiency
 - **Competitive Advantage**: Companies with high-quality master data will gain significant advantages in AI implementation
 - **Solution Approach**: Unified data platform combining integration capabilities with MDM functionality
-
 
 ## Sources
 

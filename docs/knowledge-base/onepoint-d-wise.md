@@ -1,9 +1,10 @@
-# Onepoint D-Wise™  
+# Onepoint D-Wise™
+
 ## Onepoint - Do data better | Innovate with AI & more | Architect for Outcomes
 
 **Source:** [Onepoint D-Wise™](https://www.onepointltd.com/onepoint-d-wise)
 
-*Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
+_Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better._
 
 ---
 
@@ -22,6 +23,7 @@
 ## Offerings
 
 ### Onepoint D-Wise™
+
 Gauge the maturity of your data ecosystem with a free AI self-diagnostic.
 
 Empower your data journey with the Onepoint D-Wise™: The Data Wellness AI Self-Diagnostic. We guide you through a set of structured questions to establish the maturity of your data ecosystem.

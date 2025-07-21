@@ -92,7 +92,6 @@ We exclude liability for actions taken in response to breaches of this acceptabl
 ## Main Navigation
 
 - **What we do**
-
   - [Do data better](https://www.onepointltd.com/do-data-better)
   - [Innovate with AI & more](https://www.onepointltd.com/innovate-with-ai-more/)
   - [Architect for Outcomes](https://www.onepointltd.com/architect-for-outcomes/)
@@ -100,7 +99,6 @@ We exclude liability for actions taken in response to breaches of this acceptabl
   - [Onepoint Labs](https://www.onepointltd.com/onepoint-labs/)
 
 - **Resources**
-
   - [Onepoint Data Wellness™ Suite](https://www.onepointltd.com/data-wellness/)
   - [Onepoint TechTalk](https://www.onepointltd.com/techtalk)
   - [Onepoint Oneness](https://www.onepointltd.com/oneness/)

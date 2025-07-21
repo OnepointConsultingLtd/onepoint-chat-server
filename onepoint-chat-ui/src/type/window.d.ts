@@ -1,10 +1,10 @@
 export interface OscaChatConfig {
-	websocketUrl: string;
-	httpUrl: string;
+  websocketUrl: string;
+  httpUrl: string;
 }
 declare global {
-	interface Window {
-		barrier: boolean;
-		oscaConfig: OscaChatConfig;
-	}
+  interface Window {
+    barrier: boolean;
+    oscaConfig: OscaChatConfig;
+  }
 }

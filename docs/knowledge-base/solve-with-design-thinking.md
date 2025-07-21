@@ -6,7 +6,6 @@ Source: https://www.onepointltd.com/solve-with-design-thinking
 
 No webpage was found for the web address:https://www.onepointltd.com/solve-with-design-thinking
 
-
 ## Metadata
 
 - URL: https://www.onepointltd.com/solve-with-design-thinking

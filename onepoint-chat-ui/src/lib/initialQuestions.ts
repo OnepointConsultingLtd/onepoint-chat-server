@@ -1,4 +1,4 @@
-import { Question } from "../type/types";
+import { Question } from '../type/types';
 
 const initialQuestions: Question[] = [
   {
@@ -7,15 +7,15 @@ const initialQuestions: Question[] = [
   },
   {
     id: 2,
-    text: "Learn more about Onepoint and the range of services we offer.",
+    text: 'Learn more about Onepoint and the range of services we offer.',
   },
   {
     id: 3,
-    text: "Discover the success stories of our clients and how we’ve supported their growth.",
+    text: 'Discover the success stories of our clients and how we’ve supported their growth.',
   },
   {
     id: 4,
-    text: "Gain insights into how Onepoint drives innovation and helps businesses achieve their objectives.",
+    text: 'Gain insights into how Onepoint drives innovation and helps businesses achieve their objectives.',
   },
 ];
 

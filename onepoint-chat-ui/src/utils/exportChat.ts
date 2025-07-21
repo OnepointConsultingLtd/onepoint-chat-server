@@ -1,69 +1,71 @@
-import { Message } from "../type/types";
+import { Message } from '../type/types';
 
 function markdownToHtml(text: string): string {
-	return text
-		// Convert bold text
-		.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-		// Convert italic text
-		.replace(/\*(.*?)\*/g, '<em>$1</em>')
-		// Convert numbered lists
-		.replace(/^\d+\.\s+(.*)$/gm, '<li>$1</li>')
-		// Convert newlines
-		.replace(/\n/g, '<br>')
-		// Escape HTML
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		// Restore HTML tags we want to keep
-		.replace(/&lt;strong&gt;/g, '<strong>')
-		.replace(/&lt;\/strong&gt;/g, '</strong>')
-		.replace(/&lt;em&gt;/g, '<em>')
-		.replace(/&lt;\/em&gt;/g, '</em>')
-		.replace(/&lt;li&gt;/g, '<li>')
-		.replace(/&lt;\/li&gt;/g, '</li>')
-		.replace(/&lt;br&gt;/g, '<br>');
+  return (
+    text
+      // Convert bold text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Convert italic text
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      // Convert numbered lists
+      .replace(/^\d+\.\s+(.*)$/gm, '<li>$1</li>')
+      // Convert newlines
+      .replace(/\n/g, '<br>')
+      // Escape HTML
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      // Restore HTML tags we want to keep
+      .replace(/&lt;strong&gt;/g, '<strong>')
+      .replace(/&lt;\/strong&gt;/g, '</strong>')
+      .replace(/&lt;em&gt;/g, '<em>')
+      .replace(/&lt;\/em&gt;/g, '</em>')
+      .replace(/&lt;li&gt;/g, '<li>')
+      .replace(/&lt;\/li&gt;/g, '</li>')
+      .replace(/&lt;br&gt;/g, '<br>')
+  );
 }
 
 export function exportChatToMarkdown(chatHistory: Message[], filename = 'chat-history.md') {
-	if (!chatHistory.length) {
-		console.log("No chat history to export");
-		return;
-	}
+  if (!chatHistory.length) {
+    console.log('No chat history to export');
+    return;
+  }
 
-	// Markdown content
-	let markdownContent = `# OSCA Chat History\n\n`;
-	markdownContent += `*Exported on ${new Date().toLocaleString()}*\n\n`;
-	markdownContent += `---\n\n`;
+  // Markdown content
+  let markdownContent = `# OSCA Chat History\n\n`;
+  markdownContent += `*Exported on ${new Date().toLocaleString()}*\n\n`;
+  markdownContent += `---\n\n`;
 
-	chatHistory.forEach((message, index) => {
-		const sender = message.type === "user" ? "User" : "OSCA";
+  chatHistory.forEach((message, index) => {
+    const sender = message.type === 'user' ? 'User' : 'OSCA';
 
-		markdownContent += `### ${sender}\n\n`;
-		markdownContent += `${message.text}\n\n`;
+    markdownContent += `### ${sender}\n\n`;
+    markdownContent += `${message.text}\n\n`;
 
-		if (index < chatHistory.length - 1) {
-			markdownContent += `---\n\n`;
-		}
-	});
+    if (index < chatHistory.length - 1) {
+      markdownContent += `---\n\n`;
+    }
+  });
 
-	const blob = new Blob([markdownContent], { type: 'text/markdown' });
-	const link = document.createElement('a');
-	link.href = URL.createObjectURL(blob);
-	link.download = filename;
-	link.click();
+  const blob = new Blob([markdownContent], { type: 'text/markdown' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
 
-	console.log(`Exporting chat history to ${filename}`);
+  console.log(`Exporting chat history to ${filename}`);
 }
 
 // export to pdf
 export async function exportChatToPDF(chatHistory: Message[], filename = 'chat-history.pdf') {
-	if (!chatHistory.length) {
-		console.log("No chat history to export");
-		return;
-	}
+  if (!chatHistory.length) {
+    console.log('No chat history to export');
+    return;
+  }
 
-	try {
-		// Create HTML content with proper styling for wkhtmltopdf
-		const htmlContent = `
+  try {
+    // Create HTML content with proper styling for wkhtmltopdf
+    const htmlContent = `
 			<!DOCTYPE html>
 			<html>
 				<head>
@@ -140,46 +142,50 @@ export async function exportChatToPDF(chatHistory: Message[], filename = 'chat-h
 						<h1>OSCA Chat History</h1>
 						<p>Exported on ${new Date().toLocaleString()}</p>
 					</div>
-					${chatHistory.map(message => `
+					${chatHistory
+            .map(
+              message => `
 						<div class="message">
-							<div class="sender">${message.type === "user" ? "User" : "OSCA"}</div>
+							<div class="sender">${message.type === 'user' ? 'User' : 'OSCA'}</div>
 							<div class="content">${markdownToHtml(message.text)}</div>
 						</div>
 						<div class="separator"></div>
-					`).join('')}
+					`
+            )
+            .join('')}
 				</body>
 			</html>
 		`;
 
-		// Send request to server
-		const response = await fetch(`${window.oscaConfig.httpUrl}/api/export/pdf`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ htmlContent }),
-		});
+    // Send request to server
+    const response = await fetch(`${window.oscaConfig.httpUrl}/api/export/pdf`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ htmlContent }),
+    });
 
-		if (!response.ok) {
-			throw new Error('Failed to generate PDF');
-		}
+    if (!response.ok) {
+      throw new Error('Failed to generate PDF');
+    }
 
-		// Get the PDF blob
-		const pdfBlob = await response.blob();
+    // Get the PDF blob
+    const pdfBlob = await response.blob();
 
-		// Create download link
-		const url = window.URL.createObjectURL(pdfBlob);
-		const link = document.createElement('a');
-		link.href = url;
-		link.download = filename;
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-		window.URL.revokeObjectURL(url);
+    // Create download link
+    const url = window.URL.createObjectURL(pdfBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
 
-		console.log(`Exporting chat history to ${filename}`);
-	} catch (error) {
-		console.error('Error generating PDF:', error);
-		alert('Failed to generate PDF. Please try again.');
-	}
+    console.log(`Exporting chat history to ${filename}`);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    alert('Failed to generate PDF. Please try again.');
+  }
 }

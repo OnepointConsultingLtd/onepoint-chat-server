@@ -1,49 +1,49 @@
-import { Message, Question, Topic, Topics } from "./types";
+import { Message, Question, Topic, Topics } from './types';
 
 export type ChatStore = {
-	// state
-	error: string | null;
-	showInput: boolean;
-	showButton: boolean;
-	isInitialMessage: boolean;
-	messages: Message[];
-	isThinking: boolean;
-	isRestarting: boolean;
-	isSidebarOpen: boolean;
-	selectedTopic: Topic | null;
-	relatedTopics: Topics | null;
-	relatedTopicsLoading: boolean;
-	lastMessage: Message | null;
-	currentMessage: Message | null;
-	// handlers
-	handleQuestionClick: (question: Question) => void;
-	handleSubmitCallback: ((text: string) => void) | null;
-	handleRestart: () => void;
-	toggleSidebar: () => void;
+  // state
+  error: string | null;
+  showInput: boolean;
+  showButton: boolean;
+  isInitialMessage: boolean;
+  messages: Message[];
+  isThinking: boolean;
+  isRestarting: boolean;
+  isSidebarOpen: boolean;
+  selectedTopic: Topic | null;
+  relatedTopics: Topics | null;
+  relatedTopicsLoading: boolean;
+  lastMessage: Message | null;
+  currentMessage: Message | null;
+  // handlers
+  handleQuestionClick: (question: Question) => void;
+  handleSubmitCallback: ((text: string) => void) | null;
+  handleRestart: () => void;
+  toggleSidebar: () => void;
 
-	// setters
-	setIsInitialMessage: (message: Message, isLastCard: boolean) => void;
-	setShowInput: (show: boolean) => void;
-	setShowButton: (show: boolean) => void;
-	setMessages: (messagesOrUpdater: Message[] | ((prev: Message[]) => Message[])) => void;
-	setIsThinking: (valueOrUpdater: boolean | ((prev: boolean) => boolean)) => void;
-	setIsRestarting: (value: boolean) => void;
-	setIsSidebarOpen: (open: boolean) => void;
-	setHandleQuestionClick: (cb: (question: Question) => void) => void;
-	setSelectedTopic: (topic: Topic) => void;
-	setRelatedTopics: (topics: Topics) => void;
-	setRelatedTopicsLoading: (loading: boolean) => void;
-	setLastMessage: (message: Message | null) => void;
-	setCurrentMessage: (message: Message | null) => void;
-	fetchRelatedTopics: (topicName: string) => Promise<void>;
+  // setters
+  setIsInitialMessage: (message: Message, isLastCard: boolean) => void;
+  setShowInput: (show: boolean) => void;
+  setShowButton: (show: boolean) => void;
+  setMessages: (messagesOrUpdater: Message[] | ((prev: Message[]) => Message[])) => void;
+  setIsThinking: (valueOrUpdater: boolean | ((prev: boolean) => boolean)) => void;
+  setIsRestarting: (value: boolean) => void;
+  setIsSidebarOpen: (open: boolean) => void;
+  setHandleQuestionClick: (cb: (question: Question) => void) => void;
+  setSelectedTopic: (topic: Topic) => void;
+  setRelatedTopics: (topics: Topics) => void;
+  setRelatedTopicsLoading: (loading: boolean) => void;
+  setLastMessage: (message: Message | null) => void;
+  setCurrentMessage: (message: Message | null) => void;
+  fetchRelatedTopics: (topicName: string) => Promise<void>;
 
-	// Add these to match the store implementation
-	setHandleSubmit: (cb: (text: string) => void) => void;
-	handleSubmit: (text: string) => void;
+  // Add these to match the store implementation
+  setHandleSubmit: (cb: (text: string) => void) => void;
+  handleSubmit: (text: string) => void;
 
-	// actions
-	handleClick: () => void;
-	handleTopicClick: (topic: Topic) => void;
-	// Private handlers
-	_handleQuestionClick: ((question: Question) => void) | undefined;
+  // actions
+  handleClick: () => void;
+  handleTopicClick: (topic: Topic) => void;
+  // Private handlers
+  _handleQuestionClick: ((question: Question) => void) | undefined;
 };

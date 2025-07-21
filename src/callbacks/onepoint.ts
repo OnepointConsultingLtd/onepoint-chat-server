@@ -1,6 +1,6 @@
-import { ChatMessage } from '@gilf/chat-websocket-server';
-import { getContext } from '../api';
-import { analyzeConversation } from '../utils/conversationAnalyzer';
+import { ChatMessage } from "@gilf/chat-websocket-server";
+import { getContext } from "../api";
+import { analyzeConversation } from "../utils/conversationAnalyzer";
 
 function contextAdapter(response: any) {
   if (response.success) {
@@ -28,7 +28,7 @@ ${lastMessage.content}
 
   // Build system-level instructions
   const systemInstructions: ChatMessage = {
-    role: 'system' as any,
+    role: "system" as any,
     content: `
 You are a digital transformation assistant for **Onepoint**, a UK-based consulting firm founded in 2005, with offices in **London** and **Pune**. Your role is to support clients, prospects, or internal teams in understanding Onepoint’s services and guiding them toward suitable solutions.
 
@@ -71,13 +71,15 @@ Emphasize our compliance with ISO27001 and GDPR. Mention real-world experience (
 - Preface statements with "According to my understanding...
 
 Persona: ${analysis.persona}
-Relevant Services: ${analysis.services.join(', ')}
+Relevant Services: ${analysis.services.join(", ")}
 Initial Questions Complete: ${analysis.isInitialQuestionsComplete}
 
-`.trim()
+`.trim(),
   };
 
-  const index = chatHistory.findIndex(obj => systemInstructions.content === obj.content);
+  const index = chatHistory.findIndex(
+    (obj) => systemInstructions.content === obj.content,
+  );
 
   if (index !== -1) {
     chatHistory.splice(index, 1);

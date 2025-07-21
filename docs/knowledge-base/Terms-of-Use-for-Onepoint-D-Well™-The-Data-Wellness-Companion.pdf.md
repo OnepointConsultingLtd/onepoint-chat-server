@@ -4,7 +4,6 @@ Source: https://www.onepointltd.com/wp-content/uploads/2024/09/Terms-of-Use-for-
 
 ## Content
 
-
 ## Metadata
 
 - URL: https://www.onepointltd.com/wp-content/uploads/2024/09/Terms-of-Use-for-Onepoint-D-Well™-The-Data-Wellness-Companion.pdf

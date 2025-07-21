@@ -1,15 +1,15 @@
 export interface PersonaMapping {
-	keywords: string[];
-	persona: string;
+  keywords: string[];
+  persona: string;
 }
 
 export interface ServiceMapping {
-	keywords: string[];
-	service: string;
+  keywords: string[];
+  service: string;
 }
 
 export interface ConversationAnalysis {
-	persona: string;
-	services: string[];
-	isInitialQuestionsComplete: boolean;
-} 
+  persona: string;
+  services: string[];
+  isInitialQuestionsComplete: boolean;
+}

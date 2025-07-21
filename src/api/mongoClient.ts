@@ -5,7 +5,7 @@ const DB_NAME = process.env.MONGO_DB_NAME;
 const COLLECTION_NAME = process.env.COLLECTION_NAME || "conversations";
 
 const client = new MongoClient(URI);
-let isConnected = false; 
+let isConnected = false;
 
 export async function getDB(): Promise<Db> {
   if (!isConnected) {

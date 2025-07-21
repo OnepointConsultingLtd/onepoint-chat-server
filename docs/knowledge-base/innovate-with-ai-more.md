@@ -3,6 +3,7 @@
 # AI Consultancy Services UK | Generative Artificial Intelligence Consulting Firms UK
 
 ## Main Navigation
+
 - [Do data better](https://www.onepointltd.com/do-data-better)
 - [Innovate with AI & more](https://www.onepointltd.com/innovate-with-ai)
 - [Architect for Outcomes](https://www.onepointltd.com/architect-for-outcomes/)
@@ -35,6 +36,7 @@ We partner with you to navigate the AI landscape, combining deep technical exper
 Whether you are starting your AI journey or ready to scale, we are here to turn your ambitions into achievements.
 
 **AI Toolkit Sections:**
+
 - [AI Toolkit](https://www.onepointltd.com/innovate-with-ai-more#tab1)
 - [AI Methods](https://www.onepointltd.com/innovate-with-ai-more#tab2)
 - [AI Expert Services](https://www.onepointltd.com/innovate-with-ai-more#tab3)
@@ -167,11 +169,13 @@ Our proprietary Onepoint AI Engine™ is part of the toolkit we use to rapidly d
 We applied this to ourselves, creating two data expert tools for the data domain, a domain that is close to our hearts.
 
 #### The Data Wellness AI Companion
+
 Answer a few questions about your data ecosystem and receive instant, actionable insights.
 
 [Explore more](https://www.onepointltd.com/data-wellness/onepoint-d-well/)
 
 #### The Data Wellness AI Self-Diagnostic
+
 Get an AI-powered self-diagnostic report and an optional results interpretation call with one of our experts.
 
 [Explore more](https://www.onepointltd.com/data-wellness/onepoint-d-wise/)
@@ -185,6 +189,7 @@ Onepoint as a Data Controller will process your personal data in line with the G
 ## Footer Navigation
 
 ### What we do
+
 - [Do data better](https://www.onepointltd.com/do-data-better)
 - [Innovate with AI & more](https://www.onepointltd.com/innovate-with-ai-more/)
 - [Architect for Outcomes](https://www.onepointltd.com/architect-for-outcomes/)
@@ -192,17 +197,20 @@ Onepoint as a Data Controller will process your personal data in line with the G
 - [Onepoint Labs](https://www.onepointltd.com/onepoint-labs/)
 
 ### Resources
+
 - [Onepoint Data Wellness™ Suite](https://www.onepointltd.com/data-wellness/)
 - [Onepoint TechTalk](https://www.onepointltd.com/techtalk)
 - [Onepoint Oneness](https://www.onepointltd.com/oneness/)
 
 ### About us
+
 - [Discover Onepoint](https://www.onepointltd.com/discover-onepoint/)
 - [Client stories](https://www.onepointltd.com/client-stories/)
 - [Career](https://www.onepointltd.com/career-opportunities/)
 - [Contact us](https://www.onepointltd.com/contact-us/)
 
 ### Legal
+
 - [Terms](https://www.onepointltd.com/policies/)
 - [Privacy notice](https://www.onepointltd.com/policies/privacy-policy/)
 

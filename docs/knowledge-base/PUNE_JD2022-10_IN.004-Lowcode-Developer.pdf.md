@@ -4,7 +4,6 @@ Source: https://www.onepointltd.com/wp-content/uploads/2022/10/PUNE_JD2022-10_IN
 
 ## Content
 
-
 ## Metadata
 
 - URL: https://www.onepointltd.com/wp-content/uploads/2022/10/PUNE_JD2022-10_IN.004-Lowcode-Developer.pdf

@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/innovate-with-ai-more/
 
-*Contact us if you are searching for AI consultancy, artificial intelligence consulting, AI consulting services, best it consulting firms, AI strategy consulting, generative AI consulting, AI technology consulting, AI consulting for small businesses, AI integration consulting, generative AI consulting company, generative ai consulting firms, ai consulting firms, ai consultancy London, ai consulting and development, etc*
+_Contact us if you are searching for AI consultancy, artificial intelligence consulting, AI consulting services, best it consulting firms, AI strategy consulting, generative AI consulting, AI technology consulting, AI consulting for small businesses, AI integration consulting, generative AI consulting company, generative ai consulting firms, ai consulting firms, ai consultancy London, ai consulting and development, etc_
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- 
-- 
-- 
+-
+-
+-
 - Search for:Search
 
 Architect for outcomes[1]
@@ -631,7 +631,6 @@ Contact us
 [cky_video_placeholder_title]
 
 [cky_video_placeholder_title]
-
 
 ## Sources
 

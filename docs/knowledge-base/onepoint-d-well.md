@@ -2,18 +2,20 @@
 
 **Source:** [Onepoint D-Well](https://www.onepointltd.com/onepoint-d-well)
 
-*Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
+_Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better._
 
 ---
 
 ## **Content**
 
 ### **Core Themes**
+
 - **Do Data Better**
 - **Innovate with AI & More**
 - **Architect for Outcomes**
 
 ### **Offerings**
+
 - Onepoint D-Well™
 - Onepoint D-Wise™
 - Rapid Health Check
@@ -128,4 +130,3 @@ Explore the following services:
 - **URL:** [https://www.onepointltd.com/onepoint-d-well](https://www.onepointltd.com/onepoint-d-well)
 - **Last Scraped:** 2025-03-06 15:54:31
 - **Content Type:** Web Page
-
