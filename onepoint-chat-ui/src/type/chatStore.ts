@@ -29,7 +29,6 @@ export type ChatStore = {
   setIsThinking: (valueOrUpdater: boolean | ((prev: boolean) => boolean)) => void;
   setIsRestarting: (value: boolean) => void;
   setIsSidebarOpen: (open: boolean) => void;
-  setHandleQuestionClick: (cb: (question: Question) => void) => void;
   setSelectedTopic: (topic: Topic) => void;
   setRelatedTopics: (topics: Topics) => void;
   setRelatedTopicsLoading: (loading: boolean) => void;
@@ -37,13 +36,10 @@ export type ChatStore = {
   setCurrentMessage: (message: Message | null) => void;
   fetchRelatedTopics: (topicName: string) => Promise<void>;
 
-  // Add these to match the store implementation
   setHandleSubmit: (cb: (text: string) => void) => void;
   handleSubmit: (text: string) => void;
 
   // actions
   handleClick: () => void;
   handleTopicClick: (topic: Topic) => void;
-  // Private handlers
-  _handleQuestionClick: ((question: Question) => void) | undefined;
 };

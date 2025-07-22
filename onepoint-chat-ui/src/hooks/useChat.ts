@@ -93,6 +93,7 @@ export function useChat() {
             break;
           case 'message':
             setIsThinking(false);
+            console.log("This is the message in the useChat hook: ", message);
             setMessages((prev: Message[]) => [
               ...prev,
               messageFactoryAgent(message.message.content),
@@ -167,6 +168,7 @@ export function useChat() {
 
   const handleSubmit = (text: string) => {
     if (!text.trim() || !wsRef.current) return;
+    // Reset related topics here
 
     if (!currentConversationId.current) {
       messageQueue.current.push({ text: text.trim() });

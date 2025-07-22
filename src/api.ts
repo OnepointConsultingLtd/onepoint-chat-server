@@ -15,10 +15,7 @@ export async function getContext(question: string) {
       "{question}",
       encodeURIComponent(question),
     );
-    const url = `${baseUrl}${baseUrl?.includes("?") ? "&" : "?"}engine=lightrag`;
-
-    console.log("This is the url: ", url);
-
+    const url = `${baseUrl}`;
     const response = await fetch(url!, {
       headers: {
         Authorization: `Bearer ${API_KEY!}`,
@@ -27,7 +24,7 @@ export async function getContext(question: string) {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("This is the data: ", data);
+      console.log("This is the data: ", JSON.stringify(data, null, 2));
       return {
         data: data,
         success: true,

@@ -4,6 +4,7 @@ import { Message, Topic, Question, Topics } from '../type/types';
 import { fetchRelatedTopics } from '../lib/apiClient';
 import { clearChatData } from '../lib/persistence';
 import { ChatStore } from '../type/chatStore';
+import { INITIAL_MESSAGE } from '../lib/constants';
 
 function newChat() {
   return {
@@ -44,7 +45,7 @@ const useChatStore = create<ChatStore>()(
 
       // setters
       setIsInitialMessage: (message: Message, isLastCard: boolean) => {
-        const isInitialMessage = message.text.includes('Welcome to Onepoint');
+        const isInitialMessage = message.text.includes(INITIAL_MESSAGE);
         set({
           isInitialMessage,
           showInput: isInitialMessage && isLastCard,
@@ -72,10 +73,10 @@ const useChatStore = create<ChatStore>()(
               ? (valueOrUpdater as (prev: boolean) => boolean)(state.isThinking)
               : valueOrUpdater,
         })),
+
+
       setIsRestarting: (value: boolean) => set({ isRestarting: value }),
       setIsSidebarOpen: (open: boolean) => set({ isSidebarOpen: open }),
-      setHandleQuestionClick: (cb: (question: Question) => void) =>
-        set({ _handleQuestionClick: cb }),
       setSelectedTopic: (topic: Topic) => set({ selectedTopic: topic }),
       setRelatedTopics: (topics: Topics) => set({ relatedTopics: topics }),
       setRelatedTopicsLoading: (loading: boolean) => set({ relatedTopicsLoading: loading }),
@@ -124,18 +125,13 @@ const useChatStore = create<ChatStore>()(
         }));
       },
       toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
-      _handleQuestionClick: undefined,
     }),
     {
       name: 'osca-store',
       partialize: state => ({
-        messages: state.messages,
-        isThinking: state.isThinking,
         isSidebarOpen: state.isSidebarOpen,
         selectedTopic: state.selectedTopic,
         relatedTopics: state.relatedTopics,
-        relatedTopicsLoading: state.relatedTopicsLoading,
-        lastMessage: state.messages.length > 0 ? state.messages[state.messages.length - 1] : null,
       }),
     }
   )

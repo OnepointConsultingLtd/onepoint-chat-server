@@ -10,6 +10,8 @@ export type ServerMessage = {
   content: string;
   id?: string;
   timestamp?: Date;
+  hl_keywords?: string[];
+  ll_keywords?: string[];
 };
 
 export type Message = {
@@ -18,6 +20,8 @@ export type Message = {
   type: 'user' | 'agent';
   timestamp: Date;
   conversationId?: string;
+  hl_keywords?: string[];
+  ll_keywords?: string[];
 };
 
 export type ChatContextType = {

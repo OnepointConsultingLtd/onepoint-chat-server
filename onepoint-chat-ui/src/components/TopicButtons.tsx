@@ -44,7 +44,6 @@ export default function TopicButtons() {
     'Boomi',
   ];
 
-  // Handler for when a user clicks a predefined topic
   const handlePredefinedTopicClick = (topic: string) => {
     const topicObj = { name: topic, description: '', type: 'predefined', questions: [] };
     setSelectedTopic(topicObj);
@@ -62,7 +61,7 @@ export default function TopicButtons() {
     handleTopicClick(topic);
   };
 
-  if (!relatedTopics && !isInitialMessage) return null;
+  console.log('relatedTopics test', relatedTopics);
 
   return (
     <div className={`mt-4 space-y-3`}>

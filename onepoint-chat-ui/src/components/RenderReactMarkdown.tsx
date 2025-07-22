@@ -9,13 +9,20 @@ import { useShallow } from 'zustand/react/shallow';
 export default function RenderReactMarkdown({ message }: { message: Message }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const { currentMessage } = useChatStore(
+  const { currentMessage, relatedTopics, isInitialMessage } = useChatStore(
     useShallow(state => ({
       currentMessage: state.currentMessage,
+      relatedTopics: state.relatedTopics,
+      isInitialMessage: state.isInitialMessage,
     }))
   );
 
-  console.log('currentMessage', currentMessage);
+  const shouldShowTopicButtons =
+    message.type === 'agent' &&
+    currentMessage &&
+    message.id === currentMessage.id &&
+    (isInitialMessage ||
+      (relatedTopics && relatedTopics.topics && relatedTopics.topics.length > 0));
 
   const copyToClipboard = async (message: Message) => {
     try {
@@ -45,11 +52,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
       >
         {message.text}
       </ReactMarkdown>
-      <div>
-        {message.type === 'agent' && currentMessage && message.id === currentMessage.id && (
-          <TopicButtons />
-        )}
-      </div>
+      <div>{shouldShowTopicButtons && <TopicButtons />}</div>
 
       <div className="flex items-center justify-between mt-2 text-xs">
         <CopyButton
