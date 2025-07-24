@@ -84,9 +84,9 @@ const useChatStore = create<ChatStore>()(
       setCurrentMessage: (message: Message | null) => set({ currentMessage: message }),
       setHandleSubmit: (cb: (text: string) => void) => set({ handleSubmitCallback: cb }),
 
-      fetchRelatedTopics: async (topicName: string) => {
+      fetchRelatedTopics: async (topicName: string, text: string = '') => {
         set({ relatedTopicsLoading: true });
-        const data = await fetchRelatedTopics(topicName);
+        const data = await fetchRelatedTopics(topicName, text);
         set({ relatedTopics: data, relatedTopicsLoading: false });
       },
 

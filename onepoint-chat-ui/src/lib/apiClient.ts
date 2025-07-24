@@ -6,7 +6,7 @@ export function createHeaders() {
   return {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJheml6aV9iYW5rIiwibmFtZSI6ImF6aXppX2JhbmsiLCJpYXQiOjE3NTIwNTk0NTYsImVtYWlsIjoibXVydGF6YS5oYXNzYW5pQG9uZXBvaW50bHRkLmNvbSIsInBlcm1pc3Npb25zIjpbInJlYWQiXX0.CNMBxgbn8xp2v6DBwJuTWr5mmz_zuY2ZLHjvNXONg6fUwAdPc3WtZaUf3FyHIYMJJbhCc8Buk_9KmUY65KG1Rg`,
+      Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJheml6aV9iYW5rIiwibmFtZSI6ImF6aXppX2JhbmsiLCJpYXQiOjE3NDk3NDU4NjUsImVtYWlsIjoibXVydGF6YS5oYXNzYW5pQG9uZXBvaW50bHRkLmNvbSJ9.xvKGivWBWqRc5e4iMSZ18Qls-YnpbCljYDfVF7s0zpiHFEMmOIQHkWOf9tc_cOhP7eKjeKdFE0tgM1g5vvMzfg`,
     },
   };
 }
@@ -39,24 +39,38 @@ export async function fetchTopics(topic: string, limit: number = 4): Promise<Top
   return (await response.json()) as Topics;
 }
 
-export async function fetchRelatedTopics(lastSelectedTopic: string): Promise<Topics> {
-  const params = new URLSearchParams({
-    project: 'onepoint_v1',
-    engine: 'lightrag',
-    source: lastSelectedTopic,
-    samples: '25000',
-    path_length: '5',
-    restart_prob: '0.15',
-    runs: '5',
-    limit: `${MAX_RELATED_TOPICS}`,
+export async function fetchRelatedTopics(lastSelectedTopic: string, text: string): Promise<Topics> {
+  // Query params
+  const url = `${getServer()}/project/related_topics?project=onepoint_v1&engine=lightrag`;
+
+  type RelatedTopicsBody = {
+    samples: number;
+    path_length: number;
+    restart_prob: number;
+    runs: number;
+    limit: number;
+    source?: string;
+    text?: string;
+  };
+
+  // Body params
+  const body: RelatedTopicsBody = {
+    samples: 25000,
+    path_length: 5,
+    restart_prob: 0.15,
+    runs: 5,
+    limit: MAX_RELATED_TOPICS,
+    source: lastSelectedTopic || '',
+    text: text || '',
+  };
+
+  console.log('fetchRelatedTopics POST', { url, body });
+
+  const response = await fetch(url, {
+    method: 'POST',
+    ...createHeaders(),
+    body: JSON.stringify(body),
   });
-
-  console.log('The lastSelectedTopic is: ', lastSelectedTopic);
-
-  const response = await fetch(
-    `${getServer()}/project/related_topics?${params.toString()}`,
-    createHeaders()
-  );
 
   const data = await response.json();
   console.log('The data is ->: ', data);

@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "@types/dagre": "^0.7.53",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.13",
     "@types/wkhtmltopdf": "^0.3.9",
@@ -26,6 +27,7 @@
     "@types/cors": "^2.8.17",
     "@types/uuid": "^10.0.0",
     "cors": "^2.8.5",
+    "dagre": "^0.8.5",
     "mongodb": "^6.15.0",
     "uuid": "^11.1.0",
     "wkhtmltopdf": "^0.4.0",

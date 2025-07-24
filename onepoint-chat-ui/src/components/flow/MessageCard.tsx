@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { Handle, Position } from '@xyflow/react';
+import { useEffect, useRef } from 'react';
 import { BiMessageRoundedDots } from 'react-icons/bi';
 import { useShallow } from 'zustand/react/shallow';
 import useChatStore from '../../store/chatStore';
@@ -14,6 +15,7 @@ type MessageCardProps = {
   isLastCard: boolean;
   isThinking: boolean;
   handleSubmit: (text: string) => void;
+  onHeightChange?: (height: number) => void;
 };
 
 export default function MessageCard({
@@ -22,6 +24,7 @@ export default function MessageCard({
   isLastCard,
   isThinking,
   handleSubmit,
+  onHeightChange,
 }: MessageCardProps) {
   const {
     showInput,
@@ -45,8 +48,16 @@ export default function MessageCard({
     setIsInitialMessage(userMessage, isLastCard);
   }, [userMessage, isLastCard, setIsInitialMessage]);
 
+  const cardRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (cardRef.current && onHeightChange) {
+      onHeightChange(cardRef.current.offsetHeight);
+    }
+  }, [onHeightChange, userMessage, agentMessage]);
+
   return (
     <div
+      ref={cardRef}
       className="flex flex-col w-full overflow-hidden rounded-xl bg-white border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 group relative animate-fade-in"
       onMouseEnter={() => !isInitialMessage && setShowButton(true)}
       onMouseLeave={() => !isInitialMessage && setShowButton(false)}
@@ -90,6 +101,12 @@ export default function MessageCard({
           </button>
         </div>
       )}
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right"
+        style={{ background: '#3b82f6', top: '50%', transform: 'translateY(-50%)' }}
+      />
     </div>
   );
 }

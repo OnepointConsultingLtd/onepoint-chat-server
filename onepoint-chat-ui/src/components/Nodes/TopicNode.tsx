@@ -1,0 +1,44 @@
+import { Position } from '@xyflow/react';
+
+import { Handle } from '@xyflow/react';
+
+type TopicNodeData = {
+  label: string;
+  topic: { description?: string };
+  onClick?: () => void;
+};
+
+export default function TopicNode({ data }: { data: TopicNodeData }) {
+  return (
+    <div
+      className="bg-white border border-blue-200 px-4 py-2 rounded-xl shadow-sm cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl w-full max-w-xs group"
+      onClick={data.onClick}
+      style={{ minWidth: 250, maxWidth: 320, wordBreak: 'break-word' }}
+    >
+      <div className="flex items-center gap-2 mb-1">
+        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-xs font-semibold">
+          {data.label.charAt(0)}
+        </div>
+        <span className="text-base font-semibold text-gray-800 group-hover:!text-gray-600">
+          {data.label}
+        </span>
+      </div>
+
+      {data.topic?.description && (
+        <div
+          className="text-xs text-gray-600 mt-1 line-clamp-3 group-hover:text-gray-800"
+          style={{ whiteSpace: 'pre-line' }}
+        >
+          {data.topic.description}
+        </div>
+      )}
+
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="left"
+        style={{ background: '#3b82f6', top: '50%' }}
+      />
+    </div>
+  );
+}

@@ -2,35 +2,43 @@ import { Edge, MarkerType } from '@xyflow/react';
 import { Message } from '../../type/types';
 import { getConversationStartIndex } from '../../utils/messageUtils';
 
-/**
- * Creates edges between conversation cards
- */
-
-export function createEdges(messages: Message[]): Edge[] {
+export function createEdges(messages: Message[], topicCount: number = 0): Edge[] {
   const edges: Edge[] = [];
   const startIndex = getConversationStartIndex(messages);
-
-  // To get the number of cards we have
   const cardCount = Math.ceil((messages.length - startIndex) / 2);
 
-  // no edges for 2 cards
-  if (cardCount < 2) return edges;
-
-  // Create edges connecting each card to the next one
   for (let i = 0; i < cardCount - 1; i++) {
     edges.push({
       id: `edge-card-${i}-to-card-${i + 1}`,
       source: `card-${i}`,
       target: `card-${i + 1}`,
-      type: 'smoothstep',
+      sourceHandle: 'right',
+      targetHandle: 'left',
+      type: 'default',
       animated: true,
       style: { stroke: '#cbd5e1', strokeWidth: 1 },
       markerEnd: {
-        type: MarkerType.ArrowClosed,
-        orient: 'auto-start-reverse',
-        width: 10,
-        height: 10,
+        type: MarkerType.Arrow,
         color: '#cbd5e1',
+      },
+    });
+  }
+
+  const lastCardId = `card-${cardCount - 1}`;
+
+  for (let i = 0; i < topicCount; i++) {
+    edges.push({
+      id: `edge-${lastCardId}-to-topic-${i}`,
+      source: lastCardId,
+      target: `${lastCardId}-topic-${i}`,
+      sourceHandle: 'right',
+      targetHandle: 'left',
+      type: 'default',
+      animated: true,
+      style: { stroke: '#3179ff', strokeWidth: 1 },
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        color: '#3179ff',
       },
     });
   }

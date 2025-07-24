@@ -10,7 +10,7 @@ import { Message, ServerMessage } from '../type/types';
 import { fetchChatHistory, fetchRawHistory } from '../utils/fetchChatHistory';
 
 export function useChat() {
-  const { messages, isThinking, setMessages, setIsThinking, isRestarting } = useChatStore(
+  const { messages, isThinking, setMessages, setIsThinking, isRestarting, fetchRelatedTopics } = useChatStore(
     useShallow(state => ({
       messages: state.messages,
       isThinking: state.isThinking,
@@ -18,6 +18,7 @@ export function useChat() {
       setIsThinking: state.setIsThinking,
       isRestarting: state.isRestarting,
       setIsRestarting: state.setIsRestarting,
+      fetchRelatedTopics: state.fetchRelatedTopics,
     }))
   );
 
@@ -184,6 +185,9 @@ export function useChat() {
     if (!hasInitialized.current) {
       initializeChat();
     }
+
+    // Fetch related topics based on user input text
+    fetchRelatedTopics('', text);
   };
 
   return {

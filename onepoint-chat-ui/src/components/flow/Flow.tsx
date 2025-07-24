@@ -1,10 +1,11 @@
 import { Background, BackgroundVariant, Controls, ReactFlow, useReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../../lib/constants';
+import { predefinedTopics } from '../../lib/predefinedTopics';
 import useChatStore from '../../store/chatStore';
-import { nodeTypes } from '../../type/types';
+import { nodeTypes, Topic } from '../../type/types';
 import { createEdges } from './EdgeCreator';
 import ErrorCard from './ErrorCard';
 import { createNodes } from './NodeCreator';
@@ -21,32 +22,125 @@ export default function Flow({
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
   handleSubmit: (text: string) => void;
 }) {
-  const { messages, isThinking } = useChatStore(
+  const {
+    messages,
+    isThinking,
+    isInitialMessage,
+    relatedTopics,
+    setSelectedTopic,
+    handleTopicClick,
+  } = useChatStore(
     useShallow(state => ({
       messages: state.messages,
       isThinking: state.isThinking,
+      isInitialMessage: state.isInitialMessage,
+      relatedTopics: state.relatedTopics,
+      setSelectedTopic: state.setSelectedTopic,
+      handleTopicClick: state.handleTopicClick,
     }))
   );
 
   const reactFlowInstance = useReactFlow();
   const previousMessagesLengthRef = useRef<number>(0);
 
-  // Create the nodes for the flow diagram
-  const flowNodes = useMemo(
-    () => createNodes(messages, isThinking, handleSubmit),
-    [messages, isThinking, handleSubmit]
+  const handlePredefinedTopicClick = useCallback(
+    (topic: string) => {
+      const topicObj = { name: topic, description: '', type: 'predefined', questions: [] };
+      setSelectedTopic(topicObj);
+      handleTopicClick(topicObj);
+    },
+    [handleTopicClick, setSelectedTopic]
   );
 
-  // Create the edges between nodes
-  const flowEdges = useMemo(() => createEdges(messages), [messages]);
+  const handleRelatedTopicClick = useCallback(
+    (topic: Topic) => {
+      setSelectedTopic(topic);
+      handleTopicClick(topic);
+    },
+    [handleTopicClick, setSelectedTopic]
+  );
 
-  // Focus on the latest node when messages or thinking state changes
+  // Handler for topic node clicks (now Topic-based for createNodes)
+  const handleTopicNodeClick = useCallback(
+    (topic: Topic) => {
+      handleRelatedTopicClick(topic);
+    },
+    [handleRelatedTopicClick]
+  );
+
+  const topicState = useMemo(
+    () => ({
+      isInitialMessage,
+      predefinedTopics: predefinedTopics,
+      relatedTopics: relatedTopics?.topics || [],
+      handlePredefinedTopicClick,
+      handleRelatedTopicClick,
+    }),
+    [isInitialMessage, relatedTopics, handlePredefinedTopicClick, handleRelatedTopicClick]
+  );
+
+  const [cardHeights, setCardHeights] = useState<{ [id: string]: number }>({});
+  const setCardHeight = useCallback((id: string, height: number) => {
+    setCardHeights(prev => {
+      if (prev[id] === height) return prev;
+      return { ...prev, [id]: height };
+    });
+  }, []);
+
+  const nodes = useMemo(
+    () =>
+      createNodes(
+        messages,
+        isThinking,
+        handleSubmit,
+        topicState.isInitialMessage
+          ? predefinedTopics.map((topic: Topic) => ({
+              name: topic.name,
+              description: topic.description,
+              type: topic.type,
+              questions: topic.questions,
+              onClick: () => {
+                console.log('clicked', topic);
+              },
+            }))
+          : !isThinking
+            ? topicState.relatedTopics
+            : [],
+        handleTopicNodeClick,
+        setCardHeight,
+        cardHeights
+      ),
+    [
+      messages,
+      isThinking,
+      topicState,
+      handleSubmit,
+      handleTopicNodeClick,
+      cardHeights,
+      setCardHeight,
+    ]
+  );
+
+  const edges = useMemo(
+    () =>
+      createEdges(
+        messages,
+        topicState.isInitialMessage ? predefinedTopics.length : topicState.relatedTopics.length
+      ),
+    [messages, topicState]
+  );
+
   useEffect(() => {
-    focusOnLatestNode(reactFlowInstance, messages);
+    focusOnLatestNode(
+      reactFlowInstance,
+      messages,
+      topicState.isInitialMessage ? predefinedTopics.length : topicState.relatedTopics.length
+    );
     previousMessagesLengthRef.current = messages.length;
-  }, [messages, isThinking, reactFlowInstance]);
+  }, [messages, isThinking, reactFlowInstance, topicState]);
 
   const onNodesChange = useCallback(() => {}, []);
+
   const onEdgesChange = useCallback(() => {}, []);
 
   const isError = messages.some(message => message.text.includes('Connection error'));
@@ -60,8 +154,8 @@ export default function Flow({
         />
       ) : (
         <ReactFlow
-          nodes={flowNodes}
-          edges={flowEdges}
+          nodes={nodes}
+          edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}

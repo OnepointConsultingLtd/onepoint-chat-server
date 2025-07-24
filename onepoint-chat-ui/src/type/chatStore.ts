@@ -34,7 +34,7 @@ export type ChatStore = {
   setRelatedTopicsLoading: (loading: boolean) => void;
   setLastMessage: (message: Message | null) => void;
   setCurrentMessage: (message: Message | null) => void;
-  fetchRelatedTopics: (topicName: string) => Promise<void>;
+  fetchRelatedTopics: (topicName: string, text?: string) => Promise<void>;
 
   setHandleSubmit: (cb: (text: string) => void) => void;
   handleSubmit: (text: string) => void;

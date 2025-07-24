@@ -134,3 +134,11 @@ ul,
 menu {
   margin-left: 2rem;
 }
+
+.react-flow__handle-top {
+  display: none !important;
+}
+
+.react-flow__handle-bottom {
+  display: none !important;
+}

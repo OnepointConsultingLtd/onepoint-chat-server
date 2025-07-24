@@ -1,4 +1,5 @@
 import CustomNode from '../components/flow/CustomNode';
+import TopicNode from '../components/Nodes/TopicNode';
 
 export type Question = {
   id: number;
@@ -51,6 +52,7 @@ export type FlowProps = {
 
 export const nodeTypes = {
   custom: CustomNode,
+  topic: TopicNode,
 };
 
 export type Topic = {
