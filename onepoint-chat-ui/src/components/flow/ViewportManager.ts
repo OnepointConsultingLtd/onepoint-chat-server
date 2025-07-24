@@ -31,7 +31,9 @@ export const focusOnLatestNode = (
     if (topicNode) topicNodes.push(topicNode);
   }
 
-  const nodesToFocus = [latestNode, ...topicNodes].filter((n): n is typeof nodes[0] => Boolean(n));
+  const nodesToFocus = [latestNode, ...topicNodes].filter((n): n is (typeof nodes)[0] =>
+    Boolean(n)
+  );
 
   if (nodesToFocus.length > 0) {
     reactFlowInstance.fitView({

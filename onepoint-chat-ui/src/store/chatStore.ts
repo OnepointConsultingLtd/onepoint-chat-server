@@ -74,7 +74,6 @@ const useChatStore = create<ChatStore>()(
               : valueOrUpdater,
         })),
 
-
       setIsRestarting: (value: boolean) => set({ isRestarting: value }),
       setIsSidebarOpen: (open: boolean) => set({ isSidebarOpen: open }),
       setSelectedTopic: (topic: Topic) => set({ selectedTopic: topic }),
