@@ -13,3 +13,10 @@ export const MIN_ZOOM = 0.2;
 export const MAX_ZOOM = 1.5;
 
 export const MAX_RELATED_TOPICS = 5;
+
+
+export const TOPIC_CARD = {
+  HEIGHT: 130,
+  Y_SPACING: 5,
+  WIDTH: 280,
+};

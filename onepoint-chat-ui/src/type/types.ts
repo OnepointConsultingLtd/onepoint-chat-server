@@ -65,3 +65,14 @@ export type Topic = {
 export type Topics = {
   topics: Topic[];
 };
+
+
+export type RelatedTopicsBody = {
+  samples: number;
+  path_length: number;
+  restart_prob: number;
+  runs: number;
+  limit: number;
+  source?: string;
+  text?: string;
+};

@@ -9,11 +9,10 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ questions }: SidebarProps) {
-  const { isSidebarOpen, toggleSidebar, handleQuestionClick } = useChatStore(
+  const { isSidebarOpen, toggleSidebar } = useChatStore(
     useShallow(state => ({
       isSidebarOpen: state.isSidebarOpen,
       toggleSidebar: state.toggleSidebar,
-      handleQuestionClick: state.handleQuestionClick,
     }))
   );
 
@@ -91,15 +90,8 @@ export default function Sidebar({ questions }: SidebarProps) {
                   How can I help you today?
                 </h2>
                 <div className="space-y-3">
-                  {questions.map(question => (
-                    <QuestionItem
-                      key={question.id}
-                      question={question}
-                      onClick={() => {
-                        handleQuestionClick(question);
-                        toggleSidebar();
-                      }}
-                    />
+                  {questions.map((question, index) => (
+                    <QuestionItem key={index} question={question} />
                   ))}
                 </div>
               </div>

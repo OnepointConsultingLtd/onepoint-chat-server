@@ -22,6 +22,7 @@ function newChat() {
     isInitialMessage: false,
     showInput: false,
     showButton: false,
+    isStreaming: false,
   };
 }
 
@@ -42,6 +43,7 @@ const useChatStore = create<ChatStore>()(
       relatedTopicsLoading: false,
       lastMessage: null,
       currentMessage: null,
+      isStreaming: false,
 
       // setters
       setIsInitialMessage: (message: Message, isLastCard: boolean) => {
@@ -82,6 +84,10 @@ const useChatStore = create<ChatStore>()(
       setLastMessage: (message: Message | null) => set({ lastMessage: message }),
       setCurrentMessage: (message: Message | null) => set({ currentMessage: message }),
       setHandleSubmit: (cb: (text: string) => void) => set({ handleSubmitCallback: cb }),
+      setIsStreaming: (value: boolean) => set({ isStreaming: value }),
+
+
+      toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
 
       fetchRelatedTopics: async (topicName: string, text: string = '') => {
         set({ relatedTopicsLoading: true });
@@ -95,6 +101,7 @@ const useChatStore = create<ChatStore>()(
       handleSubmit: (text: string) => {
         const { handleSubmitCallback } = get();
         if (handleSubmitCallback) handleSubmitCallback(text);
+        set({ isSidebarOpen: false });
       },
 
       handleTopicClick: (topic: Topic) => {
@@ -112,6 +119,7 @@ const useChatStore = create<ChatStore>()(
         const { handleSubmitCallback } = get();
         if (!handleSubmitCallback) return;
         handleSubmitCallback(question.text);
+        set({ isSidebarOpen: false });
       },
 
       handleRestart: () => {
@@ -123,7 +131,6 @@ const useChatStore = create<ChatStore>()(
           ...newChat(),
         }));
       },
-      toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
     }),
     {
       name: 'osca-store',

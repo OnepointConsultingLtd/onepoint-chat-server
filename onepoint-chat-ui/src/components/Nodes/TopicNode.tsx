@@ -1,6 +1,7 @@
 import { Position } from '@xyflow/react';
 
 import { Handle } from '@xyflow/react';
+import { useChat } from '../../hooks/useChat';
 
 type TopicNodeData = {
   label: string;
@@ -9,10 +10,12 @@ type TopicNodeData = {
 };
 
 export default function TopicNode({ data }: { data: TopicNodeData }) {
+  const { isStreaming } = useChat();
+
   return (
     <div
-      className="bg-white border border-blue-200 px-4 py-2 rounded-xl shadow-sm cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl w-full max-w-xs group"
-      onClick={data.onClick}
+      className={`bg-white border border-blue-200 px-4 py-2 rounded-xl shadow-sm cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl w-full max-w-xs group ${isStreaming ? 'opacity-50 pointer-events-none' : ''}`}
+      onClick={isStreaming ? undefined : data.onClick}
       style={{ minWidth: 250, maxWidth: 320, wordBreak: 'break-word' }}
     >
       <div className="flex items-center gap-2 mb-1">

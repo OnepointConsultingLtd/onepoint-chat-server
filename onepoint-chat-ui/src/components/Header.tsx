@@ -31,8 +31,8 @@ export default function Header({ chatHistory }: HeaderProps) {
   return (
     <div className="w-full mx-auto mr-8">
       <div className="flex justify-between items-center">
-        <header className="bg-white p-4 w-full relative">
-          <div className="flex items-center space-x-4 w-full justify-between">
+        <header className="p-1 w-full relative">
+          <div className="flex items-start space-x-4 w-full justify-between">
             {/* Logo, title and description */}
             <div className="flex items-start flex-col space-x-4 pr-4">
               <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 text-transparent bg-clip-text">

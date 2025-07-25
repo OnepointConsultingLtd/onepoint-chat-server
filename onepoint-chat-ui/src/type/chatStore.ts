@@ -15,6 +15,7 @@ export type ChatStore = {
   relatedTopicsLoading: boolean;
   lastMessage: Message | null;
   currentMessage: Message | null;
+  isStreaming: boolean;
   // handlers
   handleQuestionClick: (question: Question) => void;
   handleSubmitCallback: ((text: string) => void) | null;
@@ -34,6 +35,7 @@ export type ChatStore = {
   setRelatedTopicsLoading: (loading: boolean) => void;
   setLastMessage: (message: Message | null) => void;
   setCurrentMessage: (message: Message | null) => void;
+  setIsStreaming: (value: boolean) => void;
   fetchRelatedTopics: (topicName: string, text?: string) => Promise<void>;
 
   setHandleSubmit: (cb: (text: string) => void) => void;

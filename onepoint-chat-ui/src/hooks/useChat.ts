@@ -10,7 +10,7 @@ import { Message, ServerMessage } from '../type/types';
 import { fetchChatHistory, fetchRawHistory } from '../utils/fetchChatHistory';
 
 export function useChat() {
-  const { messages, isThinking, setMessages, setIsThinking, isRestarting, fetchRelatedTopics } =
+  const { messages, isThinking, setMessages, setIsThinking, isRestarting, fetchRelatedTopics, setSelectedTopic, isStreaming, setIsStreaming, setIsSidebarOpen } =
     useChatStore(
       useShallow(state => ({
         messages: state.messages,
@@ -20,6 +20,10 @@ export function useChat() {
         isRestarting: state.isRestarting,
         setIsRestarting: state.setIsRestarting,
         fetchRelatedTopics: state.fetchRelatedTopics,
+        setSelectedTopic: state.setSelectedTopic,
+        isStreaming: state.isStreaming,
+        setIsStreaming: state.setIsStreaming,
+        setIsSidebarOpen: state.setIsSidebarOpen,
       }))
     );
 
@@ -75,6 +79,7 @@ export function useChat() {
         switch (message.type) {
           case 'stream-start':
             setIsThinking(true);
+            setIsStreaming(true);
             break;
           case 'stream-chunk':
             setIsThinking(false);
@@ -89,6 +94,7 @@ export function useChat() {
             break;
           case 'stream-end':
             setIsThinking(false);
+            setIsStreaming(false);
             if (message.subType === 'streamEndError') {
               setMessages((prev: Message[]) => [...prev, messageFactoryAgent(message.message)]);
             }
@@ -142,6 +148,7 @@ export function useChat() {
         `Connection error: Unable to connect to server`
       );
       setMessages((prev: Message[]) => [...prev, errorMessage]);
+      setIsStreaming(false);
     };
 
     ws.onclose = () => {
@@ -149,6 +156,7 @@ export function useChat() {
       const closeMessage: Message = messageFactoryAgent('Connection closed');
       setMessages((prev: Message[]) => [...prev, closeMessage]);
       wsOpen.current = false;
+      setIsStreaming(false);
     };
   };
 
@@ -170,7 +178,6 @@ export function useChat() {
 
   const handleSubmit = (text: string) => {
     if (!text.trim() || !wsRef.current) return;
-    // Reset related topics here
 
     if (!currentConversationId.current) {
       messageQueue.current.push({ text: text.trim() });
@@ -180,14 +187,15 @@ export function useChat() {
 
     setIsThinking(true);
     const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
+    console.log('This is the userMessage: ', userMessage);
+    setSelectedTopic({ name: userMessage.text, description: '', type: 'manual', questions: [] });
     setMessages((prev: Message[]) => [...prev, userMessage]);
     sendMessage(wsRef.current, 'message', text, currentConversationId.current);
-
+    setIsSidebarOpen(false);
     if (!hasInitialized.current) {
       initializeChat();
     }
 
-    // Fetch related topics based on user input text
     fetchRelatedTopics('', text);
   };
 
@@ -197,5 +205,6 @@ export function useChat() {
     handleSubmit,
     isThinking,
     isRestarting,
+    isStreaming,
   };
 }
