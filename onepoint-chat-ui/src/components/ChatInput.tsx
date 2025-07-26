@@ -1,24 +1,36 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import useChatStore from '../store/chatStore';
 
-interface ChatInputProps {
-  handleSubmit: (text: string) => void;
-  isThinking: boolean;
-}
-
-export default function ChatInput({ handleSubmit, isThinking }: ChatInputProps) {
+export default function ChatInput({ handleSubmit }: { handleSubmit: (text: string) => void }) {
   const [inputText, setInputText] = useState('');
+
+  const { isThinking, setShowInput, isInitialMessage } = useChatStore(
+    useShallow(state => ({
+      isThinking: state.isThinking,
+      setShowInput: state.setShowInput,
+      isInitialMessage: state.isInitialMessage,
+    }))
+  );
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isInitialMessage) {
+        setShowInput(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [setShowInput, isInitialMessage]);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     handleSubmit(inputText);
     setInputText('');
   }
-
-  useEffect(() => {
-    if (!isThinking) {
-      document.getElementById('chat-input')?.focus();
-    }
-  }, [isThinking]);
 
   const textareaStyle = useMemo(
     () => ({
@@ -73,6 +85,7 @@ export default function ChatInput({ handleSubmit, isThinking }: ChatInputProps) 
 
           <span className="text-xs text-center text-slate-500">
             OSCA can make mistakes. Check important information with your Onepoint advisor.
+            <br /> Press <kbd className="px-1 py-0.5 bg-gray-200 rounded">Esc</kbd> to close
           </span>
         </div>
       </div>

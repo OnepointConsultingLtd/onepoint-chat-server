@@ -4,6 +4,7 @@ import { Question } from '../type/types';
 
 type QuestionItemProps = {
   question: Question;
+  sendMessageToServer: (text: string) => void;
 };
 
 const QuestionIcon = () => {
@@ -23,19 +24,25 @@ const QuestionIcon = () => {
   );
 };
 
-export default function QuestionItem({ question }: QuestionItemProps) {
+export default function QuestionItem({ question, sendMessageToServer }: QuestionItemProps) {
   const { handleQuestionClick } = useChatStore(
     useShallow(state => ({
       handleQuestionClick: state.handleQuestionClick,
     }))
   );
 
+  const handleClick = () => {
+    // Handle topic action
+    handleQuestionClick(question);
+
+    // Send the question text as a message
+    sendMessageToServer(question.text);
+  };
+
   return (
     <button
       className="group w-full p-4 text-left bg-white hover:bg-indigo-50 cursor-pointer rounded-xl transition-all duration-200 border border-gray-100 hover:border-indigo-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
-      onClick={() => {
-        handleQuestionClick(question);
-      }}
+      onClick={handleClick}
     >
       <div className="flex items-center">
         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-md mr-3">

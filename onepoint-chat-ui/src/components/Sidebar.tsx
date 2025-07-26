@@ -1,14 +1,15 @@
 import { useShallow } from 'zustand/react/shallow';
 import { nameDescription, siteName } from '../lib/constants';
 import useChatStore from '../store/chatStore';
-import { Question } from '../type/types';
 import QuestionItem from './QuestionItem';
+import initialQuestions from '../lib/initialQuestions';
+import CloseIcon from './Menus/CloseIcon';
 
-interface SidebarProps {
-  questions: Question[];
-}
+type SidebarProps = {
+  sendMessageToServer: (text: string) => void;
+};
 
-export default function Sidebar({ questions }: SidebarProps) {
+export default function Sidebar({ sendMessageToServer }: SidebarProps) {
   const { isSidebarOpen, toggleSidebar } = useChatStore(
     useShallow(state => ({
       isSidebarOpen: state.isSidebarOpen,
@@ -45,24 +46,12 @@ export default function Sidebar({ questions }: SidebarProps) {
                   </div>
                   <h1 className="text-lg font-semibold text-white">{siteName}</h1>
                 </div>
-                <button
-                  onClick={toggleSidebar}
-                  className="p-2 rounded-md hover:bg-white/10 text-white"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
+                <CloseIcon />
               </div>
             </div>
 
             {/* Desktop Header */}
-            <div className="border-b border-gray-200 hidden lg:!block bg-gradient-to-r from-blue-500 to-indigo-600 p-[17.5px]">
+            <div className="border-b border-gray-200 hidden lg:!flex justify-between items-center bg-gradient-to-r from-blue-500 to-indigo-600 p-2">
               <div className="flex items-center px-5 h-14">
                 <div className="flex items-center">
                   <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center mr-3 shadow-md">
@@ -81,6 +70,7 @@ export default function Sidebar({ questions }: SidebarProps) {
                   </div>
                 </div>
               </div>
+              <CloseIcon />
             </div>
 
             {/* Questions Section */}
@@ -90,8 +80,12 @@ export default function Sidebar({ questions }: SidebarProps) {
                   How can I help you today?
                 </h2>
                 <div className="space-y-3">
-                  {questions.map((question, index) => (
-                    <QuestionItem key={index} question={question} />
+                  {initialQuestions.map((question, index) => (
+                    <QuestionItem
+                      key={index}
+                      question={question}
+                      sendMessageToServer={sendMessageToServer}
+                    />
                   ))}
                 </div>
               </div>

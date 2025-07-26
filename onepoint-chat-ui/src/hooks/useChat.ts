@@ -10,7 +10,7 @@ import { Message, ServerMessage } from '../type/types';
 import { fetchChatHistory, fetchRawHistory } from '../utils/fetchChatHistory';
 
 export function useChat() {
-  const { messages, isThinking, setMessages, setIsThinking, isRestarting, fetchRelatedTopics, setSelectedTopic, isStreaming, setIsStreaming, setIsSidebarOpen } =
+  const { messages, isThinking, setMessages, setIsThinking, isRestarting, isStreaming, setIsStreaming, setIsSidebarOpen, handleTopicAction } =
     useChatStore(
       useShallow(state => ({
         messages: state.messages,
@@ -18,12 +18,10 @@ export function useChat() {
         setMessages: state.setMessages,
         setIsThinking: state.setIsThinking,
         isRestarting: state.isRestarting,
-        setIsRestarting: state.setIsRestarting,
-        fetchRelatedTopics: state.fetchRelatedTopics,
-        setSelectedTopic: state.setSelectedTopic,
         isStreaming: state.isStreaming,
         setIsStreaming: state.setIsStreaming,
         setIsSidebarOpen: state.setIsSidebarOpen,
+        handleTopicAction: state.handleTopicAction,
       }))
     );
 
@@ -176,7 +174,7 @@ export function useChat() {
     }
   }, [messages, isThinking]);
 
-  const handleSubmit = (text: string) => {
+  const sendMessageToServer = (text: string) => {
     if (!text.trim() || !wsRef.current) return;
 
     if (!currentConversationId.current) {
@@ -187,22 +185,25 @@ export function useChat() {
 
     setIsThinking(true);
     const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
-    console.log('This is the userMessage: ', userMessage);
-    setSelectedTopic({ name: userMessage.text, description: '', type: 'manual', questions: [] });
+
     setMessages((prev: Message[]) => [...prev, userMessage]);
     sendMessage(wsRef.current, 'message', text, currentConversationId.current);
     setIsSidebarOpen(false);
     if (!hasInitialized.current) {
       initializeChat();
     }
+  };
 
-    fetchRelatedTopics('', text);
+  const handleSubmit = (text: string) => {
+    sendMessageToServer(text);
+    handleTopicAction({ type: 'manual', text });
   };
 
   return {
     messages,
     messagesEndRef,
     handleSubmit,
+    sendMessageToServer,
     isThinking,
     isRestarting,
     isStreaming,

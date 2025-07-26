@@ -62,25 +62,30 @@ export default function MessageCard({
       onMouseEnter={() => !isInitialMessage && setShowButton(true)}
       onMouseLeave={() => !isInitialMessage && setShowButton(false)}
     >
-      {/* User message */}
-      <div className="transition-all duration-300 transform hover:scale-[1.01]">
-        <UserMessage message={userMessage} isInitialMessage={isInitialMessage} />
-      </div>
-
-      {/* Agent message or thinking indicator */}
-      {agentMessage ? (
-        <div className="transition-all duration-300 transform hover:scale-[1.01]">
-          <AgentMessage message={agentMessage} />
-        </div>
-      ) : isLastCard && isThinking ? (
-        <div className="border-l-4 border-blue-400 bg-blue-50 transition-all duration-300">
+      {/* Show thinking indicator for entire card when thinking */}
+      {isLastCard && isThinking ? (
+        <div className="border-l-4 border-blue-400 bg-blue-300 transition-all duration-300 h-auto">
           <ThinkingIndicator />
         </div>
-      ) : null}
+      ) : (
+        <>
+          {/* User message */}
+          <div className="transition-all duration-300 transform hover:scale-[1.01]">
+            <UserMessage message={userMessage} isInitialMessage={isInitialMessage} />
+          </div>
+
+          {/* Agent message */}
+          {agentMessage && (
+            <div className="transition-all duration-300 transform hover:scale-[1.01]">
+              <AgentMessage message={agentMessage} />
+            </div>
+          )}
+        </>
+      )}
 
       {showInput && !isThinking && isLastCard && (
         <div className="border-t rounded-b-xl transition-all duration-300">
-          <ChatInput handleSubmit={handleSubmit} isThinking={isThinking} />
+          <ChatInput handleSubmit={handleSubmit} />
         </div>
       )}
 

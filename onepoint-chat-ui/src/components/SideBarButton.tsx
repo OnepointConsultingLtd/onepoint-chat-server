@@ -3,7 +3,7 @@ import useChatStore from '../store/chatStore';
 export default function SideBarButton() {
   const { toggleSidebar } = useChatStore();
   return (
-    <div className="!w-fit h-auto pl-3 lg:pl-5 lg:static sticky top-0 z-50 flex items-center justify-start">
+    <div className="!w-fit h-auto pl-3 lg:pl-5 lg:static sticky top-0 !z-50 flex items-center justify-start">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

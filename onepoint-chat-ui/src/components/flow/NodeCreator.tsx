@@ -58,10 +58,15 @@ export function createNodes(
   const totalTopicHeight =
     topics.length * TOPIC_CARD.HEIGHT + (topics.length - 1) * TOPIC_CARD.Y_SPACING;
 
-  const cardYs = messageCardHeights;
-  const minY = messageCardY;
-  const maxY = messageCardY + (cardYs.length ? Math.max(...cardYs) : 200);
-  const messageCardsMidY = (minY + maxY) / 2;
+  // Calculate the actual message cards area using cardHeights
+  const messageCardsStartY = messageCardY;
+
+  // Use the actual height of the last card (most recent) for positioning
+  const lastCardHeight = cardHeights?.[`card-${lastCardIndex}`] ?? 200;
+  const messageCardsEndY = messageCardsStartY + lastCardHeight;
+  const messageCardsMidY = (messageCardsStartY + messageCardsEndY) / 2;
+
+  // Center the topic block relative to the message cards
   const topicBlockStartY = messageCardsMidY - totalTopicHeight / 2;
 
   const lastCardX = lastCardIndex * (CARD_WIDTH + CARD_GAP);

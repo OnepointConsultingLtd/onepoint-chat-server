@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Message, Topic, Question, Topics } from '../type/types';
 import { fetchRelatedTopics } from '../lib/apiClient';
-import { clearChatData } from '../lib/persistence';
-import { ChatStore } from '../type/chatStore';
 import { INITIAL_MESSAGE } from '../lib/constants';
+import { clearChatData } from '../lib/persistence';
+import { ChatStore, TopicActionPayload } from '../type/chatStore';
+import { Message, Question, Topic, Topics } from '../type/types';
 
 function newChat() {
   return {
@@ -86,40 +86,62 @@ const useChatStore = create<ChatStore>()(
       setHandleSubmit: (cb: (text: string) => void) => set({ handleSubmitCallback: cb }),
       setIsStreaming: (value: boolean) => set({ isStreaming: value }),
 
-
       toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
 
       fetchRelatedTopics: async (topicName: string, text: string = '') => {
+        if (!text.trim()) {
+          // console.warn('Skipping fetchRelatedTopics because text is empty');
+          return;
+        }
+
+        console.log("the text input is", text)
+
         set({ relatedTopicsLoading: true });
         const data = await fetchRelatedTopics(topicName, text);
+        console.log("the data is", data)
         set({ relatedTopics: data, relatedTopicsLoading: false });
+      },
+
+      // Centralized topic action handler
+      handleTopicAction: async (payload: TopicActionPayload) => {
+        const { setSelectedTopic, fetchRelatedTopics } = get();
+
+        if (payload.type === 'related') {
+          setSelectedTopic(payload.topic);
+          await fetchRelatedTopics(payload.topic.name, payload.topic.name);
+
+        } else if (payload.type === 'manual') {
+          setSelectedTopic({
+            name: payload.text,
+            description: '',
+            type: 'manual',
+            questions: [],
+          });
+          await fetchRelatedTopics('', payload.text);
+        } else if (payload.type === 'question') {
+          setSelectedTopic({
+            name: payload.question.text,
+            description: '',
+            type: 'question',
+            questions: [payload.question.text],
+          });
+          await fetchRelatedTopics('', payload.question.text);
+        }
+        set({ isSidebarOpen: false });
+
       },
 
       // actions
       handleClick: () => set({ showInput: true }),
 
+      // Handle submit wrapper
       handleSubmit: (text: string) => {
         const { handleSubmitCallback } = get();
         if (handleSubmitCallback) handleSubmitCallback(text);
-        set({ isSidebarOpen: false });
-      },
-
-      handleTopicClick: (topic: Topic) => {
-        const { handleSubmitCallback } = get();
-        if (!handleSubmitCallback) return;
-        const questionText =
-          topic.questions && topic.questions.length > 0
-            ? topic.questions[0]
-            : `Tell me more about ${topic.name}`;
-        set({ selectedTopic: topic });
-        handleSubmitCallback(questionText);
       },
 
       handleQuestionClick: (question: Question) => {
-        const { handleSubmitCallback } = get();
-        if (!handleSubmitCallback) return;
-        handleSubmitCallback(question.text);
-        set({ isSidebarOpen: false });
+        get().handleTopicAction({ type: 'question', question });
       },
 
       handleRestart: () => {

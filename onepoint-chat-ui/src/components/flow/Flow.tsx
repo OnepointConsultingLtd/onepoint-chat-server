@@ -12,60 +12,40 @@ import { createNodes } from './NodeCreator';
 import { focusOnLatestNode } from './ViewportManager';
 
 /**
- * Flow component that displays the chat conversation as a flowing diagram.
+ * Flow component that displays the chat conversation in a flow diagram.
+ * The flow diagram is created using the ReactFlow library.
+ *
  */
 
 export default function Flow({
   messagesEndRef,
   handleSubmit,
+  sendMessageToServer,
 }: {
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
   handleSubmit: (text: string) => void;
+  sendMessageToServer: (text: string) => void;
 }) {
-  const {
-    messages,
-    isThinking,
-    isInitialMessage,
-    relatedTopics,
-    setSelectedTopic,
-    handleTopicClick,
-  } = useChatStore(
+  const { messages, isThinking, isInitialMessage, relatedTopics, handleTopicAction } = useChatStore(
     useShallow(state => ({
       messages: state.messages,
       isThinking: state.isThinking,
       isInitialMessage: state.isInitialMessage,
       relatedTopics: state.relatedTopics,
-      setSelectedTopic: state.setSelectedTopic,
-      handleTopicClick: state.handleTopicClick,
+      handleTopicAction: state.handleTopicAction,
     }))
   );
 
   const reactFlowInstance = useReactFlow();
   const previousMessagesLengthRef = useRef<number>(0);
 
-  const handlePredefinedTopicClick = useCallback(
-    (topic: string) => {
-      const topicObj = { name: topic, description: '', type: 'predefined', questions: [] };
-      setSelectedTopic(topicObj);
-      handleTopicClick(topicObj);
-    },
-    [handleTopicClick, setSelectedTopic]
-  );
-
   const handleRelatedTopicClick = useCallback(
     (topic: Topic) => {
-      setSelectedTopic(topic);
-      handleTopicClick(topic);
+      handleTopicAction({ type: 'related', topic });
+      const prompt = `Tell me more about ${topic.name}`;
+      sendMessageToServer(prompt);
     },
-    [handleTopicClick, setSelectedTopic]
-  );
-
-  // Handler for topic node clicks (now Topic-based for createNodes)
-  const handleTopicNodeClick = useCallback(
-    (topic: Topic) => {
-      handleRelatedTopicClick(topic);
-    },
-    [handleRelatedTopicClick]
+    [handleTopicAction, sendMessageToServer]
   );
 
   const topicState = useMemo(
@@ -73,10 +53,9 @@ export default function Flow({
       isInitialMessage,
       predefinedTopics: predefinedTopics,
       relatedTopics: relatedTopics?.topics || [],
-      handlePredefinedTopicClick,
       handleRelatedTopicClick,
     }),
-    [isInitialMessage, relatedTopics, handlePredefinedTopicClick, handleRelatedTopicClick]
+    [isInitialMessage, relatedTopics, handleRelatedTopicClick]
   );
 
   const [cardHeights, setCardHeights] = useState<{ [id: string]: number }>({});
@@ -99,14 +78,11 @@ export default function Flow({
               description: topic.description,
               type: topic.type,
               questions: topic.questions,
-              onClick: () => {
-                console.log('clicked', topic);
-              },
             }))
           : !isThinking
             ? topicState.relatedTopics
             : [],
-        handleTopicNodeClick,
+        handleRelatedTopicClick,
         setCardHeight,
         cardHeights
       ),
@@ -115,7 +91,7 @@ export default function Flow({
       isThinking,
       topicState,
       handleSubmit,
-      handleTopicNodeClick,
+      handleRelatedTopicClick,
       cardHeights,
       setCardHeight,
     ]

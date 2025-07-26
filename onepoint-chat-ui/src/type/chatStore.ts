@@ -41,7 +41,13 @@ export type ChatStore = {
   setHandleSubmit: (cb: (text: string) => void) => void;
   handleSubmit: (text: string) => void;
 
-  // actions
   handleClick: () => void;
-  handleTopicClick: (topic: Topic) => void;
+
+  handleTopicAction: (payload: TopicActionPayload) => Promise<void>;
 };
+
+
+export type TopicActionPayload =
+  | { type: 'related'; topic: Topic }
+  | { type: 'manual'; text: string }
+  | { type: 'question'; question: Question };

@@ -3,86 +3,66 @@ import { CiExport } from 'react-icons/ci';
 import { FaMarkdown } from 'react-icons/fa';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
-import { nameDescription, siteName } from '../lib/constants';
 import useChatStore from '../store/chatStore';
-import { Message } from '../type/types';
 import { exportChatToMarkdown, exportChatToPDF } from '../utils/exportChat';
 import GradientButton, { MiniGradientButton } from './GradientButton';
+import SideBarButton from './SideBarButton';
 
-interface HeaderProps {
-  chatHistory: Message[];
-}
-
-export default function Header({ chatHistory }: HeaderProps) {
+export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
-
-  const handleRestart = useChatStore(useShallow(state => state.handleRestart));
+  const { messages, handleRestart } = useChatStore(
+    useShallow(state => ({
+      messages: state.messages,
+      handleRestart: state.handleRestart,
+    }))
+  );
 
   const handleExport = (type: 'markdown' | 'pdf') => {
     const date = new Date().toISOString().split('T')[0];
     if (type === 'markdown') {
-      exportChatToMarkdown(chatHistory, `chat-history-${date}.md`);
+      exportChatToMarkdown(messages, `chat-history-${date}.md`);
     } else {
-      exportChatToPDF(chatHistory, `chat-history-${date}.pdf`);
+      exportChatToPDF(messages, `chat-history-${date}.pdf`);
     }
     setShowDropdown(false);
   };
 
   return (
-    <div className="w-full mx-auto mr-8">
-      <div className="flex justify-between items-center">
-        <header className="p-1 w-full relative">
-          <div className="flex items-start space-x-4 w-full justify-between">
-            {/* Logo, title and description */}
-            <div className="flex items-start flex-col space-x-4 pr-4">
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 text-transparent bg-clip-text">
-                {siteName}
-              </h1>
-              <p className="text-gray-600 lg:text-base text-sm md:block hidden">
-                {nameDescription}
-              </p>
-            </div>
-
-            <div className="flex justify-start md:flex-row flex-col gap-4 space-x-2">
-              <div className="relative w-auto">
-                <GradientButton onClick={() => setShowDropdown(!showDropdown)} icon={<CiExport />}>
-                  Export
-                </GradientButton>
-
-                {showDropdown && (
-                  <>
-                    {/* Invisible overlay for outside click */}
-                    <div
-                      className="fixed inset-0 z-30 w-full h-screen "
-                      onClick={() => setShowDropdown(false)}
-                      aria-label="Close dropdown"
-                    ></div>
-                    {/* Dropdown menu */}
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl z-40 border border-gray-200 animate-fade-in-slide overflow-hidden flex flex-col py-2">
-                      <MiniGradientButton
-                        onClick={() => handleExport('markdown')}
-                        icon={<FaMarkdown />}
-                      >
-                        Markdown
-                      </MiniGradientButton>
-                      <MiniGradientButton
-                        onClick={() => handleExport('pdf')}
-                        icon={<MdPictureAsPdf />}
-                      >
-                        PDF Document
-                      </MiniGradientButton>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <GradientButton onClick={handleRestart} icon={<MdOutlineRestartAlt />}>
-                New Chat
-              </GradientButton>
-            </div>
-          </div>
-        </header>
+    <>
+      <div className="space-x-4 pr-4 float-left w-fit absolute top-3 left-4 !z-50">
+        <SideBarButton />
       </div>
-    </div>
+
+      <div className="flex justify-start md:flex-row flex-col gap-4 space-x-2 float-right w-fit absolute top-3 right-4 !z-50">
+        <div className="relative w-auto">
+          <GradientButton onClick={() => setShowDropdown(!showDropdown)} icon={<CiExport />}>
+            Export
+          </GradientButton>
+
+          {showDropdown && (
+            <>
+              <div
+                className="fixed inset-0 z-30 w-full h-screen "
+                onClick={() => setShowDropdown(false)}
+                aria-label="Close dropdown"
+              ></div>
+              {/* Dropdown menu */}
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl z-40 border border-gray-200 animate-fade-in-slide overflow-hidden flex flex-col py-2">
+                <MiniGradientButton onClick={() => handleExport('markdown')} icon={<FaMarkdown />}>
+                  Markdown
+                </MiniGradientButton>
+                <MiniGradientButton onClick={() => handleExport('pdf')} icon={<MdPictureAsPdf />}>
+                  PDF Document
+                </MiniGradientButton>
+              </div>
+            </>
+          )}
+        </div>
+
+        <GradientButton onClick={handleRestart} icon={<MdOutlineRestartAlt />}>
+          New Chat
+        </GradientButton>
+      </div>
+    </>
   );
 }

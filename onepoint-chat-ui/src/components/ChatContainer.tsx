@@ -1,20 +1,15 @@
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useChat } from '../hooks/useChat';
-import initialQuestions from '../lib/initialQuestions';
 import useChatStore from '../store/chatStore';
 import Header from './Header';
-import Messages from './Messages';
 import Sidebar from './Sidebar';
-import SideBarButton from './SideBarButton';
+import Flow from './flow/Flow';
 
 export default function ChatContainer() {
-  const { messagesEndRef, handleSubmit } = useChat();
-  const { messages, selectedTopic, fetchRelatedTopics, setHandleSubmit } = useChatStore(
+  const { messagesEndRef, handleSubmit, sendMessageToServer } = useChat();
+  const { setHandleSubmit } = useChatStore(
     useShallow(state => ({
-      messages: state.messages,
-      selectedTopic: state.selectedTopic,
-      fetchRelatedTopics: state.fetchRelatedTopics,
       setHandleSubmit: state.setHandleSubmit,
     }))
   );
@@ -23,25 +18,18 @@ export default function ChatContainer() {
     setHandleSubmit(handleSubmit);
   }, [handleSubmit, setHandleSubmit]);
 
-  useEffect(() => {
-    if (selectedTopic) {
-      fetchRelatedTopics(selectedTopic.name);
-    }
-  }, [selectedTopic, fetchRelatedTopics]);
-
   return (
     <main className="flex">
-      {/* Mobile Sidebar */}
-      <Sidebar questions={initialQuestions} />
-      {/* Main Content */}
+      <Sidebar sendMessageToServer={sendMessageToServer} />
       <div className="flex flex-col flex-1">
-        {/* Header */}
-        <div className="flex items-center sticky top-0 z-[100]">
-          <SideBarButton />
-          <Header chatHistory={messages} />
+        <Header />
+        <div className="flex-1 flex flex-col" style={{ height: 'calc(100vh - 10rem)' }}>
+          <Flow
+            messagesEndRef={messagesEndRef}
+            handleSubmit={handleSubmit}
+            sendMessageToServer={sendMessageToServer}
+          />
         </div>
-        {/* Messages Container */}
-        <Messages messagesEndRef={messagesEndRef} handleSubmit={handleSubmit} />
       </div>
     </main>
   );
