@@ -11,8 +11,36 @@ export function createHeaders() {
   };
 }
 
-//  Error handling:
-async function processError(response: Response) {
+export async function fetchRelatedTopics(selectedTopic: string, text: string): Promise<Topics> {
+  const url = `${getServer()}/project/related_topics?project=onepoint_v1&engine=lightrag`;
+
+  const body: RelatedTopicsBody = {
+    samples: 25000,
+    path_length: 5,
+    restart_prob: 0.15,
+    runs: 5,
+    limit: MAX_RELATED_TOPICS,
+    source: selectedTopic || '',
+    text: text.trim() || '',
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${ONE_TIME_TOKEN}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+
+  if (response.status === 404) {
+    console.warn('No related topics found');
+    return {
+      topics: []
+    };
+  }
+
   if (!response.ok) {
     let errorText = `HTTP error! status: ${response.status}`;
 
@@ -29,35 +57,7 @@ async function processError(response: Response) {
 
     throw new Error(errorText);
   }
-}
 
-
-export async function fetchRelatedTopics(selectedTopic: string, text: string): Promise<Topics> {
-  const url = `${getServer()}/project/related_topics?project=onepoint_v1&engine=lightrag`;
-
-  const body: RelatedTopicsBody = {
-    samples: 25000,
-    path_length: 5,
-    restart_prob: 0.15,
-    runs: 5,
-    limit: MAX_RELATED_TOPICS,
-    source: selectedTopic || '',
-    text: text.trim() || '',
-  };
-
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${ONE_TIME_TOKEN}`,
-    },
-    body: JSON.stringify(body),
-  });
-
-  console.log("the url", url)
-
-  await processError(response);
   const data = await response.json();
   return data;
 }

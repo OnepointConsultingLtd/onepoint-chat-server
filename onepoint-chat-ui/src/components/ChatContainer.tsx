@@ -4,6 +4,7 @@ import { useChat } from '../hooks/useChat';
 import useChatStore from '../store/chatStore';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import ShareButton from './ShareButton';
 import Flow from './flow/Flow';
 
 export default function ChatContainer() {
@@ -30,6 +31,7 @@ export default function ChatContainer() {
             sendMessageToServer={sendMessageToServer}
           />
         </div>
+        <ShareButton />
       </div>
     </main>
   );

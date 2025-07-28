@@ -31,7 +31,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
             onClick={e => e.stopPropagation()}
           >
             {/* Mobile Header */}
-            <div className="border-b border-gray-200 lg:!hidden !block bg-gradient-to-r from-blue-500 to-indigo-600">
+            <div className="border-b border-gray-200 lg:!hidden !block bg-blue-400">
               <div className="flex items-center justify-between px-5 h-16">
                 <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center mr-3">
@@ -51,7 +51,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
             </div>
 
             {/* Desktop Header */}
-            <div className="border-b border-gray-200 hidden lg:!flex justify-between items-center bg-gradient-to-r from-blue-500 to-indigo-600 p-2">
+            <div className="border-b border-gray-200 hidden lg:!flex justify-between items-center bg-blue-400 p-2">
               <div className="flex items-center px-5 h-14">
                 <div className="flex items-center">
                   <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center mr-3 shadow-md">

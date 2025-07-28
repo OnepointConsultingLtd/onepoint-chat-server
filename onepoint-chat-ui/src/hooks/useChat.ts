@@ -10,7 +10,7 @@ import { Message, ServerMessage } from '../type/types';
 import { fetchChatHistory, fetchRawHistory } from '../utils/fetchChatHistory';
 
 export function useChat() {
-  const { messages, isThinking, setMessages, setIsThinking, isRestarting, isStreaming, setIsStreaming, setIsSidebarOpen, handleTopicAction } =
+  const { messages, isThinking, setMessages, setIsThinking, isRestarting, isStreaming, setIsStreaming, setIsSidebarOpen, handleTopicAction, setEditHandler } =
     useChatStore(
       useShallow(state => ({
         messages: state.messages,
@@ -22,6 +22,7 @@ export function useChat() {
         setIsStreaming: state.setIsStreaming,
         setIsSidebarOpen: state.setIsSidebarOpen,
         handleTopicAction: state.handleTopicAction,
+        setEditHandler: state.setEditHandler,
       }))
     );
 
@@ -174,7 +175,7 @@ export function useChat() {
     }
   }, [messages, isThinking]);
 
-  const sendMessageToServer = (text: string) => {
+  const sendMessageToServer = (text: string, isEdit: boolean = false) => {
     if (!text.trim() || !wsRef.current) return;
 
     if (!currentConversationId.current) {
@@ -184,9 +185,13 @@ export function useChat() {
     }
 
     setIsThinking(true);
-    const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
 
-    setMessages((prev: Message[]) => [...prev, userMessage]);
+    // Only create a new user message if this is not an edit
+    if (!isEdit) {
+      const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
+      setMessages((prev: Message[]) => [...prev, userMessage]);
+    }
+
     sendMessage(wsRef.current, 'message', text, currentConversationId.current);
     setIsSidebarOpen(false);
     if (!hasInitialized.current) {
@@ -198,6 +203,16 @@ export function useChat() {
     sendMessageToServer(text);
     handleTopicAction({ type: 'manual', text });
   };
+
+  // Handle message editing and regeneration
+  const handleEditMessage = (_messageId: string, newText: string) => {
+    sendMessageToServer(newText, true);
+  };
+
+  // Set up the edit handler
+  useEffect(() => {
+    setEditHandler(handleEditMessage);
+  }, [setEditHandler]);
 
   return {
     messages,

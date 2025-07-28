@@ -16,6 +16,8 @@ export type ChatStore = {
   lastMessage: Message | null;
   currentMessage: Message | null;
   isStreaming: boolean;
+  editingMessageId: string | null;
+  editHandler: ((messageId: string, newText: string) => void) | null;
   // handlers
   handleQuestionClick: (question: Question) => void;
   handleSubmitCallback: ((text: string) => void) | null;
@@ -36,6 +38,8 @@ export type ChatStore = {
   setLastMessage: (message: Message | null) => void;
   setCurrentMessage: (message: Message | null) => void;
   setIsStreaming: (value: boolean) => void;
+  setEditingMessageId: (messageId: string | null) => void;
+  setEditHandler: (cb: (messageId: string, newText: string) => void) => void;
   fetchRelatedTopics: (topicName: string, text?: string) => Promise<void>;
 
   setHandleSubmit: (cb: (text: string) => void) => void;
@@ -44,6 +48,13 @@ export type ChatStore = {
   handleClick: () => void;
 
   handleTopicAction: (payload: TopicActionPayload) => Promise<void>;
+
+  // Edit functionality
+  editMessage: (messageId: string, newText: string) => void;
+
+  // Share functionality
+  generateShareableUrl: () => string | null;
+  loadSharedChat: (encodedData: string) => boolean;
 };
 
 
