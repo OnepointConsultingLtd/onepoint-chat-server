@@ -6,29 +6,29 @@ import ChatContainer from './components/ChatContainer';
 import useChatStore from './store/chatStore';
 
 export default function Home() {
-  const { loadSharedChat } = useChatStore(
+  const { loadSharedChatById } = useChatStore(
     useShallow(state => ({
-      loadSharedChat: state.loadSharedChat,
+      loadSharedChatById: state.loadSharedChatById,
     }))
   );
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const sharedData = urlParams.get('shared');
+    const conversationId = urlParams.get('id');
 
-    if (sharedData) {
-      console.log('Loading shared chat..');
-      const success = loadSharedChat(sharedData);
-
-      if (success) {
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
-        console.log('Shared chat loaded successfully');
-      } else {
-        console.error('Failed to load shared chat');
-      }
+    if (conversationId) {
+      console.log('Loading shared chat.');
+      loadSharedChatById(conversationId).then(success => {
+        if (success) {
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
+          console.log('Shared chat loaded successfully');
+        } else {
+          console.error('Failed to load shared chat');
+        }
+      });
     }
-  }, [loadSharedChat]);
+  }, [loadSharedChatById]);
 
   return (
     <ReactFlowProvider>

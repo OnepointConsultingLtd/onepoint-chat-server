@@ -2,6 +2,7 @@ import { Background, BackgroundVariant, Controls, ReactFlow, useReactFlow } from
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { useDarkMode } from '../../hooks/useDarkMode';
 import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../../lib/constants';
 import { predefinedTopics } from '../../lib/predefinedTopics';
 import useChatStore from '../../store/chatStore';
@@ -36,6 +37,7 @@ export default function Flow({
     }))
   );
 
+  const { isDark } = useDarkMode();
   const reactFlowInstance = useReactFlow();
   const previousMessagesLengthRef = useRef<number>(0);
 
@@ -122,7 +124,7 @@ export default function Flow({
   const isError = messages.some(message => message.text.includes('Connection error'));
 
   return (
-    <div style={{ height: '100%', width: '100%' }}>
+    <div style={{ height: '100%', width: '100%' }} className="bg-gray-50 dark:bg-gray-900">
       {isError ? (
         <ErrorCard
           title="Connection Error"
@@ -141,7 +143,15 @@ export default function Flow({
           defaultViewport={{ x: 0, y: 0, zoom: DEFAULT_ZOOM }}
           proOptions={{ hideAttribution: true }}
         >
+          {/* <Background
+            color={isDark ? '#374151' : '#f1f5f9'}
+            variant={BackgroundVariant.Dots}
+            gap={20}
+            size={1}
+          /> */}
+
           <Background color="#f1f5f9" variant={BackgroundVariant.Dots} gap={20} size={1} />
+
           <Controls showInteractive={false} />
         </ReactFlow>
       )}

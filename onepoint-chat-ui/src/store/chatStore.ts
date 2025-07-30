@@ -1,17 +1,17 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { fetchRelatedTopics } from '../lib/apiClient';
+import { fetchRelatedTopics, fetchQuestions } from '../lib/apiClient';
 import { INITIAL_MESSAGE } from '../lib/constants';
-import { clearChatData } from '../lib/persistence';
+import { clearChatData, saveConversationId } from '../lib/persistence';
 import { ChatStore, TopicActionPayload } from '../type/chatStore';
-import { Message, Question, Topic, Topics } from '../type/types';
+import { Message, Question, Topic, Topics, TopicQuestionsResponse } from '../type/types';
 
 function newChat() {
   return {
     messages: [],
     isThinking: false,
     isRestarting: false,
-    isSidebarOpen: true,
+    isSidebarOpen: false,
     handleSubmitCallback: null,
     selectedTopic: null,
     relatedTopics: null,
@@ -23,6 +23,11 @@ function newChat() {
     showInput: false,
     showButton: false,
     isStreaming: false,
+    editingMessageId: null,
+    editHandler: null,
+    topicQuestions: [],
+    topicQuestionsLoading: false,
+    topicQuestionsError: null,
   };
 }
 
@@ -46,6 +51,9 @@ const useChatStore = create<ChatStore>()(
       isStreaming: false,
       editingMessageId: null,
       editHandler: null,
+      topicQuestions: [],
+      topicQuestionsLoading: false,
+      topicQuestionsError: null,
 
       // setters
       setIsInitialMessage: (message: Message, isLastCard: boolean) => {
@@ -83,23 +91,54 @@ const useChatStore = create<ChatStore>()(
       setSelectedTopic: (topic: Topic) => set({ selectedTopic: topic }),
       setRelatedTopics: (topics: Topics) => set({ relatedTopics: topics }),
       setRelatedTopicsLoading: (loading: boolean) => set({ relatedTopicsLoading: loading }),
-      setLastMessage: (message: Message | null) => set({ lastMessage: message }),
-      setCurrentMessage: (message: Message | null) => set({ currentMessage: message }),
-      setHandleSubmit: (cb: (text: string) => void) => set({ handleSubmitCallback: cb }),
+      setLastMessage: (message: Message | null) => set(() => ({ lastMessage: message })),
+      setCurrentMessage: (message: Message | null) => set(() => ({ currentMessage: message })),
+      setHandleSubmit: (cb: (text: string) => void) => set(() => ({ handleSubmitCallback: cb })),
       setIsStreaming: (value: boolean) => set({ isStreaming: value }),
       setEditingMessageId: (id: string | null) => set({ editingMessageId: id }),
       setEditHandler: (handler: (messageId: string, newText: string) => void) => set({ editHandler: handler }),
+      setTopicQuestions: (questions: Question[]) => set({ topicQuestions: questions }),
+      setTopicQuestionsLoading: (loading: boolean) => set({ topicQuestionsLoading: loading }),
+      setTopicQuestionsError: (error: string | null) => set({ topicQuestionsError: error }),
 
       toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
 
-      fetchRelatedTopics: async (topicName: string, text: string = '') => {
-        if (!text.trim()) {
-          return;
-        }
-
+      fetchRelatedTopics: async (topicName: string, text?: string) => {
         set({ relatedTopicsLoading: true });
-        const data = await fetchRelatedTopics(topicName, text);
-        set({ relatedTopics: data, relatedTopicsLoading: false });
+        try {
+          const data = await fetchRelatedTopics(topicName, text || '');
+          set({ relatedTopics: data, relatedTopicsLoading: false });
+        } catch (error) {
+          console.error('Error fetching related topics:', error);
+          set({ relatedTopicsLoading: false });
+        }
+      },
+
+      fetchTopicQuestions: async () => {
+        set({ topicQuestionsLoading: true, topicQuestionsError: null });
+        try {
+          const data: TopicQuestionsResponse = await fetchQuestions();
+
+          // Transform the response: select one question from each topic
+          const selectedQuestions: Question[] = data.topic_questions.map((topicQuestion, index) => {
+            // randomize the questions
+            const randomizedQuestions = topicQuestion.questions.sort(() => Math.random() - 0.5);
+            const questionText = randomizedQuestions[0] || `Learn more about ${topicQuestion.name}`;
+            return {
+              id: index + 1,
+              text: questionText,
+              label: topicQuestion.name,
+            };
+          });
+
+          set({ topicQuestions: selectedQuestions, topicQuestionsLoading: false });
+        } catch (error) {
+          console.error('Error fetching topic questions:', error);
+          set({
+            topicQuestionsError: error instanceof Error ? error.message : 'Failed to fetch questions',
+            topicQuestionsLoading: false
+          });
+        }
       },
 
       // Centralized topic action handler
@@ -131,10 +170,8 @@ const useChatStore = create<ChatStore>()(
 
       },
 
-      // actions
       handleClick: () => set({ showInput: true }),
 
-      // Handle submit wrapper
       handleSubmit: (text: string) => {
         const { handleSubmitCallback } = get();
         if (handleSubmitCallback) handleSubmitCallback(text);
@@ -145,21 +182,15 @@ const useChatStore = create<ChatStore>()(
       },
 
       // Edit functionality
+      // TODO: Implement this further.
       editMessage: (messageId: string, newText: string) => {
         const { messages, editHandler } = get();
-
-        console.log('editMessage called with:', { messageId, newText });
-        console.log('editHandler exists:', !!editHandler);
 
         // Find the message to edit
         const messageIndex = messages.findIndex(msg => msg.id === messageId);
         if (messageIndex === -1) {
-          console.log('Message not found with id:', messageId);
           return;
         }
-
-        console.log('Found message at index:', messageIndex);
-
         // Update the message text
         set(state => ({
           messages: state.messages.map((msg, index) =>
@@ -182,7 +213,7 @@ const useChatStore = create<ChatStore>()(
       },
 
       // Share functionality
-      generateShareableUrl: () => {
+      generateShareableId: () => {
         const { messages } = get();
 
         if (!messages || messages.length === 0) {
@@ -197,54 +228,40 @@ const useChatStore = create<ChatStore>()(
           return null;
         }
 
-        // Get the current sessionId from localStorage
-        const sessionId = localStorage.getItem('sessionId');
+        const lastMessage = shareableMessages[shareableMessages.length - 1];
+        const conversationId = lastMessage?.conversationId;
 
-        // Prepare data to share
-        const shareData = {
-          messages: shareableMessages.map(msg => ({
-            id: msg.id,
-            text: msg.text,
-            type: msg.type,
-            timestamp: msg.timestamp.toISOString(),
-            conversationId: msg.conversationId
-          })),
-          sessionId: sessionId,
-          sharedAt: new Date().toISOString()
-        };
-
-        try {
-          // Encoding
-          const jsonString = JSON.stringify(shareData);
-          const encodedData = btoa((encodeURIComponent(jsonString)));
-
-          // Generate the shareable URL
-          const currentUrl = window.location.origin + window.location.pathname;
-          const shareableUrl = `${currentUrl}?shared=${encodedData}`;
-
-          return shareableUrl;
-        } catch (error) {
-          console.error('Error generating shareable URL:', error);
+        if (!conversationId) {
+          console.warn('No conversationId found in messages');
           return null;
         }
+
+        const currentUrl = window.location.origin + window.location.pathname;
+        const shareableUrl = `${currentUrl}?id=${conversationId}`;
+        return shareableUrl;
       },
 
-      loadSharedChat: (encodedData: string) => {
+      loadSharedChatById: async (conversationId: string) => {
         try {
-          // Decoding  
-          const decodedString = decodeURIComponent((atob(encodedData)));
-          const decodedData = JSON.parse(decodedString);
+          saveConversationId(conversationId);
+          const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/share/${conversationId}`);
 
-          if (!decodedData.messages || !Array.isArray(decodedData.messages)) {
+          if (!response.ok) {
+            if (response.status === 404) {
+              console.error('Conversation not found:', conversationId);
+              return false;
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const chatData = await response.json();
+
+          if (!chatData.messages || !Array.isArray(chatData.messages)) {
             console.error('Invalid shared chat data: missing or invalid messages');
             return false;
           }
 
-          if (decodedData.sessionId) {
-            localStorage.setItem('sessionId', decodedData.sessionId);
-          }
-
-          const messages = decodedData.messages.map((msg: { id: string; text: string; type: string; timestamp: string; conversationId?: string }) => ({
+          const messages = chatData.messages.map((msg: { id: string; text: string; type: string; timestamp: string; conversationId?: string }) => ({
             ...msg,
             timestamp: new Date(msg.timestamp)
           }));
@@ -254,10 +271,10 @@ const useChatStore = create<ChatStore>()(
             isSidebarOpen: false,
             showInput: false,
             showButton: false,
-            isInitialMessage: false
+            isInitialMessage: false,
           }));
 
-          console.log('Shared chat loaded successfully');
+          console.log('Shared chat loaded successfully!');
           return true;
         } catch (error) {
           console.error('Error loading shared chat:', error);

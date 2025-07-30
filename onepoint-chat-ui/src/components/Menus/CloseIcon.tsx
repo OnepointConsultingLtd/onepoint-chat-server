@@ -11,7 +11,7 @@ export default function CloseIcon() {
   return (
     <button
       onClick={toggleSidebar}
-      className="p-2 rounded-md hover:bg-white/10 text-white cursor-pointer"
+      className="p-2 rounded-md hover:bg-white/10 text-blue-500 font-bold cursor-pointer"
     >
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path

@@ -4,6 +4,7 @@ import { Message, ServerMessage } from '../type/types';
 export async function fetchRawHistory(conversationId: string): Promise<ServerMessage[]> {
   try {
     const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/${conversationId}`);
+    console.log("response", response);
     if (!response.ok) throw new Error('Failed to fetch chat history');
     const history: ServerMessage[] = await response.json();
     return history;

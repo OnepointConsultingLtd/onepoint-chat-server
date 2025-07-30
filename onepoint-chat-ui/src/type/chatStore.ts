@@ -1,7 +1,7 @@
 import { Message, Question, Topic, Topics } from './types';
 
-export type ChatStore = {
-  // state
+export interface ChatStore {
+  // State
   error: string | null;
   showInput: boolean;
   showButton: boolean;
@@ -10,6 +10,7 @@ export type ChatStore = {
   isThinking: boolean;
   isRestarting: boolean;
   isSidebarOpen: boolean;
+  handleSubmitCallback: ((text: string) => void) | null;
   selectedTopic: Topic | null;
   relatedTopics: Topics | null;
   relatedTopicsLoading: boolean;
@@ -18,13 +19,11 @@ export type ChatStore = {
   isStreaming: boolean;
   editingMessageId: string | null;
   editHandler: ((messageId: string, newText: string) => void) | null;
-  // handlers
-  handleQuestionClick: (question: Question) => void;
-  handleSubmitCallback: ((text: string) => void) | null;
-  handleRestart: () => void;
-  toggleSidebar: () => void;
+  topicQuestions: Question[];
+  topicQuestionsLoading: boolean;
+  topicQuestionsError: string | null;
 
-  // setters
+  // Setters
   setIsInitialMessage: (message: Message, isLastCard: boolean) => void;
   setShowInput: (show: boolean) => void;
   setShowButton: (show: boolean) => void;
@@ -37,25 +36,27 @@ export type ChatStore = {
   setRelatedTopicsLoading: (loading: boolean) => void;
   setLastMessage: (message: Message | null) => void;
   setCurrentMessage: (message: Message | null) => void;
-  setIsStreaming: (value: boolean) => void;
-  setEditingMessageId: (messageId: string | null) => void;
-  setEditHandler: (cb: (messageId: string, newText: string) => void) => void;
-  fetchRelatedTopics: (topicName: string, text?: string) => Promise<void>;
-
   setHandleSubmit: (cb: (text: string) => void) => void;
-  handleSubmit: (text: string) => void;
+  setIsStreaming: (value: boolean) => void;
+  setEditingMessageId: (id: string | null) => void;
+  setEditHandler: (handler: (messageId: string, newText: string) => void) => void;
+  setTopicQuestions: (questions: Question[]) => void;
+  setTopicQuestionsLoading: (loading: boolean) => void;
+  setTopicQuestionsError: (error: string | null) => void;
 
-  handleClick: () => void;
-
+  // Actions
+  toggleSidebar: () => void;
+  fetchRelatedTopics: (topicName: string, text?: string) => Promise<void>;
   handleTopicAction: (payload: TopicActionPayload) => Promise<void>;
-
-  // Edit functionality
+  handleClick: () => void;
+  handleSubmit: (text: string) => void;
+  handleQuestionClick: (question: Question) => void;
   editMessage: (messageId: string, newText: string) => void;
-
-  // Share functionality
-  generateShareableUrl: () => string | null;
-  loadSharedChat: (encodedData: string) => boolean;
-};
+  generateShareableId: () => string | null;
+  loadSharedChatById: (conversationId: string) => Promise<boolean>;
+  fetchTopicQuestions: () => Promise<void>;
+  handleRestart: () => void;
+}
 
 
 export type TopicActionPayload =

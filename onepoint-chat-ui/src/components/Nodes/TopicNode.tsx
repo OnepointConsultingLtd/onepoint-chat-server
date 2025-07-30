@@ -14,7 +14,7 @@ export default function TopicNode({ data }: { data: TopicNodeData }) {
 
   return (
     <div
-      className={`bg-white border border-blue-200 px-4 py-2 rounded-xl shadow-sm cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl w-full max-w-xs group ${isStreaming ? 'opacity-50 pointer-events-none' : ''}`}
+      className={`bg-white border border-blue-200 px-4 py-2 rounded-xl shadow-sm cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl w-full max-w-xs group flex flex-col justify-around  h-full ${isStreaming ? 'opacity-50 pointer-events-none' : ''}`}
       onClick={isStreaming ? undefined : data.onClick}
       style={{ minWidth: 250, maxWidth: 320, wordBreak: 'break-word' }}
     >

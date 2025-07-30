@@ -4,23 +4,28 @@ export default function SideBarButton() {
   const { toggleSidebar } = useChatStore();
   return (
     <div className="!w-fit h-auto pl-3 lg:pl-5 lg:static sticky top-0 !z-50 flex items-center justify-start">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth="1.5"
-        stroke="currentColor"
-        aria-hidden="true"
-        data-slot="icon"
-        className="size-7 stroke-[#0369a1] cursor-pointer"
+      <div
+        className="cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 p-2 rounded-lg transition-all duration-200 group"
         onClick={toggleSidebar}
+        title="Toggle sidebar"
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
-        ></path>
-      </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
+          data-slot="icon"
+          className="size-6 text-blue-600 group-hover:text-indigo-600 transition-colors"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
+          />
+        </svg>
+      </div>
     </div>
   );
 }

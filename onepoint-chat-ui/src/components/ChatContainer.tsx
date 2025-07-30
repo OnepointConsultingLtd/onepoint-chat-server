@@ -4,7 +4,6 @@ import { useChat } from '../hooks/useChat';
 import useChatStore from '../store/chatStore';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import ShareButton from './ShareButton';
 import Flow from './flow/Flow';
 
 export default function ChatContainer() {
@@ -20,9 +19,9 @@ export default function ChatContainer() {
   }, [handleSubmit, setHandleSubmit]);
 
   return (
-    <main className="flex">
+    <main className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar sendMessageToServer={sendMessageToServer} />
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 bg-white dark:bg-gray-800">
         <Header />
         <div className="flex-1 flex flex-col" style={{ height: 'calc(100vh - 10rem)' }}>
           <Flow
@@ -31,7 +30,6 @@ export default function ChatContainer() {
             sendMessageToServer={sendMessageToServer}
           />
         </div>
-        <ShareButton />
       </div>
     </main>
   );

@@ -12,10 +12,14 @@ export default function GradientButton({ onClick, icon, title, children }: Gradi
     <button
       onClick={onClick}
       title={title}
-      className="flex items-center gap-2 py-2 rounded-lg cursor-pointer bg-white border border-gray-200 shadow-sm hover:bg-blue-50 transition-colors text-blue-700 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-300 w-auto px-4"
+      className="group flex items-center gap-2 py-2.5 px-4 rounded-lg cursor-pointer bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 hover:text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 w-auto"
     >
-      {icon && icon}
-      <span className="md:font-medium font-light text-xs md:text-base">{children}</span>
+      {icon && (
+        <div className="transition-colors duration-200 text-gray-500 group-hover:text-gray-700 !fill-blue-500">
+          {icon}
+        </div>
+      )}
+      <span className="text-sm font-medium transition-colors duration-200">{children}</span>
     </button>
   );
 }
@@ -31,10 +35,14 @@ export const MiniGradientButton = ({ onClick, icon, children }: MiniGradientButt
   return (
     <button
       onClick={onClick}
-      className="w-full cursor-pointer px-4 py-3 text-left text-sm flex items-center transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transform hover:translate-x-1"
+      className="group w-full cursor-pointer px-3 py-2.5 text-left text-sm flex items-center transition-colors duration-200 hover:bg-gray-50 rounded-lg mx-1 my-0.5"
     >
-      <div className="mr-3 flex-shrink-0">{icon}</div>
-      <span className="text-gray-700 font-medium">{children}</span>
+      <div className="mr-3 flex-shrink-0 text-gray-500 group-hover:text-gray-700 transition-colors duration-200">
+        {icon}
+      </div>
+      <span className="text-gray-700 group-hover:text-gray-900 font-medium transition-colors duration-200">
+        {children}
+      </span>
     </button>
   );
 };

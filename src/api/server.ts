@@ -1,5 +1,5 @@
 import express, { RequestHandler } from "express";
-import { getChatHistory } from "./handleApi";
+import { getChatHistory, getCollection, formatConversationHistory } from "./handleApi";
 import cors from "cors";
 import path from "path";
 import wkhtmltopdf from "wkhtmltopdf";
@@ -7,6 +7,7 @@ import wkhtmltopdf from "wkhtmltopdf";
 /**
  * This is the server that will be used to fetch the chat history for a client ID
  */
+
 const app = express();
 app.use(express.json({ limit: "50mb" })); // Increased limit for HTML content
 app.use(cors());
@@ -16,6 +17,7 @@ const static_files_path = path.join(__dirname, "../../onepoint-chat-ui/dist");
 app.use(express.static(static_files_path));
 console.log(`Serving static files from ${static_files_path}`);
 
+// Chat history endpoint
 app.get("/api/chat/:conversationId", (async (req, res) => {
   try {
     const { conversationId } = req.params;
@@ -26,6 +28,45 @@ app.get("/api/chat/:conversationId", (async (req, res) => {
     res.status(500).json({ error: "Failed to fetch chat history" });
   }
 }) as RequestHandler);
+
+// Share endpoint
+app.get("/api/chat/share/:conversationId", (async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const collection = await getCollection();
+
+    // Get the full conversation document
+    const conversation = await collection.findOne({ conversationId });
+
+    if (!conversation) {
+      return res.status(404).json({ error: "Conversation not found" });
+    }
+
+    // Format the chat history for sharing
+    const formattedHistory = formatConversationHistory(conversation);
+
+    const shareData = {
+      messages: formattedHistory.map((msg: any) => ({
+        id: msg.id || `${conversationId}-${msg.role}-${Date.now()}`,
+        text: msg.content,
+        type: msg.role === 'user' ? 'user' : 'agent',
+        timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
+        conversationId: conversation.conversationId,
+        sessionId: conversation.conversationId,
+      })),
+      conversationId: conversation.conversationId,
+    };
+
+    console.log("shareData for conversationId", conversationId, shareData);
+    res.json(shareData);
+  } catch (error) {
+    console.error("Error fetching shared chat:", error);
+    res.status(500).json({ error: "Failed to fetch shared chat" });
+  }
+}) as RequestHandler);
+
+
+
 
 // PDF Export endpoint
 app.post("/api/export/pdf", (async (req, res) => {

@@ -33,6 +33,7 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
     body: JSON.stringify(body),
   });
 
+  console.log("the url", url);
 
   if (response.status === 404) {
     console.warn('No related topics found');
@@ -60,4 +61,36 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
 
   const data = await response.json();
   return data;
+}
+
+
+// http://localhost:9999/protected/project/questions?project=onepoint_v1&engine=lightrag&topic_limit=5&format=json
+
+export async function fetchQuestions(
+  project: string = 'onepoint_v1',
+  engine: string = 'lightrag',
+  topicLimit: number = 5,
+  format: string = 'json'
+) {
+  const url = `${getServer()}/project/questions?project=${project}&engine=${engine}&topic_limit=${topicLimit}&format=${format}`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${ONE_TIME_TOKEN}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  try {
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    throw error;
+  }
 }

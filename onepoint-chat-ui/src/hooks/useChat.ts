@@ -206,7 +206,8 @@ export function useChat() {
 
   // Handle message editing and regeneration
   const handleEditMessage = (_messageId: string, newText: string) => {
-    sendMessageToServer(newText, true);
+    console.log('handleEditMessage called with:', { _messageId, newText });
+    sendMessageToServer(newText, true); // Pass isEdit=true to prevent duplicate user message
   };
 
   // Set up the edit handler

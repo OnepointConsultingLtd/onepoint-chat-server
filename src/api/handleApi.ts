@@ -1,5 +1,8 @@
 import { getCollection } from "./mongoClient";
 
+// Re-export getCollection for use in other modules
+export { getCollection };
+
 const MESSAGE_START_STRING = "User Message to which you are responding:";
 
 function extractUserMessageContent(content: string): string {
@@ -38,7 +41,7 @@ export async function getChatHistory(conversationId: string) {
   }
 }
 
-function formatConversationHistory(conversation: any) {
+export function formatConversationHistory(conversation: any) {
   const history = conversation.chatHistory
     .filter((msg: any) => ["assistant", "user"].includes(msg.role))
     .map((msg: any) => {

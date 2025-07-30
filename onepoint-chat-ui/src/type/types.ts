@@ -4,6 +4,7 @@ import TopicNode from '../components/Nodes/TopicNode';
 export type Question = {
   id: number;
   text: string;
+  label?: string;
 };
 
 export type ServerMessage = {
@@ -75,4 +76,13 @@ export type RelatedTopicsBody = {
   limit: number;
   source?: string;
   text?: string;
+};
+
+export type TopicQuestion = {
+  name: string;
+  questions: string[];
+};
+
+export type TopicQuestionsResponse = {
+  topic_questions: TopicQuestion[];
 };

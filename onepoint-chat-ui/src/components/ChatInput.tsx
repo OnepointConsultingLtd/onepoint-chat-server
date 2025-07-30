@@ -40,7 +40,7 @@ export default function ChatInput({ handleSubmit }: { handleSubmit: (text: strin
   );
 
   return (
-    <div className="bg-white p-3">
+    <div className="bg-white dark:bg-gray-800 p-3 border-t border-gray-200 dark:border-gray-700">
       <div className="w-full px-2 py-2">
         <div className="flex flex-col gap-2">
           <form onSubmit={onSubmit} className="relative">
@@ -49,7 +49,7 @@ export default function ChatInput({ handleSubmit }: { handleSubmit: (text: strin
               value={inputText}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputText(e.target.value)}
               placeholder="Type your message here..."
-              className="w-full p-2 pr-24 overflow-hidden transition-all duration-300 bg-white border-2 shadow-sm outline-none resize-none rounded-xl border-sky-100 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full p-2 pr-24 overflow-hidden transition-all duration-300 bg-white dark:bg-gray-700 border-2 shadow-sm outline-none resize-none rounded-xl border-sky-100 dark:border-gray-600 focus:border-sky-400 dark:focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:focus:ring-sky-900/50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               disabled={isThinking}
               style={textareaStyle}
               onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -83,9 +83,13 @@ export default function ChatInput({ handleSubmit }: { handleSubmit: (text: strin
             </button>
           </form>
 
-          <span className="text-xs text-center text-slate-500">
+          <span className="text-xs text-center text-slate-500 dark:text-slate-400">
             OSCA can make mistakes. Check important information with your Onepoint advisor.
-            <br /> Press <kbd className="px-1 py-0.5 bg-gray-200 rounded">Esc</kbd> to close
+            <br /> Press{' '}
+            <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-600 dark:text-gray-300 rounded">
+              Esc
+            </kbd>{' '}
+            to close
           </span>
         </div>
       </div>

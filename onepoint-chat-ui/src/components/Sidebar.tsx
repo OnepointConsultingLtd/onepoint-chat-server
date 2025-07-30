@@ -2,20 +2,115 @@ import { useShallow } from 'zustand/react/shallow';
 import { nameDescription, siteName } from '../lib/constants';
 import useChatStore from '../store/chatStore';
 import QuestionItem from './QuestionItem';
-import initialQuestions from '../lib/initialQuestions';
 import CloseIcon from './Menus/CloseIcon';
+import { useEffect } from 'react';
 
 type SidebarProps = {
   sendMessageToServer: (text: string) => void;
 };
 
 export default function Sidebar({ sendMessageToServer }: SidebarProps) {
-  const { isSidebarOpen, toggleSidebar } = useChatStore(
+  const {
+    isSidebarOpen,
+    toggleSidebar,
+    topicQuestions,
+    topicQuestionsLoading,
+    topicQuestionsError,
+    fetchTopicQuestions,
+  } = useChatStore(
     useShallow(state => ({
       isSidebarOpen: state.isSidebarOpen,
       toggleSidebar: state.toggleSidebar,
+      topicQuestions: state.topicQuestions,
+      topicQuestionsLoading: state.topicQuestionsLoading,
+      topicQuestionsError: state.topicQuestionsError,
+      fetchTopicQuestions: state.fetchTopicQuestions,
     }))
   );
+
+  // Fetch topic questions on component mount
+  useEffect(() => {
+    if (topicQuestions.length === 0 && !topicQuestionsLoading) {
+      fetchTopicQuestions();
+    }
+  }, [topicQuestions.length, topicQuestionsLoading, fetchTopicQuestions]);
+
+  const renderQuestionsContent = () => {
+    if (topicQuestionsLoading) {
+      return (
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-200 dark:border-gray-600 border-t-indigo-600 dark:border-t-indigo-400"></div>
+          <span className="ml-2 text-gray-600 dark:text-gray-300">Loading questions...</span>
+        </div>
+      );
+    }
+
+    if (topicQuestionsError) {
+      return (
+        <div className="text-center py-8">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+            <svg
+              className="w-6 h-6 text-red-600 dark:text-red-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.498 0L4.316 15.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+          </div>
+          <p className="text-red-600 dark:text-red-400 mb-2 font-medium">
+            Failed to load questions
+          </p>
+          <button
+            onClick={fetchTopicQuestions}
+            className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 underline text-sm font-medium transition-colors"
+          >
+            Try again
+          </button>
+        </div>
+      );
+    }
+
+    if (topicQuestions.length === 0) {
+      return (
+        <div className="text-center py-8">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+            <svg
+              className="w-6 h-6 text-gray-400 dark:text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <p className="text-gray-600 dark:text-gray-400">No questions available</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-3">
+        {topicQuestions.map((question, index) => (
+          <QuestionItem
+            key={question.id || index}
+            question={question}
+            sendMessageToServer={sendMessageToServer}
+          />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="h-screen lg:!sticky top-0 z-[120]">
@@ -31,77 +126,102 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
             onClick={e => e.stopPropagation()}
           >
             {/* Mobile Header */}
-            <div className="border-b border-gray-200 lg:!hidden !block bg-blue-400">
+            <div className="border-b border-gray-200 dark:border-gray-700 lg:!hidden !block bg-white dark:!bg-gray-800 shadow-sm">
               <div className="flex items-center justify-between px-5 h-16">
                 <div className="flex items-center">
-                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center mr-3">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center mr-3 shadow-sm">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="currentColor"
-                      className="w-5 h-5 text-blue-500"
+                      className="w-5 h-5 text-white"
                     >
-                      <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                      <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 00-1.032-.211 50.89 50.89 0 00-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 002.433 3.984L7.28 21.53A.75.75 0 016 21v-4.03a48.527 48.527 0 01-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979z" />
+                      <path d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 001.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0015.75 7.5z" />
                     </svg>
                   </div>
-                  <h1 className="text-lg font-semibold text-white">{siteName}</h1>
+                  <div>
+                    <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      {siteName}
+                    </h1>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">AI Assistant</p>
+                  </div>
                 </div>
                 <CloseIcon />
               </div>
             </div>
 
             {/* Desktop Header */}
-            <div className="border-b border-gray-200 hidden lg:!flex justify-between items-center bg-blue-400 p-2">
-              <div className="flex items-center px-5 h-14">
-                <div className="flex items-center">
-                  <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center mr-3 shadow-md">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-5 h-5 text-blue-500"
-                    >
-                      <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h1 className="text-lg font-semibold text-white">{siteName}</h1>
-                    <p className="text-xs text-blue-100">{nameDescription}</p>
-                  </div>
+            <div className="border-b border-gray-200 dark:border-gray-700 hidden lg:!flex justify-between items-center bg-white dark:bg-gray-800">
+              <div className="flex items-center px-6 py-5">
+                <div className="w-12 h-12 rounded-lg bg-blue-500 flex items-center justify-center mr-4 shadow-sm">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-6 h-6 text-white"
+                  >
+                    <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 00-1.032-.211 50.89 50.89 0 00-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 002.433 3.984L7.28 21.53A.75.75 0 016 21v-4.03a48.527 48.527 0 01-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979z" />
+                    <path d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 001.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0015.75 7.5z" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    {siteName}
+                  </h1>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                    {nameDescription}
+                  </p>
                 </div>
               </div>
-              <CloseIcon />
+              <div className="px-6">
+                <CloseIcon />
+              </div>
             </div>
 
             {/* Questions Section */}
-            <div className="flex-1 overflow-y-auto bg-gradient-to-b from-indigo-50/70 to-white">
-              <div className="p-5">
-                <h2 className="mb-5 text-xl font-semibold text-left text-gray-800">
-                  How can I help you today?
-                </h2>
-                <div className="space-y-3">
-                  {initialQuestions.map((question, index) => (
-                    <QuestionItem
-                      key={index}
-                      question={question}
-                      sendMessageToServer={sendMessageToServer}
-                    />
-                  ))}
+            <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    How can I help you today?
+                  </h2>
+                  <button
+                    onClick={fetchTopicQuestions}
+                    disabled={topicQuestionsLoading}
+                    className="p-2 cursor-pointer rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200 dark:border-gray-700 shadow-sm"
+                    title="Get new questions"
+                  >
+                    <svg
+                      className={`w-4 h-4 ${topicQuestionsLoading ? 'animate-spin' : ''}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                  </button>
                 </div>
+                {renderQuestionsContent()}
               </div>
             </div>
 
             {/* Footer */}
-            <div className="p-5 border-t border-gray-200 bg-white">
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
               <div className="flex items-center justify-between">
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Powered by{' '}
-                  <span className="font-medium text-indigo-600">
+                  <span className="font-medium text-blue-600 dark:text-blue-400">
                     <a href="https://www.onepointltd.com/">Onepoint</a>
                   </span>
                 </p>
                 <div className="flex space-x-2">
-                  <button className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-gray-600">
+                  <button className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
@@ -115,7 +235,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
                       />
                     </svg>
                   </button>
-                  <button className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-gray-600">
+                  <button className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"

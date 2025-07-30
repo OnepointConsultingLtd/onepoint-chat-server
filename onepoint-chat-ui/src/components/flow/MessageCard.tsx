@@ -8,8 +8,8 @@ import { Message } from '../../type/types';
 import ChatInput from '../ChatInput';
 import ThinkingIndicator from '../ThinkingIndicator';
 import AgentMessage from './AgentMessage';
-import UserMessage from './UserMessage';
 import EditMessage from './EditMessage';
+import UserMessage from './UserMessage';
 
 type MessageCardProps = {
   userMessage: Message;
@@ -89,7 +89,7 @@ export default function MessageCard({
       {!isThinking && !isEditing && (
         <button
           onClick={handleEditClick}
-          className="absolute top-3 cursor-pointer right-3 z-10 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md"
+          className="absolute top-3 right-3 z-10 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer"
           title="Edit message"
         >
           <FiEdit3 className="w-4 h-4" />
