@@ -12,7 +12,8 @@ type CopyButtonProps = {
 export default function CopyButton({ text, id, copiedId, onCopy }: CopyButtonProps) {
   const isActive = copiedId === id;
 
-  const baseColorClass = 'text-[#64748b] hover:text-[#0ea5e9]';
+  const baseColorClass =
+    'text-[#64748b] hover:text-[#0ea5e9] dark:text-gray-500 dark:hover:text-blue-400';
 
   return (
     <button
@@ -31,9 +32,9 @@ export default function CopyButton({ text, id, copiedId, onCopy }: CopyButtonPro
     >
       <span className="relative block w-4 h-4 transition-all duration-300 hover:scale-110">
         {isActive ? (
-          <BiSolidCheckboxChecked className="absolute inset-0 text-green-500 w-full h-full transition-transform duration-300" />
+          <BiSolidCheckboxChecked className="absolute inset-0 text-green-500 dark:text-green-400 w-full h-full transition-transform duration-300" />
         ) : (
-          <FaCopy className="absolute inset-0 w-full h-full text-blue-500 transition-transform duration-300" />
+          <FaCopy className="absolute inset-0 w-full h-full text-blue-500 dark:text-blue-400 transition-transform duration-300" />
         )}
       </span>
     </button>

@@ -40,7 +40,7 @@ export default function ChatInput({ handleSubmit }: { handleSubmit: (text: strin
   );
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-3 border-t border-gray-200 dark:border-gray-700">
+    <div className="bg-white dark:bg-gray-700 p-3 border-t border-gray-200 dark:border-gray-700">
       <div className="w-full px-2 py-2">
         <div className="flex flex-col gap-2">
           <form onSubmit={onSubmit} className="relative">
@@ -83,7 +83,7 @@ export default function ChatInput({ handleSubmit }: { handleSubmit: (text: strin
             </button>
           </form>
 
-          <span className="text-xs text-center text-slate-500 dark:text-slate-400">
+          <span className="text-xs text-center text-slate-500 dark:text-gray-100">
             OSCA can make mistakes. Check important information with your Onepoint advisor.
             <br /> Press{' '}
             <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-600 dark:text-gray-300 rounded">

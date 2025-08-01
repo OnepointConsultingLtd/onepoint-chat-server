@@ -7,15 +7,16 @@ export const predefinedTopics = [
     questions: [],
   },
   {
-    name: 'Digital Transformation',
+    name: 'Transformer Architecture',
     description:
-      'Digital transformation is the process of using digital technologies to transform a business or organization.',
+      'The transformer architecture is a neural network architecture that forms the basis of Large Language Models. It allows for parallel computation on sequences and scales well, enabling larger and more capable networks.',
     type: 'predefined',
     questions: [],
   },
   {
-    name: 'Digital Services',
-    description: 'Digital services are digital products or services that are offered to customers.',
+    name: 'Data Management',
+    description:
+      'Data Management encompasses the practices and technologies used to handle data throughout its lifecycle, including acquisition, storage, processing, and disposal. The practice of collecting, keeping, and using data securely, efficiently, and cost-effectively.',
     type: 'predefined',
     questions: [],
   },

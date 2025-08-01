@@ -114,10 +114,24 @@ menu {
   margin-left: 2rem;
 }
 
-.react-flow__handle-top {
-  display: none !important;
+/* Hide top and bottom handles only on desktop */
+@media (min-width: 768px) {
+  .react-flow__handle-top {
+    display: none !important;
+  }
+
+  .react-flow__handle-bottom {
+    display: none !important;
+  }
 }
 
-.react-flow__handle-bottom {
-  display: none !important;
+/* Hide left and right handles only on mobile */
+@media (max-width: 767px) {
+  .react-flow__handle-left {
+    display: none !important;
+  }
+
+  .react-flow__handle-right {
+    display: none !important;
+  }
 }

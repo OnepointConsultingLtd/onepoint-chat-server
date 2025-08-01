@@ -24,7 +24,6 @@ export async function getContext(question: string) {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("This is the data: ", JSON.stringify(data, null, 2));
       return {
         data: data,
         success: true,

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { fetchRelatedTopics, fetchQuestions } from '../lib/apiClient';
 import { INITIAL_MESSAGE } from '../lib/constants';
-import { clearChatData, saveConversationId } from '../lib/persistence';
+import { clearChatData, getConversationId, saveConversationId } from '../lib/persistence';
 import { ChatStore, TopicActionPayload } from '../type/chatStore';
 import { Message, Question, Topic, Topics, TopicQuestionsResponse } from '../type/types';
 
@@ -229,11 +229,16 @@ const useChatStore = create<ChatStore>()(
         }
 
         const lastMessage = shareableMessages[shareableMessages.length - 1];
-        const conversationId = lastMessage?.conversationId;
+
+        let conversationId = typeof lastMessage?.conversationId === 'undefined' ? null : lastMessage?.conversationId;
 
         if (!conversationId) {
-          console.warn('No conversationId found in messages');
-          return null;
+          conversationId = getConversationId();
+
+          if (!conversationId) {
+            console.warn('No conversationId found in messages');
+            return null;
+          }
         }
 
         const currentUrl = window.location.origin + window.location.pathname;

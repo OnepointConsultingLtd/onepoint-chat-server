@@ -12,14 +12,16 @@ export default function GradientButton({ onClick, icon, title, children }: Gradi
     <button
       onClick={onClick}
       title={title}
-      className="group flex items-center gap-2 py-2.5 px-4 rounded-lg cursor-pointer bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 hover:text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 w-auto"
+      className="group h-full flex items-center gap-2 py-2.5 px-4 rounded-lg cursor-pointer bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 hover:text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 md:w-full w-fit  focus:ring-offset-1"
     >
       {icon && (
         <div className="transition-colors duration-200 text-gray-500 group-hover:text-gray-700 !fill-blue-500">
           {icon}
         </div>
       )}
-      <span className="text-sm font-medium transition-colors duration-200">{children}</span>
+      <span className="text-sm font-medium transition-colors duration-200 md:block hidden">
+        {children}
+      </span>
     </button>
   );
 }

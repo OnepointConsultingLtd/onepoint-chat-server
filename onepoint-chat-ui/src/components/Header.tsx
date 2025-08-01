@@ -98,7 +98,7 @@ export default function Header() {
         </div>
 
         <GradientButton onClick={handleRestart} icon={<MdOutlineRestartAlt />}>
-          New Chat
+          New
         </GradientButton>
       </div>
     </>

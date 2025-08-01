@@ -17,7 +17,8 @@ type MessageCardProps = {
   isLastCard: boolean;
   isThinking: boolean;
   handleSubmit: (text: string) => void;
-  onHeightChange?: (height: number) => void;
+  onHeightChange: (height: number) => void;
+  isMobile?: boolean;
 };
 
 export default function MessageCard({
@@ -27,6 +28,7 @@ export default function MessageCard({
   isThinking,
   handleSubmit,
   onHeightChange,
+  isMobile = false,
 }: MessageCardProps) {
   const {
     showInput,
@@ -89,7 +91,7 @@ export default function MessageCard({
       {!isThinking && !isEditing && (
         <button
           onClick={handleEditClick}
-          className="absolute top-3 right-3 z-10 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer"
+          className="absolute top-3 right-3 z-10 p-2 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-300 transition-all duration-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer"
           title="Edit message"
         >
           <FiEdit3 className="w-4 h-4" />
@@ -98,7 +100,7 @@ export default function MessageCard({
 
       {/* Show thinking indicator for entire card when thinking */}
       {isLastCard && isThinking ? (
-        <div className="border-l-4 border-blue-400 bg-blue-300 transition-all duration-300 h-auto">
+        <div className="border-l-4 border-blue-400 bg-blue-300 dark:bg-red-900 transition-all duration-300 h-auto">
           <ThinkingIndicator />
         </div>
       ) : (
@@ -141,19 +143,50 @@ export default function MessageCard({
         >
           <button
             onClick={handleClick}
-            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
+            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-xl dark:shadow-blue-900/20 dark:hover:shadow-blue-900/30 transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
           >
             <BiMessageRoundedDots />
             <span>Ask a follow up question</span>
           </button>
         </div>
       )}
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="right"
-        style={{ background: '#3b82f6', top: '50%', transform: 'translateY(-50%)' }}
-      />
+
+      {/* Responsive handles */}
+      {isMobile ? (
+        <>
+          {/* Mobile: Top handle for incoming connections */}
+          <Handle
+            type="target"
+            position={Position.Top}
+            id="top"
+            style={{ background: '#3b82f6', left: '50%', transform: 'translateX(-50%)' }}
+          />
+          {/* Mobile: Bottom handle for outgoing connections */}
+          <Handle
+            type="source"
+            position={Position.Bottom}
+            id="bottom"
+            style={{ background: '#3b82f6', left: '50%', transform: 'translateX(-50%)' }}
+          />
+        </>
+      ) : (
+        <>
+          {/* Desktop: Left handle for incoming connections */}
+          <Handle
+            type="target"
+            position={Position.Left}
+            id="left"
+            style={{ background: '#3b82f6', top: '50%', transform: 'translateY(-50%)' }}
+          />
+          {/* Desktop: Right handle for outgoing connections */}
+          <Handle
+            type="source"
+            position={Position.Right}
+            id="right"
+            style={{ background: '#3b82f6', top: '50%', transform: 'translateY(-50%)' }}
+          />
+        </>
+      )}
     </div>
   );
 }

@@ -14,8 +14,6 @@ export function analyzeConversation(
     .map((msg) => msg.content.toLowerCase())
     .join(" ");
 
-  console.log("combinedText ->", combinedText);
-  console.log("lastTwoMessages ->", lastTwoMessages);
 
   // Identify persona
   let persona = "Unknown";

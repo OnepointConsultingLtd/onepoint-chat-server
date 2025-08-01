@@ -19,17 +19,20 @@ export async function fetchChatHistory(
   history: ServerMessage[]
 ): Promise<Message[]> {
   try {
+
+    console.log("Loaded history");
     const processedHistory = history.map(msg => ({
       id: uuidv4(),
       text: msg.content,
       type:
-        msg.role === 'assistant' || msg.role === 'operator'
+        msg.role === 'assistant'
           ? ('agent' as const)
           : ('user' as const),
       timestamp: new Date(),
       conversationId,
     }));
 
+    console.log("processedHistory");
     return processedHistory;
   } catch (error) {
     console.error('Error fetching chat history:', error);

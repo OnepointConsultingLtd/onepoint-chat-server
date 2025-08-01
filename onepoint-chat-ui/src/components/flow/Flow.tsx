@@ -3,7 +3,15 @@ import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useDarkMode } from '../../hooks/useDarkMode';
-import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM } from '../../lib/constants';
+import { useIsMobile } from '../../hooks/useIsMobile';
+import {
+  DEFAULT_ZOOM,
+  MAX_ZOOM,
+  MIN_ZOOM,
+  MOBILE_DEFAULT_ZOOM,
+  MOBILE_MAX_ZOOM,
+  MOBILE_MIN_ZOOM,
+} from '../../lib/constants';
 import { predefinedTopics } from '../../lib/predefinedTopics';
 import useChatStore from '../../store/chatStore';
 import { nodeTypes, Topic } from '../../type/types';
@@ -38,8 +46,19 @@ export default function Flow({
   );
 
   const { isDark } = useDarkMode();
+  const isMobile = useIsMobile();
   const reactFlowInstance = useReactFlow();
   const previousMessagesLengthRef = useRef<number>(0);
+
+  // Use mobile or desktop zoom settings
+  const zoomSettings = useMemo(
+    () => ({
+      minZoom: isMobile ? MOBILE_MIN_ZOOM : MIN_ZOOM,
+      maxZoom: isMobile ? MOBILE_MAX_ZOOM : MAX_ZOOM,
+      defaultZoom: isMobile ? MOBILE_DEFAULT_ZOOM : DEFAULT_ZOOM,
+    }),
+    [isMobile]
+  );
 
   const handleRelatedTopicClick = useCallback(
     (topic: Topic) => {
@@ -86,7 +105,8 @@ export default function Flow({
             : [],
         handleRelatedTopicClick,
         setCardHeight,
-        cardHeights
+        cardHeights,
+        isMobile
       ),
     [
       messages,
@@ -96,6 +116,7 @@ export default function Flow({
       handleRelatedTopicClick,
       cardHeights,
       setCardHeight,
+      isMobile,
     ]
   );
 
@@ -103,9 +124,10 @@ export default function Flow({
     () =>
       createEdges(
         messages,
-        topicState.isInitialMessage ? predefinedTopics.length : topicState.relatedTopics.length
+        topicState.isInitialMessage ? predefinedTopics.length : topicState.relatedTopics.length,
+        isMobile
       ),
-    [messages, topicState]
+    [messages, topicState, isMobile]
   );
 
   useEffect(() => {
@@ -138,19 +160,17 @@ export default function Flow({
           onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
           nodesDraggable={false}
-          minZoom={MIN_ZOOM}
-          maxZoom={MAX_ZOOM}
-          defaultViewport={{ x: 0, y: 0, zoom: DEFAULT_ZOOM }}
+          minZoom={zoomSettings.minZoom}
+          maxZoom={zoomSettings.maxZoom}
+          defaultViewport={{ x: 0, y: 0, zoom: zoomSettings.defaultZoom }}
           proOptions={{ hideAttribution: true }}
         >
-          {/* <Background
+          <Background
             color={isDark ? '#374151' : '#f1f5f9'}
             variant={BackgroundVariant.Dots}
-            gap={20}
+            gap={9000}
             size={1}
-          /> */}
-
-          <Background color="#f1f5f9" variant={BackgroundVariant.Dots} gap={20} size={1} />
+          />
 
           <Controls showInteractive={false} />
         </ReactFlow>
