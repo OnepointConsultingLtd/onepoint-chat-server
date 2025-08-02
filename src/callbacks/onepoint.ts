@@ -1,18 +1,20 @@
 import { ChatMessage } from "@gilf/chat-websocket-server";
-import { getContext } from "../api";
 import { analyzeConversation } from "../utils/conversationAnalyzer";
+import { getContext } from "../api";
 
 function contextAdapter(response: any) {
-  if (response.success) {
-    return response.data.context_text;
+  if (!response || !response.data.context_text) {
+    return "No relevant context found.";
   }
 
-  return response.data;
+  return response.data.context_text;
 }
 
 export async function onepointCallback(
   chatHistory: ChatMessage[],
 ): Promise<ChatMessage[]> {
+
+
   const analysis = analyzeConversation(chatHistory);
   const lastMessage = chatHistory.slice(-1)[0];
   const contextResponse = await getContext(lastMessage.content);
@@ -73,20 +75,8 @@ Emphasize our compliance with ISO27001 and GDPR. Mention real-world experience (
 User Context (for internal understanding only - do not reference directly):
 Persona: ${analysis.persona}
 Relevant Services: ${analysis.services.join(", ")}
-Initial Questions Complete: ${analysis.isInitialQuestionsComplete}
-
-`.trim(),
+    `,
   };
 
-  const index = chatHistory.findIndex(
-    (obj) => systemInstructions.content === obj.content,
-  );
-
-  if (index !== -1) {
-    chatHistory.splice(index, 1);
-  }
-
-  const sliceChatHistory = chatHistory.slice(0, -1);
-
-  return [...sliceChatHistory, systemInstructions, chatHistory.slice(-1)[0]];
+  return [systemInstructions, ...chatHistory];
 }

@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { MessageEvent } from 'ws';
 import { useShallow } from 'zustand/react/shallow';
 import { messageFactoryAgent, messageFactoryUser } from '../lib/messageFactory';
-import { getConversationId, markChatAsActive, saveConversationId } from '../lib/persistence';
+import { getConversationId, markChatAsActive, saveConversationId, isChatActive } from '../lib/persistence';
 import { createWebSocket, sendMessage } from '../lib/websocket';
 import useChatStore from '../store/chatStore';
 import { Message, ServerMessage } from '../type/types';
@@ -37,15 +37,50 @@ export function useChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Centralized conversation initialization
+  const initializeConversation = async (): Promise<void> => {
+    console.log('🔄 Initializing conversation...');
+
+    // Step 1: Check if existing conversation ID exists
+    const existingConversationId = getConversationId();
+    const isActive = isChatActive();
+
+    console.log('📋 localStorage sessionId:', localStorage.getItem('sessionId'));
+    console.log('📋 localStorage activeSession:', localStorage.getItem('activeSession'));
+    console.log('📋 getConversationId():', existingConversationId);
+    console.log('📋 isChatActive():', isActive);
+    console.log('📋 currentConversationId.current:', currentConversationId.current);
+
+    if (existingConversationId && isActive) {
+      // Step 2: Use existing ID - DO NOT UPDATE IT
+      console.log('✅ Using existing conversation:', existingConversationId);
+      currentConversationId.current = existingConversationId;
+
+      // Step 3: Load chat history for existing conversation
+      console.log('📚 Loading chat history...');
+      try {
+        await loadChatHistory(existingConversationId);
+        console.log('✅ Chat history loaded successfully');
+      } catch (error) {
+        console.error('❌ Failed to load chat history:', error);
+      }
+
+      hasInitialized.current = true;
+    } else {
+      console.log('🆕 No existing conversation - ready for new conversation');
+      console.log('🆕 Reason: existingConversationId =', existingConversationId, ', isActive =', isActive);
+    }
+  };
+
   // Fetch chat history from the server
   async function loadChatHistory(conversationId: string): Promise<ServerMessage[]> {
     const rawHistory = await fetchRawHistory(conversationId);
     const formattedMessages = await fetchChatHistory(conversationId, rawHistory);
+
     if (formattedMessages && formattedMessages.length > 0) {
+      console.log('📨 Setting messages from history:', formattedMessages.length, 'messages');
       setMessages(formattedMessages);
-      currentConversationId.current = conversationId;
       markChatAsActive();
-      hasInitialized.current = true;
     }
     return rawHistory;
   }
@@ -60,15 +95,18 @@ export function useChat() {
 
   const setupWebSocket = () => {
     if (window.barrier) return;
-    console.info('Setting up WebSocket connection');
+    console.info('🔌 Setting up WebSocket connection');
     window.barrier = true;
 
     wsRef.current = createWebSocket();
     const ws = wsRef.current;
 
     ws.onopen = async () => {
-      console.info('WebSocket connection opened');
+      console.info('✅ WebSocket connection opened');
       wsOpen.current = true;
+
+      // Initialize conversation on connection
+      await initializeConversation();
     };
 
     ws.onmessage = (event: MessageEvent) => {
@@ -100,36 +138,20 @@ export function useChat() {
             break;
           case 'message':
             setIsThinking(false);
-            console.log('This is the message in the useChat hook: ', message);
-            setMessages((prev: Message[]) => [
-              ...prev,
-              messageFactoryAgent(message.message.content),
-            ]);
+            setMessages((prev: Message[]) => [...prev, messageFactoryAgent(message.message.content)]);
             break;
           case 'conversation-id': {
             const { conversationId } = message;
-            const lastConversationId = getConversationId();
-            if (lastConversationId !== conversationId) {
+            console.log('🆔 Server wants to assign conversation ID:', conversationId);
+
+            // Only accept if we don't already have one
+            if (!currentConversationId.current) {
+              console.log('✅ Accepting new conversation ID:', conversationId);
               currentConversationId.current = conversationId;
               saveConversationId(conversationId);
-              if (conversationId && lastConversationId) {
-                // Here we should send a request to the server to get the chat history and
-                // also to prefill the history of the new session on the server and client
-                loadChatHistory(lastConversationId)
-                  .then((serverMessages: ServerMessage[]) => {
-                    if (wsRef.current) {
-                      sendMessage(
-                        wsRef.current,
-                        'import-history',
-                        { history: serverMessages },
-                        conversationId
-                      );
-                    }
-                  })
-                  .catch(error => {
-                    console.error('Error loading chat history:', error);
-                  });
-              }
+              markChatAsActive();
+            } else {
+              console.log('❌ Ignoring - already have conversation ID:', currentConversationId.current);
             }
             break;
           }
@@ -178,12 +200,15 @@ export function useChat() {
   const sendMessageToServer = (text: string, isEdit: boolean = false) => {
     if (!text.trim() || !wsRef.current) return;
 
+    // If no conversation ID, request one first
     if (!currentConversationId.current) {
+      console.log('🆔 No conversation ID - requesting one');
       messageQueue.current.push({ text: text.trim() });
       sendMessage(wsRef.current, 'request-conversation-id', '', '');
       return;
     }
 
+    console.log('📤 Sending message with conversation ID:', currentConversationId.current);
     setIsThinking(true);
 
     // Only create a new user message if this is not an edit
