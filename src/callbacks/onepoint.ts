@@ -13,6 +13,7 @@ function contextAdapter(response: any) {
 export async function onepointCallback(
   chatHistory: ChatMessage[],
 ): Promise<ChatMessage[]> {
+
   const analysis = analyzeConversation(chatHistory);
   const lastMessage = chatHistory.slice(-1)[0];
   const contextResponse = await getContext(lastMessage.content);
@@ -28,6 +29,7 @@ User Message to which you are responding:
 
   // Build system-level instructions
   const systemInstructions: ChatMessage = {
+    id: "system-instructions",
     role: "system" as any,
     content: `
 You are a digital transformation assistant for **Onepoint**, a UK-based consulting firm founded in 2005, with offices in **London** and **Pune**. Your role is to support clients, prospects, or internal teams in understanding Onepoint's services and guiding them toward suitable solutions.
@@ -75,7 +77,7 @@ Persona: ${analysis.persona}
 Relevant Services: ${analysis.services.join(", ")}
 Initial Questions Complete: ${analysis.isInitialQuestionsComplete}
 
-`.trim(),
+`,
   };
 
   const index = chatHistory.findIndex(

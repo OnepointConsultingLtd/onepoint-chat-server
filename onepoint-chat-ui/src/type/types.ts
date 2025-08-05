@@ -5,6 +5,7 @@ export type Question = {
   id: number;
   text: string;
   label?: string;
+  isSelectedTopicFromTopic?: boolean;
 };
 
 export type ServerMessage = {

@@ -1,10 +1,14 @@
 import { useState } from 'react';
+import { FiShare2 } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
+import useChatStore from '../store/chatStore';
 import { Message } from '../type/types';
 import CopyButton from './CopyButton';
-import { FiShare2 } from 'react-icons/fi';
+
 export default function RenderReactMarkdown({ message }: { message: Message }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [sharedId, setSharedId] = useState<string | null>(null);
+  const generateThreadShareableId = useChatStore(state => state.generateThreadShareableId);
 
   const copyToClipboard = async (message: Message) => {
     try {
@@ -16,9 +20,27 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
     }
   };
 
-  const handleShareClick = () => {
-    // TODO: Implement share functionality
-    console.log('Share clicked for message:', message.id);
+  const handleShareClick = async () => {
+    try {
+      if (message.type !== 'agent' && message.type !== 'user') {
+        console.error('Share is only available for user and agent messages');
+        return;
+      }
+
+      const messageId = message.id;
+      const shareableUrl = generateThreadShareableId(messageId);
+
+      if (shareableUrl) {
+        await navigator.clipboard.writeText(shareableUrl);
+        setSharedId(messageId);
+        setTimeout(() => setSharedId(null), 2000);
+        console.log('Share URL copied to clipboard:', shareableUrl);
+      } else {
+        console.error('Failed to generate shareable URL');
+      }
+    } catch (error) {
+      console.error('Failed to copy share URL:', error);
+    }
   };
 
   return (
@@ -48,12 +70,16 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
           onCopy={() => copyToClipboard(message)}
         />
 
-        {/* FOR AGENT MESSAGE   */}
+        {/* FOR AGENT AND USER MESSAGES */}
         {message.type === 'agent' && (
           <button
             onClick={handleShareClick}
-            className="z-10 p-2 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-300 transition-all duration-200 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer"
-            title="Share message"
+            className={`z-10 p-2 rounded-full transition-all duration-200 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer ${
+              sharedId === message.id
+                ? 'bg-green-50 text-green-600 border border-green-200'
+                : 'bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-300'
+            }`}
+            title={sharedId === message.id ? 'Share URL copied!' : 'Share message'}
           >
             <FiShare2 className="w-4 h-4" />
           </button>

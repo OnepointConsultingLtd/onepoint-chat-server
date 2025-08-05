@@ -7,10 +7,10 @@ import { getConversationId, markChatAsActive, saveConversationId } from '../lib/
 import { createWebSocket, sendMessage } from '../lib/websocket';
 import useChatStore from '../store/chatStore';
 import { Message, ServerMessage } from '../type/types';
-import { fetchChatHistory, fetchRawHistory } from '../utils/fetchChatHistory';
+import { formatChatHistory, fetchRawHistory } from '../utils/fetchChatHistory';
 
 export function useChat() {
-  const { messages, isThinking, setMessages, setIsThinking, isRestarting, isStreaming, setIsStreaming, setIsSidebarOpen, handleTopicAction, setEditHandler } =
+  const { messages, isThinking, setMessages, setIsThinking, isRestarting, isStreaming, setIsStreaming, handleTopicAction } =
     useChatStore(
       useShallow(state => ({
         messages: state.messages,
@@ -20,9 +20,7 @@ export function useChat() {
         isRestarting: state.isRestarting,
         isStreaming: state.isStreaming,
         setIsStreaming: state.setIsStreaming,
-        setIsSidebarOpen: state.setIsSidebarOpen,
         handleTopicAction: state.handleTopicAction,
-        setEditHandler: state.setEditHandler,
       }))
     );
 
@@ -40,7 +38,7 @@ export function useChat() {
   // Fetch chat history from the server
   async function loadChatHistory(conversationId: string): Promise<ServerMessage[]> {
     const rawHistory = await fetchRawHistory(conversationId);
-    const formattedMessages = await fetchChatHistory(conversationId, rawHistory);
+    const formattedMessages = await formatChatHistory(conversationId, rawHistory);
     if (formattedMessages && formattedMessages.length > 0) {
       setMessages(formattedMessages);
       currentConversationId.current = conversationId;
@@ -74,7 +72,6 @@ export function useChat() {
     ws.onmessage = (event: MessageEvent) => {
       try {
         const message = JSON.parse(event.data.toString());
-
         switch (message.type) {
           case 'stream-start':
             setIsThinking(true);
@@ -100,7 +97,6 @@ export function useChat() {
             break;
           case 'message':
             setIsThinking(false);
-            console.log('This is the message in the useChat hook: ', message);
             setMessages((prev: Message[]) => [
               ...prev,
               messageFactoryAgent(message.message.content),
@@ -117,6 +113,10 @@ export function useChat() {
                 // also to prefill the history of the new session on the server and client
                 loadChatHistory(lastConversationId)
                   .then((serverMessages: ServerMessage[]) => {
+                    if (!serverMessages || serverMessages?.length === 0) {
+                      console.log('No chat history found for conversationId: ', conversationId);
+                      return;
+                    }
                     if (wsRef.current) {
                       sendMessage(
                         wsRef.current,
@@ -175,7 +175,7 @@ export function useChat() {
     }
   }, [messages, isThinking]);
 
-  const sendMessageToServer = (text: string, isEdit: boolean = false) => {
+  const sendMessageToServer = (text: string) => {
     if (!text.trim() || !wsRef.current) return;
 
     if (!currentConversationId.current) {
@@ -186,14 +186,12 @@ export function useChat() {
 
     setIsThinking(true);
 
-    // Only create a new user message if this is not an edit
-    if (!isEdit) {
-      const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
-      setMessages((prev: Message[]) => [...prev, userMessage]);
-    }
+    const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
+    setMessages((prev: Message[]) => [...prev, userMessage]);
 
+    // Send message to server (server will generate messageId)
+    console.log('🔄 Sending message:', text);
     sendMessage(wsRef.current, 'message', text, currentConversationId.current);
-    setIsSidebarOpen(false);
     if (!hasInitialized.current) {
       initializeChat();
     }
@@ -204,16 +202,6 @@ export function useChat() {
     handleTopicAction({ type: 'manual', text });
   };
 
-  // Handle message editing and regeneration
-  const handleEditMessage = (_messageId: string, newText: string) => {
-    console.log('handleEditMessage called with:', { _messageId, newText });
-    sendMessageToServer(newText, true); // Pass isEdit=true to prevent duplicate user message
-  };
-
-  // Set up the edit handler
-  useEffect(() => {
-    setEditHandler(handleEditMessage);
-  }, [setEditHandler]);
 
   return {
     messages,

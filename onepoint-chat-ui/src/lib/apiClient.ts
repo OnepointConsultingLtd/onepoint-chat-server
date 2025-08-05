@@ -64,15 +64,18 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
 }
 
 
-// http://localhost:9999/protected/project/questions?project=onepoint_v1&engine=lightrag&topic_limit=5&format=json
 
 export async function fetchQuestions(
-  project: string = 'onepoint_v1',
-  engine: string = 'lightrag',
-  topicLimit: number = 5,
-  format: string = 'json'
+  topics: string[] = []
 ) {
-  const url = `${getServer()}/project/questions?project=${project}&engine=${engine}&topic_limit=${topicLimit}&format=${format}`;
+  const project: string = 'onepoint_v1';
+  const engine: string = 'lightrag';
+  const topicLimit: number = 5;
+  const format: string = 'json';
+  const topicString = topics ? topics.join(';') : '';
+  const topicParam = topics.length > 0 ? `&topics=${topicString}` : '';
+
+  const url = `${getServer()}/project/questions?project=${project}&engine=${engine}${topicParam}&topic_limit=${topicLimit}&format=${format}`;
 
   const response = await fetch(url, {
     method: 'GET',

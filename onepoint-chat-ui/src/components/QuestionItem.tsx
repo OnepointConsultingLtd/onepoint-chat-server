@@ -25,14 +25,17 @@ const QuestionIcon = () => {
 };
 
 export default function QuestionItem({ question, sendMessageToServer }: QuestionItemProps) {
-  const { handleQuestionClick } = useChatStore(
+  const { handleTopicAction } = useChatStore(
     useShallow(state => ({
-      handleQuestionClick: state.handleQuestionClick,
+      handleTopicAction: state.handleTopicAction,
     }))
   );
 
   const handleClick = () => {
-    handleQuestionClick(question);
+    handleTopicAction({
+      type: 'question',
+      question: question,
+    });
     sendMessageToServer(question.text);
   };
 

@@ -22,6 +22,7 @@ export interface ChatStore {
   topicQuestions: Question[];
   topicQuestionsLoading: boolean;
   topicQuestionsError: string | null;
+  isSelectedTopicFromTopic: boolean;
 
   // Setters
   setIsInitialMessage: (message: Message, isLastCard: boolean) => void;
@@ -43,18 +44,21 @@ export interface ChatStore {
   setTopicQuestions: (questions: Question[]) => void;
   setTopicQuestionsLoading: (loading: boolean) => void;
   setTopicQuestionsError: (error: string | null) => void;
+  setIsSelectedTopicFromTopic: (isSelected: boolean) => void;
 
   // Actions
   toggleSidebar: () => void;
   fetchRelatedTopics: (topicName: string, text?: string) => Promise<void>;
+  fetchTopicQuestions: () => Promise<void>;
+  refreshQuestionsOnTopicChange: () => void;
   handleTopicAction: (payload: TopicActionPayload) => Promise<void>;
   handleClick: () => void;
   handleSubmit: (text: string) => void;
   handleQuestionClick: (question: Question) => void;
-  editMessage: (messageId: string, newText: string) => void;
   generateShareableId: () => string | null;
+  generateThreadShareableId: (messageId: string) => string | null;
   loadSharedChatById: (conversationId: string) => Promise<boolean>;
-  fetchTopicQuestions: () => Promise<void>;
+  loadSharedThreadById: (messageId: string) => Promise<boolean>;
   handleRestart: () => void;
 }
 

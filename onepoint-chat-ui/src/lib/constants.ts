@@ -38,4 +38,8 @@ export const MOBILE_TOPIC_CARD = {
 };
 
 
+export const LOCAL_STORAGE_KEYS = {
+  OSCA_STORE: 'osca-store',
+}
+
 export const ONE_TIME_TOKEN = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJheml6aV9iYW5rIiwibmFtZSI6ImF6aXppX2JhbmsiLCJpYXQiOjE3NDk3NDU4NjUsImVtYWlsIjoibXVydGF6YS5oYXNzYW5pQG9uZXBvaW50bHRkLmNvbSJ9.xvKGivWBWqRc5e4iMSZ18Qls-YnpbCljYDfVF7s0zpiHFEMmOIQHkWOf9tc_cOhP7eKjeKdFE0tgM1g5vvMzfg"

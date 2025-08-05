@@ -14,7 +14,7 @@ export async function fetchRawHistory(conversationId: string): Promise<ServerMes
   }
 }
 
-export async function fetchChatHistory(
+export async function formatChatHistory(
   conversationId: string,
   history: ServerMessage[]
 ): Promise<Message[]> {
@@ -30,6 +30,7 @@ export async function fetchChatHistory(
           : ('user' as const),
       timestamp: new Date(),
       conversationId,
+      messageId: msg.id,
     }));
 
     console.log("processedHistory");
