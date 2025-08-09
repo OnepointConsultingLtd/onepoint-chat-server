@@ -23,7 +23,7 @@ export const MOBILE_MIN_ZOOM = 0.3;
 export const MOBILE_MAX_ZOOM = 1.2;
 
 export const MAX_RELATED_TOPICS = 5;
-
+export const MAX_PREVIEW_CHARS = 100;
 
 export const TOPIC_CARD = {
   HEIGHT: 130,

@@ -28,7 +28,6 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
     }
   };
 
-  console.log('message for sharing', message);
   const handleShareClick = async () => {
     try {
       if (message.type !== 'agent') {

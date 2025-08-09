@@ -5,7 +5,7 @@ import BaseMessage from './BaseMessage';
 export default function AgentMessage({ message }: { message: Message }) {
   const header = (
     <div className="flex items-center">
-      <div className="text-xs font-medium text-indigo-600 dark:text-indigo-700 uppercase tracking-wider">
+      <div className="text-xs font-medium text-indigo-600 dark:text-indigo-300 uppercase tracking-wider">
         {siteName}
       </div>
       <div className="ml-1.5 px-1.5 py-0.5 text-[10px] bg-indigo-100 dark:bg-indigo-200 text-indigo-600 dark:text-indigo-800 rounded-sm">

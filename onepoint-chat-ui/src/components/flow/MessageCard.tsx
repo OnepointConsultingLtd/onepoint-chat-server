@@ -80,13 +80,13 @@ export default function MessageCard({
   return (
     <div
       ref={cardRef}
-      className="flex flex-col w-full overflow-hidden rounded-xl bg-white border border-gray-400 dark:border-[#0d8ecb] shadow-lg hover:shadow-xl transition-all duration-300 group animate-fade-in"
+      className="flex flex-col w-full overflow-hidden rounded-xl bg-white border border-gray-400 dark:border-[#0d8ecb] shadow-lg hover:shadow-xl transition-all duration-300 group animate-fade-in z-50"
       onMouseEnter={() => !isInitialMessage && setShowButton(true)}
       onMouseLeave={() => !isInitialMessage && setShowButton(false)}
     >
       {/* Related Topics Label */}
       {relatedTopics && isLastCard && !isThinking && relatedTopics.topics.length > 0 ? (
-        <div className="absolute top-1/2 -right-[123px] -translate-y-1/2 z-[300] flex flex-col items-center">
+        <div className="absolute top-1/2 -right-[114px] -translate-y-1/2 -z-[1] flex flex-col items-center">
           {/* Label */}
           <div
             className="relative flex items-center gap-2 px-4 py-2 rounded-full border border-white/30 
