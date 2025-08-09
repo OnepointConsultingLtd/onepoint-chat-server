@@ -102,10 +102,11 @@ export default function Header() {
             </>
           )}
         </div>
-
-        <GradientButton onClick={handleRestart} icon={<MdOutlineRestartAlt />}>
-          New
-        </GradientButton>
+        {!isThreadShareMode && (
+          <GradientButton onClick={handleRestart} icon={<MdOutlineRestartAlt />}>
+            New
+          </GradientButton>
+        )}
       </div>
     </>
   );

@@ -11,6 +11,7 @@ import UserMessage from './UserMessage';
 import { FiShare2 } from 'react-icons/fi';
 import GradientButton from '../GradientButton';
 import { MdOutlineRestartAlt } from 'react-icons/md';
+import MessageTimestamp from './MessageTimestamp';
 
 type MessageCardProps = {
   userMessage: Message;
@@ -77,6 +78,7 @@ export default function MessageCard({
     }
   }, [onHeightChange, userMessage, agentMessage]);
 
+  console.log('userMessage', userMessage);
   return (
     <div
       ref={cardRef}
@@ -118,6 +120,7 @@ export default function MessageCard({
                   <span className="text-blue-100 text-sm">
                     This is a read-only shared conversation
                   </span>
+                  <MessageTimestamp timestamp={userMessage.timestamp} />
                 </div>
               </div>
             </div>
