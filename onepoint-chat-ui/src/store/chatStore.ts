@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { fetchRelatedTopics, fetchQuestions } from '../lib/apiClient';
+import { fetchQuestions, fetchRelatedTopics } from '../lib/apiClient';
 import { INITIAL_MESSAGE, LOCAL_STORAGE_KEYS } from '../lib/constants';
-import { clearChatData, getConversationId, saveConversationId } from '../lib/persistence';
+import { clearChatData, getConversationId, saveConversationId, saveThreadId, clearThreadData } from '../lib/persistence';
 import { ChatStore, TopicActionPayload } from '../type/chatStore';
-import { Message, Question, Topic, Topics, TopicQuestionsResponse } from '../type/types';
+import { Message, Question, Topic, TopicQuestionsResponse, Topics } from '../type/types';
+import { SharedResponse } from '..';
 
 function newChat() {
   return {
@@ -28,6 +29,7 @@ function newChat() {
     topicQuestions: [],
     topicQuestionsLoading: false,
     topicQuestionsError: null,
+    isThreadShareMode: false,
   };
 }
 
@@ -55,6 +57,7 @@ const useChatStore = create<ChatStore>()(
       topicQuestionsLoading: false,
       topicQuestionsError: null,
       isSelectedTopicFromTopic: false,
+      isThreadShareMode: false,
 
       // setters
       setIsInitialMessage: (message: Message, isLastCard: boolean) => {
@@ -102,6 +105,7 @@ const useChatStore = create<ChatStore>()(
       setTopicQuestions: (questions: Question[]) => set({ topicQuestions: questions }),
       setTopicQuestionsLoading: (loading: boolean) => set({ topicQuestionsLoading: loading }),
       setTopicQuestionsError: (error: string | null) => set({ topicQuestionsError: error }),
+      setIsThreadShareMode: (isThreadMode: boolean) => set({ isThreadShareMode: isThreadMode }),
 
       setIsSelectedTopicFromTopic: (isSelected: boolean) => {
         set({ isSelectedTopicFromTopic: isSelected });
@@ -202,7 +206,6 @@ const useChatStore = create<ChatStore>()(
           await fetchRelatedTopics('', payload.question.text);
           setIsSelectedTopicFromTopic(false);
         }
-        set({ isSidebarOpen: false });
 
       },
 
@@ -223,6 +226,19 @@ const useChatStore = create<ChatStore>()(
         get().handleTopicAction({ type: 'question', question });
       },
 
+      exitThreadShareMode: () => {
+        clearThreadData();
+
+        const url = new URL(window.location.href);
+        url.searchParams.delete('threadId');
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+
+        window.location.reload();
+
+        set(() => ({
+          ...newChat(),
+        }));
+      },
 
       // Share functionality
       generateShareableId: () => {
@@ -240,17 +256,10 @@ const useChatStore = create<ChatStore>()(
           return null;
         }
 
-        const lastMessage = shareableMessages[shareableMessages.length - 1];
-
-        let conversationId = typeof lastMessage?.conversationId === 'undefined' ? null : lastMessage?.conversationId;
-
+        const conversationId = getConversationId();
         if (!conversationId) {
-          conversationId = getConversationId();
-
-          if (!conversationId) {
-            console.warn('No conversationId found in messages');
-            return null;
-          }
+          console.warn('No conversationId found in messages');
+          return null;
         }
 
         const currentUrl = window.location.origin + window.location.pathname;
@@ -267,9 +276,9 @@ const useChatStore = create<ChatStore>()(
         }
 
         // Find the message with the given messageId
-        const targetMessage = messages.find(msg => msg.id === messageId);
+        const targetMessage = messages.find(msg => msg.id || msg.messageId === messageId);
 
-        if (!targetMessage || (targetMessage.type !== 'agent' && targetMessage.type !== 'user')) {
+        if (!targetMessage || targetMessage.type !== 'agent') {
           console.warn('Message not found or not a user/agent message');
           return null;
         }
@@ -310,6 +319,7 @@ const useChatStore = create<ChatStore>()(
             showInput: false,
             showButton: false,
             isInitialMessage: false,
+            isThreadShareMode: false,
           }));
 
           console.log('Shared chat loaded successfully!');
@@ -321,49 +331,72 @@ const useChatStore = create<ChatStore>()(
       },
 
       // Load shared thread (single message pair)
-      loadSharedThreadById: async (messageId: string) => {
+      loadSharedThreadById: async (messageId: string): Promise<SharedResponse> => {
         try {
           const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/thread-share/${messageId}`);
 
-          console.log('messageId is', messageId);
           if (!response.ok) {
             if (response.status === 404) {
               console.error('Thread not found:', messageId);
-              return false;
+              return {
+                status: false,
+                error: 'Thread not found',
+                messages: [],
+              };
             }
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
           const threadData = await response.json();
 
+
           if (!threadData.messages || !Array.isArray(threadData.messages)) {
             console.error('Invalid shared thread data: missing or invalid messages');
-            return false;
+            return {
+              status: false,
+              error: 'Invalid shared thread data: missing or invalid messages',
+              messages: [],
+            };
           }
 
-          const messages = threadData.messages.map((msg: { id: string; text: string; type: string; timestamp: string; conversationId?: string, messageId?: string }) => ({
+          const messages = threadData.messages.map((msg: {
+            id: string;
+            text: string;
+            type: string;
+            timestamp: string;
+            messageId: string;
+          }) => ({
             ...msg,
             timestamp: new Date(msg.timestamp)
           }));
+          // saveConversationId(messages?.conversationId);
 
-          // Save the conversationId from the thread for context
-          if (threadData.conversationId) {
-            saveConversationId(threadData.conversationId);
-          }
+          saveThreadId(messageId);
 
           set(() => ({
             messages: messages,
             isSidebarOpen: false,
-            showInput: false,
-            showButton: false,
-            isInitialMessage: false,
+            isThreadShareMode: true,
+            selectedTopic: null,
+            relatedTopics: null,
+            relatedTopicsLoading: false,
+            topicQuestions: [],
+            topicQuestionsLoading: false,
+            topicQuestionsError: null,
           }));
 
           console.log('Shared thread loaded successfully!');
-          return true;
+          return {
+            status: true,
+            messages: messages,
+          };
         } catch (error) {
           console.error('Error loading shared thread:', error);
-          return false;
+          return {
+            status: false,
+            error: 'Failed to load shared thread',
+            messages: [],
+          };
         }
       },
 
@@ -380,11 +413,12 @@ const useChatStore = create<ChatStore>()(
     {
       name: LOCAL_STORAGE_KEYS.OSCA_STORE,
       partialize: state => ({
-        // isSidebarOpen: state.isSidebarOpen,
+        isSidebarOpen: state.isSidebarOpen,
         selectedTopic: state.selectedTopic,
         relatedTopics: state.relatedTopics,
         isSelectedTopicFromTopic: state.isSelectedTopicFromTopic,
         topicQuestions: state.topicQuestions,
+        isThreadShareMode: state.isThreadShareMode,
       }),
     }
   )

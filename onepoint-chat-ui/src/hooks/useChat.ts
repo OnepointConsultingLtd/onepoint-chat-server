@@ -10,7 +10,7 @@ import { Message, ServerMessage } from '../type/types';
 import { formatChatHistory, fetchRawHistory } from '../utils/fetchChatHistory';
 
 export function useChat() {
-  const { messages, isThinking, setMessages, setIsThinking, isRestarting, isStreaming, setIsStreaming, handleTopicAction } =
+  const { messages, isThinking, setMessages, setIsThinking, isRestarting, isStreaming, setIsStreaming, handleTopicAction, setIsSidebarOpen } =
     useChatStore(
       useShallow(state => ({
         messages: state.messages,
@@ -21,6 +21,7 @@ export function useChat() {
         isStreaming: state.isStreaming,
         setIsStreaming: state.setIsStreaming,
         handleTopicAction: state.handleTopicAction,
+        setIsSidebarOpen: state.setIsSidebarOpen,
       }))
     );
 
@@ -69,6 +70,13 @@ export function useChat() {
       wsOpen.current = true;
     };
 
+
+    const updateLastMessage = (messages: Message[], updater: (msg: Message) => Message): Message[] => {
+      if (!messages.length) return messages;
+      const updated = updater({ ...messages[messages.length - 1] });
+      return [...messages.slice(0, -1), updated];
+    }
+
     ws.onmessage = (event: MessageEvent) => {
       try {
         const message = JSON.parse(event.data.toString());
@@ -84,8 +92,10 @@ export function useChat() {
               if (!lastMessage || lastMessage.type !== 'agent') {
                 return [...prev, messageFactoryAgent(message.chunk)];
               }
-              lastMessage.text += message.chunk;
-              return [...prev.slice(0, -1), lastMessage];
+              return updateLastMessage(prev, (msg) => ({
+                ...msg,
+                text: msg.text + message.chunk,
+              }));
             });
             break;
           case 'stream-end':
@@ -93,6 +103,14 @@ export function useChat() {
             setIsStreaming(false);
             if (message.subType === 'streamEndError') {
               setMessages((prev: Message[]) => [...prev, messageFactoryAgent(message.message)]);
+            } else {
+              console.log("Checking message id", message)
+              setMessages((prev: Message[]) =>
+                updateLastMessage(prev, (msg) => ({
+                  ...msg,
+                  id: message.message.id,
+                }))
+              );
             }
             break;
           case 'message':
@@ -177,7 +195,7 @@ export function useChat() {
 
   const sendMessageToServer = (text: string) => {
     if (!text.trim() || !wsRef.current) return;
-
+    setIsSidebarOpen(false);
     if (!currentConversationId.current) {
       messageQueue.current.push({ text: text.trim() });
       sendMessage(wsRef.current, 'request-conversation-id', '', '');
@@ -185,12 +203,8 @@ export function useChat() {
     }
 
     setIsThinking(true);
-
     const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
     setMessages((prev: Message[]) => [...prev, userMessage]);
-
-    // Send message to server (server will generate messageId)
-    console.log('🔄 Sending message:', text);
     sendMessage(wsRef.current, 'message', text, currentConversationId.current);
     if (!hasInitialized.current) {
       initializeChat();

@@ -2,20 +2,19 @@
 enum PersistenceKeys {
   SESSION_ID = 'sessionId',
   HAS_ACTIVE_CHAT = 'activeSession',
+  THREAD_ID = 'threadId',
+  IS_THREAD_MODE = 'isThreadMode',
 }
 
-// Check if chat is already active
 export function isChatActive(): boolean {
   return localStorage.getItem(PersistenceKeys.HAS_ACTIVE_CHAT) === 'true';
 }
 
-// Save the conversation ID only when user has actually started a chat
 export function saveConversationId(conversationId: string | null) {
   if (!conversationId) return;
   localStorage.setItem(PersistenceKeys.SESSION_ID, conversationId);
 }
 
-// Get the conversation ID history
 export function getConversationId(): string | null {
   try {
     const conversationId = localStorage.getItem(PersistenceKeys.SESSION_ID);
@@ -27,15 +26,40 @@ export function getConversationId(): string | null {
   }
 }
 
-// When the user starts a chat, we need to mark it as active
+export function saveThreadId(threadId: string | null) {
+  if (!threadId) return;
+  localStorage.setItem(PersistenceKeys.THREAD_ID, threadId);
+  localStorage.setItem(PersistenceKeys.IS_THREAD_MODE, 'true');
+}
+
+export function getThreadId(): string | null {
+  try {
+    const threadId = localStorage.getItem(PersistenceKeys.THREAD_ID);
+    if (!threadId) return null;
+    return threadId;
+  } catch (error) {
+    console.warn('Error parsing thread ID:', error);
+    return null;
+  }
+}
+
+export function isThreadMode(): boolean {
+  return localStorage.getItem(PersistenceKeys.IS_THREAD_MODE) === 'true';
+}
+
+export function clearThreadData() {
+  localStorage.removeItem(PersistenceKeys.THREAD_ID);
+  localStorage.removeItem(PersistenceKeys.IS_THREAD_MODE);
+}
+
 export function markChatAsActive() {
   if (!isChatActive()) {
     localStorage.setItem(PersistenceKeys.HAS_ACTIVE_CHAT, 'true');
   }
 }
 
-// Clear all chat-related data from local storage
 export function clearChatData() {
   localStorage.removeItem(PersistenceKeys.SESSION_ID);
   localStorage.removeItem(PersistenceKeys.HAS_ACTIVE_CHAT);
+  clearThreadData();
 }

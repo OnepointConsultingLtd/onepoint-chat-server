@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CiExport } from 'react-icons/ci';
 import { FaMarkdown } from 'react-icons/fa';
-import { FiShare2, FiCheck } from 'react-icons/fi';
+import { FiCheck, FiShare2 } from 'react-icons/fi';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import useChatStore from '../store/chatStore';
@@ -14,14 +14,16 @@ export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const { messages, handleRestart, generateShareableId, isInitialMessage } = useChatStore(
-    useShallow(state => ({
-      messages: state.messages,
-      handleRestart: state.handleRestart,
-      generateShareableId: state.generateShareableId,
-      isInitialMessage: state.isInitialMessage,
-    }))
-  );
+  const { messages, handleRestart, generateShareableId, isInitialMessage, isThreadShareMode } =
+    useChatStore(
+      useShallow(state => ({
+        messages: state.messages,
+        handleRestart: state.handleRestart,
+        generateShareableId: state.generateShareableId,
+        isInitialMessage: state.isInitialMessage,
+        isThreadShareMode: state.isThreadShareMode,
+      }))
+    );
 
   const handleExport = (type: 'markdown' | 'pdf') => {
     const date = new Date().toISOString().split('T')[0];
@@ -53,16 +55,18 @@ export default function Header() {
 
   return (
     <>
-      <div className="space-x-4 pr-4 float-left w-fit absolute top-3 left-4 !z-50">
-        <SideBarButton />
-      </div>
+      {!isThreadShareMode && (
+        <div className="space-x-4 pr-4 float-left w-fit absolute top-3 left-4 !z-50">
+          <SideBarButton />
+        </div>
+      )}
 
       <div className="flex justify-start md:flex-row flex-col gap-3 space-x-2 float-right w-fit absolute top-3 right-4 !z-50">
         {/* Theme Toggle */}
         <ThemeToggle />
 
         {/* Share Button */}
-        {hasConversation && (
+        {hasConversation && !isThreadShareMode && (
           <GradientButton
             onClick={handleShare}
             icon={copied ? <FiCheck className="text-green-600" /> : <FiShare2 />}
@@ -73,9 +77,11 @@ export default function Header() {
         )}
 
         <div className="relative w-auto">
-          <GradientButton onClick={() => setShowDropdown(!showDropdown)} icon={<CiExport />}>
-            Export
-          </GradientButton>
+          {!isThreadShareMode && (
+            <GradientButton onClick={() => setShowDropdown(!showDropdown)} icon={<CiExport />}>
+              Export
+            </GradientButton>
+          )}
 
           {showDropdown && (
             <>

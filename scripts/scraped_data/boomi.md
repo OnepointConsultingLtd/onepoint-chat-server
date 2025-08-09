@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/boomi/
 
-_Boomi Consulting Services UK - If you are looking for Boomi integration, Boomi consulting, Boomi partners, Boomi service, Boomi consultant, Boomi services, Boomi integration partner, Boomi consultants UK, Boomi consulting services UK, Boomi integration services UK, please contact us!_
+*Boomi Consulting Services UK - If you are looking for Boomi integration, Boomi consulting, Boomi partners, Boomi service, Boomi consultant, Boomi services, Boomi integration partner, Boomi consultants UK, Boomi consulting services UK, Boomi integration services UK, please contact us!*
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
--
--
--
+- 
+- 
+- 
 - Search for:Search
 
 Architect for outcomes[1]
@@ -176,7 +176,7 @@ Exploreon the
 
 Explore[33]
 
-Data Quality automates data quality through smart rule creation, auditing, and validation using the OP Database connector, improving data governance with intelligent checks.Watchdemo.
+The Data Management Smart Adviser offers an Interactive Data Health Check that leverages AI to pinpoint and clarify data issues, delivering a personalised, actionable report with transparent AI reasoning via UI and email.Watchdemo.
 
 demo[34]
 
@@ -184,7 +184,7 @@ Exploreon the
 
 Explore[35]
 
-AI Anomaly Detection, powered by Boomi and Eyer, detects anomalies, analyses patterns, and forecasts behaviour through simple conversations, enabling proactive decision-making without complex dashboards.Watchdemo.
+Data Quality automates data quality through smart rule creation, auditing, and validation using the OP Database connector, improving data governance with intelligent checks.Watchdemo.
 
 demo[36]
 
@@ -192,7 +192,7 @@ Exploreon the
 
 Explore[37]
 
-Hotel Matcher performs RAG-based matching against a hotel knowledge base. Given a hotel name (with or without an address), it retrieves and returns all relevant attributes in structured JSON.Watchdemo.
+AI Anomaly Detection, powered by Boomi and Eyer, detects anomalies, analyses patterns, and forecasts behaviour through simple conversations, enabling proactive decision-making without complex dashboards.Watchdemo.
 
 demo[38]
 
@@ -200,13 +200,21 @@ Exploreon the
 
 Explore[39]
 
-Hotel Matcher is RAG-based AI that uses OP Intelligence to create embeddings and OP Database for cosine similarity search, then suggests the best-matched hotel records.Watchdemo.
+Hotel Matcher performs RAG-based matching against a hotel knowledge base. Given a hotel name (with or without an address), it retrieves and returns all relevant attributes in structured JSON.Watchdemo.
 
 demo[40]
 
 Exploreon the
 
 Explore[41]
+
+Hotel Matcher is RAG-based AI that uses OP Intelligence to create embeddings and OP Database for cosine similarity search, then suggests the best-matched hotel records.Watchdemo.
+
+demo[42]
+
+Exploreon the
+
+Explore[43]
 
 HR Smart Advisor is a reverse chatbot that comes up with recommendations for employees’ issues.
 
@@ -218,19 +226,11 @@ Coming soon
 
 Maths Buddy AI Agent solves maths problem by generating code, ensuring accurate and reliable results without LLM guesswork.Watchdemo.
 
-demo[42]
+demo[44]
 
 Coming soon
 
 News Ninja AI agent creates publish-ready articles from user topics, sourcing news, summarising key points, and ensuring originality with semantic checks for accurate, consistent content.Watchdemo.
-
-demo[43]
-
-Exploreon the
-
-Explore[44]
-
-Connect to multiple LLMs with OP Intelligence to generate insights and recommendations using natural language and AI to help organisations make smarter, data-driven decisions.Watchdemo.
 
 demo[45]
 
@@ -238,7 +238,7 @@ Exploreon the
 
 Explore[46]
 
-Enables data processing and retrieval from any JDBC-supported database, supports CRUD, vector operations, named transactions, multiple savepoints, and rollbacks.Watchdemo.
+Connect to multiple LLMs with OP Intelligence to generate insights and recommendations using natural language and AI to help organisations make smarter, data-driven decisions.Watchdemo.
 
 demo[47]
 
@@ -246,7 +246,7 @@ Exploreon the
 
 Explore[48]
 
-Start connecting with OP WebSearch to find, extract, and integrate web data directly into your business workflows.Watchdemo.
+Enables data processing and retrieval from any JDBC-supported database, supports CRUD, vector operations, named transactions, multiple savepoints, and rollbacks.Watchdemo.
 
 demo[49]
 
@@ -254,7 +254,7 @@ Exploreon the
 
 Explore[50]
 
-Use OP Wikipedia to search, filter, and extract structured knowledge from Wikipedia for seamless integration into your workflows.Watchdemo.
+Start connecting with OP WebSearch to find, extract, and integrate web data directly into your business workflows.Watchdemo.
 
 demo[51]
 
@@ -262,9 +262,7 @@ Exploreon the
 
 Explore[52]
 
-Standardise ‘Person’ entities with simple rules and enrich them using Wikipedia data via the OP Wikipedia connector.
-
-Watchdemo.
+Use OP Wikipedia to search, filter, and extract structured knowledge from Wikipedia for seamless integration into your workflows.Watchdemo.
 
 demo[53]
 
@@ -272,7 +270,9 @@ Exploreon the
 
 Explore[54]
 
-The PII Data Detector validates and ensures that the input payload doesn’t contain Personally Identifiable Information.Watchdemo.
+Standardise ‘Person’ entities with simple rules and enrich them using Wikipedia data via the OP Wikipedia connector.
+
+Watchdemo.
 
 demo[55]
 
@@ -280,21 +280,21 @@ Exploreon the
 
 Explore[56]
 
-The Property Finder uses Savills APIs to interpret user preferences like location, budget, and property type, delivering instant, personalised recommendations through natural language.Watchdemo.
+The PII Data Detector validates and ensures that the input payload doesn’t contain Personally Identifiable Information.Watchdemo.
 
 demo[57]
+
+Exploreon the
+
+Explore[58]
+
+The Property Finder uses Savills APIs to interpret user preferences like location, budget, and property type, delivering instant, personalised recommendations through natural language.Watchdemo.
+
+demo[59]
 
 Coming soon
 
 Property Search interprets user preferences like location, budget, and property type to deliver personalised property recommendations using Savills APIs, streamlining the search process with natural language.Watchdemo.
-
-demo[58]
-
-Exploreon the
-
-Explore[59]
-
-SAP Low Stock Purchase Recommendation provides real-time purchase recommendations, detecting low stock and suggesting optimal orders based on sales, lead time, and safe stock, all through natural language.Watchdemo.
 
 demo[60]
 
@@ -302,7 +302,7 @@ Exploreon the
 
 Explore[61]
 
-ServiceNow Asset Tracker uses ServiceNow APIs to provide instant, natural-language insights into hardware assets, enhancing IT support and asset visibility.Watchdemo.
+SAP Low Stock Purchase Recommendation provides real-time purchase recommendations, detecting low stock and suggesting optimal orders based on sales, lead time, and safe stock, all through natural language.Watchdemo.
 
 demo[62]
 
@@ -310,7 +310,7 @@ Exploreon the
 
 Explore[63]
 
-ServiceNow Incident Management brings conversational power to ServiceNow, allowing users to create tickets, update records, and manage incidents through intuitive, natural language prompts.Watchdemo.
+ServiceNow Asset Tracker uses ServiceNow APIs to provide instant, natural-language insights into hardware assets, enhancing IT support and asset visibility.Watchdemo.
 
 demo[64]
 
@@ -318,7 +318,7 @@ Exploreon the
 
 Explore[65]
 
-ServiceNow Knowledge Explorer uses ServiceNow APIs to retrieve and summarise knowledge articles, delivering precise, context-aware results for faster troubleshooting and improved user experience.Watchdemo.
+ServiceNow Incident Management brings conversational power to ServiceNow, allowing users to create tickets, update records, and manage incidents through intuitive, natural language prompts.Watchdemo.
 
 demo[66]
 
@@ -326,7 +326,7 @@ Exploreon the
 
 Explore[67]
 
-ServiceNow License Tracker uses ServiceNow APIs to provide real-time insights into license usage and entitlements, streamlining license compliance and optimisation decisions.Watchdemo.
+ServiceNow Knowledge Explorer uses ServiceNow APIs to retrieve and summarise knowledge articles, delivering precise, context-aware results for faster troubleshooting and improved user experience.Watchdemo.
 
 demo[68]
 
@@ -334,7 +334,7 @@ Exploreon the
 
 Explore[69]
 
-Test Data Generator quickly creates high-quality, realistic test data in formats like CSV, JSON, XML, EDI, and SQL—ideal for testers, developers, and business users. Watchdemo.
+ServiceNow License Tracker uses ServiceNow APIs to provide real-time insights into license usage and entitlements, streamlining license compliance and optimisation decisions.Watchdemo.
 
 demo[70]
 
@@ -342,7 +342,7 @@ Exploreon the
 
 Explore[71]
 
-Test Data Generator creates realistic, customisable datasets from user-defined schemas. It auto-generates and delivers data to Azure Blob in JSON, CSV, or XML—eliminating manual effort.Watchdemo.
+Test Data Generator quickly creates high-quality, realistic test data in formats like CSV, JSON, XML, EDI, and SQL—ideal for testers, developers, and business users. Watchdemo.
 
 demo[72]
 
@@ -350,7 +350,7 @@ Exploreon the
 
 Explore[73]
 
-UK Company Search provides instant access to verified UK company data, including registration details, incorporation date, business type, address, and leadership, all through a simple, conversational interface. Watchdemo.
+Test Data Generator creates realistic, customisable datasets from user-defined schemas. It auto-generates and delivers data to Azure Blob in JSON, CSV, or XML—eliminating manual effort.Watchdemo.
 
 demo[74]
 
@@ -358,7 +358,7 @@ Exploreon the
 
 Explore[75]
 
-US Company Search provides instant access to verified US company data, including registration details, incorporation date, business type, address, and leadership, all through a simple, conversational interface.Watchdemo.
+UK Company Search provides instant access to verified UK company data, including registration details, incorporation date, business type, address, and leadership, all through a simple, conversational interface. Watchdemo.
 
 demo[76]
 
@@ -366,13 +366,21 @@ Exploreon the
 
 Explore[77]
 
-Wikipedia Explorer quickly retrieves accurate Wikipedia insights, presenting them as summaries, lists, or detailed explanations tailored to your needs.Watchdemo.
+US Company Search provides instant access to verified US company data, including registration details, incorporation date, business type, address, and leadership, all through a simple, conversational interface.Watchdemo.
 
 demo[78]
 
 Exploreon the
 
 Explore[79]
+
+Wikipedia Explorer quickly retrieves accurate Wikipedia insights, presenting them as summaries, lists, or detailed explanations tailored to your needs.Watchdemo.
+
+demo[80]
+
+Exploreon the
+
+Explore[81]
 
 Get control of your data. Eliminate IT and data silos. Make legacy apps talk to each other. Experiment faster by combining emerging technologies with legacy systems. Cut costs. Develop efficiencies. Elevate customer and colleague experience. Create more business agility.
 
@@ -434,17 +442,16 @@ With the Boomi API Management product, Onepoint’s experts quickly put in place
 
 [Get in touch with an expert](#boomi-contact)
 
-Onepoint wins Boomi EMEA Teaming Systems Integrator Partner of the Year 2023 award
+Onepoint wins Boomi  EMEA Teaming Systems Integrator Partner of the Year 2023 award
 
 Within our Boomi CoE, we continuously develop Boomi connectors and expand our knowledge through numerous internal Proof of Concepts (PoCs). The relentless effort and dedication of our Onepoint Boomi team culminated in this esteemed recognition, presented to us during the awards ceremony at the EMEA Boomi Partner Summit 2023 in Lisbon, Portugal.
 
-Read more[80]
+Read more[82]
 
 ## Start your
-
-journey with a
+journey with a 
 Onepoint
-Springboard™
+Springboard™ 
 workshop
 
 Explore your data and application integration opportunities with Boomi— with our senior advisors and technologists during a half-day structured workshop held at our offices, or virtually.
@@ -458,6 +465,7 @@ Get in touch with us using the form below.
 ## AI and Master Data Management: A synergy for success
 
 [Watch now](/techtalk/ai-and-master-data-management-a-synergy-for-success/)
+
 
 My name is,  and I work at
 
@@ -475,17 +483,16 @@ ARRANGE A DISCOVERY CALL
 
 Onepoint as a Data Controller will process your personal data in line with the General Data Protection Regulations (GDPR). For further details, please see ourprivacy notice.
 
-privacy notice[81]
+privacy notice[83]
 
 Learn more about the Boomi Unified Platform
 
-Visit boomi[82]
+Visit boomi[84]
 
 ## Start your
-
-journey with a
+journey with a 
 Onepoint
-Springboard™
+Springboard™ 
 workshop
 
 Explore your data and application integration opportunities with Boomi— with our senior advisors and technologists during a half-day structured workshop held
@@ -570,6 +577,7 @@ Contact us
 
 [cky_video_placeholder_title]
 
+
 ## Sources
 
 [1] Architect for outcomes: https://www.onepointltd.com/architect-for-outcomes/
@@ -605,58 +613,60 @@ Contact us
 [31] Explore: https://discover.boomi.com/solutions/datahub-model-manager-agent
 [32] demo: https://vimeo.com/1075023107/fc7f2e1236
 [33] Explore: https://discover.boomi.com/solutions/datahub-quarantine-resolver-agent
-[34] demo: https://vimeo.com/1075022765/1ca991a8fa
-[35] Explore: https://discover.boomi.com/solutions/data-quality-ai-agent
-[36] demo: https://vimeo.com/1075022781/c8772121cc
-[37] Explore: https://discover.boomi.com/solutions/anomaly-detection-agent
-[38] demo: https://vimeo.com/1064540904/1ae720b0e6
-[39] Explore: https://discover.boomi.com/solutions/ai-agent-hotel-matcher
-[40] demo: https://vimeo.com/1075022788/1c8fe36b94
-[41] Explore: https://discover.boomi.com/solutions/hotel-matcher-agent
-[42] demo: https://vimeo.com/1072040638/15e838684b
-[43] demo: https://vimeo.com/1072040809/f360ea4765
-[44] Explore: https://discover.boomi.com/solutions/news-ninja-ai-agent
-[45] demo: https://vimeo.com/1070964863/34835cf47c
-[46] Explore: https://discover.boomi.com/solutions/start-connecting-with-various-llms-using-op-intelligence
-[47] demo: https://vimeo.com/1072040048/43f51c4072
-[48] Explore: https://discover.boomi.com/solutions/op-database-partner-connector-crud-operations
-[49] demo: https://vimeo.com/1070964304/c11293b0cc
-[50] Explore: https://discover.boomi.com/solutions/start-connecting-with-op-websearch
-[51] demo: https://vimeo.com/1070965109/de74c237da
-[52] Explore: https://discover.boomi.com/solutions/start-connecting-with-op-wikipedia
-[53] demo: https://vimeo.com/1063522886/06dca073df
-[54] Explore: https://discover.boomi.com/solutions/ai-agent-person-details-standardiser
-[55] demo: https://vimeo.com/1051462488/0531b69e92
-[56] Explore: https://discover.boomi.com/solutions/ai-agent-pii-data-rejector
-[57] demo: https://vimeo.com/1072040435/2c93f71dbd
-[58] demo: https://vimeo.com/1075022797/3654fd78d2
-[59] Explore: https://discover.boomi.com/solutions/property-search-agent
-[60] demo: https://vimeo.com/1075022809/e4eab2f7f8
-[61] Explore: https://discover.boomi.com/solutions/sap-low-stock-purchase-recommendation
-[62] demo: https://vimeo.com/1077896535/fbe46d9290
-[63] Explore: https://discover.boomi.com/solutions/servicenow-asset-tracking-agent
-[64] demo: https://vimeo.com/1075022823/e9c9244a5f
-[65] Explore: https://discover.boomi.com/solutions/servicenow-incident-management-agent
-[66] demo: https://vimeo.com/1075022833/0c5f4ca970
-[67] Explore: https://discover.boomi.com/solutions/servicenow-knowledge-explorer-agent
-[68] demo: https://vimeo.com/1075022850/7aba62025b
-[69] Explore: https://discover.boomi.com/solutions/servicenow-license-tracking-agent
-[70] demo: https://vimeo.com/1061167041/3dda73d645
-[71] Explore: https://discover.boomi.com/solutions/ai-agent-test-data-generator
-[72] demo: https://vimeo.com/1075022862/deec0e9584
-[73] Explore: https://discover.boomi.com/solutions/test-data-generator-agent
-[74] demo: https://vimeo.com/1075022871/872149a317
+[34] demo: https://vimeo.com/1086399874/76174ec0a2
+[35] Explore: https://discover.boomi.com/solutions/data-management-smart-adviser
+[36] demo: https://vimeo.com/1075022765/1ca991a8fa
+[37] Explore: https://discover.boomi.com/solutions/data-quality-ai-agent
+[38] demo: https://vimeo.com/1075022781/c8772121cc
+[39] Explore: https://discover.boomi.com/solutions/anomaly-detection-agent
+[40] demo: https://vimeo.com/1064540904/1ae720b0e6
+[41] Explore: https://discover.boomi.com/solutions/ai-agent-hotel-matcher
+[42] demo: https://vimeo.com/1075022788/1c8fe36b94
+[43] Explore: https://discover.boomi.com/solutions/hotel-matcher-agent
+[44] demo: https://vimeo.com/1072040638/15e838684b
+[45] demo: https://vimeo.com/1072040809/f360ea4765
+[46] Explore: https://discover.boomi.com/solutions/news-ninja-ai-agent
+[47] demo: https://vimeo.com/1070964863/34835cf47c
+[48] Explore: https://discover.boomi.com/solutions/start-connecting-with-various-llms-using-op-intelligence
+[49] demo: https://vimeo.com/1072040048/43f51c4072
+[50] Explore: https://discover.boomi.com/solutions/op-database-partner-connector-crud-operations
+[51] demo: https://vimeo.com/1070964304/c11293b0cc
+[52] Explore: https://discover.boomi.com/solutions/start-connecting-with-op-websearch
+[53] demo: https://vimeo.com/1070965109/de74c237da
+[54] Explore: https://discover.boomi.com/solutions/start-connecting-with-op-wikipedia
+[55] demo: https://vimeo.com/1063522886/06dca073df
+[56] Explore: https://discover.boomi.com/solutions/ai-agent-person-details-standardiser
+[57] demo: https://vimeo.com/1051462488/0531b69e92
+[58] Explore: https://discover.boomi.com/solutions/ai-agent-pii-data-rejector
+[59] demo: https://vimeo.com/1072040435/2c93f71dbd
+[60] demo: https://vimeo.com/1075022797/3654fd78d2
+[61] Explore: https://discover.boomi.com/solutions/property-search-agent
+[62] demo: https://vimeo.com/1075022809/e4eab2f7f8
+[63] Explore: https://discover.boomi.com/solutions/sap-low-stock-purchase-recommendation
+[64] demo: https://vimeo.com/1077896535/fbe46d9290
+[65] Explore: https://discover.boomi.com/solutions/servicenow-asset-tracking-agent
+[66] demo: https://vimeo.com/1075022823/e9c9244a5f
+[67] Explore: https://discover.boomi.com/solutions/servicenow-incident-management-agent
+[68] demo: https://vimeo.com/1075022833/0c5f4ca970
+[69] Explore: https://discover.boomi.com/solutions/servicenow-knowledge-explorer-agent
+[70] demo: https://vimeo.com/1075022850/7aba62025b
+[71] Explore: https://discover.boomi.com/solutions/servicenow-license-tracking-agent
+[72] demo: https://vimeo.com/1061167041/3dda73d645
+[73] Explore: https://discover.boomi.com/solutions/ai-agent-test-data-generator
+[74] demo: https://vimeo.com/1075022862/deec0e9584
 [75] Explore: https://discover.boomi.com/solutions/test-data-generator-agent
-[76] demo: https://vimeo.com/1075022881/032134546f
-[77] Explore: https://discover.boomi.com/solutions/us-company-search-agent
-[78] demo: https://vimeo.com/1075022922/cefd1fad9f
-[79] Explore: https://discover.boomi.com/solutions/wikipedia-explorer-agent
-[80] Read more: https://www.linkedin.com/pulse/great-pride-we-announce-our-latest-achievement-boomi-vxgbe/?trackingId=AZ2owH5Q9KEp5a3tOT7yHA%3D%3D
-[81] privacy notice: https://www.onepointltd.com/policies/privacy-policy/
-[82] Visit boomi: https://boomi.com/platform/
+[76] demo: https://vimeo.com/1075022871/872149a317
+[77] Explore: https://discover.boomi.com/solutions/test-data-generator-agent
+[78] demo: https://vimeo.com/1075022881/032134546f
+[79] Explore: https://discover.boomi.com/solutions/us-company-search-agent
+[80] demo: https://vimeo.com/1075022922/cefd1fad9f
+[81] Explore: https://discover.boomi.com/solutions/wikipedia-explorer-agent
+[82] Read more: https://www.linkedin.com/pulse/great-pride-we-announce-our-latest-achievement-boomi-vxgbe/?trackingId=AZ2owH5Q9KEp5a3tOT7yHA%3D%3D
+[83] privacy notice: https://www.onepointltd.com/policies/privacy-policy/
+[84] Visit boomi: https://boomi.com/platform/
 
 ## Metadata
 
 - URL: https://www.onepointltd.com/boomi/
-- Last Scraped: 2025-07-02 13:20:36
+- Last Scraped: 2025-08-09 14:09:23
 - Content Type: Web Page

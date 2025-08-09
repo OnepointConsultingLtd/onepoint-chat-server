@@ -1,3 +1,4 @@
+import { SharedResponse } from '..';
 import { Message, Question, Topic, Topics } from './types';
 
 export interface ChatStore {
@@ -23,6 +24,7 @@ export interface ChatStore {
   topicQuestionsLoading: boolean;
   topicQuestionsError: string | null;
   isSelectedTopicFromTopic: boolean;
+  isThreadShareMode: boolean;
 
   // Setters
   setIsInitialMessage: (message: Message, isLastCard: boolean) => void;
@@ -45,6 +47,7 @@ export interface ChatStore {
   setTopicQuestionsLoading: (loading: boolean) => void;
   setTopicQuestionsError: (error: string | null) => void;
   setIsSelectedTopicFromTopic: (isSelected: boolean) => void;
+  setIsThreadShareMode: (isThreadMode: boolean) => void;
 
   // Actions
   toggleSidebar: () => void;
@@ -58,7 +61,8 @@ export interface ChatStore {
   generateShareableId: () => string | null;
   generateThreadShareableId: (messageId: string) => string | null;
   loadSharedChatById: (conversationId: string) => Promise<boolean>;
-  loadSharedThreadById: (messageId: string) => Promise<boolean>;
+  loadSharedThreadById: (messageId: string) => Promise<SharedResponse>;
+  exitThreadShareMode: () => void;
   handleRestart: () => void;
 }
 

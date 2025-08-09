@@ -19,6 +19,7 @@ export type ServerMessage = {
 
 export type Message = {
   id: string;
+  messageId: string;
   text: string;
   type: 'user' | 'agent';
   timestamp: Date;

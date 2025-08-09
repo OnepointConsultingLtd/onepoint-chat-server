@@ -40,7 +40,15 @@ export default function ChatInput({ handleSubmit }: { handleSubmit: (text: strin
   );
 
   return (
-    <div className="bg-white dark:bg-gray-700 p-3 border-t border-gray-200 dark:border-gray-700">
+    <div
+      className={`${!isInitialMessage ? 'flex flex-col fixed inset-0 justify-center items-center rounded-lg px-24 z-[85] w-full h-full' : 'bg-white p-3 border-t border-gray-200 dark:border-gray-700 dark:bg-gray-700'}`}
+    >
+      {!isInitialMessage && (
+        <div
+          className="fixed inset-0 bg-white/50 dark:bg-black/60 backdrop-blur-sm w-full h-full"
+          onClick={() => setShowInput(false)}
+        ></div>
+      )}
       <div className="w-full px-2 py-2">
         <div className="flex flex-col gap-2">
           <form onSubmit={onSubmit} className="relative">
@@ -59,6 +67,7 @@ export default function ChatInput({ handleSubmit }: { handleSubmit: (text: strin
                   if (form) form.requestSubmit();
                 }
               }}
+              autoFocus
             />
             <button
               type="submit"
@@ -83,10 +92,10 @@ export default function ChatInput({ handleSubmit }: { handleSubmit: (text: strin
             </button>
           </form>
 
-          <span className="text-xs text-center text-slate-500 dark:text-gray-100">
+          <span className="text-xs text-center text-slate-900 dark:text-gray-100 z-[85]">
             OSCA can make mistakes. Check important information with your Onepoint advisor.
             <br /> Press{' '}
-            <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-600 dark:text-gray-300 rounded">
+            <kbd className="px-1 py-0.5 bg-blue-500 text-white dark:bg-gray-600 dark:text-gray-300 rounded">
               Esc
             </kbd>{' '}
             to close

@@ -191,8 +191,8 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
               }}
             >
               <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white text-center">
                     How can I help you today?
                   </h2>
                   <button
@@ -206,6 +206,12 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
                     />
                   </button>
                 </div>
+
+                {/* Label for clarity */}
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  Please select a question below to get instant insights.
+                </p>
+
                 {renderQuestionsContent()}
               </div>
             </div>

@@ -5,7 +5,7 @@ export const INITIAL_MESSAGE =
   "Welcome to Onepoint! I'm OSCA, your AI assistant. My goal is to understand your needs and guide you to the right expertise.";
 
 export const CARD_WIDTH = 800;
-export const CARD_GAP = 100;
+export const CARD_GAP = 200;
 export const CARD_Y_POSITION = 100;
 
 // Mobile constants

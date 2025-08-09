@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/
 
-_Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients._
+*Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients.*
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
--
--
--
+- 
+- 
+- 
 - Search for:Search
 
 Architect for outcomes[1]
@@ -20,21 +20,21 @@ Do data better[2]
 
 Innovate with AI & more[3]
 
+[Onepoint TechTalk webinar  —  Making AI work for youWatch now    →](/techtalk/making-ai-work-for-you-how-onepoint-does-it/)
+
+Onepoint TechTalk webinar  —  Making AI work for youWatch now    →
+
+[Onepoint TechTalk webinar  —  AI agents demystifiedWatch now    →](/techtalk/ai-agents-demystified/)
+
+Onepoint TechTalk webinar  —  AI agents demystifiedWatch now    →
+
+[Onepoint TechTalk webinar  —  RAG, GraphRAG and beyondWatch now    →](/techtalk/the-future-of-enterprise-data-access/)
+
+Onepoint TechTalk webinar  —  RAG, GraphRAG and beyondWatch now    →
+
 [Onepoint awarded Excellence in Customer Service award at Signature Awards 2025Read more    →](/signature-awards-2025-winner/)
 
 Onepoint awarded Excellence in Customer Service award at Signature Awards 2025Read more    →
-
-[Onepoint TechTalk webinar — AI agents demystifiedWatch now    →](/techtalk/ai-agents-demystified/)
-
-Onepoint TechTalk webinar — AI agents demystifiedWatch now    →
-
-[Onepoint TechTalk webinar — The future of enterprise data access — RAG, GraphRAG and beyondWatch now    →](/techtalk/the-future-of-enterprise-data-access/)
-
-Onepoint TechTalk webinar — The future of enterprise data access — RAG, GraphRAG and beyondWatch now    →
-
-[Onepoint TechTalk webinar — Unleashing the power of Large Language Models, Part 2 – Workflows and complex interactions.Watch now    →](/techtalk/unleashing-the-power-of-large-language-models-part-2-workflows-and-complex-interactions/)
-
-Onepoint TechTalk webinar — Unleashing the power of Large Language Models, Part 2 – Workflows and complex interactions.Watch now    →
 
 [Discover Onepoint](/discover-onepoint/)
 
@@ -125,10 +125,9 @@ Creating & sustaining an advanced web scraping solution for a market leader oper
 [More client stories](/client-stories/)
 
 ## Start your
-
-journey with a
+journey with a 
 Onepoint
-Springboard™
+Springboard™ 
 workshop
 
 Explore your business and technologychallenges— and opportunities — with our senior advisors and technologists during a half-day structured workshop held at our offices, or virtually.
@@ -163,13 +162,9 @@ Alternate Fridays
 
 [Find out more](/oneness/)
 
-### Decoding AI Series |
+## Making AI work for you: How Onepoint does it
 
-### Session 6
-
-## AI agents demystified
-
-[Watch now](/techtalk/ai-agents-demystified/)
+[Watch now](/techtalk/making-ai-work-for-you-how-onepoint-does-it/)
 
 - What we doArchitect for outcomesDo data betterInnovate with AI & moreSpringboard™ WorkshopOnepoint Labs
 
@@ -243,6 +238,7 @@ Contact us
 
 [cky_video_placeholder_title]
 
+
 ## Sources
 
 [1] Architect for outcomes: https://www.onepointltd.com/architect-for-outcomes/
@@ -253,5 +249,5 @@ Contact us
 ## Metadata
 
 - URL: https://www.onepointltd.com/
-- Last Scraped: 2025-07-02 13:20:28
+- Last Scraped: 2025-08-09 14:09:13
 - Content Type: Web Page

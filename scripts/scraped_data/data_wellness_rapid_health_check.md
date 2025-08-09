@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/data-wellness/rapid-health-check/
 
-_Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better._
+*Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
--
--
--
+- 
+- 
+- 
 - Search for:Search
 
 Architect for outcomes[1]
@@ -136,6 +136,7 @@ Contact us
 
 [cky_video_placeholder_title]
 
+
 ## Sources
 
 [1] Architect for outcomes: https://www.onepointltd.com/architect-for-outcomes/
@@ -156,5 +157,5 @@ Contact us
 ## Metadata
 
 - URL: https://www.onepointltd.com/data-wellness/rapid-health-check/
-- Last Scraped: 2025-07-02 13:21:16
+- Last Scraped: 2025-08-09 14:10:35
 - Content Type: Web Page

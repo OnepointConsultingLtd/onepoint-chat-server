@@ -11,6 +11,7 @@ import {
   MOBILE_DEFAULT_ZOOM,
   MOBILE_MAX_ZOOM,
   MOBILE_MIN_ZOOM,
+  INITIAL_MESSAGE,
 } from '../../lib/constants';
 import { predefinedTopics } from '../../lib/predefinedTopics';
 import useChatStore from '../../store/chatStore';
@@ -35,13 +36,21 @@ export default function Flow({
   handleSubmit: (text: string) => void;
   sendMessageToServer: (text: string) => void;
 }) {
-  const { messages, isThinking, isInitialMessage, relatedTopics, handleTopicAction } = useChatStore(
+  const {
+    messages,
+    isThinking,
+    isInitialMessage,
+    relatedTopics,
+    handleTopicAction,
+    isThreadShareMode,
+  } = useChatStore(
     useShallow(state => ({
       messages: state.messages,
       isThinking: state.isThinking,
       isInitialMessage: state.isInitialMessage,
       relatedTopics: state.relatedTopics,
       handleTopicAction: state.handleTopicAction,
+      isThreadShareMode: state.isThreadShareMode,
     }))
   );
 
@@ -71,12 +80,13 @@ export default function Flow({
 
   const topicState = useMemo(
     () => ({
-      isInitialMessage,
+      isInitialMessage: isInitialMessage && !isThreadShareMode,
+      isThreadShareMode,
       predefinedTopics: predefinedTopics,
       relatedTopics: relatedTopics?.topics || [],
       handleRelatedTopicClick,
     }),
-    [isInitialMessage, relatedTopics, handleRelatedTopicClick]
+    [isInitialMessage, isThreadShareMode, relatedTopics, handleRelatedTopicClick]
   );
 
   const [cardHeights, setCardHeights] = useState<{ [id: string]: number }>({});
@@ -87,13 +97,20 @@ export default function Flow({
     });
   }, []);
 
-  const nodes = useMemo(
-    () =>
-      createNodes(
-        messages,
-        isThinking,
-        handleSubmit,
-        topicState.isInitialMessage
+  const nodes = useMemo(() => {
+    // Filter out initial message when in thread share mode
+    const filteredMessages = isThreadShareMode
+      ? messages.filter(message => !message.text.includes(INITIAL_MESSAGE))
+      : messages;
+
+    return createNodes(
+      filteredMessages,
+      isThinking,
+      handleSubmit,
+      // Don't show any topics when in thread share mode
+      isThreadShareMode
+        ? []
+        : topicState.isInitialMessage
           ? predefinedTopics.map((topic: Topic) => ({
               name: topic.name,
               description: topic.description,
@@ -103,41 +120,53 @@ export default function Flow({
           : !isThinking
             ? topicState.relatedTopics
             : [],
-        handleRelatedTopicClick,
-        setCardHeight,
-        cardHeights,
-        isMobile
-      ),
-    [
-      messages,
-      isThinking,
-      topicState,
-      handleSubmit,
       handleRelatedTopicClick,
-      cardHeights,
       setCardHeight,
-      isMobile,
-    ]
-  );
+      cardHeights,
+      isMobile
+    );
+  }, [
+    messages,
+    isThinking,
+    isThreadShareMode,
+    topicState,
+    handleSubmit,
+    handleRelatedTopicClick,
+    cardHeights,
+    setCardHeight,
+    isMobile,
+  ]);
 
-  const edges = useMemo(
-    () =>
-      createEdges(
-        messages,
-        topicState.isInitialMessage ? predefinedTopics.length : topicState.relatedTopics.length,
-        isMobile
-      ),
-    [messages, topicState, isMobile]
-  );
+  const filteredMessages = useMemo(() => {
+    return isThreadShareMode
+      ? messages.filter(message => !message.text.includes(INITIAL_MESSAGE))
+      : messages;
+  }, [messages, isThreadShareMode]);
+
+  const edges = useMemo(() => {
+    return createEdges(
+      filteredMessages,
+      isThreadShareMode
+        ? 0
+        : topicState.isInitialMessage
+          ? predefinedTopics.length
+          : topicState.relatedTopics.length,
+      isMobile
+    );
+  }, [filteredMessages, topicState, isThreadShareMode, isMobile]);
 
   useEffect(() => {
     focusOnLatestNode(
       reactFlowInstance,
-      messages,
-      topicState.isInitialMessage ? predefinedTopics.length : topicState.relatedTopics.length
+      filteredMessages,
+      isThreadShareMode
+        ? 0
+        : topicState.isInitialMessage
+          ? predefinedTopics.length
+          : topicState.relatedTopics.length
     );
-    previousMessagesLengthRef.current = messages.length;
-  }, [messages, isThinking, reactFlowInstance, topicState]);
+    previousMessagesLengthRef.current = filteredMessages.length;
+  }, [filteredMessages, isThinking, reactFlowInstance, topicState, isThreadShareMode]);
 
   const onNodesChange = useCallback(() => {}, []);
 
