@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { fetchQuestions, fetchRelatedTopics } from '../lib/apiClient';
+import { fetchRelatedQuestions as fetchQuestionsFromApi, fetchRelatedTopics } from '../lib/apiClient';
 import { INITIAL_MESSAGE, LOCAL_STORAGE_KEYS } from '../lib/constants';
 import { clearChatData, getConversationId, saveConversationId, saveThreadId, clearThreadData } from '../lib/persistence';
 import { ChatStore, TopicActionPayload } from '../type/chatStore';
@@ -107,12 +107,6 @@ const useChatStore = create<ChatStore>()(
       setTopicQuestionsError: (error: string | null) => set({ topicQuestionsError: error }),
       setIsThreadShareMode: (isThreadMode: boolean) => set({ isThreadShareMode: isThreadMode }),
 
-      setIsSelectedTopicFromTopic: (isSelected: boolean) => {
-        set({ isSelectedTopicFromTopic: isSelected });
-        get().refreshQuestionsOnTopicChange();
-      },
-
-
       toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
 
       fetchRelatedTopics: async (topicName: string, text?: string) => {
@@ -126,67 +120,67 @@ const useChatStore = create<ChatStore>()(
         }
       },
 
-      fetchTopicQuestions: async () => {
+      fetchRelatedQuestions: async (topicName: string = '', text: string = '') => {
         set({ topicQuestionsLoading: true, topicQuestionsError: null });
-        const topicName = get().selectedTopic?.name;
-        const isSelectedTopicFromTopic = get().isSelectedTopicFromTopic;
-
         try {
-          let data: TopicQuestionsResponse;
+          const isContextualSearch = !!topicName || !!text;
+          const topics = topicName ? [topicName] : [];
+          const data: TopicQuestionsResponse = await fetchQuestionsFromApi(topics, text);
+          let finalData = data;
 
-          if (topicName && isSelectedTopicFromTopic) {
-            data = await fetchQuestions([topicName]);
+          console.log("the data", data)
 
-            const selectedQuestions: Question[] = [];
-            const topicQuestion = data.topic_questions.find(tq => tq.name === topicName) || data.topic_questions[0];
+          if (isContextualSearch && (!data.topic_questions || data.topic_questions.length === 0)) {
+            finalData = await fetchQuestionsFromApi([], '');
+          }
 
-            if (topicQuestion && topicQuestion.questions.length > 0) {
-              const randomizedQuestions = topicQuestion.questions.sort(() => Math.random() - 0.5).slice(0, 5);
+          const newQuestions: Question[] = [];
 
-              for (let i = 0; i < randomizedQuestions.length; i++) {
-                selectedQuestions.push({
-                  id: i + 1,
-                  text: randomizedQuestions[i],
-                  label: topicQuestion.name,
+          if (finalData.topic_questions && finalData.topic_questions.length > 0) {
+            if (isContextualSearch && finalData === data) {
+              const mainTopic = finalData.topic_questions[0];
+              if (mainTopic.questions.length > 0) {
+                const randomizedQuestions = mainTopic.questions.sort(() => 0.5 - Math.random()).slice(0, 5);
+                randomizedQuestions.forEach((qText, index) => {
+                  newQuestions.push({
+                    id: index + 1,
+                    text: qText,
+                    label: mainTopic.name,
+                  });
                 });
               }
+            } else {
+              const topicsToShow = finalData.topic_questions.slice(0, 5);
+              topicsToShow.forEach((topicQuestion, index) => {
+                if (topicQuestion.questions.length > 0) {
+                  const questionText = topicQuestion.questions.sort(() => 0.5 - Math.random())[0];
+                  newQuestions.push({
+                    id: index + 1,
+                    text: questionText,
+                    label: topicQuestion.name,
+                  });
+                }
+              });
             }
-
-            set({ topicQuestions: selectedQuestions, topicQuestionsLoading: false });
-          } else {
-            data = await fetchQuestions();
-
-            const selectedQuestions: Question[] = data.topic_questions.map((topicQuestion, index) => {
-              const randomizedQuestions = topicQuestion.questions.sort(() => Math.random() - 0.5);
-              const questionText = randomizedQuestions[0] || `Learn more about ${topicQuestion.name}`;
-              return {
-                id: index + 1,
-                text: questionText,
-                label: topicQuestion.name,
-                isSelectedTopicFromTopic: false,
-              };
-            });
-
-            set({ topicQuestions: selectedQuestions, topicQuestionsLoading: false });
           }
+
+          set({ topicQuestions: newQuestions, topicQuestionsLoading: false });
         } catch (error) {
           console.error('Error fetching topic questions:', error);
           set({
             topicQuestionsError: error instanceof Error ? error.message : 'Failed to fetch questions',
-            topicQuestionsLoading: false
+            topicQuestionsLoading: false,
           });
         }
       },
 
-
       handleTopicAction: async (payload: TopicActionPayload) => {
-        const { setSelectedTopic, fetchRelatedTopics, setIsSelectedTopicFromTopic } = get();
+        const { setSelectedTopic, fetchRelatedTopics, fetchRelatedQuestions } = get();
 
         if (payload.type === 'related') {
           setSelectedTopic(payload.topic);
-          await fetchRelatedTopics(payload.topic.name, payload.topic.name);
-          setIsSelectedTopicFromTopic(true);
-
+          await fetchRelatedTopics(payload.topic.name);
+          await fetchRelatedQuestions(payload.topic.name);
         } else if (payload.type === 'manual') {
           setSelectedTopic({
             name: payload.text,
@@ -195,7 +189,7 @@ const useChatStore = create<ChatStore>()(
             questions: [],
           });
           await fetchRelatedTopics('', payload.text);
-          setIsSelectedTopicFromTopic(false);
+          await fetchRelatedQuestions('', payload.text);
         } else if (payload.type === 'question') {
           setSelectedTopic({
             name: payload.question.text,
@@ -204,15 +198,21 @@ const useChatStore = create<ChatStore>()(
             questions: [payload.question.text],
           });
           await fetchRelatedTopics('', payload.question.text);
-          setIsSelectedTopicFromTopic(false);
         }
-
       },
 
-      refreshQuestionsOnTopicChange: () => {
-        set({ topicQuestions: [], topicQuestionsLoading: true });
+      refreshQuestions: () => {
+        const { selectedTopic, fetchRelatedQuestions } = get();
 
-        get().fetchTopicQuestions();
+        if (selectedTopic) {
+          if (selectedTopic.type === 'manual' || selectedTopic.type === 'question') {
+            fetchRelatedQuestions('', selectedTopic.name);
+          } else {
+            fetchRelatedQuestions(selectedTopic.name);
+          }
+        } else {
+          fetchRelatedQuestions();
+        }
       },
 
       handleClick: () => set({ showInput: true }),
@@ -416,7 +416,6 @@ const useChatStore = create<ChatStore>()(
         isSidebarOpen: state.isSidebarOpen,
         selectedTopic: state.selectedTopic,
         relatedTopics: state.relatedTopics,
-        isSelectedTopicFromTopic: state.isSelectedTopicFromTopic,
         topicQuestions: state.topicQuestions,
         isThreadShareMode: state.isThreadShareMode,
       }),

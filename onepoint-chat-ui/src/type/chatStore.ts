@@ -46,15 +46,14 @@ export interface ChatStore {
   setTopicQuestions: (questions: Question[]) => void;
   setTopicQuestionsLoading: (loading: boolean) => void;
   setTopicQuestionsError: (error: string | null) => void;
-  setIsSelectedTopicFromTopic: (isSelected: boolean) => void;
   setIsThreadShareMode: (isThreadMode: boolean) => void;
 
   // Actions
   toggleSidebar: () => void;
   fetchRelatedTopics: (topicName: string, text?: string) => Promise<void>;
-  fetchTopicQuestions: () => Promise<void>;
-  refreshQuestionsOnTopicChange: () => void;
+  fetchRelatedQuestions: (topicName?: string, text?: string) => Promise<void>;
   handleTopicAction: (payload: TopicActionPayload) => Promise<void>;
+  refreshQuestions: () => void;
   handleClick: () => void;
   handleSubmit: (text: string) => void;
   handleQuestionClick: (question: Question) => void;

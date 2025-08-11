@@ -78,7 +78,6 @@ export default function MessageCard({
     }
   }, [onHeightChange, userMessage, agentMessage]);
 
-  console.log('userMessage', userMessage);
   return (
     <div
       ref={cardRef}

@@ -38,8 +38,12 @@ export const MOBILE_TOPIC_CARD = {
 };
 
 
+export const PROJECT_CONFIG = {
+  PROJECT: 'osca_v1',
+  ENGINE: 'lightrag',
+}
 export const LOCAL_STORAGE_KEYS = {
   OSCA_STORE: 'osca-store',
 }
 
-export const ONE_TIME_TOKEN = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJheml6aV9iYW5rIiwibmFtZSI6ImF6aXppX2JhbmsiLCJpYXQiOjE3NDk3NDU4NjUsImVtYWlsIjoibXVydGF6YS5oYXNzYW5pQG9uZXBvaW50bHRkLmNvbSJ9.xvKGivWBWqRc5e4iMSZ18Qls-YnpbCljYDfVF7s0zpiHFEMmOIQHkWOf9tc_cOhP7eKjeKdFE0tgM1g5vvMzfg"
+export const ONE_TIME_TOKEN = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvbmVwb2ludGx0ZCIsIm5hbWUiOiJvbmVwb2ludGx0ZCIsImlhdCI6MTc1NDkwMzgwNSwiZW1haWwiOiJnaWwuZmVybmFuZGVzQG9uZXBvaW50bHRkLmNvbSIsInBlcm1pc3Npb25zIjpbInJlYWQiXX0.ANGOCXagSF4wcdlikCM9ktz7KND9Hsbs47t4tHDMyt97vJVA88qSbKwuCAij54a23z83EBj9dpyQHVUA9Nz2rg"

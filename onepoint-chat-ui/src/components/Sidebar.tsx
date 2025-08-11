@@ -17,8 +17,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
     topicQuestions,
     topicQuestionsLoading,
     topicQuestionsError,
-    fetchTopicQuestions,
-    isSelectedTopicFromTopic,
+    refreshQuestions,
   } = useChatStore(
     useShallow(state => ({
       isSidebarOpen: state.isSidebarOpen,
@@ -26,17 +25,16 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
       topicQuestions: state.topicQuestions,
       topicQuestionsLoading: state.topicQuestionsLoading,
       topicQuestionsError: state.topicQuestionsError,
-      fetchTopicQuestions: state.fetchTopicQuestions,
-      isSelectedTopicFromTopic: state.isSelectedTopicFromTopic,
+      refreshQuestions: state.refreshQuestions,
     }))
   );
 
   // Fetch topic questions on component mount
   useEffect(() => {
     if (topicQuestions.length === 0 && !topicQuestionsLoading) {
-      fetchTopicQuestions();
+      refreshQuestions();
     }
-  }, [topicQuestions.length, topicQuestionsLoading, fetchTopicQuestions, isSelectedTopicFromTopic]);
+  }, [topicQuestions.length, topicQuestionsLoading, refreshQuestions]);
 
   const renderQuestionsContent = () => {
     if (topicQuestionsLoading) {
@@ -70,7 +68,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
             Failed to load questions
           </p>
           <button
-            onClick={fetchTopicQuestions}
+            onClick={refreshQuestions}
             className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 underline text-sm font-medium transition-colors"
           >
             Try again
@@ -196,7 +194,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
                     How can I help you today?
                   </h2>
                   <button
-                    onClick={fetchTopicQuestions}
+                    onClick={refreshQuestions}
                     disabled={topicQuestionsLoading}
                     className="p-2 cursor-pointer rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200 dark:border-gray-700 shadow-sm"
                     title="Get new questions"
