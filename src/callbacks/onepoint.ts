@@ -2,7 +2,7 @@ import { ChatMessage } from "@gilf/chat-websocket-server";
 import { getContext } from "../api";
 import { analyzeConversation } from "../utils/conversationAnalyzer";
 
-function truncateText(text: string, maxTokens = 1500): string {
+function truncateText(text: string, maxTokens = 5000): string {
   const words = text.split(" ");
   return words.slice(0, maxTokens).join(" ") + (words.length > maxTokens ? "..." : "");
 }
@@ -18,7 +18,7 @@ export async function onepointCallback(
   const analysis = analyzeConversation(chatHistory);
   const lastMessage = chatHistory.slice(-1)[0];
   const contextResponse = await getContext(lastMessage.content);
-  const knowledgeBase = truncateText(contextAdapter(contextResponse), 1500);
+  const knowledgeBase = truncateText(contextAdapter(contextResponse), 5000);
 
   // Don't modify lastMessage.content — keep it clean
   // lastMessage.content = `Context Information: ${knowledgeBase} \n User Message: ${lastMessage.content}`;

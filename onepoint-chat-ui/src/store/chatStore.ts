@@ -150,8 +150,8 @@ const useChatStore = create<ChatStore>()(
                 });
               }
             } else {
-              const topicsToShow = finalData.topic_questions.slice(0, 5);
-              topicsToShow.forEach((topicQuestion, index) => {
+              const generalQuestin = finalData.topic_questions.slice(0, 5);
+              generalQuestin.forEach((topicQuestion, index) => {
                 if (topicQuestion.questions.length > 0) {
                   const questionText = topicQuestion.questions.sort(() => 0.5 - Math.random())[0];
                   newQuestions.push({

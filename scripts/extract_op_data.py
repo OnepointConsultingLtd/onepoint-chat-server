@@ -183,6 +183,7 @@ urls_to_scrape = [
 "https://www.onepointltd.com/data-wellness/",
 "https://www.onepointltd.com/discover-onepoint/",
 "https://www.onepointltd.com/discover-onepoint/meet-our-team/",
+"https://www.onepointltd.com/discover-onepoint/meet-our-team/shashin-shah/",
 "https://www.onepointltd.com/data-wellness/onepoint-d-well/",
 "https://www.onepointltd.com/onepoint-res-ai/",
 "https://www.onepointltd.com/data-wellness/onepoint-d-wise/",
