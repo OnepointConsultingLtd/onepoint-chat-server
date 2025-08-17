@@ -37,7 +37,6 @@ export const MOBILE_TOPIC_CARD = {
   WIDTH: 300,
 };
 
-
 export const LOCAL_STORAGE_KEYS = {
   OSCA_STORE: 'osca-store',
 }
