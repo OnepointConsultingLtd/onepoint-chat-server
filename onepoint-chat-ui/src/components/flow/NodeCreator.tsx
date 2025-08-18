@@ -25,8 +25,6 @@ export function createNodes(
 ): Node[] {
   const nodes: Node[] = [];
 
-  console.log('Cehcking messages', messages);
-
   if (!messages || messages.length === 0) return [];
 
   const startIndex = getConversationStartIndex(messages);

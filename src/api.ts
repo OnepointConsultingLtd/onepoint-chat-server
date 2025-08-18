@@ -15,6 +15,7 @@ export async function getContext(question: string) {
       "{question}",
       encodeURIComponent(question),
     );
+    console.log("baseUrl", baseUrl);
     const url = `${baseUrl}`;
     const response = await fetch(url!, {
       headers: {
@@ -22,8 +23,10 @@ export async function getContext(question: string) {
       },
     });
 
+
     if (response.ok) {
       const data = await response.json();
+      console.log("Checking response", JSON.stringify(data, null, 2));
       return {
         data: data,
         success: true,

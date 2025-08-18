@@ -6,13 +6,12 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 px-4 w-12 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 border border-gray-200 dark:border-[#0d8ecb] dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white group"
+      className="p-3 w-12 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 border border-gray-200 dark:border-[#0d8ecb] dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white group"
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       type="button"
     >
       <div className="transition-transform duration-200 group-hover:scale-110">
         {isDark ? (
-          // Moon icon for dark mode
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
@@ -22,7 +21,6 @@ export default function ThemeToggle() {
             />
           </svg>
         ) : (
-          // Sun icon for light mode
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"

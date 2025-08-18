@@ -285,10 +285,10 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@gilf/chat-websocket-server@^1.0.16":
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/@gilf/chat-websocket-server/-/chat-websocket-server-1.0.16.tgz#6af629a0fe99dbe781559c0e4280c8070b550cfc"
-  integrity sha512-9wjINj+0QN+TFSGbchFE8mFtZjiSNEKMKpGZ+Myt+tjB8YK1dUXy8Nx+LaoBaD9g/m5yrUKy5U8lGEAm95siCw==
+"@gilf/chat-websocket-server@^1.0.17":
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/@gilf/chat-websocket-server/-/chat-websocket-server-1.0.17.tgz#9bea3d5edab0b127c8844d0a861fb9663947d287"
+  integrity sha512-+JLkYTXxPFxBqQDnJToVG+BCKhMnKjOUs7cRF2rRQ6BzZv2uuWxRGIPfr9qK2nM2YLIABU87FYn/VTrXS4EVeQ==
   dependencies:
     "@google/generative-ai" "^0.22.0"
     "@iarna/toml" "^2.2.5"

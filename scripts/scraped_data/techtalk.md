@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/techtalk/
 
-_Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better._
+*Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
--
--
--
+- 
+- 
+- 
 - Search for:Search
 
 Architect for outcomes[1]
@@ -29,6 +29,10 @@ From fundamental concepts to cutting-edge developments, this session will equip 
 [Register now](/techtalk/ai-agents-demystified/)
 
 ### Webinar replays
+
+AI is transforming the way enterprises operate. This session offers a glimpse into how Onepoint applies AI for business use cases to create value for our clients and ourselves.
+
+[Watch now](/techtalk/making-ai-work-for-you-how-onepoint-does-it/)
 
 From fundamental concepts to cutting-edge developments, this session will equip you with the knowledge to make informed decisions about implementing AI agents in your organisation.
 
@@ -174,6 +178,7 @@ Contact us
 
 [cky_video_placeholder_title]
 
+
 ## Sources
 
 [1] Architect for outcomes: https://www.onepointltd.com/architect-for-outcomes/
@@ -186,5 +191,5 @@ Contact us
 ## Metadata
 
 - URL: https://www.onepointltd.com/techtalk/
-- Last Scraped: 2025-07-02 13:21:39
+- Last Scraped: 2025-08-09 14:11:26
 - Content Type: Web Page

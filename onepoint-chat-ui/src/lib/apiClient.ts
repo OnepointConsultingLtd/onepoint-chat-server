@@ -1,5 +1,5 @@
 import { RelatedTopicsBody, Topics } from '../type/types';
-import { MAX_RELATED_TOPICS, ONE_TIME_TOKEN } from './constants';
+import { MAX_RELATED_TOPICS, ONE_TIME_TOKEN, PROJECT_CONFIG } from './constants';
 import { getServer } from './server';
 
 export function createHeaders() {
@@ -12,7 +12,7 @@ export function createHeaders() {
 }
 
 export async function fetchRelatedTopics(selectedTopic: string, text: string): Promise<Topics> {
-  const url = `${getServer()}/project/related_topics?project=onepoint_v1&engine=lightrag`;
+  const url = `${getServer()}/project/related_topics?project=${PROJECT_CONFIG.PROJECT}&engine=${PROJECT_CONFIG.ENGINE}`;
 
   const body: RelatedTopicsBody = {
     samples: 25000,
@@ -65,24 +65,30 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
 
 
 
-export async function fetchQuestions(
-  topics: string[] = []
+export async function fetchRelatedQuestions(
+  selectedTopic: string[] = [],
+  text: string = ''
 ) {
-  const project: string = 'onepoint_v1';
-  const engine: string = 'lightrag';
-  const topicLimit: number = 5;
-  const format: string = 'json';
-  const topicString = topics ? topics.join(';') : '';
-  const topicParam = topics.length > 0 ? `&topics=${topicString}` : '';
+  const project: string = PROJECT_CONFIG.PROJECT;
+  const engine: string = PROJECT_CONFIG.ENGINE;
 
-  const url = `${getServer()}/project/questions?project=${project}&engine=${engine}${topicParam}&topic_limit=${topicLimit}&format=${format}`;
+  const body = {
+    topics: selectedTopic,
+    text: text,
+    topic_limit: 5,
+    entity_type_filter: '',
+    format: 'json'
+  }
+
+  const url = `${getServer()}/project/questions?project=${project}&engine=${engine}`;
 
   const response = await fetch(url, {
-    method: 'GET',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${ONE_TIME_TOKEN}`,
     },
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -91,6 +97,7 @@ export async function fetchQuestions(
 
   try {
     const data = await response.json();
+    console.log("the response", data);
     return data;
   } catch (error) {
     console.error('Error fetching questions:', error);

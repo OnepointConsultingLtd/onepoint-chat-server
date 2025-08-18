@@ -1,33 +1,29 @@
-# Client Stories - Onepoint - Do data better | Innovate with AI & more | Architect for Outcomes
+# Client Stories | Onepoint - Do data better | Innovate with AI & more | Architect for Outcomes
 
-Source: https://www.onepointltd.com/client-stories
+Source: https://www.onepointltd.com/client-stories/
 
-_Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our clients, Autovista, Axalta, Flight Centre, Vision express, Network rail, frontline, Dixons carphone, SITA, TP, MEGGITT_
+*Onepoint - We Create Digital Worlds - Digital Business Transformation Consulting and open source application development provider for enterprises. Our clients, Autovista, Axalta, Flight Centre, Vision express, Network rail, frontline, Dixons carphone, SITA, TP, MEGGITT*
 
 ## Content
 
+- Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- Architect for Outcomes
-
+- 
+- 
+- 
 - Search for:Search
 
-Do data better[1]
+Architect for outcomes[1]
 
-Innovate with AI & more[2]
+Do data better[2]
 
-Architect for Outcomes[3]
+Innovate with AI & more[3]
 
 Home[4]
 
 Home[5]
 
-Creating & sustaining an advanced web scraping solution for a market leader operating within the automotive industry.
-
-Conquering a complex data management migration for a world leader in the coatings industry.
-
-Overcoming Intercontinental challenges in the Cloud for a global travel-management company.
-
 Surmounting cultural, logistical & time pressure challenges for one of India’s leading Telco providers.
 
 Read more
@@ -45,6 +41,40 @@ Surmounting cultural, logistical & time pressure challenges for one of India’s
 Read more
 
 [Read more](/case-studies/indian-telcom-sdl-case-study/)
+
+Creating & sustaining an advanced web scraping solution for a market leader operating within the automotive industry.
+
+Surmounting cultural, logistical & time pressure challenges for one of India’s leading Telco providers.
+
+Read more
+
+[Read more](/case-studies/indian-telcom-sdl-case-study/)
+
+[cky_video_placeholder_title]
+
+Creating & sustaining an advanced web scraping solution for a market leader operating within the automotive industry.
+
+[cky_video_placeholder_title]
+
+Conquering a complex data management migration for a world leader in the coatings industry.
+
+[cky_video_placeholder_title]
+
+Overcoming Intercontinental challenges in the Cloud for a global travel-management company.
+
+[cky_video_placeholder_title]
+
+Surmounting cultural, logistical & time pressure challenges for one of India’s leading Telco providers.
+
+Read more
+
+[Read more](/case-studies/indian-telcom-sdl-case-study/)
+
+[cky_video_placeholder_title]
+
+Creating & sustaining an advanced web scraping solution for a market leader operating within the automotive industry.
+
+[cky_video_placeholder_title]
 
 Client stories
 
@@ -86,6 +116,7 @@ Read all client stories
 
 ## Get in touch
 
+
 My name is,  and I work at
 
 We are looking into
@@ -96,7 +127,11 @@ Onepoint as a Data Controller will process your personal data in line with the G
 
 [privacy notice.](/policies/privacy-policy/)
 
-- What we doDo data betterInnovate with AI & moreArchitect for OutcomesSpringboard™ WorkshopOnepoint Labs
+- What we doArchitect for outcomesDo data betterInnovate with AI & moreSpringboard™ WorkshopOnepoint Labs
+
+Architect for outcomes
+
+[Architect for outcomes](/architect-for-outcomes/)
 
 Do data better
 
@@ -106,10 +141,6 @@ Innovate with AI & more
 
 [Innovate with AI & more](/innovate-with-ai-more/)
 
-Architect for Outcomes
-
-[Architect for Outcomes](/architect-for-outcomes/)
-
 Springboard™ Workshop
 
 [Springboard™ Workshop](/onepoint-springboard/)
@@ -118,11 +149,15 @@ Onepoint Labs
 
 [Onepoint Labs](/onepoint-labs/)
 
-- ResourcesOnepoint Data Wellness™ SuiteOnepoint TechTalkOnepoint Oneness
+- ResourcesOnepoint Data Wellness™ SuiteOnepoint Res-AI™Onepoint TechTalkOnepoint Oneness
 
 Onepoint Data Wellness™ Suite
 
 [Onepoint Data Wellness™ Suite](/data-wellness/)
+
+Onepoint Res-AI™
+
+[Onepoint Res-AI™](/onepoint-res-ai/)
 
 Onepoint TechTalk
 
@@ -156,16 +191,25 @@ Contact us
 
 [| Privacy notice](/policies/privacy-policy/)
 
+[cky_video_placeholder_title]
+
+[cky_video_placeholder_title]
+
+[cky_video_placeholder_title]
+
+[cky_video_placeholder_title]
+
+
 ## Sources
 
-[1] Do data better: https://www.onepointltd.com/do-data-better
-[2] Innovate with AI & more: https://www.onepointltd.com/innovate-with-ai
-[3] Architect for Outcomes: https://www.onepointltd.com/architect-for-outcomes/
+[1] Architect for outcomes: https://www.onepointltd.com/architect-for-outcomes/
+[2] Do data better: https://www.onepointltd.com/do-data-better
+[3] Innovate with AI & more: https://www.onepointltd.com/innovate-with-ai-more
 [4] Home: https://www.onepointltd.com
 [5] Home: https://www.onepointltd.com
 
 ## Metadata
 
-- URL: https://www.onepointltd.com/client-stories
-- Last Scraped: 2025-03-06 15:55:06
+- URL: https://www.onepointltd.com/client-stories/
+- Last Scraped: 2025-08-09 14:11:42
 - Content Type: Web Page

@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/contact-us/
 
-_Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients._
+*Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients.*
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
--
--
--
+- 
+- 
+- 
 - Search for:Search
 
 Architect for outcomes[1]
@@ -23,6 +23,7 @@ Innovate with AI & more[3]
 Home[4]
 
 ## Get in touch
+
 
 My name is,  and I work at
 
@@ -36,15 +37,9 @@ Onepoint as a Data Controller will process your personal data in line with the G
 
 Onepoint Consulting LtdAlpha House, Unit 14100 Villiers Road,London, NW2 5PJUnited KingdomTelephone:+44 (0) 203 198 6699
 
-Onepoint Consulting LtdCenturion House,129 Deansgate,Manchester, M3 3WRUnited KingdomTelephone:+44 (0) 161 528 3600
+Onepoint Consulting LtdElliot House,151 Deansgate,Manchester, M3 3WRUnited KingdomTelephone:+44 (0) 161 528 3600
 
 Onepoint IT Consulting LtdB-604, Amar Business Zone,Swati Park, Veerbhadra Nagar, BanerPune– 411045Maharashtra, IndiaTelephone: +91 9960588432
-
-London
-
-Manchester
-
-Pune
 
 - What we doArchitect for outcomesDo data betterInnovate with AI & moreSpringboard™ WorkshopOnepoint Labs
 
@@ -118,6 +113,7 @@ Contact us
 
 [cky_video_placeholder_title]
 
+
 ## Sources
 
 [1] Architect for outcomes: https://www.onepointltd.com/architect-for-outcomes/
@@ -128,5 +124,5 @@ Contact us
 ## Metadata
 
 - URL: https://www.onepointltd.com/contact-us/
-- Last Scraped: 2025-07-02 13:20:44
+- Last Scraped: 2025-08-09 14:09:31
 - Content Type: Web Page

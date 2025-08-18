@@ -5,7 +5,7 @@ export const INITIAL_MESSAGE =
   "Welcome to Onepoint! I'm OSCA, your AI assistant. My goal is to understand your needs and guide you to the right expertise.";
 
 export const CARD_WIDTH = 800;
-export const CARD_GAP = 100;
+export const CARD_GAP = 200;
 export const CARD_Y_POSITION = 100;
 
 // Mobile constants
@@ -23,7 +23,7 @@ export const MOBILE_MIN_ZOOM = 0.3;
 export const MOBILE_MAX_ZOOM = 1.2;
 
 export const MAX_RELATED_TOPICS = 5;
-
+export const MAX_PREVIEW_CHARS = 100;
 
 export const TOPIC_CARD = {
   HEIGHT: 130,
@@ -37,8 +37,13 @@ export const MOBILE_TOPIC_CARD = {
   WIDTH: 300,
 };
 
+
+export const PROJECT_CONFIG = {
+  PROJECT: 'osca_v1',
+  ENGINE: 'lightrag',
+}
 export const LOCAL_STORAGE_KEYS = {
   OSCA_STORE: 'osca-store',
 }
 
-export const ONE_TIME_TOKEN = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJheml6aV9iYW5rIiwibmFtZSI6ImF6aXppX2JhbmsiLCJpYXQiOjE3NDk3NDU4NjUsImVtYWlsIjoibXVydGF6YS5oYXNzYW5pQG9uZXBvaW50bHRkLmNvbSJ9.xvKGivWBWqRc5e4iMSZ18Qls-YnpbCljYDfVF7s0zpiHFEMmOIQHkWOf9tc_cOhP7eKjeKdFE0tgM1g5vvMzfg"
+export const ONE_TIME_TOKEN = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvbmVwb2ludGx0ZCIsIm5hbWUiOiJvbmVwb2ludGx0ZCIsImlhdCI6MTc1NDkwMzgwNSwiZW1haWwiOiJnaWwuZmVybmFuZGVzQG9uZXBvaW50bHRkLmNvbSIsInBlcm1pc3Npb25zIjpbInJlYWQiXX0.ANGOCXagSF4wcdlikCM9ktz7KND9Hsbs47t4tHDMyt97vJVA88qSbKwuCAij54a23z83EBj9dpyQHVUA9Nz2rg"

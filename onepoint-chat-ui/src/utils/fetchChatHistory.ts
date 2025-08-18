@@ -34,7 +34,7 @@ export async function formatChatHistory(
     }));
 
     console.log("processedHistory");
-    return processedHistory;
+    return processedHistory as Message[];
   } catch (error) {
     console.error('Error fetching chat history:', error);
     return [];

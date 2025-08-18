@@ -8,17 +8,10 @@ type UserMessageProps = {
 
 export default function UserMessage({ message, isInitialMessage }: UserMessageProps) {
   const header = !isInitialMessage ? (
-    <div className="text-xs font-medium text-blue-600 dark:text-blue-700 uppercase tracking-wider">
+    <div className="text-xs font-medium text-blue-600 dark:text-blue-300 uppercase tracking-wider">
       You
     </div>
   ) : null;
 
-  return (
-    <BaseMessage
-      message={message}
-      borderColor="blue-400"
-      proseColor="blue"
-      header={header}
-    />
-  );
+  return <BaseMessage message={message} borderColor="blue-400" proseColor="blue" header={header} />;
 }

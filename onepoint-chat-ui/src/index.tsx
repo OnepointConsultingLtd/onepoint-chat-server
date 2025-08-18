@@ -4,6 +4,17 @@ import { ReactFlowProvider } from '@xyflow/react';
 import './App.css';
 import ChatContainer from './components/ChatContainer';
 import useChatStore from './store/chatStore';
+import { getThreadId, isThreadMode } from './lib/persistence';
+import { Message } from './type/types';
+
+
+export type SharedResponse = {
+  status: boolean;
+  error?: string;
+  messages: Message[];
+  threadId?: string;
+}
+
 
 export default function Home() {
   const { loadSharedChatById, loadSharedThreadById } = useChatStore(
@@ -18,6 +29,7 @@ export default function Home() {
     const conversationId = urlParams.get('id');
     const threadId = urlParams.get('threadId');
 
+    // Check for URL parameters first (fresh shared links)
     if (conversationId) {
       console.log('Loading shared chat.');
       loadSharedChatById(conversationId).then(success => {
@@ -31,15 +43,32 @@ export default function Home() {
       });
     } else if (threadId) {
       console.log('Loading shared thread.');
-      loadSharedThreadById(threadId).then(success => {
-        if (success) {
-          const newUrl = window.location.pathname;
-          window.history.replaceState({}, document.title, newUrl);
-          console.log('Shared thread loaded successfully');
+      async function proccessSharedMessage() {
+        if (!threadId) return;
+
+        const response: SharedResponse = await loadSharedThreadById(threadId);
+
+        if (response.status) {
+          document.title = 'Onepoint Chat';
         } else {
           console.error('Failed to load shared thread');
         }
-      });
+      }
+      proccessSharedMessage();
+    }
+    // Check for persisted thread data (after refresh)
+    else if (isThreadMode()) {
+      const persistedThreadId = getThreadId();
+      if (persistedThreadId) {
+        console.log('Restoring persisted thread after refresh.');
+        loadSharedThreadById(persistedThreadId).then(success => {
+          if (success) {
+            console.log('Persisted thread restored successfully');
+          } else {
+            console.error('Failed to restore persisted thread');
+          }
+        });
+      }
     }
   }, [loadSharedChatById, loadSharedThreadById]);
 
