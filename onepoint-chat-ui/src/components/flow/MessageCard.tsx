@@ -53,6 +53,7 @@ export default function MessageCard({
     isThreadShareMode,
     exitThreadShareMode,
     relatedTopics,
+    handleRestart,
   } = useChatStore(
     useShallow(state => ({
       showInput: state.showInput,
@@ -64,6 +65,7 @@ export default function MessageCard({
       isThreadShareMode: state.isThreadShareMode,
       exitThreadShareMode: state.exitThreadShareMode,
       relatedTopics: state.relatedTopics,
+      handleRestart: state.handleRestart,
     }))
   );
 
@@ -125,7 +127,13 @@ export default function MessageCard({
             </div>
 
             <div className="w-fit">
-              <GradientButton onClick={exitThreadShareMode} icon={<MdOutlineRestartAlt />}>
+              <GradientButton
+                onClick={() => {
+                  exitThreadShareMode();
+                  handleRestart();
+                }}
+                icon={<MdOutlineRestartAlt />}
+              >
                 Start New Chat
               </GradientButton>
             </div>
