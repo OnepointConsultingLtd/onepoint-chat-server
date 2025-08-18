@@ -23,6 +23,7 @@ export function messageFactoryAgent(text: string): Message {
  */
 export function messageFactoryUser(text: string, conversationId: string): Message {
   return {
+    id: uuidv4(),
     text,
     type: 'user',
     timestamp: new Date(),
