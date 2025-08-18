@@ -9,6 +9,7 @@ import { exportChatToMarkdown, exportChatToPDF } from '../utils/exportChat';
 import GradientButton, { MiniGradientButton } from './GradientButton';
 import SideBarButton from './SideBarButton';
 import ThemeToggle from './ThemeToggle';
+import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 
 export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -42,13 +43,7 @@ export default function Header() {
       return;
     }
 
-    try {
-      await navigator.clipboard.writeText(shareableUrl || '');
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      console.error('Failed to copy to clipboard:', error);
-    }
+    handleCopyToClipboard({ text: shareableUrl, setCopied });
   };
 
   const hasConversation = messages && messages.length >= 2 && !isInitialMessage;

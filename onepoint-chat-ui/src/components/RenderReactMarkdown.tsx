@@ -5,6 +5,7 @@ import useChatStore from '../store/chatStore';
 import { Message } from '../type/types';
 import CopyButton from './CopyButton';
 import { useShallow } from 'zustand/react/shallow';
+import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 
 export default function RenderReactMarkdown({ message }: { message: Message }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -19,13 +20,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
   );
 
   const copyToClipboard = async (text: string, id: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    } catch (error) {
-      console.error('Failed to copy text:', error);
-    }
+    handleCopyToClipboard({ text, id, setCopiedId });
   };
 
   const handleShareClick = async () => {
@@ -39,9 +34,11 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
       const shareableUrl = generateThreadShareableId(messageId);
 
       if (shareableUrl) {
-        await navigator.clipboard.writeText(shareableUrl);
-        setSharedId(messageId);
-        setTimeout(() => setSharedId(null), 2000);
+        handleCopyToClipboard({
+          text: shareableUrl,
+          id: messageId,
+          setCopiedId: setSharedId,
+        });
         console.log('Share URL copied to clipboard:', shareableUrl);
       } else {
         console.error('Failed to generate shareable URL');
