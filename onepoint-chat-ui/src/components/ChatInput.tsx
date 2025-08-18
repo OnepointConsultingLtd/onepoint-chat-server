@@ -1,12 +1,30 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import useChatStore from '../store/chatStore';
 
-interface ChatInputProps {
-  handleSubmit: (text: string) => void;
-  isThinking: boolean;
-}
-
-export default function ChatInput({ handleSubmit, isThinking }: ChatInputProps) {
+export default function ChatInput({ handleSubmit }: { handleSubmit: (text: string) => void }) {
   const [inputText, setInputText] = useState('');
+
+  const { isThinking, setShowInput, isInitialMessage } = useChatStore(
+    useShallow(state => ({
+      isThinking: state.isThinking,
+      setShowInput: state.setShowInput,
+      isInitialMessage: state.isInitialMessage,
+    }))
+  );
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isInitialMessage) {
+        setShowInput(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [setShowInput, isInitialMessage]);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -14,22 +32,24 @@ export default function ChatInput({ handleSubmit, isThinking }: ChatInputProps) 
     setInputText('');
   }
 
-  useEffect(() => {
-    if (!isThinking) {
-      document.getElementById('chat-input')?.focus();
-    }
-  }, [isThinking]);
-
   const textareaStyle = useMemo(
     () => ({
-      height: Math.min(48 + 24 * inputText.split('\n').length, 200) + 'px',
+      height: Math.min(30 + 24 * inputText.split('\n').length, 200) + 'px',
     }),
     [inputText]
   );
 
   return (
-    <div className=" bg-white sticky bottom-0">
-      <div className="max-w-6xl mx-auto w-full px-4 py-4">
+    <div
+      className={`${!isInitialMessage ? 'flex flex-col fixed inset-0 justify-center items-center rounded-lg px-24 z-[85] w-full h-full' : 'bg-white p-3 border-t border-gray-200 dark:border-gray-700 dark:bg-gray-700'}`}
+    >
+      {!isInitialMessage && (
+        <div
+          className="fixed inset-0 bg-white/50 dark:bg-black/60 backdrop-blur-sm w-full h-full"
+          onClick={() => setShowInput(false)}
+        ></div>
+      )}
+      <div className="w-full px-2 py-2">
         <div className="flex flex-col gap-2">
           <form onSubmit={onSubmit} className="relative">
             <textarea
@@ -37,7 +57,7 @@ export default function ChatInput({ handleSubmit, isThinking }: ChatInputProps) 
               value={inputText}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputText(e.target.value)}
               placeholder="Type your message here..."
-              className="w-full p-4 pr-24 overflow-hidden transition-all duration-300 bg-white border-2 shadow-sm outline-none resize-none rounded-xl border-sky-100 focus:border-sky-400 focus:ring-4 focus:ring-sky-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full p-2 pr-24 overflow-hidden transition-all duration-300 bg-white dark:bg-gray-700 border-2 shadow-sm outline-none resize-none rounded-xl border-sky-100 dark:border-gray-600 focus:border-sky-400 dark:focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:focus:ring-sky-900/50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               disabled={isThinking}
               style={textareaStyle}
               onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -47,15 +67,16 @@ export default function ChatInput({ handleSubmit, isThinking }: ChatInputProps) 
                   if (form) form.requestSubmit();
                 }
               }}
+              autoFocus
             />
             <button
               type="submit"
-              className="absolute flex items-center gap-2 p-3 text-white transition-all duration-300 rounded-lg shadow-md cursor-pointer right-2 bottom-2 bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
+              className="absolute flex items-center gap-2 p-1 text-white transition-all duration-300 rounded shadow-md cursor-pointer right-2 bottom-[1.3rem] bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group rotate-90"
               disabled={isThinking}
             >
               <svg
-                width="24"
-                height="24"
+                width="15"
+                height="15"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -71,8 +92,13 @@ export default function ChatInput({ handleSubmit, isThinking }: ChatInputProps) 
             </button>
           </form>
 
-          <span className="text-xs text-center text-slate-500">
-            Powered by Onepoint's Smart Cognitive Assistant
+          <span className="text-xs text-center text-slate-900 dark:text-gray-100 z-[85]">
+            OSCA can make mistakes. Check important information with your Onepoint advisor.
+            <br /> Press{' '}
+            <kbd className="px-1 py-0.5 bg-blue-500 text-white dark:bg-gray-600 dark:text-gray-300 rounded">
+              Esc
+            </kbd>{' '}
+            to close
           </span>
         </div>
       </div>

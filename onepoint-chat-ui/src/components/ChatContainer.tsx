@@ -1,54 +1,35 @@
-import { useState } from "react";
-import { useChat } from "../hooks/useChat";
-import initialQuestions from "../lib/initialQuestions";
-import ChatInput from "./ChatInput";
-import Header from "./Header";
-import Messages from "./Messages";
-import Sidebar from "./Sidebar";
-import SideBarButton from "./SideBarButton";
+import { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import { useChat } from '../hooks/useChat';
+import useChatStore from '../store/chatStore';
+import Header from './Header';
+import Sidebar from './Sidebar';
+import Flow from './flow/Flow';
 
 export default function ChatContainer() {
-  const {
-    messages,
-    messagesEndRef,
-    handleQuestionClick,
-    handleSubmit,
-    handleRestart,
-    isThinking,
-  } = useChat();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { messagesEndRef, handleSubmit, sendMessageToServer } = useChat();
+  const { setHandleSubmit } = useChatStore(
+    useShallow(state => ({
+      setHandleSubmit: state.setHandleSubmit,
+    }))
+  );
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  useEffect(() => {
+    setHandleSubmit(handleSubmit);
+  }, [handleSubmit, setHandleSubmit]);
 
   return (
-    <main className="flex">
-      {/* Mobile Sidebar */}
-      <Sidebar
-        questions={initialQuestions}
-        onQuestionClick={handleQuestionClick}
-        isSidebarOpen={isSidebarOpen}
-        toggleSidebar={toggleSidebar}
-      />
-
-      {/* Main Content */}
-      <div className="flex flex-col flex-1">
-        {/* Header */}
-        <div className="flex items-center border-b border-[#e2e8f0] bg-white/80 backdrop-blur-lg sticky top-0 z-[100]">
-          <SideBarButton toggleSidebar={toggleSidebar} />
-          <Header handleRestart={handleRestart} />
+    <main className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Sidebar sendMessageToServer={sendMessageToServer} />
+      <div className="flex flex-col flex-1 bg-white dark:bg-gray-800">
+        <Header />
+        <div className="flex-1 flex flex-col" style={{ height: 'calc(100vh - 10rem)' }}>
+          <Flow
+            messagesEndRef={messagesEndRef}
+            handleSubmit={handleSubmit}
+            sendMessageToServer={sendMessageToServer}
+          />
         </div>
-
-        {/* Messages Container */}
-        <Messages
-          messages={messages}
-          messagesEndRef={messagesEndRef}
-          isThinking={isThinking}
-        />
-
-        {/* Input Container */}
-        <ChatInput handleSubmit={handleSubmit} isThinking={isThinking} />
       </div>
     </main>
   );

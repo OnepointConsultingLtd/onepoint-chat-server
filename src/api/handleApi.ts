@@ -1,8 +1,11 @@
 import { getCollection } from "./mongoClient";
+import { v4 as uuidv4 } from "uuid";
+// Re-export getCollection for use in other modules
+export { getCollection };
 
 const MESSAGE_START_STRING = "User Message to which you are responding:";
 
-function extractUserMessageContent(content: string): string {
+export function extractUserMessageContent(content: string): string {
   if (!content.includes(MESSAGE_START_STRING)) {
     return content;
   }
@@ -38,7 +41,7 @@ export async function getChatHistory(conversationId: string) {
   }
 }
 
-function formatConversationHistory(conversation: any) {
+export function formatConversationHistory(conversation: any) {
   const history = conversation.chatHistory
     .filter((msg: any) => ["assistant", "user"].includes(msg.role))
     .map((msg: any) => {
@@ -46,6 +49,7 @@ function formatConversationHistory(conversation: any) {
         ...msg,
         content: extractUserMessageContent(msg.content),
         conversationId: conversation.conversationId,
+        messageId: msg.id,
       };
     });
   return history;
@@ -53,26 +57,46 @@ function formatConversationHistory(conversation: any) {
 
 export async function saveChatHistory(
   chatHistory: any[],
-  conversationId: string
+  conversationId: string,
 ) {
+  const oldConversationId = chatHistory[chatHistory.length - 1]?.conversationId;
+  const newConversationId = conversationId;
+
   try {
     const collection = await getCollection();
 
+    // Filter out system messages before saving
+    const filteredChatHistory = chatHistory.filter((msg) => msg.role !== 'system');
+
+    const chatHistoryWithIds = filteredChatHistory.map((msg) => ({
+      ...msg,
+      conversationId: newConversationId,
+      messageId: msg.id,
+    }));
+
     await collection.updateOne(
-      { conversationId },
+      { conversationId: newConversationId },
       {
         $set: {
-          conversationId,
-          chatHistory,
+          conversationId: newConversationId,
+          chatHistory: chatHistoryWithIds,
           userMessage: extractUserMessageContent(
-            chatHistory[chatHistory.length - 1].content
+            chatHistory[chatHistory.length - 1].content,
           ),
           timestamp: new Date().toISOString(),
         },
       },
-      { upsert: true }
+      { upsert: true },
     );
-    console.log("Conversation saved/updated in MongoDB.");
+
+    console.log("New conversation saved/updated in MongoDB.");
+
+    // Delete the old conversation if it exists.
+    if (oldConversationId && oldConversationId !== newConversationId) {
+      const deleteResult = await collection.deleteOne({ conversationId: oldConversationId });
+      console.log(`Old conversation deleted: ${deleteResult.deletedCount} record(s) removed`);
+    }
+
   } catch (error) {
     console.error("Error saving conversation:", error);
   }

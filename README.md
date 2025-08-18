@@ -56,8 +56,7 @@ yarn run dev
 - Main Chat Server: Port 4000 (WebSocket server for chat functionality)
 - History Server: Port 5000 (REST server for fetching chat history)
 - You can also run the development server using vite during development time.
-- 
-
+-
 
 ## Config Files
 

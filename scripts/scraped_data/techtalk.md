@@ -1,23 +1,24 @@
-# Onepoint Techtalk - Onepoint - Do data better | Innovate with AI & more | Architect for Outcomes
+# Onepoint Techtalk | Onepoint - Do data better | Innovate with AI & more | Architect for Outcomes
 
-Source: https://www.onepointltd.com/techtalk
+Source: https://www.onepointltd.com/techtalk/
 
 *Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
 
 ## Content
 
+- Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- Architect for Outcomes
 - 
 - 
 - 
+- Search for:Search
 
-Do data better[1]
+Architect for outcomes[1]
 
-Innovate with AI & more[2]
+Do data better[2]
 
-Architect for Outcomes[3]
+Innovate with AI & more[3]
 
 Home[4]
 
@@ -28,6 +29,10 @@ From fundamental concepts to cutting-edge developments, this session will equip 
 [Register now](/techtalk/ai-agents-demystified/)
 
 ### Webinar replays
+
+AI is transforming the way enterprises operate. This session offers a glimpse into how Onepoint applies AI for business use cases to create value for our clients and ourselves.
+
+[Watch now](/techtalk/making-ai-work-for-you-how-onepoint-does-it/)
 
 From fundamental concepts to cutting-edge developments, this session will equip you with the knowledge to make informed decisions about implementing AI agents in your organisation.
 
@@ -101,7 +106,11 @@ Gigaspaces[6]
 
 ### Coming soon
 
-- What we doDo data betterInnovate with AI & moreArchitect for OutcomesSpringboard™ WorkshopOnepoint Labs
+- What we doArchitect for outcomesDo data betterInnovate with AI & moreSpringboard™ WorkshopOnepoint Labs
+
+Architect for outcomes
+
+[Architect for outcomes](/architect-for-outcomes/)
 
 Do data better
 
@@ -111,10 +120,6 @@ Innovate with AI & more
 
 [Innovate with AI & more](/innovate-with-ai-more/)
 
-Architect for Outcomes
-
-[Architect for Outcomes](/architect-for-outcomes/)
-
 Springboard™ Workshop
 
 [Springboard™ Workshop](/onepoint-springboard/)
@@ -123,11 +128,15 @@ Onepoint Labs
 
 [Onepoint Labs](/onepoint-labs/)
 
-- ResourcesOnepoint Data Wellness™ SuiteOnepoint TechTalkOnepoint Oneness
+- ResourcesOnepoint Data Wellness™ SuiteOnepoint Res-AI™Onepoint TechTalkOnepoint Oneness
 
 Onepoint Data Wellness™ Suite
 
 [Onepoint Data Wellness™ Suite](/data-wellness/)
+
+Onepoint Res-AI™
+
+[Onepoint Res-AI™](/onepoint-res-ai/)
 
 Onepoint TechTalk
 
@@ -161,18 +170,26 @@ Contact us
 
 [| Privacy notice](/policies/privacy-policy/)
 
+[cky_video_placeholder_title]
+
+[cky_video_placeholder_title]
+
+[cky_video_placeholder_title]
+
+[cky_video_placeholder_title]
+
 
 ## Sources
 
-[1] Do data better: https://www.onepointltd.com/do-data-better
-[2] Innovate with AI & more: https://www.onepointltd.com/innovate-with-ai
-[3] Architect for Outcomes: https://www.onepointltd.com/architect-for-outcomes/
+[1] Architect for outcomes: https://www.onepointltd.com/architect-for-outcomes/
+[2] Do data better: https://www.onepointltd.com/do-data-better
+[3] Innovate with AI & more: https://www.onepointltd.com/innovate-with-ai-more
 [4] Home: https://www.onepointltd.com
 [5] Gigaspaces: https://www.gigaspaces.com/
 [6] Gigaspaces: https://www.gigaspaces.com/
 
 ## Metadata
 
-- URL: https://www.onepointltd.com/techtalk
-- Last Scraped: 2025-03-06 15:55:16
+- URL: https://www.onepointltd.com/techtalk/
+- Last Scraped: 2025-08-09 14:11:26
 - Content Type: Web Page

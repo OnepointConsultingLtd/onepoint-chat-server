@@ -1,57 +1,113 @@
-export default function Header({ handleRestart }: { handleRestart: () => void }) {
-  return (
-    <div className="w-full max-w-6xl mx-auto">
-      <div className="flex justify-between items-center">
-        <header className="bg-white p-3 w-full relative !-50">
-          <div className="flex items-center space-x-4 w-full justify-between">
-            <div className="flex items-center space-x-4 pr-4">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-[#0ea5e9] rounded-full flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                  />
-                </svg>
-              </div>
-              <div className="text-left">
-                <h1 className="text-xl md:text-3xl font-bold text-[#0284c7]">OSCA</h1>
-                <p className="text-[#64748b] lg:text-base text-sm">
-                  Onepoint's Smart Cognitive Assistant
-                </p>
-              </div>
-            </div>
+import { useState } from 'react';
+import { CiExport } from 'react-icons/ci';
+import { FaMarkdown } from 'react-icons/fa';
+import { FiCheck, FiShare2 } from 'react-icons/fi';
+import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
+import { useShallow } from 'zustand/react/shallow';
+import useChatStore from '../store/chatStore';
+import { exportChatToMarkdown, exportChatToPDF } from '../utils/exportChat';
+import GradientButton, { MiniGradientButton } from './GradientButton';
+import SideBarButton from './SideBarButton';
+import ThemeToggle from './ThemeToggle';
 
-            <div className="flex justify-start">
-              <button
-                onClick={handleRestart}
-                className="group px-2 md:px-5 py-2 md:py-2.5 bg-white border-2 border-[#e2e8f0] text-[#64748b] rounded-2xl hover:border-[#0ea5e9] hover:text-[#0ea5e9] cursor-pointer transition-all duration-300 flex items-center gap-2.5 relative"
-              >
-                <svg
-                  className="w-5 h-5 transition-transform duration-500 ease-out group-hover:rotate-90"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2.5"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                <span className="font-medium md:!block !hidden">New Chat</span>
-              </button>
-            </div>
-          </div>
-        </header>
+export default function Header() {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const { messages, handleRestart, generateShareableId, isInitialMessage, isThreadShareMode } =
+    useChatStore(
+      useShallow(state => ({
+        messages: state.messages,
+        handleRestart: state.handleRestart,
+        generateShareableId: state.generateShareableId,
+        isInitialMessage: state.isInitialMessage,
+        isThreadShareMode: state.isThreadShareMode,
+      }))
+    );
+
+  const handleExport = (type: 'markdown' | 'pdf') => {
+    const date = new Date().toISOString().split('T')[0];
+    if (type === 'markdown') {
+      exportChatToMarkdown(messages, `chat-history-${date}.md`);
+    } else {
+      exportChatToPDF(messages, `chat-history-${date}.pdf`);
+    }
+    setShowDropdown(false);
+  };
+
+  const handleShare = async () => {
+    const shareableUrl = generateShareableId();
+
+    if (isInitialMessage || !shareableUrl) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareableUrl || '');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+    }
+  };
+
+  const hasConversation = messages && messages.length >= 2 && !isInitialMessage;
+
+  return (
+    <>
+      {!isThreadShareMode && (
+        <div className="space-x-4 pr-4 float-left w-fit absolute top-3 left-4 !z-50">
+          <SideBarButton />
+        </div>
+      )}
+
+      <div className="flex justify-start md:flex-row flex-col gap-3 space-x-2 float-right w-fit absolute top-3 right-4 !z-50">
+        {/* Theme Toggle */}
+        <ThemeToggle />
+
+        {/* Share Button */}
+        {hasConversation && !isThreadShareMode && (
+          <GradientButton
+            onClick={handleShare}
+            icon={copied ? <FiCheck className="text-green-600" /> : <FiShare2 />}
+            title={copied ? 'URL copied!' : 'Share this conversation'}
+          >
+            {copied ? 'Copied!' : 'Share'}
+          </GradientButton>
+        )}
+
+        <div className="relative w-auto">
+          {!isThreadShareMode && (
+            <GradientButton onClick={() => setShowDropdown(!showDropdown)} icon={<CiExport />}>
+              Export
+            </GradientButton>
+          )}
+
+          {showDropdown && (
+            <>
+              <div
+                className="fixed inset-0 z-30 w-full h-screen"
+                onClick={() => setShowDropdown(false)}
+                aria-label="Close dropdown"
+              ></div>
+              {/* Dropdown menu */}
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-40 border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col py-1">
+                <MiniGradientButton onClick={() => handleExport('markdown')} icon={<FaMarkdown />}>
+                  Markdown
+                </MiniGradientButton>
+                <MiniGradientButton onClick={() => handleExport('pdf')} icon={<MdPictureAsPdf />}>
+                  PDF Document
+                </MiniGradientButton>
+              </div>
+            </>
+          )}
+        </div>
+        {!isThreadShareMode && (
+          <GradientButton onClick={handleRestart} icon={<MdOutlineRestartAlt />}>
+            New
+          </GradientButton>
+        )}
       </div>
-    </div>
+    </>
   );
 }

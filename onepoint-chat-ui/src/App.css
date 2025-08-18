@@ -1,10 +1,6 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
-#root {
-  margin: 0 auto;
-  padding: 0 auto;
-  text-align: center;
-}
 
 .logo {
   height: 6em;
@@ -57,3 +53,86 @@
   scrollbar-width: none;
   /* Firefox */
 }
+
+/* Apply disc styling only to lists outside of the chat markdown content */
+/* This prevents overriding the markdown styling in chat responses */
+:not([class*='markdown']) > ul,
+:not([class*='markdown']) > li {
+  list-style-type: disc;
+  color: #000;
+  font-weight: 500;
+}
+
+.react-flow__panel.right {
+  display: none !important;
+}
+
+/* Skeleton Loader Styles */
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.skeleton-container {
+  width: 100%;
+  background-color: #f1f5f9;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.skeleton-line {
+  height: 2px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  background: linear-gradient(275deg, #000000 25%, #0ea5e9 50%, #efefef 117%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 2s infinite;
+}
+
+.skeleton-line:last-child {
+  width: 80%;
+  margin-bottom: 0;
+}
+
+.skeleton-line:nth-child(2) {
+  width: 90%;
+}
+.skeleton-line:nth-child(3) {
+  width: 80%;
+}
+
+.react-flow__panel {
+  display: none !important;
+}
+ol,
+ul,
+menu {
+  margin-left: 2rem;
+}
+
+/* Hide top and bottom handles only on desktop */
+@media (min-width: 768px) {
+  .react-flow__handle-top {
+    display: none !important;
+  }
+
+  .react-flow__handle-bottom {
+    display: none !important;
+  }
+}
+
+/* Hide left and right handles only on mobile */
+@media (max-width: 767px) {
+  .react-flow__handle-left {
+    display: none !important;
+  }
+
+  .react-flow__handle-right {
+    display: none !important;
+  }
+}
+
