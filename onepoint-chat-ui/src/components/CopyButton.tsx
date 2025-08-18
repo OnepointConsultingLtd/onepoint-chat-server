@@ -2,6 +2,7 @@ import { FaCopy } from 'react-icons/fa';
 import { BiSolidCheckboxChecked } from 'react-icons/bi';
 
 type CopyButtonProps = {
+  id: string;
   text: string;
   copiedId: string | null;
   onCopy: (text: string, id: string) => void;
