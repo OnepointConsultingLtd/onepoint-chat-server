@@ -16,7 +16,7 @@ $YARN_PATH build
 # Change the port variable in .\onepoint-chat-ui\dist\index.html to 8084
 sed -i 's/4000/8084/g' dist/index.html
 sed -i 's/5000/8088/g' dist/index.html
-sed -i 's/"localhost"/"176.34.128.143"/g' dist/index.html
+sed -i 's/localhost/176.34.128.143/g' dist/index.html
 
 # Replace the server with the staging server
 cp src/lib/server_staging.ts src/lib/server.ts
