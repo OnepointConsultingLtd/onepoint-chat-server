@@ -1,4 +1,5 @@
 import { Message } from '../type/types';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Factory function to create a message for the agent
@@ -7,6 +8,7 @@ import { Message } from '../type/types';
  */
 export function messageFactoryAgent(text: string): Message {
   return {
+    id: uuidv4(),
     text,
     type: 'agent',
     timestamp: new Date(),
