@@ -15,7 +15,7 @@
       const port = 4000;
       const restPort = 5000;
       const protocol = window.location.protocol;
-      const wsProtocol = protocol === 'https' ? 'wss' : 'ws';
+      const wsProtocol = protocol.includes('https') ? 'wss' : 'ws';
       window.oscaConfig = {
         websocketUrl: `${wsProtocol}://${server}:${port}`,
         httpUrl: `${protocol}//${server}:${restPort}`,
