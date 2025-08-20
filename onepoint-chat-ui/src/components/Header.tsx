@@ -5,33 +5,73 @@ import { FiCheck, FiShare2 } from 'react-icons/fi';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import useChatStore from '../store/chatStore';
-import { exportChatToMarkdown, exportChatToPDF } from '../utils/exportChat';
+import { exportChatToMarkdown } from '../utils/exportChat';
 import GradientButton, { MiniGradientButton } from './GradientButton';
 import SideBarButton from './SideBarButton';
 import ThemeToggle from './ThemeToggle';
 import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
+import Toast from './Toast';
 
 export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const [toast, setToast] = useState<{
+    isVisible: boolean;
+    message: string;
+    type: 'success' | 'error';
+  }>({
+    isVisible: false,
+    message: '',
+    type: 'success',
+  });
 
-  const { messages, handleRestart, generateShareableId, isInitialMessage, isThreadShareMode } =
-    useChatStore(
-      useShallow(state => ({
-        messages: state.messages,
-        handleRestart: state.handleRestart,
-        generateShareableId: state.generateShareableId,
-        isInitialMessage: state.isInitialMessage,
-        isThreadShareMode: state.isThreadShareMode,
-      }))
-    );
+  const {
+    messages,
+    handleRestart,
+    generateShareableId,
+    isInitialMessage,
+    isThreadShareMode,
+    exportChatToPDF,
+  } = useChatStore(
+    useShallow(state => ({
+      messages: state.messages,
+      handleRestart: state.handleRestart,
+      generateShareableId: state.generateShareableId,
+      isInitialMessage: state.isInitialMessage,
+      isThreadShareMode: state.isThreadShareMode,
+      exportChatToPDF: state.exportChatToPDF,
+    }))
+  );
 
-  const handleExport = (type: 'markdown' | 'pdf') => {
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({
+      isVisible: true,
+      message,
+      type,
+    });
+  };
+
+  const hideToast = () => {
+    setToast(prev => ({ ...prev, isVisible: false }));
+  };
+
+  const handleExport = async (type: 'markdown' | 'pdf') => {
     const date = new Date().toISOString().split('T')[0];
     if (type === 'markdown') {
       exportChatToMarkdown(messages, `chat-history-${date}.md`);
+      showToast('Chat history exported as Markdown successfully!', 'success');
     } else {
-      exportChatToPDF(messages, `chat-history-${date}.pdf`);
+      setIsExportingPdf(true);
+      try {
+        await exportChatToPDF(`chat-history-${date}.pdf`);
+        showToast('PDF exported successfully!', 'success');
+      } catch (error) {
+        console.error('PDF export failed:', error);
+        showToast('Failed to export PDF. Please try again.', 'error');
+      } finally {
+        setIsExportingPdf(false);
+      }
     }
     setShowDropdown(false);
   };
@@ -90,8 +130,12 @@ export default function Header() {
                 <MiniGradientButton onClick={() => handleExport('markdown')} icon={<FaMarkdown />}>
                   Markdown
                 </MiniGradientButton>
-                <MiniGradientButton onClick={() => handleExport('pdf')} icon={<MdPictureAsPdf />}>
-                  PDF Document
+                <MiniGradientButton
+                  onClick={() => handleExport('pdf')}
+                  icon={<MdPictureAsPdf />}
+                  disabled={isExportingPdf}
+                >
+                  {isExportingPdf ? 'Generating PDF...' : 'PDF Document'}
                 </MiniGradientButton>
               </div>
             </>
@@ -103,6 +147,14 @@ export default function Header() {
           </GradientButton>
         )}
       </div>
+
+      {/* Toast Notification */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
     </>
   );
 }

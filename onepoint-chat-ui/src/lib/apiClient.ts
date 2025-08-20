@@ -104,3 +104,37 @@ export async function fetchRelatedQuestions(
     throw error;
   }
 }
+
+
+
+//protected/pdf/generate
+export async function downloadPdf(
+  html: string
+) {
+  const body = {
+    html: html,
+  }
+
+  const url = `${getServer()}/pdf/generate`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${ONE_TIME_TOKEN}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  try {
+    const pdfBlob = await response.blob();
+    return pdfBlob;
+  } catch (error) {
+    console.error('Error fetching PDF:', error);
+    throw error;
+  }
+}
