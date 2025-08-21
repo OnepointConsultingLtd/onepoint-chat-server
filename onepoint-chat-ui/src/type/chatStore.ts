@@ -63,6 +63,7 @@ export interface ChatStore {
   loadSharedThreadById: (messageId: string) => Promise<SharedResponse>;
   exitThreadShareMode: () => void;
   handleRestart: () => void;
+  exportChatToPDF: (filename?: string) => Promise<void>;
 }
 
 

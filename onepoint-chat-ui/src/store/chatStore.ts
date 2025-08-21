@@ -6,6 +6,7 @@ import { clearChatData, getConversationId, saveConversationId, saveThreadId, cle
 import { ChatStore, TopicActionPayload } from '../type/chatStore';
 import { Message, Question, Topic, TopicQuestionsResponse, Topics } from '../type/types';
 import { SharedResponse } from '..';
+import { exportChatToPDFApi } from '../utils/exportChat';
 
 function newChat() {
   return {
@@ -408,6 +409,16 @@ const useChatStore = create<ChatStore>()(
         set(() => ({
           ...newChat(),
         }));
+      },
+
+      exportChatToPDF: async (filename?: string) => {
+        const { messages } = get();
+        try {
+          await exportChatToPDFApi(messages, filename);
+        } catch (error) {
+          console.error('Error exporting chat to PDF:', error);
+          throw error;
+        }
       },
     }),
     {
