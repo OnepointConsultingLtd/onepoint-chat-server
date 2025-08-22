@@ -49,7 +49,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
   };
 
   return (
-    <div className="group">
+    <div className="group w-full">
       <div className="relative text-left">
         <ReactMarkdown
           components={{
