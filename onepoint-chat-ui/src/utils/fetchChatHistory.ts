@@ -4,7 +4,6 @@ import { Message, ServerMessage } from '../type/types';
 export async function fetchRawHistory(conversationId: string): Promise<ServerMessage[]> {
   try {
     const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/${conversationId}`);
-    console.log("response", response);
     if (!response.ok) throw new Error('Failed to fetch chat history');
     const history: ServerMessage[] = await response.json();
     return history;
@@ -20,7 +19,6 @@ export async function formatChatHistory(
 ): Promise<Message[]> {
   try {
 
-    console.log("Loaded history");
     const processedHistory = history.map(msg => ({
       id: uuidv4(),
       text: msg.content,
@@ -33,7 +31,6 @@ export async function formatChatHistory(
       messageId: msg.id,
     }));
 
-    console.log("processedHistory");
     return processedHistory as Message[];
   } catch (error) {
     console.error('Error fetching chat history:', error);

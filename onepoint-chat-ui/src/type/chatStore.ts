@@ -25,6 +25,7 @@ export interface ChatStore {
   topicQuestionsError: string | null;
   isSelectedTopicFromTopic: boolean;
   isThreadShareMode: boolean;
+  isFloatingOpen: boolean;
 
   // Setters
   setIsInitialMessage: (message: Message, isLastCard: boolean) => void;
@@ -47,6 +48,7 @@ export interface ChatStore {
   setTopicQuestionsLoading: (loading: boolean) => void;
   setTopicQuestionsError: (error: string | null) => void;
   setIsThreadShareMode: (isThreadMode: boolean) => void;
+  setIsFloatingOpen: (open: boolean) => void;
 
   // Actions
   toggleSidebar: () => void;
@@ -64,6 +66,7 @@ export interface ChatStore {
   exitThreadShareMode: () => void;
   handleRestart: () => void;
   exportChatToPDF: (filename?: string) => Promise<void>;
+  toggleFloatingChat: () => void;
 }
 
 

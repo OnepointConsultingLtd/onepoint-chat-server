@@ -5,7 +5,7 @@ import { FiCheck, FiShare2 } from 'react-icons/fi';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import useChatStore from '../store/chatStore';
-import { exportChatToMarkdown } from '../utils/exportChat';
+import { useExport } from '../hooks/useExport';
 import GradientButton, { MiniGradientButton } from './GradientButton';
 import SideBarButton from './SideBarButton';
 import ThemeToggle from './ThemeToggle';
@@ -15,7 +15,6 @@ import Toast from './Toast';
 export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [toast, setToast] = useState<{
     isVisible: boolean;
     message: string;
@@ -56,25 +55,18 @@ export default function Header() {
     setToast(prev => ({ ...prev, isVisible: false }));
   };
 
-  const handleExport = async (type: 'markdown' | 'pdf') => {
-    const date = new Date().toISOString().split('T')[0];
-    if (type === 'markdown') {
-      exportChatToMarkdown(messages, `chat-history-${date}.md`);
-      showToast('Chat history exported as Markdown successfully!', 'success');
-    } else {
-      setIsExportingPdf(true);
-      try {
-        await exportChatToPDF(`chat-history-${date}.pdf`);
-        showToast('PDF exported successfully!', 'success');
-      } catch (error) {
-        console.error('PDF export failed:', error);
-        showToast('Failed to export PDF. Please try again.', 'error');
-      } finally {
-        setIsExportingPdf(false);
-      }
-    }
-    setShowDropdown(false);
-  };
+  const { handleExport, isExportingPdf } = useExport({
+    messages,
+    exportChatToPDF,
+    onSuccess: message => {
+      showToast(message, 'success');
+      setShowDropdown(false);
+    },
+    onError: message => {
+      showToast(message, 'error');
+      setShowDropdown(false);
+    },
+  });
 
   const handleShare = async () => {
     const shareableUrl = generateShareableId();

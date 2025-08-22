@@ -31,6 +31,7 @@ function newChat() {
     topicQuestionsLoading: false,
     topicQuestionsError: null,
     isThreadShareMode: false,
+    isFloatingOpen: false,
   };
 }
 
@@ -59,6 +60,7 @@ const useChatStore = create<ChatStore>()(
       topicQuestionsError: null,
       isSelectedTopicFromTopic: false,
       isThreadShareMode: false,
+      isFloatingOpen: true,
 
       // setters
       setIsInitialMessage: (message: Message, isLastCard: boolean) => {
@@ -107,8 +109,10 @@ const useChatStore = create<ChatStore>()(
       setTopicQuestionsLoading: (loading: boolean) => set({ topicQuestionsLoading: loading }),
       setTopicQuestionsError: (error: string | null) => set({ topicQuestionsError: error }),
       setIsThreadShareMode: (isThreadMode: boolean) => set({ isThreadShareMode: isThreadMode }),
+      setIsFloatingOpen: (open: boolean) => set({ isFloatingOpen: open }),
 
       toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
+      toggleFloatingChat: () => set(state => ({ isFloatingOpen: !state.isFloatingOpen })),
 
       fetchRelatedTopics: async (topicName: string, text?: string) => {
         set({ relatedTopicsLoading: true });

@@ -88,3 +88,11 @@ export type TopicQuestion = {
 export type TopicQuestionsResponse = {
   topic_questions: TopicQuestion[];
 };
+
+
+export type ChatInputProps = {
+  handleSubmit: (text: string) => void
+  sendMessageToServer: (text: string) => void
+  messagesEndRef: React.RefObject<HTMLDivElement | null>
+};
+

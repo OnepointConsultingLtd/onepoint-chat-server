@@ -23,7 +23,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@gilf/chat-websocket-server": "^1.0.17",
+    "@gilf/chat-websocket-server": "^1.0.18",
     "@types/cors": "^2.8.17",
     "@types/uuid": "^10.0.0",
     "cors": "^2.8.5",

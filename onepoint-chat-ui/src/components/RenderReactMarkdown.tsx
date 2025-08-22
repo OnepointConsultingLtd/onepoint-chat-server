@@ -50,7 +50,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
 
   return (
     <div className="group">
-      <div className="relative">
+      <div className="relative text-left">
         <ReactMarkdown
           components={{
             a: ({ ...props }) => (
@@ -80,14 +80,14 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
           {!isThreadShareMode && !isInitialMessage && message.type === 'agent' && (
             <button
               onClick={handleShareClick}
-              className={`z-10 p-2 rounded-full transition-all duration-200 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer ${
+              className={`p-1 md:p-2 rounded-full transition-all duration-200 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer ${
                 sharedId === message.id
                   ? 'bg-green-50 text-green-600 border border-green-200'
                   : 'bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-300'
               }`}
               title={sharedId === message.id ? 'Share URL copied!' : 'Share message'}
             >
-              <FiShare2 className="w-4 h-4" />
+              <FiShare2 className="w-3 h-3 md:w-4 md:h-4" />
             </button>
           )}
         </div>

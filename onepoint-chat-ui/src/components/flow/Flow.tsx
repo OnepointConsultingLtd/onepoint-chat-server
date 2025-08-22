@@ -3,16 +3,7 @@ import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useDarkMode } from '../../hooks/useDarkMode';
-import { useIsMobile } from '../../hooks/useIsMobile';
-import {
-  DEFAULT_ZOOM,
-  MAX_ZOOM,
-  MIN_ZOOM,
-  MOBILE_DEFAULT_ZOOM,
-  MOBILE_MAX_ZOOM,
-  MOBILE_MIN_ZOOM,
-  INITIAL_MESSAGE,
-} from '../../lib/constants';
+import { DEFAULT_ZOOM, INITIAL_MESSAGE, MAX_ZOOM, MIN_ZOOM } from '../../lib/constants';
 import { predefinedTopics } from '../../lib/predefinedTopics';
 import useChatStore from '../../store/chatStore';
 import { nodeTypes, Topic } from '../../type/types';
@@ -20,6 +11,7 @@ import { createEdges } from './EdgeCreator';
 import ErrorCard from './ErrorCard';
 import { createNodes } from './NodeCreator';
 import { focusOnLatestNode } from './ViewportManager';
+import { interceptServerError } from '../../lib/interceptServerError';
 
 /**
  * Flow component that displays the chat conversation in a flow diagram.
@@ -55,18 +47,17 @@ export default function Flow({
   );
 
   const { isDark } = useDarkMode();
-  const isMobile = useIsMobile();
   const reactFlowInstance = useReactFlow();
   const previousMessagesLengthRef = useRef<number>(0);
 
-  // Use mobile or desktop zoom settings
+  // Use desktop zoom settings
   const zoomSettings = useMemo(
     () => ({
-      minZoom: isMobile ? MOBILE_MIN_ZOOM : MIN_ZOOM,
-      maxZoom: isMobile ? MOBILE_MAX_ZOOM : MAX_ZOOM,
-      defaultZoom: isMobile ? MOBILE_DEFAULT_ZOOM : DEFAULT_ZOOM,
+      minZoom: MIN_ZOOM,
+      maxZoom: MAX_ZOOM,
+      defaultZoom: DEFAULT_ZOOM,
     }),
-    [isMobile]
+    []
   );
 
   const handleRelatedTopicClick = useCallback(
@@ -122,8 +113,7 @@ export default function Flow({
             : [],
       handleRelatedTopicClick,
       setCardHeight,
-      cardHeights,
-      isMobile
+      cardHeights
     );
   }, [
     messages,
@@ -134,7 +124,6 @@ export default function Flow({
     handleRelatedTopicClick,
     cardHeights,
     setCardHeight,
-    isMobile,
   ]);
 
   const filteredMessages = useMemo(() => {
@@ -150,10 +139,9 @@ export default function Flow({
         ? 0
         : topicState.isInitialMessage
           ? predefinedTopics.length
-          : topicState.relatedTopics.length,
-      isMobile
+          : topicState.relatedTopics.length
     );
-  }, [filteredMessages, topicState, isThreadShareMode, isMobile]);
+  }, [filteredMessages, topicState, isThreadShareMode]);
 
   useEffect(() => {
     focusOnLatestNode(
@@ -172,15 +160,17 @@ export default function Flow({
 
   const onEdgesChange = useCallback(() => {}, []);
 
-  const isError = messages.some(message => message.text.includes('Connection error'));
+  const isError = interceptServerError(messages);
 
   return (
     <div style={{ height: '100%', width: '100%' }} className="bg-gray-50 dark:bg-gray-900">
       {isError ? (
-        <ErrorCard
-          title="Connection Error"
-          message="We were unable to connect to the server. Please check your internet connection or try again later."
-        />
+        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+          <ErrorCard
+            title="Connection Error"
+            message="We were unable to connect to the server. Please check your internet connection or try again later."
+          />
+        </div>
       ) : (
         <ReactFlow
           nodes={nodes}
