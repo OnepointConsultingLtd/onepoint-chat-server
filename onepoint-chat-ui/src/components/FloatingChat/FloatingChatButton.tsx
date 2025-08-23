@@ -1,6 +1,4 @@
-import FloatingChatMain from './components/FloatingChat/FloatingChatMain';
-
-export function FloatingChatButton({ click }: { click: () => void }) {
+export default function FloatingChatButton({ click }: { click: () => void }) {
   return (
     <button
       onClick={click}
@@ -12,8 +10,4 @@ export function FloatingChatButton({ click }: { click: () => void }) {
       </div>
     </button>
   );
-}
-
-export default function Chat() {
-  return <FloatingChatMain handleSubmit={() => {}} />;
 }

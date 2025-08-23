@@ -1,18 +1,23 @@
 import { useShallow } from 'zustand/react/shallow';
-import { FloatingChatButton } from '../../chat';
 import { interceptServerError } from '../../lib/interceptServerError';
 import useChatStore from '../../store/chatStore';
-import { ChatInputProps } from '../../type/types';
 import ChatInput from '../ChatInput';
 import ErrorCard from '../flow/ErrorCard';
 import Messages from '../Messages';
+import FloatingChatButton from './FloatingChatButton';
 import FloatingHeader from './FloatingHeader';
+
+type FloatingChatMainProps = {
+  handleSubmit: (text: string) => void;
+  sendMessageToServer: (text: string) => void;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
+};
 
 export default function FloatingChatMain({
   handleSubmit,
   sendMessageToServer,
   messagesEndRef,
-}: ChatInputProps) {
+}: FloatingChatMainProps) {
   const { isFloatingOpen, toggleFloatingChat, messages } = useChatStore(
     useShallow(state => ({
       isFloatingOpen: state.isFloatingOpen,
@@ -81,11 +86,7 @@ export default function FloatingChatMain({
                 <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
                   <div className="w-full mx-auto">
                     <div className="flex flex-col gap-2">
-                      <ChatInput
-                        handleSubmit={handleSubmit}
-                        sendMessageToServer={sendMessageToServer}
-                        messagesEndRef={messagesEndRef}
-                      />
+                      <ChatInput handleSubmit={handleSubmit} />
                     </div>
                   </div>
                 </div>
