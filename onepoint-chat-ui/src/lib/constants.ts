@@ -22,7 +22,7 @@ export const MOBILE_DEFAULT_ZOOM = 0.7;
 export const MOBILE_MIN_ZOOM = 0.3;
 export const MOBILE_MAX_ZOOM = 1.2;
 
-export const MAX_RELATED_TOPICS = 6;
+export const MAX_RELATED_TOPICS = 4;
 export const MAX_PREVIEW_CHARS = 100;
 
 export const TOPIC_CARD = {

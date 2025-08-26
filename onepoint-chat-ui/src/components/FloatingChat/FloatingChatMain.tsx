@@ -6,6 +6,7 @@ import ErrorCard from '../flow/ErrorCard';
 import Messages from '../Messages';
 import FloatingChatButton from './FloatingChatButton';
 import FloatingHeader from './FloatingHeader';
+import FeatureHighlights from './FeatureHighlights';
 
 type FloatingChatMainProps = {
   handleSubmit: (text: string) => void;
@@ -18,23 +19,31 @@ export default function FloatingChatMain({
   sendMessageToServer,
   messagesEndRef,
 }: FloatingChatMainProps) {
-  const { isFloatingOpen, toggleFloatingChat, messages } = useChatStore(
+  const { isFloatingOpen, toggleFloatingChat, messages, isThreadShareMode } = useChatStore(
     useShallow(state => ({
       isFloatingOpen: state.isFloatingOpen,
       toggleFloatingChat: state.toggleFloatingChat,
       messages: state.messages,
+      isThreadShareMode: state.isThreadShareMode,
     }))
   );
   const isError = interceptServerError(messages);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-200 dark:bg-gray-900 p-2 lg:p-6 relative">
-      <div className="max-w-full lg:max-w-sm w-full text-center">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900/20 p-4 lg:p-8 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-40 right-10 w-64 h-64 bg-purple-400/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-emerald-400/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-2xl w-full text-center relative z-10">
         {/* Logo/Brand Section */}
-        <div className="mb-12">
-          <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-xl">
+        <div className="mb-16">
+          <div className="w-24 h-24 mx-auto mb-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-300">
             <svg
-              className="w-8 h-8 text-white"
+              className="w-12 h-12 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -48,18 +57,79 @@ export default function FloatingChatMain({
               />
             </svg>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">Meet OSCA</h1>
-          <p className="text-xl text-blue-600 dark:text-blue-400 font-semibold mb-2">
+          <h1 className="text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent mb-4">
+            Meet OSCA
+          </h1>
+          <p className="text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-3">
             Onepoint Smart Company Advisor
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Powered by Onepoint AI</p>
+          <p className="text-lg text-gray-500 dark:text-gray-400">Powered by Onepoint AI</p>
         </div>
 
         {/* Description */}
-        <div className="mb-10 px-5">
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+        <div className="mb-16 px-4">
+          <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-12 max-w-xl mx-auto">
             Your AI guide to data strategy, AI innovation, and solution architecture.
           </p>
+
+          {/* Feature highlights */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-4xl mx-auto">
+            <FeatureHighlights
+              title="Data Strategy"
+              description="Expert guidance on data governance and management"
+            >
+              <svg
+                className="w-6 h-6 text-blue-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+            </FeatureHighlights>
+
+            <FeatureHighlights
+              title="AI Innovation"
+              description="Cutting-edge AI solutions and implementation"
+            >
+              <svg
+                className="w-6 h-6 text-purple-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </FeatureHighlights>
+          </div>
+          <FeatureHighlights
+            title="Architecture"
+            description="Robust solution design and architecture planning"
+          >
+            <svg
+              className="w-6 h-6 text-emerald-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
+          </FeatureHighlights>
         </div>
 
         {isError ? (
@@ -83,13 +153,15 @@ export default function FloatingChatMain({
                 </div>
 
                 {/* Input Container */}
-                <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-                  <div className="w-full mx-auto">
-                    <div className="flex flex-col gap-2">
-                      <ChatInput handleSubmit={handleSubmit} />
+                {!isThreadShareMode && (
+                  <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                    <div className="w-full mx-auto">
+                      <div className="flex flex-col gap-2">
+                        <ChatInput handleSubmit={handleSubmit} />
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           )

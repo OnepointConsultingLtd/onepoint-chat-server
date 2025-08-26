@@ -33,8 +33,6 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
     body: JSON.stringify(body),
   });
 
-  console.log("the url", url);
-
   if (response.status === 404) {
     console.warn('No related topics found');
     return {
@@ -97,7 +95,6 @@ export async function fetchRelatedQuestions(
 
   try {
     const data = await response.json();
-    console.log("the response", data);
     return data;
   } catch (error) {
     console.error('Error fetching questions:', error);

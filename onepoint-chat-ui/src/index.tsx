@@ -7,14 +7,12 @@ import useChatStore from './store/chatStore';
 import { getThreadId, isThreadMode } from './lib/persistence';
 import { Message } from './type/types';
 
-
 export type SharedResponse = {
   status: boolean;
   error?: string;
   messages: Message[];
   threadId?: string;
-}
-
+};
 
 export default function Home() {
   const { loadSharedChatById, loadSharedThreadById } = useChatStore(

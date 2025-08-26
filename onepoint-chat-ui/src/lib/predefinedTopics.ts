@@ -26,11 +26,5 @@ export const predefinedTopics = [
       'AI agents are artificial intelligence agents that are used to automate tasks and processes.',
     type: 'predefined',
     questions: [],
-  },
-  {
-    name: 'Boomi',
-    description: 'Boomi is a platform for building and deploying integration solutions.',
-    type: 'predefined',
-    questions: [],
-  },
+  }
 ];

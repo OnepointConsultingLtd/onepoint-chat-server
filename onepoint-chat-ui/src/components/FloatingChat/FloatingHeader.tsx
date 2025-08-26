@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CiExport } from 'react-icons/ci';
 import { FaMarkdown } from 'react-icons/fa';
 import { FiCheck, FiShare2 } from 'react-icons/fi';
-import { MdPictureAsPdf } from 'react-icons/md';
+import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import { useDarkMode } from '../../hooks/useDarkMode';
 import { useExport } from '../../hooks/useExport';
@@ -19,6 +19,7 @@ export default function FloatingHeader() {
     exportChatToPDF,
     handleRestart,
     toggleFloatingChat,
+    isThreadShareMode,
   } = useChatStore(
     useShallow(state => ({
       messages: state.messages,
@@ -27,6 +28,7 @@ export default function FloatingHeader() {
       exportChatToPDF: state.exportChatToPDF,
       handleRestart: state.handleRestart,
       toggleFloatingChat: state.toggleFloatingChat,
+      isThreadShareMode: state.isThreadShareMode,
     }))
   );
 
@@ -59,7 +61,7 @@ export default function FloatingHeader() {
   return (
     <header className="sticky top-0 z-10 w-full p-3 py-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between w-full space-x-2">
-        <h1 className="text-2xl font-bold text-[#0284c7] dark:text-blue-400">OSCA</h1>
+        <h1 className="text-3xl font-bold text-[#0284c7] dark:text-blue-400">OSCA</h1>
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-1">
@@ -89,82 +91,75 @@ export default function FloatingHeader() {
               </svg>
             )}
           </button>
-
-          {/* Share Button */}
-          {hasConversation && (
-            <button
-              onClick={handleShare}
-              className="p-2 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
-              title={copied ? 'URL copied!' : 'Share this conversation'}
-            >
-              {copied ? (
-                <FiCheck className="w-4 h-4 text-green-600" />
-              ) : (
-                <FiShare2 className="w-4 h-4" />
+          {!isThreadShareMode && (
+            <>
+              {/* Share Button */}
+              {hasConversation && (
+                <button
+                  onClick={handleShare}
+                  className="p-2 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                  title={copied ? 'URL copied!' : 'Share this conversation'}
+                >
+                  {copied ? (
+                    <FiCheck className="w-4 h-4 text-green-600" />
+                  ) : (
+                    <FiShare2 className="w-4 h-4" />
+                  )}
+                </button>
               )}
-            </button>
-          )}
 
-          {/* Export Button */}
-          {hasConversation && (
-            <div className="relative">
               <button
-                onClick={() => setShowDropdown(!showDropdown)}
+                onClick={handleRestart}
                 className="p-2 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
-                title="Export conversation"
+                title="Start new chat"
               >
-                <CiExport className="w-4 h-4" />
+                <MdOutlineRestartAlt />
+                <span className="text-xs hidden sm:block">New</span>
               </button>
 
-              {showDropdown && (
-                <>
-                  <div
-                    className="fixed inset-0 z-30 w-full h-screen"
-                    onClick={() => setShowDropdown(false)}
-                    aria-label="Close dropdown"
-                  ></div>
-                  {/* Dropdown menu */}
-                  <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-40 border border-gray-200 dark:border-gray-700 overflow-hidden">
-                    <button
-                      onClick={() => handleExport('markdown')}
-                      className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200"
-                    >
-                      <FaMarkdown className="w-4 h-4 mr-2" />
-                      Markdown
-                    </button>
-                    <button
-                      onClick={() => handleExport('pdf')}
-                      disabled={isExportingPdf}
-                      className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 text-gray-700 dark:text-gray-200"
-                    >
-                      <MdPictureAsPdf className="w-4 h-4 mr-2" />
-                      {isExportingPdf ? 'Generating...' : 'PDF'}
-                    </button>
-                  </div>
-                </>
+              {/* Export Button */}
+              {hasConversation && (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowDropdown(!showDropdown)}
+                    className="p-2 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                    title="Export conversation"
+                  >
+                    <CiExport className="w-4 h-4" />
+                  </button>
+
+                  {showDropdown && (
+                    <>
+                      {/* Dropdown menu */}
+                      {/* center from left and right */}
+                      <div className="absolute mt-2 w-fit md:w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-40 border border-gray-200 dark:border-gray-700 overflow-hidden transform left-1/2 -translate-x-1/2">
+                        <button
+                          onClick={() => handleExport('markdown')}
+                          className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200"
+                        >
+                          <FaMarkdown className="w-4 h-4 mr-2" />
+                          Markdown
+                        </button>
+                        <button
+                          onClick={() => handleExport('pdf')}
+                          disabled={isExportingPdf}
+                          className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 text-gray-700 dark:text-gray-200"
+                        >
+                          <MdPictureAsPdf className="w-4 h-4 mr-2" />
+                          {isExportingPdf ? 'Generating...' : 'PDF'}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
-            </div>
+            </>
           )}
         </div>
 
         {/* Right side buttons */}
         <div className="flex items-center space-x-1">
           {/* New Chat Button */}
-          <button
-            onClick={handleRestart}
-            className="px-2 py-1 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg hover:border-[#0ea5e9] hover:text-[#0ea5e9] dark:hover:border-blue-400 dark:hover:text-blue-400 cursor-pointer transition-all duration-300 flex items-center gap-1"
-            title="Start new chat"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            <span className="text-xs hidden sm:block">New</span>
-          </button>
 
           {/* Close Button */}
           <button
@@ -173,8 +168,8 @@ export default function FloatingHeader() {
             title="Close chat"
           >
             <svg
-              width="15"
-              height="15"
+              width="30"
+              height="30"
               viewBox="0 0 15 15"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"

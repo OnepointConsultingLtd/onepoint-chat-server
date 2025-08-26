@@ -12,6 +12,7 @@ import ErrorCard from './ErrorCard';
 import { createNodes } from './NodeCreator';
 import { focusOnLatestNode } from './ViewportManager';
 import { interceptServerError } from '../../lib/interceptServerError';
+import { filterDisplayableMessages } from '../../utils/messageFilter';
 
 /**
  * Flow component that displays the chat conversation in a flow diagram.
@@ -89,10 +90,13 @@ export default function Flow({
   }, []);
 
   const nodes = useMemo(() => {
-    // Filter out initial message when in thread share mode
-    const filteredMessages = isThreadShareMode
-      ? messages.filter(message => !message.text.includes(INITIAL_MESSAGE))
-      : messages;
+    // Filter out system messages first, then initial message in thread share mode
+    let filteredMessages = filterDisplayableMessages(messages);
+    if (isThreadShareMode) {
+      filteredMessages = filteredMessages.filter(
+        message => !message.text.includes(INITIAL_MESSAGE)
+      );
+    }
 
     return createNodes(
       filteredMessages,
@@ -127,9 +131,11 @@ export default function Flow({
   ]);
 
   const filteredMessages = useMemo(() => {
-    return isThreadShareMode
-      ? messages.filter(message => !message.text.includes(INITIAL_MESSAGE))
-      : messages;
+    let filtered = filterDisplayableMessages(messages);
+    if (isThreadShareMode) {
+      filtered = filtered.filter(message => !message.text.includes(INITIAL_MESSAGE));
+    }
+    return filtered;
   }, [messages, isThreadShareMode]);
 
   const edges = useMemo(() => {

@@ -133,8 +133,6 @@ const useChatStore = create<ChatStore>()(
           const data: TopicQuestionsResponse = await fetchQuestionsFromApi(topics, text);
           let finalData = data;
 
-          console.log("the data", data)
-
           if (isContextualSearch && (!data.topic_questions || data.topic_questions.length === 0)) {
             finalData = await fetchQuestionsFromApi([], '');
           }

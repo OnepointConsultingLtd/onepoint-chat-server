@@ -104,7 +104,6 @@ export function useChat() {
             if (message.subType === 'streamEndError') {
               setMessages((prev: Message[]) => [...prev, messageFactoryAgent(message.message)]);
             } else {
-              console.log("Checking message id", message)
               setMessages((prev: Message[]) =>
                 updateLastMessage(prev, (msg) => ({
                   ...msg,

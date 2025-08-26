@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { FiShare2 } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
+import { useShallow } from 'zustand/react/shallow';
+import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 import useChatStore from '../store/chatStore';
 import { Message } from '../type/types';
 import CopyButton from './CopyButton';
-import { useShallow } from 'zustand/react/shallow';
-import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 
 export default function RenderReactMarkdown({ message }: { message: Message }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
