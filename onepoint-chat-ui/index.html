@@ -1,27 +1,35 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/webp" href="/favicon.webp" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OSCA - Onepoint Smart Company Advisor</title>
-  </head>
 
-  <body>
-    <div id="root"></div>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/webp" href="/favicon.webp" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OSCA - Onepoint Smart Company Advisor</title>
+</head>
 
-    <script>
-      const server = 'localhost';
-      const port = 4000;
-      const restPort = 5000;
-      const protocol = window.location.protocol;
-      const wsProtocol = protocol.includes('https') ? 'wss' : 'ws';
-      window.oscaConfig = {
-        websocketUrl: `${wsProtocol}://${server}:${port}`,
-        httpUrl: `${protocol}//${server}:${restPort}`,
-      };
-    </script>
+<body>
+  <div id="root"></div>
+  <script>
+    window.Userback = window.Userback || {};
+    Userback.access_token = "A-oP0EhRGrso4PR7ClnvRv1yNA0";
+    (function (d) {
+      var s = d.createElement('script'); s.async = true; s.src = 'https://static.userback.io/widget/v1.js'; (d.head || d.body).appendChild(s);
+    })(document);
+  </script>
+  <script>
+    const server = 'localhost';
+    const port = 4000;
+    const restPort = 5000;
+    const protocol = window.location.protocol;
+    const wsProtocol = protocol.includes('https') ? 'wss' : 'ws';
+    window.oscaConfig = {
+      websocketUrl: `${wsProtocol}://${server}:${port}`,
+      httpUrl: `${protocol}//${server}:${restPort}`,
+    };
+  </script>
 
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
