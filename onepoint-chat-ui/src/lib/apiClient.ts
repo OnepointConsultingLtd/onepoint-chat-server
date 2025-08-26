@@ -1,5 +1,5 @@
 import { RelatedTopicsBody, Topics } from '../type/types';
-import { MAX_RELATED_TOPICS, ONE_TIME_TOKEN, PROJECT_CONFIG } from './constants';
+import { MAX_RELATED_TOPICS, ONE_TIME_TOKEN, PROJECT_CONFIG, QUESTION_PROMPT } from './constants';
 import { getServer } from './server';
 
 export function createHeaders() {
@@ -75,7 +75,8 @@ export async function fetchRelatedQuestions(
     text: text,
     topic_limit: 5,
     entity_type_filter: '',
-    format: 'json'
+    format: 'json',
+    system_prompt: QUESTION_PROMPT
   }
 
   const url = `${getServer()}/project/questions?project=${project}&engine=${engine}`;
