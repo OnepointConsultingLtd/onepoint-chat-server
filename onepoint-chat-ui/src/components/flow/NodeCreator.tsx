@@ -49,17 +49,10 @@ export function createNodes(
     const cardHeight = cardHeights?.[cardId] ?? 200;
     messageCardHeights.push(cardHeight);
 
-    const position = isMobile
-      ? {
-          // Mobile: Stack vertically with proper cumulative positioning
-          x: MOBILE_CARD_X_POSITION,
-          y: currentY,
-        }
-      : {
-          // Desktop: Arrange horizontally
-          x: cardIndex * (cardWidth + cardGap),
-          y: messageCardY,
-        };
+    const position = {
+      x: cardIndex * (cardWidth + cardGap),
+      y: messageCardY,
+    };
 
     nodes.push({
       id: cardId,

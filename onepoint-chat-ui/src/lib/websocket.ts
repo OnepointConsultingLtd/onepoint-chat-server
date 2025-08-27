@@ -21,3 +21,12 @@ export function sendMessage(
     console.warn(`Socket is not ready, cannot send ${event} message.`);
   }
 }
+
+export function sendPing(socket: WebSocket | null, conversationId: string = '') {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify({ type: 'ping', content: 'keep-alive', conversationId }));
+    console.info(`[PING] Sent keep-alive ping at ${new Date().toISOString()}`);
+  } else {
+    console.warn('[PING] Socket is not ready, cannot send ping message.');
+  }
+}

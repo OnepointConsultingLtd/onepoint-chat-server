@@ -7,6 +7,7 @@ import { Message } from '../../type/types';
 import ChatInput from '../ChatInput';
 import ThinkingIndicator from '../ThinkingIndicator';
 import AgentMessage from './AgentMessage';
+import ResponseTimer from './ResponseTimer';
 import SharedModeRender from './SharedModeRender';
 import UserMessage from './UserMessage';
 
@@ -138,6 +139,9 @@ export default function MessageCard({
           <ChatInput handleSubmit={handleSubmit} />
         </div>
       )}
+
+      {/* ResponseTimer - always rendered for last card to maintain state */}
+      {isLastCard && process.env.NODE_ENV === 'development' && <ResponseTimer />}
 
       {!isInitialMessage &&
         showButton &&
