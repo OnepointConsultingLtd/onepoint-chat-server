@@ -4,10 +4,10 @@ import { MessageEvent } from 'ws';
 import { useShallow } from 'zustand/react/shallow';
 import { messageFactoryAgent, messageFactoryUser } from '../lib/messageFactory';
 import { getConversationId, markChatAsActive, saveConversationId } from '../lib/persistence';
-import { createWebSocket, sendMessage, sendPing } from '../lib/websocket';
+import { createWebSocket, sendMessage } from '../lib/websocket';
 import useChatStore from '../store/chatStore';
 import { Message, ServerMessage } from '../type/types';
-import { formatChatHistory, fetchRawHistory } from '../utils/fetchChatHistory';
+import { fetchRawHistory, formatChatHistory } from '../utils/fetchChatHistory';
 
 export function useChat() {
   const { messages, isThinking, setMessages, setIsThinking, isRestarting, isStreaming, setIsStreaming, handleTopicAction, setIsSidebarOpen } =
@@ -31,8 +31,6 @@ export function useChat() {
   const currentConversationId = useRef<string | null>(null);
   const hasInitialized = useRef<boolean>(false);
   const messageQueue = useRef<{ text: string }[]>([]);
-  const pingIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -70,17 +68,6 @@ export function useChat() {
     ws.onopen = async () => {
       console.info('WebSocket connection opened');
       wsOpen.current = true;
-
-      // Start ping interval to keep connection alive (every 5 minutes)
-      if (pingIntervalRef.current) {
-        clearInterval(pingIntervalRef.current);
-      }
-      console.info('[PING] Starting ping interval - will send keep-alive every 5 minutes');
-      pingIntervalRef.current = setInterval(() => {
-        if (wsRef.current && wsOpen.current) {
-          sendPing(wsRef.current, currentConversationId.current || '');
-        }
-      }, 5 * 60 * 1000);
     };
 
 
@@ -172,30 +159,19 @@ export function useChat() {
 
     ws.onerror = error => {
       console.error('WebSocket error:', error);
+      const errorMessage: Message = messageFactoryAgent(
+        `Connection error: Unable to connect to server`
+      );
+      setMessages((prev: Message[]) => [...prev, errorMessage]);
       setIsStreaming(false);
     };
 
     ws.onclose = () => {
       console.log('WebSocket connection closed');
+      const closeMessage: Message = messageFactoryAgent('Connection closed');
+      setMessages((prev: Message[]) => [...prev, closeMessage]);
       wsOpen.current = false;
       setIsStreaming(false);
-
-      // Clear ping interval
-      if (pingIntervalRef.current) {
-        clearInterval(pingIntervalRef.current);
-        pingIntervalRef.current = null;
-        console.info('[PING] Stopped ping interval due to connection close');
-      }
-
-      // Attempt to reconnect after 3 seconds
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-      reconnectTimeoutRef.current = setTimeout(() => {
-        console.info('Attempting to reconnect WebSocket...');
-        window.barrier = false;
-        setupWebSocket();
-      }, 3000);
     };
   };
 
@@ -205,17 +181,6 @@ export function useChat() {
       const socket = wsRef.current;
       if (socket && socket.readyState === WebSocket.OPEN && wsOpen.current) {
         socket.close();
-      }
-
-      // Clean up timers
-      if (pingIntervalRef.current) {
-        clearInterval(pingIntervalRef.current);
-        pingIntervalRef.current = null;
-        console.info('[PING] Stopped ping interval due to component unmount');
-      }
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-        reconnectTimeoutRef.current = null;
       }
     };
   }, [isRestarting]);
