@@ -140,7 +140,6 @@ export default function MessageCard({
         </div>
       )}
 
-      {/* ResponseTimer - always rendered for last card to maintain state */}
       {isLastCard && process.env.NODE_ENV === 'development' && <ResponseTimer />}
 
       {!isInitialMessage &&

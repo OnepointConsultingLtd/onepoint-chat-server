@@ -25,7 +25,7 @@ export function sendMessage(
 export function sendPing(socket: WebSocket | null, conversationId: string = '') {
   if (socket && socket.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify({ type: 'ping', content: 'keep-alive', conversationId }));
-    console.info(`[PING] Sent keep-alive ping at ${new Date().toISOString()}`);
+    console.info(`[PING] Sent`);
   } else {
     console.warn('[PING] Socket is not ready, cannot send ping message.');
   }

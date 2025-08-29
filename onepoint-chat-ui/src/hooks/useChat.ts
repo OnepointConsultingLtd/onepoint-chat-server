@@ -172,17 +172,11 @@ export function useChat() {
 
     ws.onerror = error => {
       console.error('WebSocket error:', error);
-      const errorMessage: Message = messageFactoryAgent(
-        `Connection error: Unable to connect to server`
-      );
-      setMessages((prev: Message[]) => [...prev, errorMessage]);
       setIsStreaming(false);
     };
 
     ws.onclose = () => {
       console.log('WebSocket connection closed');
-      const closeMessage: Message = messageFactoryAgent('Connection closed');
-      setMessages((prev: Message[]) => [...prev, closeMessage]);
       wsOpen.current = false;
       setIsStreaming(false);
 
