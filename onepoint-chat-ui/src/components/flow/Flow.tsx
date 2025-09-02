@@ -3,7 +3,13 @@ import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useDarkMode } from '../../hooks/useDarkMode';
-import { DEFAULT_ZOOM, INITIAL_MESSAGE, MAX_ZOOM, MIN_ZOOM } from '../../lib/constants';
+import {
+  CONNECTION_ERROR,
+  DEFAULT_ZOOM,
+  INITIAL_MESSAGE,
+  MAX_ZOOM,
+  MIN_ZOOM,
+} from '../../lib/constants';
 import { predefinedTopics } from '../../lib/predefinedTopics';
 import useChatStore from '../../store/chatStore';
 import { nodeTypes, Topic } from '../../type/types';
@@ -129,6 +135,13 @@ export default function Flow({
     cardHeights,
     setCardHeight,
   ]);
+
+  useEffect(() => {
+    if (messages.some(message => message.text.includes(CONNECTION_ERROR))) {
+      console.log('CONNECTION_ERROR');
+      window.location.reload();
+    }
+  }, [messages]);
 
   const filteredMessages = useMemo(() => {
     let filtered = filterDisplayableMessages(messages);

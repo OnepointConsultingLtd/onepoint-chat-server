@@ -1,5 +1,5 @@
 import { RelatedTopicsBody, Topics } from '../type/types';
-import { MAX_RELATED_TOPICS, ONE_TIME_TOKEN, PROJECT_CONFIG, QUESTION_PROMPT } from './constants';
+import { MAX_RELATED_TOPICS, ONE_TIME_TOKEN, PROJECT_CONFIG, QUESTION_PROMPT, TOPICS_PROMPT } from './constants';
 import { getServer } from './server';
 
 export function createHeaders() {
@@ -22,6 +22,8 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
     limit: MAX_RELATED_TOPICS,
     source: selectedTopic || '',
     text: text.trim() || '',
+    topics_prompt: TOPICS_PROMPT
+
   };
 
   const response = await fetch(url, {

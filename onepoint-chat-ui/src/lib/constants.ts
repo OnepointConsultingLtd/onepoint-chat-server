@@ -4,7 +4,12 @@ export const nameDescription = 'Onepoint Smart Company Advisor';
 export const INITIAL_MESSAGE =
   "Welcome to Onepoint! I'm OSCA, your AI assistant. My goal is to understand your needs and guide you to the right expertise.";
 
+export const CONNECTION_ERROR = "Connection error";
+
 export const QUESTION_PROMPT = "Generate creative, thought-provoking questions in British English that are engaging and substantive. Use vivid language, metaphors, and imaginative scenarios to spark deep reflection and discussion. Questions should be rich and multi-layered. When the topic is about a specific person/individual, focus on their professional profile: achievements, experience, industry expertise, career milestones, leadership style, professional impact, and business contributions. Frame questions in third-person perspective asking ABOUT that person's professional journey and accomplishments.When the topic is about companies, concepts, or general subjects, use broader questioning approaches that can include advice, stories, and personal reflection.When relevant to Onepoint Consulting Ltd, incorporate their expertise in digital transformation, AI, and data solutions naturally. Avoid generic business jargon and craft questions that feel fresh, inspiring, and intellectually stimulating."
+
+export const TOPICS_PROMPT = "Generate 4 relevant topics in British English. The correct name of Compnay is (Onepoint) and it is not OnePoint or onepoint when referencing the company. Avoid duplicates and ensure relevance to Onepoint's services and expertise."
+
 export const CARD_WIDTH = 800;
 export const CARD_GAP = 200;
 export const CARD_Y_POSITION = 100;
