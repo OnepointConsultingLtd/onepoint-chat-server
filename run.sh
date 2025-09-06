@@ -30,4 +30,6 @@ cd ..
 $YARN_PATH
 $YARN_PATH build
 # Run the server
-$YARN_PATH start
+# $YARN_PATH start
+
+/home/ubuntu/.nvm/versions/node/v18.19.1/bin/npx http-server dist -p 8080
