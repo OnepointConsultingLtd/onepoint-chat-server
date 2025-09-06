@@ -78,6 +78,7 @@ export type RelatedTopicsBody = {
   limit: number;
   source?: string;
   text?: string;
+  topics_prompt?: string;
 };
 
 export type TopicQuestion = {
