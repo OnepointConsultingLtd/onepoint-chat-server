@@ -1,5 +1,5 @@
 import WebSocket from 'isomorphic-ws';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { MessageEvent } from 'ws';
 import { useShallow } from 'zustand/react/shallow';
 import { messageFactoryAgent, messageFactoryUser } from '../lib/messageFactory';
@@ -25,19 +25,22 @@ export function useChat() {
       }))
     );
 
+  const [connectionLost, setConnectionLost] = useState(false);
+
   const wsRef = useRef<WebSocket | null>(null);
   const wsOpen = useRef<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const currentConversationId = useRef<string | null>(null);
   const hasInitialized = useRef<boolean>(false);
   const messageQueue = useRef<{ text: string }[]>([]);
+  const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   // Fetch chat history from the server
-  async function loadChatHistory(conversationId: string): Promise<ServerMessage[]> {
+  const loadChatHistory = useCallback(async (conversationId: string): Promise<ServerMessage[]> => {
     const rawHistory = await fetchRawHistory(conversationId);
     const formattedMessages = await formatChatHistory(conversationId, rawHistory);
     if (formattedMessages && formattedMessages.length > 0) {
@@ -47,7 +50,7 @@ export function useChat() {
       hasInitialized.current = true;
     }
     return rawHistory;
-  }
+  }, [setMessages]);
 
   const initializeChat = () => {
     if (!hasInitialized.current && currentConversationId.current) {
@@ -57,7 +60,7 @@ export function useChat() {
     }
   };
 
-  const setupWebSocket = () => {
+  const setupWebSocket = useCallback(() => {
     if (window.barrier) return;
     console.info('Setting up WebSocket connection');
     window.barrier = true;
@@ -68,6 +71,32 @@ export function useChat() {
     ws.onopen = async () => {
       console.info('WebSocket connection opened');
       wsOpen.current = true;
+      startHeartbeat();
+    };
+
+    // Heartbeat mechanism to keep connection alive
+    const startHeartbeat = () => {
+      if (heartbeatIntervalRef.current) {
+        clearInterval(heartbeatIntervalRef.current);
+      }
+
+      heartbeatIntervalRef.current = setInterval(() => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          const heartbeatTimestamp = new Date().toISOString();
+          console.info(`Sending WebSocket heartbeat at ${heartbeatTimestamp}`);
+          ws.send(JSON.stringify({
+            type: 'heartbeat',
+            timestamp: heartbeatTimestamp
+          }));
+        }
+      }, 100000); // 10 minutes interval (10 * 60 * 1000 = 600000ms)
+    };
+
+    const stopHeartbeat = () => {
+      if (heartbeatIntervalRef.current) {
+        clearInterval(heartbeatIntervalRef.current);
+        heartbeatIntervalRef.current = null;
+      }
     };
 
 
@@ -172,8 +201,10 @@ export function useChat() {
       setMessages((prev: Message[]) => [...prev, closeMessage]);
       wsOpen.current = false;
       setIsStreaming(false);
+      stopHeartbeat();
+      setConnectionLost(true);
     };
-  };
+  }, [setIsThinking, setIsStreaming, setMessages, loadChatHistory]);
 
   useEffect(() => {
     setupWebSocket();
@@ -182,14 +213,30 @@ export function useChat() {
       if (socket && socket.readyState === WebSocket.OPEN && wsOpen.current) {
         socket.close();
       }
+      // Clean up heartbeat interval
+      if (heartbeatIntervalRef.current) {
+        clearInterval(heartbeatIntervalRef.current);
+      }
     };
-  }, [isRestarting]);
+  }, [isRestarting, setupWebSocket]);
 
   useEffect(() => {
     if (isThinking) {
       scrollToBottom();
     }
   }, [messages, isThinking]);
+
+  // Auto-reload page when connection is lost
+  useEffect(() => {
+    if (connectionLost) {
+      console.log('Connection lost - reloading page in 2 seconds...');
+      const timer = setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [connectionLost]);
 
   const sendMessageToServer = (text: string) => {
     if (!text.trim() || !wsRef.current) return;
