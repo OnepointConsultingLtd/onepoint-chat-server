@@ -39,6 +39,33 @@ export function useChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const updateLastMessage = (messages: Message[], updater: (msg: Message) => Message): Message[] => {
+    if (!messages.length) return messages;
+    const updated = updater({ ...messages[messages.length - 1] });
+    return [...messages.slice(0, -1), updated];
+  };
+
+  // Fetch reference sources for a specific message
+  const fetchReferenceSources = async (conversationId: string, messageId: string) => {
+    try {
+      const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/${conversationId}/message/${messageId}/references`);
+      if (!response.ok) return;
+
+      const data = await response.json();
+      if (data.referenceSources && data.referenceSources.length > 0) {
+        // Update the message with reference sources
+        setMessages((prev: Message[]) =>
+          updateLastMessage(prev, (msg) => ({
+            ...msg,
+            referenceSources: data.referenceSources,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching reference sources:', error);
+    }
+  };
+
   // Fetch chat history from the server
   const loadChatHistory = useCallback(async (conversationId: string): Promise<ServerMessage[]> => {
     const rawHistory = await fetchRawHistory(conversationId);
@@ -100,11 +127,6 @@ export function useChat() {
     };
 
 
-    const updateLastMessage = (messages: Message[], updater: (msg: Message) => Message): Message[] => {
-      if (!messages.length) return messages;
-      const updated = updater({ ...messages[messages.length - 1] });
-      return [...messages.slice(0, -1), updated];
-    }
 
     ws.onmessage = (event: MessageEvent) => {
       try {
@@ -133,12 +155,18 @@ export function useChat() {
             if (message.subType === 'streamEndError') {
               setMessages((prev: Message[]) => [...prev, messageFactoryAgent(message.message)]);
             } else {
+              // Update message with ID and fetch reference sources
               setMessages((prev: Message[]) =>
                 updateLastMessage(prev, (msg) => ({
                   ...msg,
                   id: message.message.id,
                 }))
               );
+
+              // Fetch reference sources for this message
+              if (message.message.id && currentConversationId.current) {
+                fetchReferenceSources(currentConversationId.current, message.message.id);
+              }
             }
             break;
           case 'message':

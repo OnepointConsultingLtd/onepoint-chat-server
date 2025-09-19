@@ -3,6 +3,7 @@ import { saveChatHistory } from "../api/handleApi";
 
 export async function saveConversation(
   conversation: Conversation,
+  referenceSources?: any[],
 ): Promise<void> {
   const { id, chatHistory } = conversation;
 
@@ -13,5 +14,5 @@ export async function saveConversation(
     return;
   }
 
-  await saveChatHistory(chatHistory, conversationId);
+  await saveChatHistory(chatHistory, conversationId, referenceSources);
 }

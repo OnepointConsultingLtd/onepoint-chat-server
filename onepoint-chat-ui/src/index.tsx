@@ -29,7 +29,6 @@ export default function Home() {
 
     // Check for URL parameters first (fresh shared links)
     if (conversationId) {
-      console.log('Loading shared chat.');
       loadSharedChatById(conversationId).then(success => {
         if (success) {
           const newUrl = window.location.pathname;
@@ -40,7 +39,6 @@ export default function Home() {
         }
       });
     } else if (threadId) {
-      console.log('Loading shared thread.');
       async function proccessSharedMessage() {
         if (!threadId) return;
 
@@ -58,7 +56,6 @@ export default function Home() {
     else if (isThreadMode()) {
       const persistedThreadId = getThreadId();
       if (persistedThreadId) {
-        console.log('Restoring persisted thread after refresh.');
         loadSharedThreadById(persistedThreadId).then(success => {
           if (success) {
             console.log('Persisted thread restored successfully');

@@ -6,6 +6,7 @@ import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 import useChatStore from '../store/chatStore';
 import { Message } from '../type/types';
 import CopyButton from './CopyButton';
+import ReferenceSources from './ReferenceSources';
 
 export default function RenderReactMarkdown({ message }: { message: Message }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -48,6 +49,8 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
     }
   };
 
+  const referenceSources = message.referenceSources;
+  console.log('Message HISTORYT CHECK', message);
   return (
     <div className="group w-full">
       <div className="relative text-left">
@@ -67,6 +70,10 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
         >
           {message.text}
         </ReactMarkdown>
+
+        {referenceSources && referenceSources.length > 0 && (
+          <ReferenceSources sources={referenceSources} />
+        )}
 
         <div className="flex items-center justify-between mt-2 text-xs">
           <CopyButton

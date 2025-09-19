@@ -11,17 +11,54 @@ function contextAdapter(response: any) {
   return response.success ? response.data.context_text : response.data;
 }
 
+function extractReferenceSources(contextData: any): any[] {
+  if (!contextData || !contextData.entities_context) {
+    return [];
+  }
+
+  // Extract unique file paths from entities_context
+  const filePaths = new Set<string>();
+  const referenceSources: any[] = [];
+
+  contextData.entities_context.forEach((entity: any) => {
+    if (entity.file_path) {
+      const paths = entity.file_path.split(';');
+      paths.forEach((path: string) => {
+        if (path.trim() && !filePaths.has(path.trim())) {
+          filePaths.add(path.trim());
+          referenceSources.push({
+            id: entity.id.toString(),
+            title: extractTitleFromPath(path.trim()),
+            filePath: path.trim(),
+            description: entity.description
+          });
+        }
+      });
+    }
+  });
+
+  // Limit to 5 reference sources
+  const slicedReferenceSources = referenceSources.slice(0, 3);
+  console.log('Checking slicedReferenceSources', slicedReferenceSources);
+  return slicedReferenceSources;
+}
+
+function extractTitleFromPath(filePath: string): string {
+  // Extract filename from path and clean it up
+  const filename = filePath.split('/').pop() || '';
+  // Remove .txt extension and replace underscores with spaces
+  return filename.replace('.txt', '').replace(/_/g, ' ').replace(/-/g, ' ');
+}
+
 export async function onepointCallback(
   chatHistory: ChatMessage[],
-): Promise<ChatMessage[]> {
+): Promise<{ chatHistory: ChatMessage[], referenceSources: any[] }> {
 
   const analysis = analyzeConversation(chatHistory);
   const lastMessage = chatHistory.slice(-1)[0];
   const contextResponse = await getContext(lastMessage.content);
   const knowledgeBase = truncateText(contextAdapter(contextResponse), 5000);
-
-  // Don't modify lastMessage.content — keep it clean
-  // lastMessage.content = `Context Information: ${knowledgeBase} \n User Message: ${lastMessage.content}`;
+  const referenceSources = extractReferenceSources(contextResponse.data);
 
   const systemInstructions: ChatMessage = {
     id: "system-instructions",
@@ -53,7 +90,10 @@ Initial Questions Complete: ${analysis.isInitialQuestionsComplete}
   }
 
   const MAX_HISTORY = 10;
-  const slicedHistory = chatHistory.slice(-MAX_HISTORY - 1, -1);
+  const slicedHistory = chatHistory.slice(-MAX_HISTORY - 1, -1)
 
-  return [...slicedHistory, systemInstructions, lastMessage];
+  return {
+    chatHistory: [...slicedHistory, systemInstructions, lastMessage],
+    referenceSources: referenceSources
+  };
 }

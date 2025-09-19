@@ -38,6 +38,45 @@ app.get("/api/chat/:conversationId", (async (req, res) => {
 }) as RequestHandler);
 
 /**
+ * Endpoint: /api/chat/:conversationId/message/:messageId/references
+ * Description: Get reference sources for a specific message
+ * example:
+ * http://localhost:5000/api/chat/123/message/456/references
+ * 
+ * This endpoint retrieves the reference sources for a specific message in a given conversation.
+ * It returns the reference sources for the message.
+ * 
+ * This endpoint is used to get the reference sources for a specific message in a given conversation.
+ * It returns the reference sources for the message.
+ */
+
+
+app.get("/api/chat/:conversationId/message/:messageId/references", (async (req, res) => {
+  try {
+    const { conversationId, messageId } = req.params;
+    const collection = await getCollection();
+
+    const conversation = await collection.findOne({ conversationId });
+    if (!conversation) {
+      return res.status(404).json({ error: "Conversation not found" });
+    }
+
+    // Find the specific message with reference sources
+    const message = conversation.chatHistory.find((msg: any) => msg.id === messageId || msg.messageId === messageId);
+    if (!message) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+
+    const referenceSources = message.referenceSources || [];
+    console.log('Reference sources for message', messageId, referenceSources);
+    res.json({ referenceSources });
+  } catch (error) {
+    console.error("Error fetching reference sources:", error);
+    res.status(500).json({ error: "Failed to fetch reference sources" });
+  }
+}) as RequestHandler);
+
+/**
  * Endpoint: /api/chat/share/:conversationId
  * Description: Share a conversation based on a conversation ID
  * 
@@ -71,6 +110,7 @@ app.get("/api/chat/share/:conversationId", (async (req, res) => {
         timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
         conversationId: conversation.conversationId,
         sessionId: conversation.conversationId,
+        referenceSources: msg.referenceSources,
       })),
       conversationId: conversation.conversationId,
     };
@@ -163,6 +203,7 @@ app.get("/api/chat/thread-share/:messageId", (async (req, res) => {
         timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
         conversationId: conversation.conversationId,
         messageId: msg.id,
+        referenceSources: msg.referenceSources,
       })),
       conversationId: conversation.conversationId,
     };

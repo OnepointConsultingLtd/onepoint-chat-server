@@ -1,11 +1,10 @@
 import { getCollection } from "./mongoClient";
-import { v4 as uuidv4 } from "uuid";
-// Re-export getCollection for use in other modules
 export { getCollection };
 
 const MESSAGE_START_STRING = "User Message to which you are responding:";
 
 export function extractUserMessageContent(content: string): string {
+  console.log('Checking content', content);
   if (!content.includes(MESSAGE_START_STRING)) {
     return content;
   }
@@ -50,6 +49,7 @@ export function formatConversationHistory(conversation: any) {
         content: extractUserMessageContent(msg.content),
         conversationId: conversation.conversationId,
         messageId: msg.id,
+        referenceSources: msg.referenceSources,
       };
     });
   return history;
@@ -58,7 +58,9 @@ export function formatConversationHistory(conversation: any) {
 export async function saveChatHistory(
   chatHistory: any[],
   conversationId: string,
+  referenceSources?: any[],
 ) {
+
   const oldConversationId = chatHistory[chatHistory.length - 1]?.conversationId;
   const newConversationId = conversationId;
 
@@ -68,30 +70,91 @@ export async function saveChatHistory(
     // Filter out system messages before saving
     const filteredChatHistory = chatHistory.filter((msg) => msg.role !== 'system');
 
-    const chatHistoryWithIds = filteredChatHistory.map((msg) => ({
-      ...msg,
-      conversationId: newConversationId,
-      messageId: msg.id,
-    }));
+    const chatHistoryWithIds = filteredChatHistory.map((msg) => {
+      const messageData: any = {
+        ...msg,
+        conversationId: newConversationId,
+        messageId: msg.id,
+      };
 
-    await collection.updateOne(
-      { conversationId: newConversationId },
-      {
-        $set: {
-          conversationId: newConversationId,
-          chatHistory: chatHistoryWithIds,
-          userMessage: extractUserMessageContent(
-            chatHistory[chatHistory.length - 1].content,
-          ),
-          timestamp: new Date().toISOString(),
+      // Preserve existing reference sources for each message
+      if (msg.referenceSources && msg.referenceSources.length > 0) {
+        messageData.referenceSources = msg.referenceSources;
+      }
+
+      return messageData;
+    });
+
+    // Add reference sources to the last assistant message if they exist
+    if (referenceSources && referenceSources.length > 0) {
+      const lastMessageIndex = chatHistoryWithIds.length - 1;
+      if (lastMessageIndex >= 0 && chatHistoryWithIds[lastMessageIndex].role === 'assistant') {
+        chatHistoryWithIds[lastMessageIndex].referenceSources = referenceSources;
+      }
+    }
+
+    // Check if conversation already exists
+    const existingConversation = await collection.findOne({ conversationId: newConversationId });
+
+    if (existingConversation) {
+      // Update existing conversation - preserve existing reference sources
+      const existingChatHistory = existingConversation.chatHistory || [];
+
+      // Merge existing chat history with new messages, preserving reference sources
+      const mergedChatHistory = [...existingChatHistory];
+
+      // Update or add new messages
+      chatHistoryWithIds.forEach((newMsg: any) => {
+        const existingIndex = mergedChatHistory.findIndex((existingMsg: any) =>
+          existingMsg.id === newMsg.id || existingMsg.messageId === newMsg.messageId
+        );
+
+        if (existingIndex >= 0) {
+          // Update existing message, preserve its reference sources
+          mergedChatHistory[existingIndex] = {
+            ...mergedChatHistory[existingIndex],
+            ...newMsg,
+            referenceSources: newMsg.referenceSources || mergedChatHistory[existingIndex].referenceSources
+          };
+        } else {
+          mergedChatHistory.push(newMsg);
+        }
+      });
+
+      await collection.updateOne(
+        { conversationId: newConversationId },
+        {
+          $set: {
+            conversationId: newConversationId,
+            chatHistory: mergedChatHistory,
+            userMessage: extractUserMessageContent(
+              chatHistory[chatHistory.length - 1].content,
+            ),
+            timestamp: new Date().toISOString(),
+          },
+        }
+      );
+    } else {
+      // Create new conversation
+      await collection.updateOne(
+        { conversationId: newConversationId },
+        {
+          $set: {
+            conversationId: newConversationId,
+            chatHistory: chatHistoryWithIds,
+            userMessage: extractUserMessageContent(
+              chatHistory[chatHistory.length - 1].content,
+            ),
+            timestamp: new Date().toISOString(),
+          },
         },
-      },
-      { upsert: true },
-    );
+        { upsert: true }
+      );
+    }
 
     console.log("New conversation saved/updated in MongoDB.");
 
-    // Delete the old conversation if it exists.
+    // Delete the old conversation if it exists and is different
     if (oldConversationId && oldConversationId !== newConversationId) {
       const deleteResult = await collection.deleteOne({ conversationId: oldConversationId });
       console.log(`Old conversation deleted: ${deleteResult.deletedCount} record(s) removed`);

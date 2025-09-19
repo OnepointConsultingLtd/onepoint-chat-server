@@ -15,6 +15,7 @@ export type ServerMessage = {
   timestamp?: Date;
   hl_keywords?: string[];
   ll_keywords?: string[];
+  referenceSources?: ReferenceSource[];
 };
 
 export type Message = {
@@ -26,6 +27,14 @@ export type Message = {
   conversationId?: string;
   hl_keywords?: string[];
   ll_keywords?: string[];
+  referenceSources?: ReferenceSource[];
+};
+
+export type ReferenceSource = {
+  id: string;
+  title: string;
+  filePath: string;
+  description?: string;
 };
 
 export type ChatContextType = {
