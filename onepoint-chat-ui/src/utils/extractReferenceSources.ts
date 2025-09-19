@@ -42,7 +42,6 @@ export function extractReferenceSources(content: string): ReferenceSource[] {
 export function extractReferenceSourcesAndClean(content: string): { referenceSources: ReferenceSource[]; cleanedContent: string } {
 	const referenceSources = extractReferenceSources(content);
 	const cleanedContent = removeReferenceSourcesMetadata(content);
-	console.log('Cleaned content', cleanedContent);
 	return { referenceSources, cleanedContent };
 }
 
@@ -52,7 +51,6 @@ export function extractReferenceSourcesAndClean(content: string): { referenceSou
  * @returns Clean content without reference sources metadata
  */
 export function removeReferenceSourcesMetadata(content: string): string {
-	console.log('Removing reference sources metadata from content', content);
 	const startMarker = '<!-- REFERENCE_SOURCES_START -->';
 	const endMarker = '<!-- REFERENCE_SOURCES_END -->';
 

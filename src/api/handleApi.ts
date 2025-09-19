@@ -4,7 +4,6 @@ export { getCollection };
 const MESSAGE_START_STRING = "User Message to which you are responding:";
 
 export function extractUserMessageContent(content: string): string {
-  console.log('Checking content', content);
   if (!content.includes(MESSAGE_START_STRING)) {
     return content;
   }

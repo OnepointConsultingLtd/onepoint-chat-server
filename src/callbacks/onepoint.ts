@@ -38,15 +38,12 @@ function extractReferenceSources(contextData: any): any[] {
   });
 
   // Limit to 5 reference sources
-  const slicedReferenceSources = referenceSources.slice(0, 3);
-  console.log('Checking slicedReferenceSources', slicedReferenceSources);
+  const slicedReferenceSources = referenceSources.slice(0, 5);
   return slicedReferenceSources;
 }
 
 function extractTitleFromPath(filePath: string): string {
-  // Extract filename from path and clean it up
   const filename = filePath.split('/').pop() || '';
-  // Remove .txt extension and replace underscores with spaces
   return filename.replace('.txt', '').replace(/_/g, ' ').replace(/-/g, ' ');
 }
 

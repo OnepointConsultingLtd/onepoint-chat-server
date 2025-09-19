@@ -68,7 +68,6 @@ app.get("/api/chat/:conversationId/message/:messageId/references", (async (req, 
     }
 
     const referenceSources = message.referenceSources || [];
-    console.log('Reference sources for message', messageId, referenceSources);
     res.json({ referenceSources });
   } catch (error) {
     console.error("Error fetching reference sources:", error);

@@ -155,7 +155,6 @@ export async function filePreview(
   }
 
   try {
-    console.log('The file preview data', response);
     return response;
   } catch (error) {
     console.error('Error fetching file:', error);
