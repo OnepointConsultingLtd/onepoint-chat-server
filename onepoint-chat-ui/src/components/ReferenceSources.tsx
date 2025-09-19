@@ -33,7 +33,9 @@ function FilePreviewPopUp({
         }}
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">📄 {fileName}</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            📄 {fileName.replace('.txt', '').replace(/_/g, ' ').replace(/-/g, ' ')}
+          </h2>
           <button
             onClick={onClose}
             aria-label="Close Preview Modal"
@@ -121,18 +123,21 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
               <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-green-500 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center text-xs font-medium">
                 {index + 1}
               </span>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 overflow-hidden">
                 <div className="font-medium capitalize text-gray-800 dark:text-gray-200 truncate">
                   {source.title}
                 </div>
-                <button
-                  onClick={() => handleFilePreview(source.filePath)}
-                  disabled={isLoading}
-                  className="mt-1 text-blue-600 cursor-pointer dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline text-xs disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {source.filePath.split('/').pop()}
-                </button>
-                📄
+                <div className="mt-1 flex items-center gap-1">
+                  <button
+                    onClick={() => handleFilePreview(source.filePath)}
+                    disabled={isLoading}
+                    className="text-blue-600 text-left cursor-pointer dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline text-xs disabled:opacity-50 disabled:cursor-not-allowed break-all"
+                    style={{ wordBreak: 'break-all' }}
+                  >
+                    {source.filePath.split('/').pop()}
+                  </button>
+                  <span className="text-gray-400">📄</span>
+                </div>
               </div>
             </div>
           ))}
