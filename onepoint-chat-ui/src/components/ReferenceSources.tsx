@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { filePreview } from '../lib/apiClient';
 import { ReferenceSource } from '../type/types';
@@ -29,7 +29,6 @@ function FilePreviewPopUp({
       <div
         className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden m-4"
         onClick={e => {
-          // Prevent closing when clicking on the modal content
           e.stopPropagation();
         }}
       >
@@ -63,6 +62,27 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
   const [previewFileName, setPreviewFileName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const closeOnEscape = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      closePreview();
+    }
+  };
+
+  const closePreview = () => {
+    setIsFilePreviewOpen(false);
+    setPreviewContent('');
+    setPreviewFileName('');
+  };
+
+  useEffect(() => {
+    if (isFilePreviewOpen) {
+      document.addEventListener('keydown', closeOnEscape);
+      return () => {
+        document.removeEventListener('keydown', closeOnEscape);
+      };
+    }
+  }, [isFilePreviewOpen, closeOnEscape]);
+
   if (!sources || sources.length === 0) {
     return null;
   }
@@ -83,12 +103,6 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const closePreview = () => {
-    setIsFilePreviewOpen(false);
-    setPreviewContent('');
-    setPreviewFileName('');
   };
 
   return (
