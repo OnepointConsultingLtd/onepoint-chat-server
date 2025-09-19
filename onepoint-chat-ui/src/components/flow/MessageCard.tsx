@@ -50,6 +50,7 @@ export default function MessageCard({
     isThreadShareMode,
     exitThreadShareMode,
     relatedTopics,
+    relatedTopicsLoading,
     handleRestart,
   } = useChatStore(
     useShallow(state => ({
@@ -62,6 +63,7 @@ export default function MessageCard({
       isThreadShareMode: state.isThreadShareMode,
       exitThreadShareMode: state.exitThreadShareMode,
       relatedTopics: state.relatedTopics,
+      relatedTopicsLoading: state.relatedTopicsLoading,
       handleRestart: state.handleRestart,
     }))
   );
@@ -85,7 +87,9 @@ export default function MessageCard({
       onMouseLeave={() => !isInitialMessage && setShowButton(false)}
     >
       {/* Related Topics Label */}
-      {relatedTopics && isLastCard && !isThinking && relatedTopics.topics.length > 0 ? (
+      {isLastCard &&
+      !isThinking &&
+      (relatedTopicsLoading || (relatedTopics && relatedTopics.topics.length > 0)) ? (
         <div className="absolute top-1/2 -right-[114px] -translate-y-1/2 -z-[1] flex flex-col items-center">
           {/* Label */}
           <div
@@ -94,8 +98,12 @@ export default function MessageCard({
                   backdrop-blur-md shadow-lg text-xs font-semibold text-gray-800 dark:text-white
                   hover:shadow-blue-400/50 transition-shadow duration-300"
           >
-            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-cyan-300 animate-pulse"></span>
-            Related Topics
+            {relatedTopicsLoading ? (
+              <div className="w-2 h-2 rounded-full border border-blue-400 border-t-transparent animate-spin"></div>
+            ) : (
+              <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-cyan-300 animate-pulse"></span>
+            )}
+            {relatedTopicsLoading ? 'Loading Topics...' : 'Related Topics'}
           </div>
 
           <RenderHandle />
