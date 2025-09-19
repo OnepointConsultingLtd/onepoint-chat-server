@@ -50,7 +50,6 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
   };
 
   const referenceSources = message.referenceSources;
-  console.log('Message HISTORYT CHECK', message);
   return (
     <div className="group w-full">
       <div className="relative text-left">

@@ -30,7 +30,7 @@ function extractReferenceSources(contextData: any): any[] {
             id: entity.id.toString(),
             title: extractTitleFromPath(path.trim()),
             filePath: path.trim(),
-            description: entity.description
+            description: entity.description.substring(0, 100)
           });
         }
       });
