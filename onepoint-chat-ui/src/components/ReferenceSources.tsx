@@ -122,14 +122,9 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
                 {index + 1}
               </span>
               <div className="flex-1 min-w-0">
-                <div className="font-medium text-gray-800 dark:text-gray-200 truncate">
+                <div className="font-medium capitalize text-gray-800 dark:text-gray-200 truncate">
                   {source.title}
                 </div>
-                {source.description && (
-                  <div className="text-gray-500 dark:text-gray-200 truncate">
-                    {source.description}
-                  </div>
-                )}
                 <button
                   onClick={() => handleFilePreview(source.filePath)}
                   disabled={isLoading}
