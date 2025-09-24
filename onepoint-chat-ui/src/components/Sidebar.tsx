@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
+import { TfiReload } from 'react-icons/tfi';
 import { useShallow } from 'zustand/react/shallow';
-import { nameDescription, siteName } from '../lib/constants';
+import { PROJECT_INFO } from '../lib/constants';
 import useChatStore from '../store/chatStore';
 import CloseIcon from './Menus/CloseIcon';
 import QuestionItem from './QuestionItem';
-import { TfiReload } from 'react-icons/tfi';
 
 type SidebarProps = {
   sendMessageToServer: (text: string) => void;
@@ -143,7 +143,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
                   </div>
                   <div>
                     <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {siteName}
+                      {PROJECT_INFO.NAME}
                     </h1>
                     <p className="text-xs text-gray-500 dark:text-gray-400">AI Assistant</p>
                   </div>
@@ -168,10 +168,10 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
                 </div>
                 <div>
                   <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    {siteName}
+                    {PROJECT_INFO.NAME}
                   </h1>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
-                    {nameDescription}
+                    {PROJECT_INFO.NAME_DESCRIPTION}
                   </p>
                 </div>
               </div>

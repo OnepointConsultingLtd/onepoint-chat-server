@@ -1,14 +1,19 @@
 // constants.ts
-export const siteName = 'OSCA';
-export const nameDescription = 'Onepoint Smart Company Advisor';
 export const INITIAL_MESSAGE =
-  "Welcome to Onepoint! I'm OSCA, your AI assistant. My goal is to understand your needs and guide you to the right expertise.";
+  "Welcome to Onepoint! I'm Osca, your AI assistant. My goal is to understand your needs and guide you to the right expertise.";
+
+export const PROJECT_INFO = {
+  NAME: 'Osca',
+  NAME_DESCRIPTION: 'Onepoint Smart Company Advisor',
+}
 
 export const CONNECTION_ERROR = "Connection error";
 
-export const QUESTION_PROMPT = "Generate creative, thought-provoking questions in British English that are engaging and substantive. Use vivid language, metaphors, and imaginative scenarios to spark deep reflection and discussion. Questions should be rich and multi-layered. When the topic is about a specific person/individual, focus on their professional profile: achievements, experience, industry expertise, career milestones, leadership style, professional impact, and business contributions. Frame questions in third-person perspective asking ABOUT that person's professional journey and accomplishments.When the topic is about companies, concepts, or general subjects, use broader questioning approaches that can include advice, stories, and personal reflection.When relevant to Onepoint Consulting Ltd, incorporate their expertise in digital transformation, AI, and data solutions naturally. Avoid generic business jargon and craft questions that feel fresh, inspiring, and intellectually stimulating."
+export const QUESTION_PROMPT =
+  "Generate clear, concise, and user-friendly questions in British English. Keep questions short (under 12 words) and direct, focusing on helping a user quickly understand the topic. Use simple,practical wording instead of abstract or poetic language. When relevant to Onepoint Consulting Ltd, highlight their expertise in digital transformation, AI, and data solutions naturally. Questions should feel approachable and easy to click, like FAQ items a client would want quick answers to."
 
-export const TOPICS_PROMPT = "Generate 4 relevant topics in British English. The correct name of Compnay is (Onepoint) and it is not OnePoint or onepoint when referencing the company. Avoid duplicates and ensure relevance to Onepoint's services and expertise."
+export const TOPICS_PROMPT =
+  "Generate 4 relevant topics in British English, formatted as a simple bulleted list. Always use the correct company name (Onepoint) — never OnePoint or onepoint.  Avoid duplicates and ensure all topics are directly relevant to Onepoint’s services and expertise (digital transformation, AI, data solutions, and consulting). Keep topic titles concise and professional."
 
 export const CARD_WIDTH = 800;
 export const CARD_GAP = 200;

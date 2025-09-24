@@ -19,9 +19,10 @@ export function messageFactoryAgent(text: string): Message {
  * Factory function to create a message for the user
  * @param text - The text of the message
  * @param conversationId - The conversation ID of the user
+ * @param metadata - Optional metadata for the message
  * @returns A message object
  */
-export function messageFactoryUser(text: string, conversationId: string): Message {
+export function messageFactoryUser(text: string, conversationId: string, metadata?: Message['metadata']): Message {
   return {
     id: uuidv4(),
     messageId: uuidv4(),
@@ -29,5 +30,6 @@ export function messageFactoryUser(text: string, conversationId: string): Messag
     type: 'user',
     timestamp: new Date(),
     conversationId,
+    metadata,
   };
 }

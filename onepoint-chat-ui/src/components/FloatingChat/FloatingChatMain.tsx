@@ -7,6 +7,7 @@ import Messages from '../Messages';
 import FloatingChatButton from './FloatingChatButton';
 import FloatingHeader from './FloatingHeader';
 import FeatureHighlights from './FeatureHighlights';
+import { PROJECT_INFO } from '../../lib/constants';
 
 type FloatingChatMainProps = {
   handleSubmit: (text: string) => void;
@@ -58,7 +59,7 @@ export default function FloatingChatMain({
             </svg>
           </div>
           <h1 className="text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent mb-4">
-            Meet OSCA
+            Meet {PROJECT_INFO.NAME}
           </h1>
           <p className="text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-3">
             Onepoint Smart Company Advisor

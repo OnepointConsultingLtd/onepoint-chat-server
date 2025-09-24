@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { predefinedTopics } from '../lib/predefinedTopics';
+import { INITIAL_MESSAGE, PROJECT_INFO } from '../lib/constants';
+import { predefinedQuestions } from '../lib/predefinedTopics';
 import chatStore from '../store/chatStore';
-import { Topic } from '../type/types';
+import { PredefinedQuestion, Topic } from '../type/types';
 import BackToBottom from './FloatingChat/BackToBottom';
+import SharedModeRender from './flow/SharedModeRender';
 import RenderReactMarkdown from './RenderReactMarkdown';
 import ThinkingIndicator from './ThinkingIndicator';
 import TopicButton from './TopicButton';
-import { INITIAL_MESSAGE } from '../lib/constants';
-import SharedModeRender from './flow/SharedModeRender';
 
 type MessagesProps = {
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
@@ -72,12 +72,19 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
     }
   };
 
-  const renderTopics = relatedTopics?.topics || predefinedTopics;
+  const renderTopics = relatedTopics?.topics || predefinedQuestions;
 
-  const handleTopicClick = (topic: Topic) => {
-    handleTopicAction({ type: 'related', topic });
-    const prompt = `Tell me more about ${topic.name}`;
-    sendMessageToServer(prompt);
+  const handleTopicClick = (topic: Topic | PredefinedQuestion) => {
+    if ('name' in topic) {
+      // It's a regular topic
+      handleTopicAction({ type: 'related', topic });
+      const prompt = `Tell me more about ${topic.name}`;
+      sendMessageToServer(prompt);
+    } else {
+      // It's a predefined question
+      handleTopicAction({ type: 'question', question: topic });
+      sendMessageToServer(topic.text);
+    }
   };
 
   return (
@@ -139,7 +146,10 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                               />
                             </svg>
                           </div>
-                          <span className="text-sm font-semibold text-white">OSCA</span>
+                          <span className="text-sm font-semibold text-white">
+                            {' '}
+                            {PROJECT_INFO.NAME}
+                          </span>
                         </div>
                       )}
 
@@ -221,7 +231,7 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
               <div className="grid grid-cols-2 gap-2">
                 {renderTopics?.map((topic, index) => (
                   <TopicButton
-                    key={topic.name || index}
+                    key={'name' in topic ? topic.name : topic.label || index}
                     topic={topic}
                     index={index}
                     onTopicClick={handleTopicClick}

@@ -8,6 +8,13 @@ export type Question = {
   isSelectedTopicFromTopic?: boolean;
 };
 
+export type InitialQuestion = {
+  name: string;
+  description: string;
+  type: string;
+  questions: string[];
+};
+
 export type ServerMessage = {
   role: 'user' | 'assistant' | 'operator' | 'system';
   content: string;
@@ -28,6 +35,15 @@ export type Message = {
   hl_keywords?: string[];
   ll_keywords?: string[];
   referenceSources?: ReferenceSource[];
+  metadata?: {
+    source?: 'question' | 'manual' | 'topic' | 'related';
+    questionId?: number;
+    topicName?: string;
+    label?: string;
+    userAgent?: string;
+    sessionId?: string;
+    [key: string]: unknown;
+  };
 };
 
 export type ReferenceSource = {
@@ -73,6 +89,15 @@ export type Topic = {
   type: string;
   questions: string[];
 };
+
+export type PredefinedQuestion = {
+  id: number;
+  text: string;
+  label: string;
+  type: string;
+};
+
+export type TopicOrQuestion = Topic | PredefinedQuestion;
 
 export type Topics = {
   topics: Topic[];

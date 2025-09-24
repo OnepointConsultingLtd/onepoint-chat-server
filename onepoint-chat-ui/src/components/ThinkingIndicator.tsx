@@ -1,3 +1,5 @@
+import { PROJECT_INFO } from '../lib/constants';
+
 export default function ThinkingIndicator() {
   return (
     <div className="p-3 md:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-400 dark:to-gray-400 rounded-xl">
@@ -13,7 +15,10 @@ export default function ThinkingIndicator() {
           </svg>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">OSCA</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+            {' '}
+            {PROJECT_INFO.NAME}
+          </span>
           <div className="flex space-x-1">
             <div
               className="w-2 h-2 bg-blue-400 dark:bg-blue-300 rounded-full animate-bounce"

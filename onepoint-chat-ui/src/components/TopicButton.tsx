@@ -1,9 +1,9 @@
-import { Topic } from '../type/types';
+import { TopicOrQuestion } from '../type/types';
 
 interface TopicButtonProps {
-  topic: Topic;
+  topic: TopicOrQuestion;
   index: number;
-  onTopicClick: (topic: Topic) => void;
+  onTopicClick: (topic: TopicOrQuestion) => void;
 }
 
 export default function TopicButton({ topic, index, onTopicClick }: TopicButtonProps) {
@@ -51,11 +51,12 @@ export default function TopicButton({ topic, index, onTopicClick }: TopicButtonP
     return colorSchemes[colorIndex];
   };
 
-  const colors = getTopicColors(topic.name);
+  const topicName = 'name' in topic ? topic.name : topic.label;
+  const colors = getTopicColors(topicName);
 
   return (
     <button
-      key={topic.name || index}
+      key={'name' in topic ? topic.name : topic.label || index}
       onClick={() => onTopicClick(topic)}
       className={`group relative bg-gradient-to-br ${colors.gradient} ${colors.hover} p-3 rounded-xl border ${colors.border} transition-all duration-200 hover:shadow-md active:scale-95`}
     >
@@ -65,7 +66,7 @@ export default function TopicButton({ topic, index, onTopicClick }: TopicButtonP
           <h4
             className={`font-medium ${colors.text} ${colors.hoverText} text-sm leading-tight truncate`}
           >
-            {topic.name}
+            {topicName}
           </h4>
         </div>
         <div className="flex-shrink-0 ml-2">

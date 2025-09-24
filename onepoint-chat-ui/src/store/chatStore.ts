@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { SharedResponse } from '..';
 import { fetchRelatedQuestions as fetchQuestionsFromApi, fetchRelatedTopics } from '../lib/apiClient';
 import { INITIAL_MESSAGE, LOCAL_STORAGE_KEYS } from '../lib/constants';
-import { clearChatData, getConversationId, saveConversationId, saveThreadId, clearThreadData } from '../lib/persistence';
+import { clearChatData, clearThreadData, getConversationId, saveConversationId, saveThreadId } from '../lib/persistence';
 import { ChatStore, TopicActionPayload } from '../type/chatStore';
 import { Message, Question, Topic, TopicQuestionsResponse, Topics } from '../type/types';
-import { SharedResponse } from '..';
 import { exportChatToPDFApi } from '../utils/exportChat';
 
 function newChat() {

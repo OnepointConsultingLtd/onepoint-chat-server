@@ -89,7 +89,9 @@ export default function MessageCard({
       {/* Related Topics Label */}
       {isLastCard &&
       !isThinking &&
-      (relatedTopicsLoading || (relatedTopics && relatedTopics.topics.length > 0)) ? (
+      (relatedTopicsLoading ||
+        (relatedTopics && relatedTopics.topics.length > 0) ||
+        isInitialMessage) ? (
         <div className="absolute top-1/2 -right-[114px] -translate-y-1/2 -z-[1] flex flex-col items-center">
           {/* Label */}
           <div
@@ -99,11 +101,18 @@ export default function MessageCard({
                   hover:shadow-blue-400/50 transition-shadow duration-300"
           >
             {relatedTopicsLoading ? (
-              <div className="w-2 h-2 rounded-full border border-blue-400 border-t-transparent animate-spin"></div>
+              <>
+                <div className="flex items-center gap-5">
+                  <span>Loading...</span>
+                  <div className="w-2 h-2 rounded-full border border-blue-400 border-t-transparent animate-spin"></div>
+                </div>
+              </>
             ) : (
-              <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-cyan-300 animate-pulse"></span>
+              <>
+                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-cyan-300 animate-pulse"></span>
+                {isInitialMessage ? 'Accelerate with' : 'Related Topics'}
+              </>
             )}
-            {relatedTopicsLoading ? 'Loading Topics...' : 'Related Topics'}
           </div>
 
           <RenderHandle />

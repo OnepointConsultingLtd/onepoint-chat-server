@@ -3,13 +3,13 @@ import {
   CARD_GAP,
   CARD_WIDTH,
   CARD_Y_POSITION,
-  TOPIC_CARD,
-  MOBILE_CARD_WIDTH,
   MOBILE_CARD_GAP,
+  MOBILE_CARD_WIDTH,
   MOBILE_CARD_X_POSITION,
   MOBILE_TOPIC_CARD,
+  TOPIC_CARD,
 } from '../../lib/constants';
-import { Message, Topic } from '../../type/types';
+import { Message, TopicOrQuestion } from '../../type/types';
 import { getConversationStartIndex } from '../../utils/messageUtils';
 import MessageCard from './MessageCard';
 
@@ -17,8 +17,8 @@ export function createNodes(
   messages: Message[],
   isThinking: boolean,
   handleSubmit: (text: string) => void,
-  topics: Topic[] = [],
-  topicClickHandler?: (topic: Topic) => void,
+  topics: TopicOrQuestion[] = [],
+  topicClickHandler?: (topic: TopicOrQuestion) => void,
   setCardHeight?: (id: string, height: number) => void,
   cardHeights?: { [id: string]: number },
   isMobile: boolean = false
@@ -113,7 +113,7 @@ export function createNodes(
         id: `card-${lastCardIndex}-topic-${index}`,
         type: 'topic',
         data: {
-          label: topic.name,
+          label: 'name' in topic ? topic.name : topic.label,
           topic: topic,
           onClick: topicClickHandler ? () => topicClickHandler(topic) : undefined,
           isMobile: isMobile,

@@ -10,15 +10,15 @@ import {
   MAX_ZOOM,
   MIN_ZOOM,
 } from '../../lib/constants';
-import { predefinedTopics } from '../../lib/predefinedTopics';
+import { interceptServerError } from '../../lib/interceptServerError';
+import { predefinedQuestions } from '../../lib/predefinedTopics';
 import useChatStore from '../../store/chatStore';
-import { nodeTypes, Topic } from '../../type/types';
+import { nodeTypes, PredefinedQuestion, Topic, TopicOrQuestion } from '../../type/types';
+import { filterDisplayableMessages } from '../../utils/messageFilter';
 import { createEdges } from './EdgeCreator';
 import ErrorCard from './ErrorCard';
 import { createNodes } from './NodeCreator';
 import { focusOnLatestNode } from './ViewportManager';
-import { interceptServerError } from '../../lib/interceptServerError';
-import { filterDisplayableMessages } from '../../utils/messageFilter';
 
 /**
  * Flow component that displays the chat conversation in a flow diagram.
@@ -76,15 +76,30 @@ export default function Flow({
     [handleTopicAction, sendMessageToServer]
   );
 
+  const handlePredefinedQuestionClick = useCallback(
+    (question: PredefinedQuestion) => {
+      handleTopicAction({ type: 'question', question });
+      sendMessageToServer(question.text);
+    },
+    [handleTopicAction, sendMessageToServer]
+  );
+
   const topicState = useMemo(
     () => ({
       isInitialMessage: isInitialMessage && !isThreadShareMode,
       isThreadShareMode,
-      predefinedTopics: predefinedTopics,
+      predefinedQuestions: predefinedQuestions,
       relatedTopics: relatedTopics?.topics || [],
       handleRelatedTopicClick,
+      handlePredefinedQuestionClick,
     }),
-    [isInitialMessage, isThreadShareMode, relatedTopics, handleRelatedTopicClick]
+    [
+      isInitialMessage,
+      isThreadShareMode,
+      relatedTopics,
+      handleRelatedTopicClick,
+      handlePredefinedQuestionClick,
+    ]
   );
 
   const [cardHeights, setCardHeights] = useState<{ [id: string]: number }>({});
@@ -112,16 +127,13 @@ export default function Flow({
       isThreadShareMode
         ? []
         : topicState.isInitialMessage
-          ? predefinedTopics.map((topic: Topic) => ({
-              name: topic.name,
-              description: topic.description,
-              type: topic.type,
-              questions: topic.questions,
-            }))
+          ? predefinedQuestions
           : !isThinking
             ? topicState.relatedTopics
             : [],
-      handleRelatedTopicClick,
+      topicState.isInitialMessage
+        ? (handlePredefinedQuestionClick as (topic: TopicOrQuestion) => void)
+        : (handleRelatedTopicClick as (topic: TopicOrQuestion) => void),
       setCardHeight,
       cardHeights
     );
@@ -132,6 +144,7 @@ export default function Flow({
     topicState,
     handleSubmit,
     handleRelatedTopicClick,
+    handlePredefinedQuestionClick,
     cardHeights,
     setCardHeight,
   ]);
@@ -157,7 +170,7 @@ export default function Flow({
       isThreadShareMode
         ? 0
         : topicState.isInitialMessage
-          ? predefinedTopics.length
+          ? predefinedQuestions.length
           : topicState.relatedTopics.length
     );
   }, [filteredMessages, topicState, isThreadShareMode]);
@@ -169,7 +182,7 @@ export default function Flow({
       isThreadShareMode
         ? 0
         : topicState.isInitialMessage
-          ? predefinedTopics.length
+          ? predefinedQuestions.length
           : topicState.relatedTopics.length
     );
     previousMessagesLengthRef.current = filteredMessages.length;

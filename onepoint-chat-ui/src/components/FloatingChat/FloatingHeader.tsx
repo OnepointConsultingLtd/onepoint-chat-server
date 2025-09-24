@@ -8,6 +8,7 @@ import { useDarkMode } from '../../hooks/useDarkMode';
 import { useExport } from '../../hooks/useExport';
 import { handleCopyToClipboard } from '../../lib/handleCopyToClipboard';
 import useChatStore from '../../store/chatStore';
+import { PROJECT_INFO } from '../../lib/constants';
 
 export default function FloatingHeader() {
   const { isDark, toggleTheme } = useDarkMode();
@@ -61,7 +62,10 @@ export default function FloatingHeader() {
   return (
     <header className="sticky top-0 z-10 w-full p-3 py-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between w-full space-x-2">
-        <h1 className="text-3xl font-bold text-[#0284c7] dark:text-blue-400">OSCA</h1>
+        <h1 className="text-3xl font-bold text-[#0284c7] dark:text-blue-400">
+          {' '}
+          {PROJECT_INFO.NAME}
+        </h1>
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-1">

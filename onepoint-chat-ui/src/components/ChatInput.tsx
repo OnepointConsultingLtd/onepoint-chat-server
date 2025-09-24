@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import useChatStore from '../store/chatStore';
 import { ChatInputProps } from '../type/types';
+import { PROJECT_INFO } from '../lib/constants';
 
 export default function ChatInput({ handleSubmit }: ChatInputProps) {
   const [inputText, setInputText] = useState('');
@@ -94,7 +95,8 @@ export default function ChatInput({ handleSubmit }: ChatInputProps) {
           </form>
 
           <span className="text-[8px]  md:text-xs text-center text-slate-900 dark:text-gray-100 z-[85]">
-            OSCA can make mistakes. Check important information with your Onepoint advisor.
+            {PROJECT_INFO.NAME} can make mistakes. Check important information with your Onepoint
+            advisor.
             <br /> Press{' '}
             <kbd className="px-1 py-0.5 bg-blue-500 text-white dark:bg-gray-600 dark:text-gray-300 rounded">
               Esc
