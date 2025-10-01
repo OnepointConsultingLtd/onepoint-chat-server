@@ -1,7 +1,16 @@
 import useChatStore from '../store/chatStore';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function SideBarButton() {
-  const { toggleSidebar } = useChatStore();
+  const { toggleSidebar, isSidebarOpen } = useChatStore(
+    useShallow(state => ({
+      toggleSidebar: state.toggleSidebar,
+      isSidebarOpen: state.isSidebarOpen,
+    }))
+  );
+
+  if (isSidebarOpen) return null;
+
   return (
     <div className="!w-fit h-auto pl-3 lg:pl-5 lg:static sticky top-0 !z-50 flex items-center justify-start">
       <div

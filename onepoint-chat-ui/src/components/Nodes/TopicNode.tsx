@@ -7,12 +7,10 @@ type TopicNodeData = {
   label: string;
   topic: { description?: string; text?: string; name?: string };
   onClick?: () => void;
-  isMobile?: boolean;
 };
 
 export default function TopicNode({ data }: { data: TopicNodeData }) {
   const { isStreaming } = useChat();
-  const { isMobile = false } = data;
 
   return (
     <div
@@ -35,22 +33,13 @@ export default function TopicNode({ data }: { data: TopicNodeData }) {
         </div>
       )}
 
-      {/* Responsive handles */}
-      {isMobile ? (
-        <Handle
-          type="target"
-          position={Position.Top}
-          id="top"
-          style={{ background: '#3b82f6', left: '50%', transform: 'translateX(-50%)' }}
-        />
-      ) : (
-        <Handle
-          type="target"
-          position={Position.Left}
-          id="left"
-          style={{ background: '#3b82f6', top: '50%', transform: 'translateY(-50%)' }}
-        />
-      )}
+      {/* Desktop handles */}
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="left"
+        style={{ background: '#3b82f6', top: '50%', transform: 'translateY(-50%)' }}
+      />
     </div>
   );
 }

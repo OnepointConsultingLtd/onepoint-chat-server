@@ -1,4 +1,4 @@
-import { Background, BackgroundVariant, Controls, ReactFlow, useReactFlow } from '@xyflow/react';
+import { Background, Controls, ReactFlow, useReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -214,14 +214,8 @@ export default function Flow({
           minZoom={zoomSettings.minZoom}
           maxZoom={zoomSettings.maxZoom}
           defaultViewport={{ x: 0, y: 0, zoom: zoomSettings.defaultZoom }}
-          proOptions={{ hideAttribution: true }}
         >
-          <Background
-            color={isDark ? '#374151' : '#f1f5f9'}
-            variant={BackgroundVariant.Dots}
-            gap={9000}
-            size={1}
-          />
+          <Background color={isDark ? '#374151' : '#f1f5f9'} gap={9000} size={1} />
 
           <Controls showInteractive={false} />
         </ReactFlow>

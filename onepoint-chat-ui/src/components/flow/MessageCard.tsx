@@ -18,7 +18,6 @@ type MessageCardProps = {
   isThinking: boolean;
   handleSubmit: (text: string) => void;
   onHeightChange: (height: number) => void;
-  isMobile?: boolean;
 };
 
 function RenderHandle() {
@@ -108,10 +107,7 @@ export default function MessageCard({
                 </div>
               </>
             ) : (
-              <>
-                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-cyan-300 animate-pulse"></span>
-                {isInitialMessage ? 'Accelerate with' : 'Related Topics'}
-              </>
+              <>{isInitialMessage ? 'Accelerate with' : 'Related Topics'}</>
             )}
           </div>
 

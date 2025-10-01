@@ -180,27 +180,18 @@ const useChatStore = create<ChatStore>()(
       handleTopicAction: async (payload: TopicActionPayload) => {
         const { setSelectedTopic, fetchRelatedTopics, fetchRelatedQuestions } = get();
 
-        if (payload.type === 'related') {
-          setSelectedTopic(payload.topic);
-          await fetchRelatedTopics(payload.topic.name);
-          await fetchRelatedQuestions(payload.topic.name);
-        } else if (payload.type === 'manual') {
+        const manual = payload.type === 'manual';
+        const question = payload.type === 'question';
+        const related = payload.type === 'related';
+        if (related || manual || question) {
           setSelectedTopic({
-            name: payload.text,
+            name: related ? payload.topic.name : manual ? payload.text : question ? payload.question.text : '',
             description: '',
-            type: 'manual',
-            questions: [],
+            type: related ? 'related' : manual ? 'manual' : question ? 'question' : '',
+            questions: [related ? payload.topic.name : manual ? payload.text : question ? payload.question.text : ''],
           });
-          await fetchRelatedTopics('', payload.text);
-          await fetchRelatedQuestions('', payload.text);
-        } else if (payload.type === 'question') {
-          setSelectedTopic({
-            name: payload.question.text,
-            description: '',
-            type: 'question',
-            questions: [payload.question.text],
-          });
-          await fetchRelatedTopics('', payload.question.text);
+          await fetchRelatedTopics('', related ? payload.topic.name : manual ? payload.text : question ? payload.question.text : '');
+          await fetchRelatedQuestions(related ? payload.topic.name : manual ? payload.text : question ? payload.question.text : '');
         }
       },
 
@@ -325,7 +316,6 @@ const useChatStore = create<ChatStore>()(
             isThreadShareMode: false,
           }));
 
-          console.log('Shared chat loaded successfully!');
           return true;
         } catch (error) {
           console.error('Error loading shared chat:', error);
@@ -388,7 +378,6 @@ const useChatStore = create<ChatStore>()(
             topicQuestionsError: null,
           }));
 
-          console.log('Shared thread loaded successfully!');
           return {
             status: true,
             messages: messages,

@@ -75,7 +75,7 @@ export async function fetchRelatedQuestions(
   const body = {
     topics: selectedTopic,
     text: text,
-    topic_limit: 5,
+    topic_limit: 10,
     entity_type_filter: '',
     format: 'json',
     system_prompt: QUESTION_PROMPT

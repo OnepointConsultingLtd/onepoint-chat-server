@@ -18,6 +18,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
     topicQuestionsLoading,
     topicQuestionsError,
     refreshQuestions,
+    isInitialMessage,
   } = useChatStore(
     useShallow(state => ({
       isSidebarOpen: state.isSidebarOpen,
@@ -26,6 +27,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
       topicQuestionsLoading: state.topicQuestionsLoading,
       topicQuestionsError: state.topicQuestionsError,
       refreshQuestions: state.refreshQuestions,
+      isInitialMessage: state.isInitialMessage,
     }))
   );
 
@@ -101,7 +103,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
     }
 
     return (
-      <div className="space-y-3">
+      <div className="space-y-2">
         {topicQuestions.map((question, index) => (
           <QuestionItem
             key={question.id || index}
@@ -117,13 +119,13 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
     <div className="h-screen lg:!sticky top-0 z-[120]">
       <div className="flex flex-col h-screen">
         <div
-          className={`${isSidebarOpen ? '!w-full opacity-100' : '!w-0 opacity-0'} h-screen transition-all duration-300 lg:bg-transparent fixed inset-0 bg-black/60 backdrop-blur-sm z-[85] lg:!relative`}
+          className={`${isSidebarOpen ? '!w-full opacity-100' : '!w-0 opacity-0'} h-screen transition-all duration-300 lg:bg-transparent fixed inset-0 z-[85] lg:!relative`}
           onClick={toggleSidebar}
         >
           <div
             className={`fixed inset-y-0 ${
               isSidebarOpen ? 'block left-0 w-[300px] lg:!w-[385px]' : '-left-[1180px] w-0 hidden'
-            } transition-all duration-300 bg-white shadow-2xl lg:!shadow-xl lg:!relative z-50 flex flex-col h-full animate-fade-in`}
+            } transition-all duration-300  lg:!relative z-50 flex flex-col h-full animate-fade-in`}
             onClick={e => e.stopPropagation()}
           >
             {/* Mobile Header */}
@@ -153,7 +155,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
             </div>
 
             {/* Desktop Header */}
-            <div className="border-b border-gray-200 dark:border-gray-700 hidden lg:!flex justify-between items-center bg-white dark:bg-gray-800">
+            <div className="border-b border-gray-200 dark:border-gray-700 hidden lg:!flex justify-between items-center ">
               <div className="flex items-center px-6 py-5">
                 <div className="w-12 h-12 rounded-lg bg-blue-500 flex items-center justify-center mr-4 shadow-sm">
                   <svg
@@ -182,7 +184,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
 
             {/* Questions Section */}
             <div
-              className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800"
+              className="flex-1 overflow-y-auto"
               style={{
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#d1d5db transparent',
@@ -191,7 +193,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
               <div className="p-6">
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white text-center">
-                    How can I help you today?
+                    {isInitialMessage ? 'How can I help you today?' : 'Suggested Questions'}
                   </h2>
                   <button
                     onClick={refreshQuestions}
@@ -207,7 +209,9 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
 
                 {/* Label for clarity */}
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                  Please select a question below to get instant insights.
+                  {isInitialMessage
+                    ? 'Please select a question below to get instant insights.'
+                    : 'Please select a question below to get instant insights.'}
                 </p>
 
                 {renderQuestionsContent()}

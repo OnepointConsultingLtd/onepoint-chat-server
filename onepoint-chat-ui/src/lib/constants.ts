@@ -13,25 +13,15 @@ export const QUESTION_PROMPT =
   "Generate clear, concise, and user-friendly questions in British English. Keep questions short (under 12 words) and direct, focusing on helping a user quickly understand the topic. Use simple,practical wording instead of abstract or poetic language. When relevant to Onepoint Consulting Ltd, highlight their expertise in digital transformation, AI, and data solutions naturally. Questions should feel approachable and easy to click, like FAQ items a client would want quick answers to."
 
 export const TOPICS_PROMPT =
-  "Generate 4 relevant topics in British English, formatted as a simple bulleted list. Always use the correct company name (Onepoint) — never OnePoint or onepoint.  Avoid duplicates and ensure all topics are directly relevant to Onepoint’s services and expertise (digital transformation, AI, data solutions, and consulting). Keep topic titles concise and professional."
+  "Generate 4 relevant topics in British English, formatted as a simple bulleted list. Always use the correct company name (Onepoint) — never OnePoint or onepoint.  Avoid duplicates and ensure all topics are directly relevant to Onepoint’s services and expertise (digital transformation, AI, data solutions, and consulting). Keep topic titles concise and professional. avoid too much AI and large language models related topics"
 
 export const CARD_WIDTH = 800;
 export const CARD_GAP = 200;
 export const CARD_Y_POSITION = 100;
 
-// Mobile constants
-export const MOBILE_CARD_WIDTH = 350;
-export const MOBILE_CARD_GAP = 50;
-export const MOBILE_CARD_X_POSITION = 50;
-
 export const DEFAULT_ZOOM = 0.9;
 export const MIN_ZOOM = 0.2;
 export const MAX_ZOOM = 1.5;
-
-// Mobile zoom constants
-export const MOBILE_DEFAULT_ZOOM = 0.7;
-export const MOBILE_MIN_ZOOM = 0.3;
-export const MOBILE_MAX_ZOOM = 1.2;
 
 export const MAX_RELATED_TOPICS = 4;
 export const MAX_PREVIEW_CHARS = 100;
@@ -41,13 +31,6 @@ export const TOPIC_CARD = {
   Y_SPACING: 5,
   WIDTH: 280,
 };
-
-export const MOBILE_TOPIC_CARD = {
-  HEIGHT: 100,
-  Y_SPACING: 10,
-  WIDTH: 300,
-};
-
 
 export const PROJECT_CONFIG = {
   PROJECT: 'osca_v1',

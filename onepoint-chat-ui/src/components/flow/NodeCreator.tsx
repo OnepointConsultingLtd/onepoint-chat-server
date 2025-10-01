@@ -1,14 +1,5 @@
 import { Node } from '@xyflow/react';
-import {
-  CARD_GAP,
-  CARD_WIDTH,
-  CARD_Y_POSITION,
-  MOBILE_CARD_GAP,
-  MOBILE_CARD_WIDTH,
-  MOBILE_CARD_X_POSITION,
-  MOBILE_TOPIC_CARD,
-  TOPIC_CARD,
-} from '../../lib/constants';
+import { CARD_GAP, CARD_WIDTH, CARD_Y_POSITION, TOPIC_CARD } from '../../lib/constants';
 import { Message, TopicOrQuestion } from '../../type/types';
 import { getConversationStartIndex } from '../../utils/messageUtils';
 import MessageCard from './MessageCard';
@@ -20,8 +11,7 @@ export function createNodes(
   topics: TopicOrQuestion[] = [],
   topicClickHandler?: (topic: TopicOrQuestion) => void,
   setCardHeight?: (id: string, height: number) => void,
-  cardHeights?: { [id: string]: number },
-  isMobile: boolean = false
+  cardHeights?: { [id: string]: number }
 ): Node[] {
   const nodes: Node[] = [];
 
@@ -31,14 +21,11 @@ export function createNodes(
   const cardCount = Math.ceil((messages.length - startIndex) / 2);
   const lastCardIndex = cardCount - 1;
 
-  // Use mobile or desktop constants
-  const cardWidth = isMobile ? MOBILE_CARD_WIDTH : CARD_WIDTH;
-  const cardGap = isMobile ? MOBILE_CARD_GAP : CARD_GAP;
+  // Use desktop constants
+  const cardWidth = CARD_WIDTH;
+  const cardGap = CARD_GAP;
   const messageCardY = CARD_Y_POSITION;
   const messageCardHeights: number[] = [];
-
-  // For mobile vertical stacking, we need to track cumulative Y position
-  let currentY = messageCardY;
 
   for (let i = startIndex; i < messages.length; i += 2) {
     const userMessage = messages[i];
@@ -66,45 +53,29 @@ export function createNodes(
             isThinking={isThinking}
             handleSubmit={handleSubmit}
             onHeightChange={h => setCardHeight && setCardHeight(cardId, h)}
-            isMobile={isMobile}
           />
         ),
       },
       position,
       style: { width: cardWidth },
     });
-
-    // Update currentY for next card in mobile mode
-    if (isMobile) {
-      currentY += cardHeight + cardGap;
-    }
   }
 
   // Topic cards positioning
   if (topics.length > 0) {
-    const topicCardConfig = isMobile ? MOBILE_TOPIC_CARD : TOPIC_CARD;
+    const topicCardConfig = TOPIC_CARD;
     const totalTopicHeight =
       topics.length * topicCardConfig.HEIGHT + (topics.length - 1) * topicCardConfig.Y_SPACING;
 
-    let topicX: number;
-    let topicStartY: number;
+    // Desktop: Position topics to the right of the last message card
+    const messageCardsStartY = messageCardY;
+    const lastCardHeight = cardHeights?.[`card-${lastCardIndex}`] ?? 200;
+    const messageCardsEndY = messageCardsStartY + lastCardHeight;
+    const messageCardsMidY = (messageCardsStartY + messageCardsEndY) / 2;
 
-    if (isMobile) {
-      // Mobile: Position topics below the last message card
-      topicX = MOBILE_CARD_X_POSITION;
-      // Use the final currentY position (which is already calculated correctly)
-      topicStartY = currentY;
-    } else {
-      // Desktop: Position topics to the right of the last message card
-      const messageCardsStartY = messageCardY;
-      const lastCardHeight = cardHeights?.[`card-${lastCardIndex}`] ?? 200;
-      const messageCardsEndY = messageCardsStartY + lastCardHeight;
-      const messageCardsMidY = (messageCardsStartY + messageCardsEndY) / 2;
-
-      const lastCardX = lastCardIndex * (cardWidth + cardGap);
-      topicX = lastCardX + cardWidth + cardGap;
-      topicStartY = messageCardsMidY - totalTopicHeight / 2;
-    }
+    const lastCardX = lastCardIndex * (cardWidth + cardGap);
+    const topicX = lastCardX + cardWidth + cardGap;
+    const topicStartY = messageCardsMidY - totalTopicHeight / 2;
 
     let currentTopicY = topicStartY;
 
@@ -116,7 +87,6 @@ export function createNodes(
           label: 'name' in topic ? topic.name : topic.label,
           topic: topic,
           onClick: topicClickHandler ? () => topicClickHandler(topic) : undefined,
-          isMobile: isMobile,
         },
         position: { x: topicX, y: currentTopicY },
         draggable: false,
