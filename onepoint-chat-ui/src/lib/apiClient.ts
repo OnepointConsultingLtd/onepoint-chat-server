@@ -16,15 +16,21 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
 
   const body: RelatedTopicsBody = {
     samples: 25000,
-    path_length: 5,
     restart_prob: 0.15,
-    runs: 5,
     limit: MAX_RELATED_TOPICS,
     source: selectedTopic || '',
     text: text.trim() || '',
-    topics_prompt: TOPICS_PROMPT
-
+    topics_prompt: TOPICS_PROMPT,
+    deduplicate_topics: false,
+    random_walk_parameters: {
+      samples: 50000,
+      path_length: 5,
+      restart_prob: 0.15,
+      runs: 10
+    },
+    similarity_topics_method: 'nearest_neighbors'
   };
+
 
   const response = await fetch(url, {
     method: 'POST',
@@ -83,23 +89,32 @@ export async function fetchRelatedQuestions(
 
   const url = `${getServer()}/project/questions?project=${project}&engine=${engine}`;
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${ONE_TIME_TOKEN}`,
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
   try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${ONE_TIME_TOKEN}`,
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const errorText = `HTTP error! status: ${response.status}`;
+      console.error('Failed to fetch questions:', errorText);
+      throw new Error(errorText);
+    }
+
     const data = await response.json();
     return data;
   } catch (error) {
+    // Catch network errors (CORS, connection issues, etc.)
+    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+      const errorMessage = 'Network error: Unable to reach the server. Please check your connection or try again later.';
+      console.error('Network error fetching questions:', errorMessage);
+      throw new Error(errorMessage);
+    }
+    // Re-throw other errors
     console.error('Error fetching questions:', error);
     throw error;
   }

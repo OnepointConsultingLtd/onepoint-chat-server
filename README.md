@@ -7,48 +7,23 @@ Quick notes about the setup.
 - Frontend: `onepoint-chat-ui` directory
 - Backend: root directory files
 
-## Building
+## Building and runing the project:
 
-Backend:
+### Backend root level:
 
 ```bash
 # nvm use v22.12.0
 yarn
 yarn run build
+yarn run start
 ```
 
-Frontend:
+### Frontend:
 
 ```bash
 cd ./onepoint-chat-ui
 yarn
-yarn run build
-```
-
-## Running
-
-You will need to start three servers:
-
-The GraphRAG Server which you can find here:
-
-https://github.com/OnepointConsultingLtd/graphrag_kb_server.git
-
-You will need to install and run this project. See the project README.
-
-You will need then to execute on the root folder on one console:
-
-```bash
-yarn run start
-```
-
-And on another console:
-
-```bash
-cd onepoint-chat-ui
-# Production mode
-yarn run start
-# Development mode#
-yarn run dev
+yarn run build || run_ui.ps1
 ```
 
 ## Servers
@@ -56,7 +31,6 @@ yarn run dev
 - Main Chat Server: Port 4000 (WebSocket server for chat functionality)
 - History Server: Port 5000 (REST server for fetching chat history)
 - You can also run the development server using vite during development time.
--
 
 ## Config Files
 
@@ -64,14 +38,14 @@ yarn run dev
 
 ```
 # OpenAI Configuration
+
 OPENAI_API_KEY=your_key
 OPENAI_MODEL=gpt-4o-mini
 INITIAL_PROVIDER=openai
 
-# Gemini Configuration (Alternative)
-# INITIAL_PROVIDER=gemini
-# GEMINI_API_KEY=your_key
-GEMINI_MODEL=gemini-1.5-flash
+# INITIAL_PROVIDER=gemini # uncomment this to use gemini
+# GEMINI_API_KEY=<Gemini Key>
+# GEMINI_MODEL=gemini-2.5-pro
 
 # Server Settings
 PORT=4000  # Main WebSocket server
@@ -82,8 +56,8 @@ PROMPT_FILE=config/prompts.toml
 SLICE_SIZE=5
 
 # Context API Settings
-CONTEXT_API_URL=your_url
-CONTEXT_API_KEY=your_key
+CONTEXT_API_URL=<AI engine address>
+CONTEXT_API_KEY=<your_key>
 
 # MongoDB Configuration
 MONGO_URI=mongodb://localhost:27017

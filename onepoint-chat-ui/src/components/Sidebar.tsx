@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { TfiReload } from 'react-icons/tfi';
 import { useShallow } from 'zustand/react/shallow';
 import { PROJECT_INFO } from '../lib/constants';
@@ -31,12 +31,17 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
     }))
   );
 
-  // Fetch topic questions on component mount
+  const hasTriedFetchOnMount = useRef(false);
+
+  // Fetch topic questions on component mount (only once)
   useEffect(() => {
-    if (topicQuestions.length === 0 && !topicQuestionsLoading) {
+    // Only fetch once on mount if there are no questions and we're not already loading
+    if (!hasTriedFetchOnMount.current && topicQuestions.length === 0 && !topicQuestionsLoading) {
+      hasTriedFetchOnMount.current = true;
       refreshQuestions();
     }
-  }, [topicQuestions.length, topicQuestionsLoading, refreshQuestions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - only run on mount to prevent infinite retry loop
 
   const renderQuestionsContent = () => {
     if (topicQuestionsLoading) {

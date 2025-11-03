@@ -180,6 +180,7 @@ const useChatStore = create<ChatStore>()(
       handleTopicAction: async (payload: TopicActionPayload) => {
         const { setSelectedTopic, fetchRelatedTopics, fetchRelatedQuestions } = get();
 
+        console.log('payload', payload.type);
         const manual = payload.type === 'manual';
         const question = payload.type === 'question';
         const related = payload.type === 'related';

@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/data-wellness/
 
-*Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
+_Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better._
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- 
-- 
-- 
+-
+-
+-
 - Search for:Search
 
 Architect for outcomes[1]
@@ -181,15 +181,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
 
 ## Sources
 

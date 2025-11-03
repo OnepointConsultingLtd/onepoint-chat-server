@@ -1,0 +1,19 @@
+# PDF to Markdown Converter Dependencies
+# Install with: pip install -r requirements_pdf.txt
+
+# Core PDF processing libraries
+PyMuPDF>=1.23.0          # Primary PDF library (fitz)
+pdfplumber>=0.10.0       # Alternative PDF library with better table extraction
+pymupdf4llm>=0.0.5       # Specialized library for LLM-optimized markdown conversion
+
+# Image processing (optional, for image extraction)
+Pillow>=10.0.0           # PIL for image processing
+
+# Additional utilities
+tqdm>=4.65.0             # Progress bars
+pathlib2>=2.3.7          # Enhanced pathlib (for older Python versions)
+
+# Development and testing (optional)
+pytest>=7.0.0            # Testing framework
+black>=23.0.0            # Code formatting
+flake8>=6.0.0            # Linting

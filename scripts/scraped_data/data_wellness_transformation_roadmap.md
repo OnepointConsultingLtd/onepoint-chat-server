@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/data-wellness/transformation-roadmap/
 
-*Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better.*
+_Onepoint - Our experience helps to solve questions related to on-prem or cloud; data strategy or governance; data engineering or analysis, delivering the best possible outcomes. Doing data better._
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- 
-- 
-- 
+-
+-
+-
 - Search for:Search
 
 Architect for outcomes[1]
@@ -51,9 +51,10 @@ Rapid Health Check[12]
 Transformation Roadmap[13]
 
 ## Define a strategic roadmap for your data
+
 ecosystem with our experts​
 
-## 
+##
 
 You want to partner with a team of independent data experts to do a deep dive into your data and analytics ecosystem.
 
@@ -130,15 +131,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
 
 ## Sources
 

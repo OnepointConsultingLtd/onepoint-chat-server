@@ -1,6 +1,9 @@
+// core/onepointCallback.ts
 import { ChatMessage } from "@gilf/chat-websocket-server";
 import { getContext } from "../api";
 import { analyzeConversation } from "../utils/conversationAnalyzer";
+import { personaDirectives, servicesGuidance } from "../utils/personaPrompt";
+import { personaFirstQuestion } from "../utils/personaFirstQuestion";
 
 function truncateText(text: string, maxTokens = 5000): string {
   const words = text.split(" ");
@@ -12,85 +15,98 @@ function contextAdapter(response: any) {
 }
 
 function extractReferenceSources(contextData: any): any[] {
-  if (!contextData || !contextData.entities_context) {
-    return [];
-  }
-
-  // Extract unique file paths from entities_context
+  if (!contextData || !contextData.entities_context) return [];
   const filePaths = new Set<string>();
   const referenceSources: any[] = [];
-
   contextData.entities_context.forEach((entity: any) => {
     if (entity.file_path) {
-      const paths = entity.file_path.split(';');
-      paths.forEach((path: string) => {
-        if (path.trim() && !filePaths.has(path.trim())) {
-          filePaths.add(path.trim());
+      const paths = entity.file_path.split(";").map((p: string) => p.trim()).filter(Boolean);
+      for (const p of paths) {
+        if (!filePaths.has(p)) {
+          filePaths.add(p);
           referenceSources.push({
-            id: entity.id.toString(),
-            title: extractTitleFromPath(path.trim()),
-            filePath: path.trim(),
-            description: entity.description.substring(0, 100)
+            id: String(entity.id),
+            title: extractTitleFromPath(p),
+            filePath: p,
+            description: (entity.description || "").substring(0, 100),
           });
         }
-      });
+      }
     }
   });
-
-  // Limit to 5 reference sources
-  const slicedReferenceSources = referenceSources.slice(0, 5);
-  return slicedReferenceSources;
+  return referenceSources.slice(0, 5);
 }
 
 function extractTitleFromPath(filePath: string): string {
-  const filename = filePath.split('/').pop() || '';
-  return filename.replace('.txt', '').replace(/_/g, ' ').replace(/-/g, ' ');
+  const filename = filePath.split("/").pop() || "";
+  return filename.replace(/\.[^.]+$/, "").replace(/[_-]/g, " ");
 }
 
 export async function onepointCallback(
   chatHistory: ChatMessage[],
-): Promise<{ chatHistory: ChatMessage[], referenceSources: any[] }> {
-
+): Promise<{ chatHistory: ChatMessage[]; referenceSources: any[] }> {
   const analysis = analyzeConversation(chatHistory);
   const lastMessage = chatHistory.slice(-1)[0];
   const contextResponse = await getContext(lastMessage.content);
   const knowledgeBase = truncateText(contextAdapter(contextResponse), 5000);
   const referenceSources = extractReferenceSources(contextResponse.data);
 
+  const personaBlock = personaDirectives(analysis.persona);
+  const servicesBlock = servicesGuidance(analysis.services);
+
+  console.log("personaFirstQuestion ", personaFirstQuestion(analysis.persona));
+  console.log("personaBlock", personaBlock);
+  console.log("servicesBlock", servicesBlock);
   const systemInstructions: ChatMessage = {
-    id: "system-instructions",
+    id: `system-instructions-${Date.now()}`, // unique ID; avoids equality collisions
     role: "system" as any,
     content: `
-You are a digital transformation assistant for **Onepoint**, a UK-based consulting firm founded in 2005, with offices in **London** and **Pune**. Your role is to support clients, prospects, or internal teams in understanding Onepoint's services and guiding them toward suitable solutions.
+You are Osca — Onepoint Smart Company Advisor.
+Your role is to represent Onepoint in business conversations — explaining our approach, services, and client outcomes, not technical tutorials.
+Your purpose is to understand client goals, identify business priorities, and recommend the right Onepoint service path.
 
-### 🎯 Your Goals
-- Understand the user's business goals and current data maturity.
-- Recommend relevant Onepoint services, resources, or next steps.
-- Encourage connecting with an expert when further help is needed.
 
---- 
-Context Summary (from KB):
+Operating Persona: ${analysis.persona}
+
+Persona Guidelines:
+${personaBlock}
+
+Service Alignment:
+${servicesBlock}
+
+Suggested First Question:
+${personaFirstQuestion(analysis.persona)}
+
+Interaction Rules:
+Business-First Rule:
+- Always focus on business impact, outcomes, and value — not step-by-step technical setup or code.
+- If the user requests implementation detail (e.g., Docker, Kubernetes, MLflow), summarise conceptually (≤2 bullets) and pivot to business value or service recommendation.
+Example pivot: “Our architecture approach ensures scalability and reliability. We can explore this through our **AI Build** or **AI Architecture** services.”
+
+
+Response Focus:
+If persona = Maria → Emphasise business value, ROI, and leadership outcomes.
+If persona = Mark T → Discuss architectural strategy at a business outcome level (avoid implementation commands).
+If persona = Mark D → Focus on data governance, measurement, and decision-making.
+If persona = Rakesh T or Rakesh D → Keep technical but brief; link back to Onepoint’s services.
+If persona = Vanika → Focus on commercial clarity and partnership stages.
+If persona = Destiny → Offer learning and early-career guidance aligned to Onepoint projects.
+
+
+Onepoint Context (for reference only — use insights, not verbatim quotes):
 ${knowledgeBase}
 
-User Context (for internal understanding only - do not reference directly):
-Persona: ${analysis.persona}
-Relevant Services: ${analysis.services.join(", ")}
-Initial Questions Complete: ${analysis.isInitialQuestionsComplete}
-`
+`.trim(),
   };
 
-  const index = chatHistory.findIndex(
-    (obj) => systemInstructions.content === obj.content,
-  );
-  if (index !== -1) {
-    chatHistory.splice(index, 1);
-  }
-
+  // Keep only the last N messages from the user/assistant, then append fresh system + last user
   const MAX_HISTORY = 10;
-  const slicedHistory = chatHistory.slice(-MAX_HISTORY - 1, -1)
+  const trimmed = chatHistory.slice(-MAX_HISTORY);
+  // Remove any prior system messages to avoid stacking
+  const filtered = trimmed.filter(m => m.role !== "system");
 
   return {
-    chatHistory: [...slicedHistory, systemInstructions, lastMessage],
-    referenceSources: referenceSources
+    chatHistory: [...filtered, systemInstructions, lastMessage],
+    referenceSources,
   };
 }

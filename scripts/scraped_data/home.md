@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/
 
-*Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients.*
+_Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients._
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- 
-- 
-- 
+-
+-
+-
 - Search for:Search
 
 Architect for outcomes[1]
@@ -20,17 +20,17 @@ Do data better[2]
 
 Innovate with AI & more[3]
 
-[Onepoint TechTalk webinar  —  Making AI work for youWatch now    →](/techtalk/making-ai-work-for-you-how-onepoint-does-it/)
+[Onepoint TechTalk webinar — Making AI work for youWatch now    →](/techtalk/making-ai-work-for-you-how-onepoint-does-it/)
 
-Onepoint TechTalk webinar  —  Making AI work for youWatch now    →
+Onepoint TechTalk webinar — Making AI work for youWatch now    →
 
-[Onepoint TechTalk webinar  —  AI agents demystifiedWatch now    →](/techtalk/ai-agents-demystified/)
+[Onepoint TechTalk webinar — AI agents demystifiedWatch now    →](/techtalk/ai-agents-demystified/)
 
-Onepoint TechTalk webinar  —  AI agents demystifiedWatch now    →
+Onepoint TechTalk webinar — AI agents demystifiedWatch now    →
 
-[Onepoint TechTalk webinar  —  RAG, GraphRAG and beyondWatch now    →](/techtalk/the-future-of-enterprise-data-access/)
+[Onepoint TechTalk webinar — RAG, GraphRAG and beyondWatch now    →](/techtalk/the-future-of-enterprise-data-access/)
 
-Onepoint TechTalk webinar  —  RAG, GraphRAG and beyondWatch now    →
+Onepoint TechTalk webinar — RAG, GraphRAG and beyondWatch now    →
 
 [Onepoint awarded Excellence in Customer Service award at Signature Awards 2025Read more    →](/signature-awards-2025-winner/)
 
@@ -125,9 +125,10 @@ Creating & sustaining an advanced web scraping solution for a market leader oper
 [More client stories](/client-stories/)
 
 ## Start your
-journey with a 
+
+journey with a
 Onepoint
-Springboard™ 
+Springboard™
 workshop
 
 Explore your business and technologychallenges— and opportunities — with our senior advisors and technologists during a half-day structured workshop held at our offices, or virtually.
@@ -229,15 +230,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
 
 ## Sources
 

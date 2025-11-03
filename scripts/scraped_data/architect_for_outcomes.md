@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/architect-for-outcomes/
 
-*Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients.*
+_Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients._
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- 
-- 
-- 
+-
+-
+-
 - Search for:Search
 
 Architect for outcomes[1]
@@ -343,15 +343,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
 
 ## Sources
 

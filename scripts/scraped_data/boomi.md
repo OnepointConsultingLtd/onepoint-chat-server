@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/boomi/
 
-*Boomi Consulting Services UK - If you are looking for Boomi integration, Boomi consulting, Boomi partners, Boomi service, Boomi consultant, Boomi services, Boomi integration partner, Boomi consultants UK, Boomi consulting services UK, Boomi integration services UK, please contact us!*
+_Boomi Consulting Services UK - If you are looking for Boomi integration, Boomi consulting, Boomi partners, Boomi service, Boomi consultant, Boomi services, Boomi integration partner, Boomi consultants UK, Boomi consulting services UK, Boomi integration services UK, please contact us!_
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- 
-- 
-- 
+-
+-
+-
 - Search for:Search
 
 Architect for outcomes[1]
@@ -442,16 +442,17 @@ With the Boomi API Management product, Onepoint’s experts quickly put in place
 
 [Get in touch with an expert](#boomi-contact)
 
-Onepoint wins Boomi  EMEA Teaming Systems Integrator Partner of the Year 2023 award
+Onepoint wins Boomi EMEA Teaming Systems Integrator Partner of the Year 2023 award
 
 Within our Boomi CoE, we continuously develop Boomi connectors and expand our knowledge through numerous internal Proof of Concepts (PoCs). The relentless effort and dedication of our Onepoint Boomi team culminated in this esteemed recognition, presented to us during the awards ceremony at the EMEA Boomi Partner Summit 2023 in Lisbon, Portugal.
 
 Read more[82]
 
 ## Start your
-journey with a 
+
+journey with a
 Onepoint
-Springboard™ 
+Springboard™
 workshop
 
 Explore your data and application integration opportunities with Boomi— with our senior advisors and technologists during a half-day structured workshop held at our offices, or virtually.
@@ -465,7 +466,6 @@ Get in touch with us using the form below.
 ## AI and Master Data Management: A synergy for success
 
 [Watch now](/techtalk/ai-and-master-data-management-a-synergy-for-success/)
-
 
 My name is,  and I work at
 
@@ -490,9 +490,10 @@ Learn more about the Boomi Unified Platform
 Visit boomi[84]
 
 ## Start your
-journey with a 
+
+journey with a
 Onepoint
-Springboard™ 
+Springboard™
 workshop
 
 Explore your data and application integration opportunities with Boomi— with our senior advisors and technologists during a half-day structured workshop held
@@ -568,15 +569,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
 
 ## Sources
 

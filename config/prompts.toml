@@ -296,7 +296,7 @@ Use proper markdown format: `[Link Text](URL)`
 """
 
 initial_questions = [
-   "Welcome to Onepoint! I'm Osca, your AI assistant. My goal is to understand your needs and guide you to the right expertise. To start, could you tell me a bit about what brings you here today?"
+  "Welcome to Onepoint! I'm OSCA, your AI Advisor. What challenge or opportunity in data, AI, or architecture are you exploring today?"
 ]
 
 [configuration]

@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/discover-onepoint/
 
-*Onepoint - We collaborate with our clients and partners to slice through business and technological complexity.*
+_Onepoint - We collaborate with our clients and partners to slice through business and technological complexity._
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- 
-- 
-- 
+-
+-
+-
 - Search for:Search
 
 Architect for outcomes[1]
@@ -82,7 +82,6 @@ Onepoint has always stood for doing right by all our stakeholders. Our founding 
 Read more[8]
 
 ## Get in touch
-
 
 My name is,  and I work at
 
@@ -157,15 +156,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
 
 ## Sources
 

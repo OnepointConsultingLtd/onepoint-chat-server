@@ -9,6 +9,8 @@ from tqdm import tqdm
 import time
 from datetime import datetime
 import re
+from urllib.parse import urljoin, urlparse
+import mimetypes
 
 """
 This script is used to scrape the Onepoint website and save the data to a Markdown file.
@@ -92,7 +94,30 @@ def parse_html_to_markdown(html, url):
     citations = []
     citation_count = 0
     
-    for element in soup.find_all(["h1", "h2", "h3", "p", "ul", "ol", "li", "a", "blockquote"]):
+    # Ensure assets directory exists
+    assets_dir = os.path.join("scraped_data", "assets")
+    os.makedirs(assets_dir, exist_ok=True)
+    
+    def is_asset_url(href):
+        if not href:
+            return False
+        parsed = urlparse(href)
+        path = parsed.path.lower()
+        asset_exts = (
+            ".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg",
+            ".mp4", ".webm", ".ogg", ".mov", ".avi",
+            ".mp3", ".wav", ".m4a", ".flac",
+            ".pdf"
+        )
+        return any(path.endswith(ext) for ext in asset_exts)
+    
+    def add_citation(text, link):
+        nonlocal citation_count
+        citation_count += 1
+        citations.append(f"[{citation_count}] {text}: {link}")
+        return citation_count
+    
+    for element in soup.find_all(["h1", "h2", "h3", "p", "ul", "ol", "li", "a", "blockquote", "img", "video", "audio", "iframe"]):
         if element.name.startswith("h"):  # Headings
             level = int(element.name[1])
             # Skip the main title as it's already handled
@@ -112,18 +137,71 @@ def parse_html_to_markdown(html, url):
                 markdown += f"{idx}. {li.get_text(strip=True)}\n"
             markdown += "\n"
         elif element.name == "a" and element.get_text(strip=True):  # Links
-            href = element.get("href", "#")
+            raw_href = element.get("href", "")
             text = element.get_text(strip=True)
-            if href.startswith('http'):
-                citation_count += 1
-                citations.append(f"[{citation_count}] {text}: {href}")
-                markdown += f"{text}[{citation_count}]\n\n"
+            resolved_href = urljoin(url, raw_href)
+            if is_asset_url(resolved_href):
+                local_rel = download_file(resolved_href)
+                local_link = local_rel if local_rel else resolved_href
+                # Preserve structure: external links use citations; otherwise inline
+                if raw_href.startswith('http'):
+                    idx = add_citation(text, local_link)
+                    markdown += f"{text}[{idx}]\n\n"
+                else:
+                    markdown += f"[{text}]({local_link})\n\n"
             else:
-                markdown += f"[{text}]({href})\n\n"
+                if resolved_href.startswith('http'):
+                    idx = add_citation(text, resolved_href)
+                    markdown += f"{text}[{idx}]\n\n"
+                else:
+                    markdown += f"[{text}]({resolved_href})\n\n"
         elif element.name == "blockquote":  # Blockquotes
             text = element.get_text(strip=True)
             if text:
                 markdown += f"> {text}\n\n"
+        elif element.name == "img":  # Images
+            src = element.get("src")
+            alt = element.get("alt", "")
+            resolved_src = urljoin(url, src) if src else None
+            if resolved_src:
+                local_rel = download_file(resolved_src)
+                if local_rel:
+                    markdown += f"![{alt}]({local_rel})\n\n"
+                else:
+                    markdown += f"![{alt}]({resolved_src})\n\n"
+        elif element.name == "video":  # Videos
+            # Prefer <source> child, fallback to src
+            source_tag = element.find("source")
+            src = source_tag.get("src") if source_tag and source_tag.get("src") else element.get("src")
+            resolved_src = urljoin(url, src) if src else None
+            if resolved_src:
+                local_rel = download_file(resolved_src)
+                link_target = local_rel if local_rel else resolved_src
+                markdown += f"[Video]({link_target})\n\n"
+        elif element.name == "audio":  # Audios
+            source_tag = element.find("source")
+            src = source_tag.get("src") if source_tag and source_tag.get("src") else element.get("src")
+            resolved_src = urljoin(url, src) if src else None
+            if resolved_src:
+                local_rel = download_file(resolved_src)
+                link_target = local_rel if local_rel else resolved_src
+                markdown += f"[Audio]({link_target})\n\n"
+        elif element.name == "iframe":  # Iframes
+            src = element.get("src")
+            resolved_src = urljoin(url, src) if src else None
+            if resolved_src:
+                hostname = urlparse(resolved_src).hostname or ""
+                # For YouTube/Vimeo/other embeds, just add a clickable link
+                if any(h in hostname for h in ["youtube.com", "youtu.be", "vimeo.com"]):
+                    markdown += f"[Embedded content]({resolved_src})\n\n"
+                else:
+                    # Try to download if it's a direct asset, otherwise just link
+                    if is_asset_url(resolved_src):
+                        local_rel = download_file(resolved_src)
+                        link_target = local_rel if local_rel else resolved_src
+                        markdown += f"[Embedded content]({link_target})\n\n"
+                    else:
+                        markdown += f"[Embedded content]({resolved_src})\n\n"
     
     # Add citations section if there are any
     if citations:
@@ -138,6 +216,57 @@ def parse_html_to_markdown(html, url):
     markdown += f"- Content Type: {'PDF' if url.lower().endswith('.pdf') else 'Web Page'}\n"
     
     return markdown
+
+# Helper to download and save media assets into scraped_data/assets
+def download_file(asset_url):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
+    try:
+        assets_dir = os.path.join("scraped_data", "assets")
+        os.makedirs(assets_dir, exist_ok=True)
+        parsed = urlparse(asset_url)
+        basename = os.path.basename(parsed.path)
+        # Fallback filename if empty
+        if not basename:
+            basename = "asset"
+        # Ensure extension
+        name, ext = os.path.splitext(basename)
+        if not ext:
+            try:
+                head_resp = requests.head(asset_url, headers=headers, timeout=20, allow_redirects=True)
+                content_type = head_resp.headers.get("Content-Type", "").split(";")[0].strip()
+                guessed_ext = mimetypes.guess_extension(content_type) if content_type else None
+                if guessed_ext:
+                    ext = guessed_ext
+            except Exception:
+                pass
+        # Sanitize filename
+        safe_name = re.sub(r'[^\w\-_.]', '_', name)[:80]
+        filename = f"{safe_name}{ext}" if ext else safe_name
+        # Ensure unique filename
+        final_path = os.path.join(assets_dir, filename)
+        counter = 1
+        while os.path.exists(final_path):
+            filename_try = f"{safe_name}_{counter}{ext}"
+            final_path = os.path.join(assets_dir, filename_try)
+            counter += 1
+        # Download
+        with requests.get(asset_url, headers=headers, timeout=60, stream=True) as r:
+            if r.status_code != 200:
+                print(f"\n❌ Failed to download asset: {asset_url} (Status: {r.status_code})")
+                return None
+            r.raise_for_status()
+            with open(final_path, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+        # Return relative path from markdown location (scraped_data/*.md) to assets
+        rel_path = os.path.join("assets", os.path.basename(final_path)).replace('\\', '/')
+        return rel_path
+    except Exception as e:
+        print(f"\n❌ Error downloading asset {asset_url}: {str(e)}")
+        return None
 
 # Save content to a Markdown file
 def save_to_markdown(content, filename):

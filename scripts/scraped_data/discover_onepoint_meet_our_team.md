@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/discover-onepoint/meet-our-team/
 
-*Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients.*
+_Onepoint is a London headquartered, architecture-led boutique technology consultancy that delivers AI-powered, data-driven enterprise solutions for global clients._
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- 
-- 
-- 
+-
+-
+-
 - Search for:Search
 
 Architect for outcomes[1]
@@ -26,11 +26,11 @@ Discover Onepoint[5]
 
 ## Shashin Shah
 
-### 
+###
 
 ### Founder and Chief Executive Officer
 
-- 
+-
 
 Read more
 
@@ -38,11 +38,11 @@ Read more[6]
 
 ## Alexander (Sasha) Polev
 
-### 
+###
 
 ### Chief Technology Officer
 
-- 
+-
 
 Read more
 
@@ -50,11 +50,11 @@ Read more[7]
 
 ## Maithili Shetty
 
-### 
+###
 
 ### Chief Operations Officer
 
-- 
+-
 
 Read more
 
@@ -62,11 +62,11 @@ Read more[8]
 
 ## Sangeetha Viswanathan
 
-### 
+###
 
 ### Head of Delivery and Operations
 
-- 
+-
 
 Read more
 
@@ -74,11 +74,11 @@ Read more[9]
 
 ## Els Braeken
 
-### 
+###
 
 ### Head of Risk & Governance
 
-- 
+-
 
 Read more
 
@@ -86,11 +86,11 @@ Read more[10]
 
 ## Chris Wray
 
-### 
+###
 
 ### Senior Advisor
 
-- 
+-
 
 Read more
 
@@ -98,11 +98,11 @@ Read more[11]
 
 ## Christy Kulasingam
 
-### 
+###
 
 ### Strategic Advisor and Mentor
 
-- 
+-
 
 Read more
 
@@ -265,15 +265,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
 
 ## Sources
 

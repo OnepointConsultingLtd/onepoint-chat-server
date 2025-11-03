@@ -2,16 +2,16 @@
 
 Source: https://www.onepointltd.com/onepoint-labs/
 
-*A line of code can changethe world Innovation is in our DNA and gets expressed every day for our clients. Here we share some of our concoctions.Using sentiment analysis algorithms, we can get insights into the real mood behind messages.*
+_A line of code can changethe world Innovation is in our DNA and gets expressed every day for our clients. Here we share some of our concoctions.Using sentiment analysis algorithms, we can get insights into the real mood behind messages._
 
 ## Content
 
 - Architect for outcomes
 - Do data better
 - Innovate with AI & more
-- 
-- 
-- 
+-
+-
+-
 - Search for:Search
 
 Architect for outcomes[1]
@@ -71,6 +71,7 @@ Talend has an 800+ set of standard components comprising of applications and dat
 Explore some of the custom components we have developed[7]
 
 ## Reset and clear your mind
+
 with traffic control for the office
 
 Many of us at Onepoint HQ benefit from a daily practice of regular short meditations suitable for even the busiest data-ist. It’s a method called ‘traffic control’, helping to control the seemingly endless, and often unhelpful, traffic of thoughts that go through the mind. It’s very effective, helping you to remain calm, contented and effective no matter what the day throws at you.
@@ -142,15 +143,6 @@ Contact us
 [| Terms](/policies/)
 
 [| Privacy notice](/policies/privacy-policy/)
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
-[cky_video_placeholder_title]
-
 
 ## Sources
 

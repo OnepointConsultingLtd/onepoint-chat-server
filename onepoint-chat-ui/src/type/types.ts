@@ -106,13 +106,19 @@ export type Topics = {
 
 export type RelatedTopicsBody = {
   samples: number;
-  path_length: number;
   restart_prob: number;
-  runs: number;
   limit: number;
   source?: string;
   text?: string;
   topics_prompt?: string;
+  deduplicate_topics?: boolean;
+  random_walk_parameters?: {
+    samples: number;
+    path_length: number;
+    restart_prob: number;
+    runs: number;
+  };
+  similarity_topics_method?: string;
 };
 
 export type TopicQuestion = {

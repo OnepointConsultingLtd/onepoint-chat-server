@@ -203,61 +203,215 @@ export const personaMappings: PersonaMapping[] = [
 export const serviceMappings: ServiceMapping[] = [
   {
     keywords: [
-      // Data Solutions
-      "data",
-      "analytics",
-      "insights",
-      "reporting",
-      "database",
-      "data quality",
-      "data governance",
-      "data strategy",
-      "data management",
-      "data platform",
-      "data architecture",
-      "business intelligence",
-      "data visualization",
-      "dashboards",
+      "ai strategy",
+      "artificial intelligence strategy",
+      "machine learning strategy",
+      "ai roadmap",
+      "ai vision",
+      "ai planning",
+      "ai governance",
     ],
-    service: "Data Solutions",
+    service: "AI Strategy",
   },
   {
     keywords: [
-      // AI Innovation
-      "ai",
-      "ml",
-      "artificial intelligence",
-      "machine learning",
-      "deep learning",
-      "neural networks",
-      "nlp",
-      "computer vision",
-      "predictive analytics",
-      "automation",
-      "cognitive computing",
-      "ai strategy",
-      "ml ops",
+      "ai architecture",
+      "ml architecture",
+      "ai design",
+      "model architecture",
+      "ai infrastructure",
+      "ai system design",
+    ],
+    service: "AI Architecture",
+  },
+  {
+    keywords: [
+      "ai proof of value",
+      "ai pov",
+      "ai poc",
+      "proof of concept",
+      "proof of value",
+      "prototype",
+      "ai experimentation",
+    ],
+    service: "AI Proof of Value",
+  },
+  {
+    keywords: [
+      "ai build",
+      "ai development",
+      "ml model development",
+      "ai engineering",
+      "model training",
       "ai implementation",
     ],
-    service: "AI Innovation",
+    service: "AI Build",
   },
   {
     keywords: [
-      // Solution Architecture
-      "architecture",
-      "system",
-      "integration",
-      "enterprise",
-      "transformation",
-      "cloud architecture",
-      "microservices",
-      "api design",
-      "system design",
-      "technical architecture",
-      "solution design",
-      "enterprise architecture",
-      "digital transformation",
+      "ai scaling",
+      "ai production",
+      "ai deployment",
+      "mlops",
+      "scaling ai",
+      "ai lifecycle",
     ],
-    service: "Solution Architecture",
+    service: "AI Scaling",
+  },
+  {
+    keywords: [
+      "ai managed",
+      "ai monitoring",
+      "ai operations",
+      "ai support",
+      "managed ai services",
+      "ai optimization",
+    ],
+    service: "AI Managed",
+  },
+  {
+    keywords: [
+      "accelerated by onepoint",
+      "story arc 2",
+      "onepoint acceleration",
+      "innovation by onepoint",
+    ],
+    service: "Story arc 2 - Accelerated by Onepoint",
+  },
+  {
+    keywords: [
+      "platform",
+      "onepoint platform",
+      "ai platform",
+      "digital platform",
+    ],
+    service: "Platforms",
+  },
+  {
+    keywords: [
+      "smart advisors",
+      "advisor platform",
+      "onepoint smart advisors",
+    ],
+    service: "The Onepoint Smart Advisors™ Platform",
+  },
+  {
+    keywords: ["d-well", "onepoint d-well"],
+    service: "Onepoint D-Well™",
+  },
+  {
+    keywords: ["res-ai", "resource ai", "onepoint res-ai"],
+    service: "Onepoint Res-AI™",
+  },
+  {
+    keywords: ["expert matcher", "onepoint expertmatcher"],
+    service: "Onepoint ExpertMatcher™",
+  },
+  {
+    keywords: [
+      "smart company advisor",
+      "osca",
+      "onepoint osca",
+      "onepoint smart company advisor",
+    ],
+    service: "Onepoint Smart Company Advisor™ (Osca)",
+  },
+  {
+    keywords: [
+      "smart converters",
+      "converter platform",
+      "onepoint smart converters",
+    ],
+    service: "The Onepoint Smart Converters™ Platform",
+  },
+  {
+    keywords: [
+      "convertwise",
+      "s1000d",
+      "onepoint convertwise",
+      "convertwise s1000d",
+    ],
+    service: "Onepoint ConvertWise™ S1000D Edition",
+  },
+  {
+    keywords: [
+      "smart curators",
+      "curation platform",
+      "onepoint smart curators",
+    ],
+    service: "The Onepoint Smart Curators™ Platform",
+  },
+  {
+    keywords: [
+      "curation studio",
+      "onepoint curation studio",
+      "content curation",
+    ],
+    service: "Onepoint Curation Studio™",
+  },
+  {
+    keywords: [
+      "adaptive discovery",
+      "onepoint adaptive discovery",
+      "data discovery",
+    ],
+    service: "Onepoint Adaptive Discovery™",
+  },
+  {
+    keywords: [
+      "toolkit",
+      "boomi",
+      "ai ecosystem",
+      "onepoint ai ecosystem for boomi",
+    ],
+    service: "Onepoint AI Ecosystem for Boomi",
+  },
+  {
+    keywords: ["ai engine", "onepoint ai engine"],
+    service: "Onepoint AI Engine™",
+  },
+  {
+    keywords: [
+      "framework",
+      "data framework",
+      "analytics framework",
+      "body of knowledge",
+      "onepoint data & analytics body of knowledge",
+    ],
+    service: "Onepoint Data & Analytics Body of Knowledge™",
+  },
+  {
+    keywords: [
+      "agentic architecture",
+      "agentic framework",
+      "agentic body of knowledge",
+      "onepoint agentic architecture",
+    ],
+    service: "Onepoint Agentic Architecture Body of Knowledge™",
+  },
+  {
+    keywords: [
+      "reference architecture",
+      "data & analytics framework",
+      "onepoint reference architecture framework",
+    ],
+    service: "Onepoint Reference Architecture Framework for Data & Analytics™",
+  },
+  {
+    keywords: [
+      "method",
+      "valuepath",
+      "value path",
+      "onepoint valuepath",
+    ],
+    service: "Onepoint Valuepath™",
+  },
+  {
+    keywords: [
+      "rapid value",
+      "rapid method",
+      "onepoint rapid value method",
+    ],
+    service: "Onepoint Rapid Value Method™",
   },
 ];
