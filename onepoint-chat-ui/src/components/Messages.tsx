@@ -189,7 +189,7 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                             </svg>
                           </div>
                           <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                            OSCA
+                            Osca
                           </span>
                         </div>
                       )}

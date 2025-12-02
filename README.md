@@ -1,4 +1,4 @@
-# OSCA - The Onepoint's Smart Cognitive Assistant
+# Osca - The Onepoint's Smart Cognitive Assistant
 
 Quick notes about the setup.
 
