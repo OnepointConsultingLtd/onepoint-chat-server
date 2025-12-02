@@ -87,8 +87,6 @@ export async function fetchRelatedQuestions(
     system_prompt: QUESTION_PROMPT
   }
 
-  debugger;
-
   const url = `${getServer()}/project/questions?project=${project}&engine=${engine}`;
 
   try {
