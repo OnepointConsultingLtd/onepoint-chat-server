@@ -134,3 +134,32 @@ menu {
   }
 }
 
+
+
+/* --- Base motion for alive effect --- */
+@keyframes progressAlive {
+  0% {
+    transform: translateX(-40%) scaleX(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateX(20%) scaleX(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(120%) scaleX(1);
+    opacity: 0.9;
+  }
+}
+.animate-progress-alive {
+  animation: progressAlive 2.5s ease-in-out infinite;
+}
+
+/* --- Subtle glow pulse --- */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(99, 102, 241, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); }
+}
+.animate-glow {
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}

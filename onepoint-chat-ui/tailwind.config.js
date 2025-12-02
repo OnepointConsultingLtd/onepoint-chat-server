@@ -16,6 +16,29 @@ export default {
           'sans-serif',
         ],
       },
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+        'progress-bar': 'progress-bar 2s ease-in-out infinite',
+        shimmer: 'shimmer 2s ease-in-out infinite',
+      },
+      keyframes: {
+        'progress-bar': {
+          '0%': {
+            transform: 'translateX(-100%)',
+          },
+          '100%': {
+            transform: 'translateX(200%)',
+          },
+        },
+        shimmer: {
+          '0%': {
+            backgroundPosition: '-200% 0',
+          },
+          '100%': {
+            backgroundPosition: '200% 0',
+          },
+        },
+      },
     },
   },
   plugins: [],

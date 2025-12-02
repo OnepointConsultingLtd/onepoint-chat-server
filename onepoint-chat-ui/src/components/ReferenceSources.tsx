@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { filePreview } from '../lib/apiClient';
 import { ReferenceSource } from '../type/types';
@@ -63,18 +63,22 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
   const [previewContent, setPreviewContent] = useState('');
   const [previewFileName, setPreviewFileName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const closeOnEscape = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      closePreview();
-    }
-  };
-
-  const closePreview = () => {
+  const closePreview = useCallback(() => {
     setIsFilePreviewOpen(false);
     setPreviewContent('');
     setPreviewFileName('');
-  };
+  }, []);
+
+  const closeOnEscape = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closePreview();
+      }
+    },
+    [closePreview]
+  );
 
   useEffect(() => {
     if (isFilePreviewOpen) {
@@ -89,7 +93,12 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
     return null;
   }
 
-  const handleFilePreview = async (file: string) => {
+  const toggleAccordion = () => {
+    setIsOpen(prev => !prev);
+  };
+
+  const handleFilePreview = async (file: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent accordion toggle when clicking file preview
     setIsLoading(true);
     try {
       const response = await filePreview(file);
@@ -110,37 +119,72 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
   return (
     <>
       <div className="mt-1 p-2">
-        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          📚 Reference Sources ({sources.length})
-        </h4>
-
-        <div className="space-y-2">
-          {sources.map((source, index) => (
-            <div
-              key={index}
-              className="flex items-start space-x-2 text-xs text-gray-600 dark:text-gray-400"
-            >
-              <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-green-500 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center text-xs font-medium">
-                {index + 1}
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800/50 shadow-sm hover:shadow-md transition-shadow duration-300">
+          <button
+            onClick={toggleAccordion}
+            className="w-full flex items-center cursor-pointer justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-all duration-300 group"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-lg transition-transform duration-300 group-hover:scale-110">
+                📚
               </span>
-              <div className="flex-1 min-w-0 overflow-hidden">
-                <div className="font-medium capitalize text-gray-800 dark:text-gray-200 truncate">
-                  {source.title}
-                </div>
-                <div className="mt-1 flex items-center gap-1">
-                  <button
-                    onClick={() => handleFilePreview(source.filePath)}
-                    disabled={isLoading}
-                    className="text-blue-600 text-left cursor-pointer dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline text-xs disabled:opacity-50 disabled:cursor-not-allowed break-all"
-                    style={{ wordBreak: 'break-all' }}
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                Reference Sources ({sources.length})
+              </h4>
+            </div>
+            <svg
+              className={`flex-shrink-0 w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-300 ease-in-out ${
+                isOpen ? 'rotate-180' : 'rotate-0'
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          <div
+            className={`overflow-hidden transition-all duration-500 ease-in-out ${
+              isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+            }`}
+          >
+            <div className="px-3 pb-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+              <div className="space-y-1.5 mt-2">
+                {sources.map((source, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200 ${
+                      isOpen ? 'animate-fade-in-up' : ''
+                    }`}
+                    style={{
+                      animationDelay: `${index * 30}ms`,
+                    }}
                   >
-                    {source.filePath.split('/').pop()}
-                  </button>
-                  <span className="text-gray-400">📄</span>
-                </div>
+                    <span className="flex-shrink-0 w-5 h-5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full flex items-center justify-center text-xs font-medium">
+                      {index + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <button
+                        onClick={e => handleFilePreview(source.filePath, e)}
+                        disabled={isLoading}
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline text-xs disabled:opacity-50 disabled:cursor-not-allowed break-all transition-colors duration-200"
+                        style={{ wordBreak: 'break-all' }}
+                      >
+                        {source.filePath.split('/').pop()}
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
 

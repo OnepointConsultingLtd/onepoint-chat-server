@@ -54,11 +54,17 @@ export async function onepointCallback(
   const personaBlock = personaDirectives(analysis.persona);
   const servicesBlock = servicesGuidance(analysis.services);
 
-  console.log("personaFirstQuestion ", personaFirstQuestion(analysis.persona));
-  console.log("personaBlock", personaBlock);
-  console.log("servicesBlock", servicesBlock);
+  const britishLanguageBlock = `
+  # LANGUAGE AND STYLE POLICY
+  - All output must use **British English** spellings and grammar (organisation, realise, colour, programme, etc.).
+  - Use British punctuation and date format (DD/MM/YYYY).
+  - Never switch to American English.
+  - Maintain a professional but warm tone consistent with UK business communication.
+  `;
+
+
   const systemInstructions: ChatMessage = {
-    id: `system-instructions-${Date.now()}`, // unique ID; avoids equality collisions
+    id: `system-instructions-${Date.now()}`,
     role: "system" as any,
     content: `
 You are Osca — Onepoint Smart Company Advisor.
@@ -67,6 +73,7 @@ Your purpose is to understand client goals, identify business priorities, and re
 
 
 Operating Persona: ${analysis.persona}
+${britishLanguageBlock}
 
 Persona Guidelines:
 ${personaBlock}
@@ -101,12 +108,10 @@ ${knowledgeBase}
 
   // Keep only the last N messages from the user/assistant, then append fresh system + last user
   const MAX_HISTORY = 10;
-  const trimmed = chatHistory.slice(-MAX_HISTORY);
-  // Remove any prior system messages to avoid stacking
-  const filtered = trimmed.filter(m => m.role !== "system");
+  const slicedHistory = chatHistory.slice(-MAX_HISTORY - 1, -1)
 
   return {
-    chatHistory: [...filtered, systemInstructions, lastMessage],
-    referenceSources,
+    chatHistory: [...slicedHistory, systemInstructions, lastMessage],
+    referenceSources: referenceSources
   };
 }

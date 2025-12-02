@@ -23,7 +23,7 @@ export const DEFAULT_ZOOM = 0.9;
 export const MIN_ZOOM = 0.2;
 export const MAX_ZOOM = 1.5;
 
-export const MAX_RELATED_TOPICS = 5;
+export const MAX_RELATED_TOPICS = 10;
 export const MAX_PREVIEW_CHARS = 100;
 
 export const TOPIC_CARD = {

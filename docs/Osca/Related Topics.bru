@@ -4,9 +4,9 @@ meta {
   seq: 1
 }
 
-get {
+post {
   url: https://ai-engine.onepointltd.ai/protected/project/related_topics?project=onepoint_v2&engine=lightrag
-  body: none
+  body: json
   auth: bearer
 }
 
@@ -17,6 +17,23 @@ params:query {
 
 auth:bearer {
   token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtdXJ0YXphIiwibmFtZSI6Ik11cnRhemEiLCJpYXQiOjE3NTkxMzA3NDMsImVtYWlsIjoibXVydGF6YUBnbWFpbC5jb20iLCJwZXJtaXNzaW9ucyI6WyJyZWFkIiwid3JpdGUiXX0.Okbw0pfpEB4cNE2Qopu6Ckpl3lNwZiwXAfrY0CgdLZn_3IBTAv1dvXfs7BicXahgVl8Et7Rlm2ASjbDOCvkKoQ
+}
+
+body:json {
+  {
+    "source": "",
+    "text": "how can i contact Onepoint?",
+    "limit": 8,
+    "topics_prompt": "",
+    "deduplicate_topics": false,
+    "random_walk_parameters": {
+      "samples": 50000,
+      "path_length": 5,
+      "restart_prob": 0.15,
+      "runs": 10
+    },
+    "similarity_topics_method": "nearest_neighbors"
+  }
 }
 
 settings {

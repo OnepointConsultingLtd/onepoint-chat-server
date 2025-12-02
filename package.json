@@ -28,6 +28,7 @@
     "@types/uuid": "^10.0.0",
     "cors": "^2.8.5",
     "dagre": "^0.8.5",
+    "dotenv": "^16.4.7",
     "mongodb": "^6.15.0",
     "uuid": "^11.1.0",
     "wkhtmltopdf": "^0.4.0",

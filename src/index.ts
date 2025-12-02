@@ -1,9 +1,13 @@
+import dotenv from "dotenv";
 import { ChatCallback, initChatServer } from "@gilf/chat-websocket-server";
 import { ConversationCallback } from "@gilf/chat-websocket-server/dist/callback";
 import "./api/server";
 import { onepointCallback } from "./callbacks/onepoint";
 import { saveConversation } from "./callbacks/saveConversationHistory";
 import "./logger";
+
+// Load environment variables from .env.local
+dotenv.config({ path: ".env.local" });
 
 // Global storage for reference sources
 let currentReferenceSources: any[] = [];
