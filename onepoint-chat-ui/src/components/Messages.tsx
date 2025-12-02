@@ -171,10 +171,6 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                           : 'w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-md p-4 shadow-lg'
                       }`}
                     >
-                      {isUserMessage && (
-                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-blue-600 rotate-45"></div>
-                      )}
-
                       {isAgentMessage && (
                         <div className="flex items-center mb-3">
                           <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3 shadow-lg">

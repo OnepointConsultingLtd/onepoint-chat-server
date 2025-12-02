@@ -118,22 +118,22 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
 
   return (
     <>
-      <div className="mt-1 p-2">
+      <div className="mt-2">
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800/50 shadow-sm hover:shadow-md transition-shadow duration-300">
           <button
             onClick={toggleAccordion}
-            className="w-full flex items-center cursor-pointer justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-all duration-300 group"
+            className="w-full flex items-center cursor-pointer justify-between p-3 sm:p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-all duration-300 group"
           >
-            <div className="flex items-center gap-2">
-              <span className="text-lg transition-transform duration-300 group-hover:scale-110">
+            <div className="flex items-center gap-2.5">
+              <span className="text-base sm:text-lg transition-transform duration-300 group-hover:scale-110">
                 📚
               </span>
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+              <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                 Reference Sources ({sources.length})
               </h4>
             </div>
             <svg
-              className={`flex-shrink-0 w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-300 ease-in-out ${
+              className={`flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5 text-gray-500 dark:text-gray-400 transition-transform duration-300 ease-in-out ${
                 isOpen ? 'rotate-180' : 'rotate-0'
               }`}
               fill="none"
@@ -155,29 +155,29 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
               isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
-            <div className="px-3 pb-3 pt-2 border-t border-gray-200 dark:border-gray-700">
-              <div className="space-y-1.5 mt-2">
+            <div className="px-3 sm:px-4 pb-3 pt-2.5 border-t border-gray-200 dark:border-gray-700">
+              <div className="space-y-2 mt-1">
                 {sources.map((source, index) => (
                   <div
                     key={index}
-                    className={`flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200 ${
+                    className={`flex items-start gap-2.5 sm:gap-3 px-2.5 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200 ${
                       isOpen ? 'animate-fade-in-up' : ''
                     }`}
                     style={{
                       animationDelay: `${index * 30}ms`,
                     }}
                   >
-                    <span className="flex-shrink-0 w-5 h-5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full flex items-center justify-center text-xs font-medium">
+                    <span className="flex-shrink-0 w-6 h-6 sm:w-5 sm:h-5 bg-gray-100 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 rounded-full flex items-center justify-center text-xs font-semibold border border-gray-200 dark:border-gray-600">
                       {index + 1}
                     </span>
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 pt-0.5">
                       <button
                         onClick={e => handleFilePreview(source.filePath, e)}
                         disabled={isLoading}
-                        className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline text-xs disabled:opacity-50 disabled:cursor-not-allowed break-all transition-colors duration-200"
-                        style={{ wordBreak: 'break-all' }}
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline underline-offset-2 text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed break-words transition-colors duration-200 text-left leading-relaxed"
+                        style={{ wordBreak: 'break-word' }}
                       >
-                        {source.filePath.split('/').pop()}
+                        {source.title}
                       </button>
                     </div>
                   </div>
