@@ -69,23 +69,25 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
   return data;
 }
 
-
+const DEFAULT_QUESTION = 'Tell me about Onepoint';
 
 export async function fetchRelatedQuestions(
   selectedTopic: string[] = [],
-  text: string = ''
+  text: string = DEFAULT_QUESTION
 ) {
   const project: string = PROJECT_CONFIG.PROJECT;
   const engine: string = PROJECT_CONFIG.ENGINE;
 
   const body = {
     topics: selectedTopic,
-    text: text,
+    text: text ? text : DEFAULT_QUESTION,
     topic_limit: 10,
     entity_type_filter: '',
     format: 'json',
     system_prompt: QUESTION_PROMPT
   }
+
+  debugger;
 
   const url = `${getServer()}/project/questions?project=${project}&engine=${engine}`;
 
