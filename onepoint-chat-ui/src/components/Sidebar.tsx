@@ -123,14 +123,11 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
   return (
     <div className="h-screen lg:!sticky top-0 z-[120]">
       <div className="flex flex-col h-screen">
-        <div
-          className={`${isSidebarOpen ? '!w-full opacity-100' : '!w-0 opacity-0'} h-screen transition-all duration-300 lg:bg-transparent fixed inset-0 z-[85] lg:!relative`}
-          onClick={toggleSidebar}
-        >
+        <div onClick={toggleSidebar}>
           <div
-            className={`fixed inset-y-0 ${
+            className={`fixed inset-y-0 min-h-screen ${
               isSidebarOpen ? 'block left-0 w-[300px] lg:!w-[385px]' : '-left-[1180px] w-0 hidden'
-            } transition-all duration-300  lg:!relative z-50 flex flex-col h-full animate-fade-in`}
+            } transition-all duration-300  lg:!relative z-50 flex flex-col h-full animate-fade-in bg-white dark:!bg-gray-800`}
             onClick={e => e.stopPropagation()}
           >
             {/* Mobile Header */}
