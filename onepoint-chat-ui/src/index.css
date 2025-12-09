@@ -6,8 +6,12 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #fafffe;
   border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1F1925;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -15,8 +19,16 @@
   border-radius: 4px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #9a19ff;
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: #9a19ff;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #b84dff;
 }
 
 /* Custom animations */

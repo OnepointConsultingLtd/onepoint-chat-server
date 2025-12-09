@@ -36,10 +36,10 @@ export function createEdges(messages: Message[], topicCount: number = 0): Edge[]
         targetHandle: 'left',
         type: 'default',
         animated: true,
-        style: { stroke: '#3179ff', strokeWidth: 1 },
+        style: { stroke: '#808080', strokeWidth: 1 },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: '#3179ff',
+          color: '#808080',
         },
       });
     }

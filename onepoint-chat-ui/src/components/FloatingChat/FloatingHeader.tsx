@@ -60,9 +60,9 @@ export default function FloatingHeader() {
   const hasConversation = messages && messages.length >= 2 && !isInitialMessage;
 
   return (
-    <header className="sticky top-0 z-10 w-full p-3 py-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <header className="sticky top-0 z-10 w-full p-3 py-2 bg-[#fafffe] dark:!bg-[#1F1925] border-b border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between w-full space-x-2">
-        <h1 className="text-3xl font-bold text-[#0284c7] dark:text-blue-400">
+        <h1 className="text-3xl font-bold text-[#9a19ff] dark:!text-[#9a19ff]">
           {' '}
           {PROJECT_INFO.NAME}
         </h1>
@@ -72,7 +72,7 @@ export default function FloatingHeader() {
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+            className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
             title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {isDark ? (
@@ -101,7 +101,7 @@ export default function FloatingHeader() {
               {hasConversation && (
                 <button
                   onClick={handleShare}
-                  className="p-2 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                  className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
                   title={copied ? 'URL copied!' : 'Share this conversation'}
                 >
                   {copied ? (
@@ -114,7 +114,7 @@ export default function FloatingHeader() {
 
               <button
                 onClick={handleRestart}
-                className="p-2 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
                 title="Start new chat"
               >
                 <MdOutlineRestartAlt />
@@ -126,7 +126,7 @@ export default function FloatingHeader() {
                 <div className="relative">
                   <button
                     onClick={() => setShowDropdown(!showDropdown)}
-                    className="p-2 rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                    className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
                     title="Export conversation"
                   >
                     <CiExport className="w-4 h-4" />
@@ -136,10 +136,10 @@ export default function FloatingHeader() {
                     <>
                       {/* Dropdown menu */}
                       {/* center from left and right */}
-                      <div className="absolute mt-2 w-fit md:w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-40 border border-gray-200 dark:border-gray-700 overflow-hidden transform left-1/2 -translate-x-1/2">
+                      <div className="absolute mt-2 w-fit md:w-40 bg-[#fafffe] dark:!bg-[#1F1925] rounded-lg shadow-lg z-40 border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] overflow-hidden transform left-1/2 -translate-x-1/2">
                         <button
                           onClick={() => handleExport('markdown')}
-                          className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200"
+                          className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-[#2a1f35] transition-colors text-gray-700 dark:!text-[#fafffe] hover:text-[#9a19ff]"
                         >
                           <FaMarkdown className="w-4 h-4 mr-2" />
                           Markdown
@@ -147,7 +147,7 @@ export default function FloatingHeader() {
                         <button
                           onClick={() => handleExport('pdf')}
                           disabled={isExportingPdf}
-                          className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 text-gray-700 dark:text-gray-200"
+                          className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-[#2a1f35] transition-colors disabled:opacity-50 text-gray-700 dark:!text-[#fafffe] hover:text-[#9a19ff]"
                         >
                           <MdPictureAsPdf className="w-4 h-4 mr-2" />
                           {isExportingPdf ? 'Generating...' : 'PDF'}
@@ -167,7 +167,7 @@ export default function FloatingHeader() {
 
           {/* Close Button */}
           <button
-            className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-600 dark:text-gray-300"
+            className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-[#2a1f35] rounded-lg transition-colors text-gray-600 dark:!text-[#fafffe]"
             onClick={toggleFloatingChat}
             title="Close chat"
           >

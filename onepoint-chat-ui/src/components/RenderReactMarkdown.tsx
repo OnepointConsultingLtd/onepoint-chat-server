@@ -58,7 +58,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
             a: ({ ...props }) => (
               <a
                 {...props}
-                className="text-purple-500 hover:text-purple-600 dark:text-purple-400 dark:hover:text-purple-300 group-hover:!underline group-hover:!text-blue-600 dark:group-hover:!text-blue-400"
+                className="text-[#9a19ff] hover:text-[#9a19ff] dark:text-[#9a19ff] dark:hover:text-[#9a19ff] group-hover:!underline group-hover:!text-[#9a19ff] dark:group-hover:!text-[#9a19ff]"
                 target="_blank"
                 rel="noopener noreferrer"
               />
@@ -89,11 +89,11 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
               className={`p-1 md:p-2 rounded-full transition-all duration-200 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer ${
                 sharedId === message.id
                   ? 'bg-green-50 text-green-600 border border-green-200'
-                  : 'bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-300'
+                  : ' text-[#1F1925] dark:text-white hover:text-[#9a19ff] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]'
               }`}
               title={sharedId === message.id ? 'Share URL copied!' : 'Share message'}
             >
-              <FiShare2 className="w-3 h-3 md:w-4 md:h-4" />
+              <FiShare2 className="w-5 h-5 md:w-4 md:h-4" />
             </button>
           )}
         </div>

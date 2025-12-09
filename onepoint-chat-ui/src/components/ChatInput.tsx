@@ -43,11 +43,11 @@ export default function ChatInput({ handleSubmit }: ChatInputProps) {
 
   return (
     <div
-      className={`${!isInitialMessage ? 'flex flex-col md:fixed inset-0 justify-center items-center rounded-sm md:rounded-lg md:px-24 z-[85] w-full h-full' : 'bg-white p-3 border-t border-gray-200 dark:border-gray-700 dark:bg-gray-700'}`}
+      className={`${!isInitialMessage ? 'flex flex-col md:fixed inset-0 justify-center items-center rounded-sm md:rounded-lg md:px-24 z-[85] w-full h-full' : 'bg-[#fafffe] p-3 border-t border-gray-200 dark:border-gray-700 dark:!bg-[#1F1925]'}`}
     >
       {!isInitialMessage && (
         <div
-          className="md:fixed inset-0 bg-white/50 dark:bg-black/60 backdrop-blur-sm w-full h-full"
+          className="md:fixed inset-0 bg-[#fafffe]/50 dark:!bg-[#1F1925]/60 backdrop-blur-sm w-full h-full"
           onClick={() => setShowInput(false)}
         ></div>
       )}
@@ -59,7 +59,7 @@ export default function ChatInput({ handleSubmit }: ChatInputProps) {
               value={inputText}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputText(e.target.value)}
               placeholder="Type your message here..."
-              className="w-full p-2 pr-24 overflow-hidden transition-all duration-300 bg-white dark:bg-gray-700 border-2 shadow-sm outline-none resize-none rounded-sm md:rounded-xl  border-sky-100 dark:border-gray-600 focus:border-sky-400 dark:focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:focus:ring-sky-900/50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full p-2 pr-24 overflow-hidden transition-all duration-300 bg-[#fafffe] dark:!bg-[#1F1925] border-2 shadow-sm outline-none resize-none rounded-sm md:rounded-xl border-[#636565] dark:border-[#fafffe] focus:border-[#9a19ff] dark:focus:border-[#9a19ff] focus:ring-4 focus:ring-[#9a19ff]/20 dark:focus:ring-[#9a19ff]/50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:!text-[#fafffe] placeholder-gray-500 dark:placeholder-gray-400"
               disabled={isThinking}
               style={textareaStyle}
               onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -73,7 +73,7 @@ export default function ChatInput({ handleSubmit }: ChatInputProps) {
             />
             <button
               type="submit"
-              className="absolute flex items-center gap-2 p-1 text-white transition-all duration-300 rounded shadow-md cursor-pointer right-2 bottom-[1.3rem] bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group rotate-90"
+              className="absolute flex items-center gap-2 p-1 text-white transition-all duration-300 rounded shadow-md cursor-pointer right-2 bottom-[1.3rem] bg-gradient-to-r from-[#9a19ff] to-[#9a19ff] hover:from-[#9a19ff] hover:to-[#9a19ff] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group rotate-90"
               disabled={isThinking}
             >
               <svg
@@ -94,11 +94,11 @@ export default function ChatInput({ handleSubmit }: ChatInputProps) {
             </button>
           </form>
 
-          <span className="text-[8px]  md:text-xs text-center text-slate-900 dark:text-gray-100 z-[85]">
+          <span className="text-[8px]  md:text-xs text-center text-slate-900 dark:!text-[#fafffe] z-[85]">
             {PROJECT_INFO.NAME} can make mistakes. Check important information with your Onepoint
             advisor.
             <br /> Press{' '}
-            <kbd className="px-1 py-0.5 bg-blue-500 text-white dark:bg-gray-600 dark:text-gray-300 rounded">
+            <kbd className="px-1 py-0.5 bg-[#9a19ff] text-white dark:!bg-[#1F1925] dark:!text-[#fafffe] rounded">
               Esc
             </kbd>{' '}
             to close

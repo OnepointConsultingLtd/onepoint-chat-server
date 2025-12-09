@@ -40,9 +40,9 @@ export default function ChatContainer() {
   }
 
   return (
-    <main className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+    <main className="flex min-h-screen bg-[#fafffe] dark:!bg-[#1F1925]">
       <Sidebar sendMessageToServer={sendMessageToServer} />
-      <div className="flex flex-col flex-1 bg-white dark:bg-gray-800">
+      <div className="flex flex-col flex-1 bg-[#fafffe] dark:!bg-[#1F1925]">
         <Header />
         <div className="flex-1 flex flex-col" style={{ height: 'calc(100vh - 10rem)' }}>
           <Flow

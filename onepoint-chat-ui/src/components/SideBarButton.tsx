@@ -14,7 +14,7 @@ export default function SideBarButton() {
   return (
     <div className="!w-fit h-auto pl-3 lg:pl-5 lg:static sticky top-0 !z-50 flex items-center justify-start">
       <div
-        className="cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 p-2 rounded-lg transition-all duration-200 group"
+        className="cursor-pointer hover:bg-gradient-to-r hover:from-[#9a19ff]/10 hover:to-[#9a19ff]/20 p-2 rounded-lg transition-all duration-200 group"
         onClick={toggleSidebar}
         title="Toggle sidebar"
       >
@@ -26,7 +26,7 @@ export default function SideBarButton() {
           stroke="currentColor"
           aria-hidden="true"
           data-slot="icon"
-          className="size-6 text-blue-600 group-hover:text-indigo-600 transition-colors"
+          className="size-6 text-[#9a19ff] group-hover:text-[#9a19ff] transition-colors"
         >
           <path
             strokeLinecap="round"

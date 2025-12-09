@@ -195,7 +195,7 @@ export default function Flow({
   const isError = interceptServerError(messages);
 
   return (
-    <div style={{ height: '100%', width: '100%' }} className="bg-gray-50 dark:bg-gray-900">
+    <div style={{ height: '100%', width: '100%' }} className="bg-[#fafffe] dark:!bg-[#1F1925]">
       {isError ? (
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
           <ErrorCard
@@ -215,7 +215,7 @@ export default function Flow({
           maxZoom={zoomSettings.maxZoom}
           defaultViewport={{ x: 0, y: 0, zoom: zoomSettings.defaultZoom }}
         >
-          <Background color={isDark ? '#374151' : '#f1f5f9'} gap={9000} size={1} />
+          <Background color={isDark ? '#1F1925' : '#fafffe'} gap={9000} size={1} />
 
           <Controls showInteractive={false} />
         </ReactFlow>

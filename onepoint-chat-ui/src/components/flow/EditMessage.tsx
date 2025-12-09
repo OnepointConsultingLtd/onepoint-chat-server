@@ -44,7 +44,7 @@ export default function EditMessage({ message, onSave, onCancel }: EditMessagePr
         value={editText}
         onChange={e => setEditText(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-3"
+        className="w-full p-3 border border-[#636565] dark:border-[#fafffe] rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#9a19ff] focus:border-[#9a19ff] mb-3"
         placeholder="Edit your message..."
         rows={Math.max(2, editText.split('\n').length)}
         style={{ minHeight: '60px' }}
@@ -60,7 +60,7 @@ export default function EditMessage({ message, onSave, onCancel }: EditMessagePr
         </button>
         <button
           onClick={handleSave}
-          className="px-3 py-1.5 rounded-md cursor-pointer bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200 text-sm font-medium"
+          className="px-3 py-1.5 rounded-md cursor-pointer bg-[#9a19ff] hover:bg-[#9a19ff] text-white transition-all duration-200 text-sm font-medium"
           title="Save changes"
         >
           Save

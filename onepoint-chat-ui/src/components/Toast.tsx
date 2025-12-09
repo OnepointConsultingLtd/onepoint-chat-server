@@ -25,7 +25,7 @@ export default function Toast({ message, type, isVisible, onClose, duration = 40
   if (!isVisible) return null;
 
   const baseClasses =
-    'fixed top-4 right-4 z-[9999] max-w-sm w-full bg-white rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 transform transition-all duration-300 ease-in-out';
+    'fixed top-4 right-4 z-[9999] max-w-sm w-full bg-[#fafffe] rounded-lg shadow-lg border border-[#636565] dark:!bg-[#1F1925] dark:border-[#fafffe] transform transition-all duration-300 ease-in-out';
   const visibilityClasses = isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0';
 
   return (
@@ -49,12 +49,12 @@ export default function Toast({ message, type, isVisible, onClose, duration = 40
             >
               {type === 'success' ? 'Success' : 'Error'}
             </p>
-            <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">{message}</p>
+            <p className="mt-1 text-sm text-gray-700 dark:!text-[#fafffe]">{message}</p>
           </div>
           <div className="ml-4 flex-shrink-0">
             <button
               onClick={onClose}
-              className="inline-flex text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-md"
+              className="inline-flex text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9a19ff] rounded-md"
             >
               <span className="sr-only">Close</span>
               <FiX className="h-5 w-5" />

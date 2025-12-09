@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { filePreview } from '../lib/apiClient';
 import { ReferenceSource } from '../type/types';
+import ReactMarkdown from 'react-markdown';
 
 interface ReferenceSourcesProps {
   sources: ReferenceSource[];
@@ -27,13 +28,13 @@ function FilePreviewPopUp({
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden m-4"
+        className="bg-[#fafffe] dark:!bg-[#1F1925] rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden m-4"
         onClick={e => {
           e.stopPropagation();
         }}
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-lg font-semibold text-gray-900 dark:!text-[#fafffe]">
             📄 {fileName.replace('.txt', '').replace(/_/g, ' ').replace(/-/g, ' ')}
           </h2>
           <button
@@ -45,11 +46,7 @@ function FilePreviewPopUp({
           </button>
         </div>
         <div className="p-4 overflow-y-auto max-h-[60vh]">
-          <div className="prose dark:prose-invert max-w-none">
-            <pre className="whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-200 font-mono">
-              {content}
-            </pre>
-          </div>
+          <ReactMarkdown>{content}</ReactMarkdown>
         </div>
       </div>
     </div>
@@ -119,7 +116,7 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
   return (
     <>
       <div className="mt-2">
-        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800/50 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="border border-[#636565] dark:border-[#fafffe] rounded-lg overflow-hidden bg-[#fafffe] dark:!bg-[#1F1925]/50 shadow-sm hover:shadow-md hover:border-[#9a19ff] dark:hover:border-[#9a19ff] transition-shadow duration-300">
           <button
             onClick={toggleAccordion}
             className="w-full flex items-center cursor-pointer justify-between p-3 sm:p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-all duration-300 group"
@@ -128,7 +125,7 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
               <span className="text-base sm:text-lg transition-transform duration-300 group-hover:scale-110">
                 📚
               </span>
-              <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+              <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:!text-[#fafffe] group-hover:text-[#9a19ff] dark:group-hover:text-[#9a19ff] transition-colors duration-300">
                 Reference Sources ({sources.length})
               </h4>
             </div>
@@ -167,14 +164,14 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
                       animationDelay: `${index * 30}ms`,
                     }}
                   >
-                    <span className="flex-shrink-0 w-6 h-6 sm:w-5 sm:h-5 bg-gray-100 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 rounded-full flex items-center justify-center text-xs font-semibold border border-gray-200 dark:border-gray-600">
+                    <span className="flex-shrink-0 w-6 h-6 sm:w-5 sm:h-5 bg-gray-100 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 rounded-full flex items-center justify-center text-xs font-semibold border border-[#636565] dark:border-[#fafffe]">
                       {index + 1}
                     </span>
                     <div className="flex-1 min-w-0 pt-0.5">
                       <button
                         onClick={e => handleFilePreview(source.filePath, e)}
                         disabled={isLoading}
-                        className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline underline-offset-2 text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed break-words transition-colors duration-200 text-left leading-relaxed"
+                        className="text-[#9a19ff] dark:text-[#9a19ff] hover:text-[#9a19ff] dark:hover:text-[#9a19ff] underline underline-offset-2 text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed break-words transition-colors duration-200 text-left leading-relaxed"
                         style={{ wordBreak: 'break-word' }}
                       >
                         {source.title}

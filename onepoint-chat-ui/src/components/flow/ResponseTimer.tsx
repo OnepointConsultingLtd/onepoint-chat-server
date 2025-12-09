@@ -36,7 +36,7 @@ export default function ResponseTimer() {
   // Show thinking timer
   if (isThinking) {
     return (
-      <div className="fixed top-4 right-4 bg-blue-500/90 text-white px-3 py-2 rounded-lg shadow-lg z-50">
+      <div className="fixed top-4 right-4 bg-[#9a19ff]/90 text-white px-3 py-2 rounded-lg shadow-lg z-50">
         <span className="text-sm font-medium">Thinking... {formatTime(elapsedTime)}</span>
       </div>
     );

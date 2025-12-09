@@ -47,8 +47,8 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
     if (topicQuestionsLoading) {
       return (
         <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-200 dark:border-gray-600 border-t-indigo-600 dark:border-t-indigo-400"></div>
-          <span className="ml-2 text-gray-600 dark:text-gray-300">Loading questions...</span>
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-200 dark:border-gray-600 border-t-[#9a19ff] dark:border-t-[#9a19ff]"></div>
+          <span className="ml-2 text-gray-600 dark:!text-[#fafffe]">Loading questions...</span>
         </div>
       );
     }
@@ -76,7 +76,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
           </p>
           <button
             onClick={refreshQuestions}
-            className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 underline text-sm font-medium transition-colors"
+            className="text-[#9a19ff] dark:!text-[#9a19ff] hover:text-[#9a19ff] dark:hover:!text-[#9a19ff] underline text-sm font-medium transition-colors"
           >
             Try again
           </button>
@@ -102,7 +102,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
               />
             </svg>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">No questions available</p>
+          <p className="text-gray-600 dark:!text-[#fafffe]">No questions available</p>
         </div>
       );
     }
@@ -127,14 +127,14 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
           <div
             className={`fixed inset-y-0 min-h-screen ${
               isSidebarOpen ? 'block left-0 w-[300px] lg:!w-[385px]' : '-left-[1180px] w-0 hidden'
-            } transition-all duration-300  lg:!relative z-50 flex flex-col h-full animate-fade-in bg-white dark:!bg-gray-800`}
+            } transition-all duration-300  lg:!relative z-50 flex flex-col h-full animate-fade-in bg-[#fafffe] dark:!bg-[#1F1925]`}
             onClick={e => e.stopPropagation()}
           >
             {/* Mobile Header */}
-            <div className="border-b border-gray-200 dark:border-gray-700 lg:!hidden !block bg-white dark:!bg-gray-800 shadow-sm">
+            <div className="border-b border-gray-200 dark:border-gray-700 lg:!hidden !block bg-[#fafffe] dark:!bg-[#1F1925] shadow-sm">
               <div className="flex items-center justify-between px-5 h-16">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-lg bg-[#0d8ecb] flex items-center justify-center mr-3 shadow-sm">
+                  <div className="w-10 h-10 rounded-lg bg-[#9a19ff] flex items-center justify-center mr-3 shadow-sm">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -146,10 +146,10 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
                     </svg>
                   </div>
                   <div>
-                    <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <h1 className="text-lg font-semibold text-gray-900 dark:!text-[#fafffe]">
                       {PROJECT_INFO.NAME}
                     </h1>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">AI Assistant</p>
+                    <p className="text-xs text-gray-500 dark:!text-[#fafffe]">AI Assistant</p>
                   </div>
                 </div>
                 <CloseIcon />
@@ -159,7 +159,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
             {/* Desktop Header */}
             <div className="border-b border-gray-200 dark:border-gray-700 hidden lg:!flex justify-between items-center ">
               <div className="flex items-center px-6 py-5">
-                <div className="w-12 h-12 rounded-lg bg-blue-500 flex items-center justify-center mr-4 shadow-sm">
+                <div className="w-12 h-12 rounded-lg bg-[#9a19ff] flex items-center justify-center mr-4 shadow-sm">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -171,10 +171,10 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
                   </svg>
                 </div>
                 <div>
-                  <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  <h1 className="text-xl font-semibold text-gray-900 dark:!text-[#fafffe]">
                     {PROJECT_INFO.NAME}
                   </h1>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                  <p className="text-sm text-gray-600 dark:!text-[#fafffe] mt-0.5">
                     {PROJECT_INFO.NAME_DESCRIPTION}
                   </p>
                 </div>
@@ -194,13 +194,13 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white text-center">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:!text-[#fafffe] text-center">
                     {isInitialMessage ? 'How can I help you today?' : 'Suggested Questions'}
                   </h2>
                   <button
                     onClick={refreshQuestions}
                     disabled={topicQuestionsLoading}
-                    className="p-2 cursor-pointer rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200 dark:border-gray-700 shadow-sm"
+                    className="p-2 cursor-pointer rounded-lg bg-[#fafffe] dark:!bg-[#1F1925] hover:bg-gray-50 dark:hover:bg-[#2a1f35] text-gray-600 dark:!text-[#fafffe] hover:text-gray-900 dark:hover:!text-[#fafffe] transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-[#636565] dark:border-[#fafffe] shadow-sm hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
                     title="Get new questions"
                   >
                     <TfiReload
@@ -210,7 +210,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
                 </div>
 
                 {/* Label for clarity */}
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                <p className="text-sm text-gray-500 dark:!text-[#fafffe] mb-4">
                   {isInitialMessage
                     ? 'Please select a question below to get instant insights.'
                     : 'Please select a question below to get instant insights.'}

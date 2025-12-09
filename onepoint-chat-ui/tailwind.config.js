@@ -5,16 +5,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: [
-          'system-ui',
-          '-apple-system',
-          'BlinkMacSystemFont',
-          'Segoe UI',
-          'Roboto',
-          'Helvetica Neue',
-          'Arial',
-          'sans-serif',
-        ],
+        sans: ['Manrope', 'sans-serif'],
+      },
+      colors: {
+        primary: {
+          hover: '#9a19ff',
+        },
       },
       animation: {
         'spin-slow': 'spin 3s linear infinite',

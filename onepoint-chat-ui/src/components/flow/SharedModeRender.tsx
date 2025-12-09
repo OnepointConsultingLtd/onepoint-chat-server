@@ -14,7 +14,7 @@ export default function SharedModeRender({
   handleRestart: () => void;
 }) {
   return (
-    <div className="w-full bg-gradient-to-r from-blue-500 via-blue-600 to-blue-500 dark:from-slate-900 dark:via-gray-700 dark:to-slate-600 text-white shadow-xl">
+    <div className="w-full bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white shadow-xl">
       <div className="flex flex-row items-center justify-between px-6 py-4 gap-4">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
@@ -23,7 +23,7 @@ export default function SharedModeRender({
             </div>
             <div className="flex flex-col">
               <span className="font-semibold text-lg">Viewing Shared Thread</span>
-              <span className="text-blue-100 text-sm">This is a read-only shared conversation</span>
+              <span className="text-white/80 text-sm">This is a read-only shared conversation</span>
               <MessageTimestamp timestamp={userMessage.timestamp} />
             </div>
           </div>

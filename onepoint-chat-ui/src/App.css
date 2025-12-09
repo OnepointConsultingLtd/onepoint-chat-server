@@ -77,9 +77,13 @@
 
 .skeleton-container {
   width: 100%;
-  background-color: #f1f5f9;
+  background-color: #fafffe;
   padding: 16px;
   border-radius: 8px;
+}
+
+.dark .skeleton-container {
+  background-color: #1F1925;
 }
 
 .skeleton-line {
@@ -157,8 +161,8 @@ menu {
 
 /* --- Subtle glow pulse --- */
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 10px rgba(99, 102, 241, 0.2); }
-  50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); }
+  0%, 100% { box-shadow: 0 0 10px rgba(154, 25, 255, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(154, 25, 255, 0.5); }
 }
 .animate-glow {
   animation: pulseGlow 2.5s ease-in-out infinite;

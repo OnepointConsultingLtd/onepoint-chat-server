@@ -31,18 +31,18 @@ export default function FloatingChatMain({
   const isError = interceptServerError(messages);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900/20 p-3 sm:p-4 lg:p-8 relative overflow-hidden">
+    <div className="flex items-center justify-center min-h-screen bg-[#fafffe] dark:!bg-[#1F1925] p-3 sm:p-4 lg:p-8 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400/5 rounded-full blur-3xl hidden sm:block"></div>
-        <div className="absolute top-40 right-10 w-64 h-64 bg-purple-400/5 rounded-full blur-3xl hidden sm:block"></div>
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-emerald-400/5 rounded-full blur-3xl hidden sm:block"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-[#9a19ff]/5 rounded-full blur-3xl hidden sm:block"></div>
+        <div className="absolute top-40 right-10 w-64 h-64 bg-[#9a19ff]/5 rounded-full blur-3xl hidden sm:block"></div>
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-[#9a19ff]/5 rounded-full blur-3xl hidden sm:block"></div>
       </div>
 
       <div className="max-w-2xl w-full text-center relative z-10">
         {/* Logo/Brand Section */}
         <div className="mb-8 sm:mb-12 md:mb-16">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-4 sm:mb-6 md:mb-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-xl sm:shadow-2xl transform hover:scale-105 transition-transform duration-300">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-4 sm:mb-6 md:mb-8 bg-gradient-to-br from-[#9a19ff] to-purple-600 rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-xl sm:shadow-2xl transform hover:scale-105 transition-transform duration-300">
             <svg
               className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white"
               fill="none"
@@ -58,20 +58,20 @@ export default function FloatingChatMain({
               />
             </svg>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent mb-2 sm:mb-3 md:mb-4 px-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-900 via-[#9a19ff] to-purple-800 dark:!text-[#fafffe] bg-clip-text text-transparent mb-2 sm:mb-3 md:mb-4 px-2">
             Meet {PROJECT_INFO.NAME}
           </h1>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-2 sm:mb-3 px-2">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#9a19ff] dark:!text-[#fafffe] font-semibold mb-2 sm:mb-3 px-2">
             Onepoint Smart Company Advisor
           </p>
-          <p className="text-sm sm:text-base md:text-lg text-gray-500 dark:text-gray-400 px-2">
+          <p className="text-sm sm:text-base md:text-lg text-gray-500 dark:!text-[#fafffe] px-2">
             Powered by Onepoint AI
           </p>
         </div>
 
         {/* Description */}
         <div className="mb-8 sm:mb-12 md:mb-16 px-2 sm:px-4">
-          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 md:mb-12 max-w-xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:!text-[#fafffe] leading-relaxed mb-6 sm:mb-8 md:mb-12 max-w-xl mx-auto">
             Your AI guide to data strategy, AI innovation, and solution architecture.
           </p>
 
@@ -82,7 +82,7 @@ export default function FloatingChatMain({
               description="Expert guidance on data governance and management"
             >
               <svg
-                className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-[#9a19ff]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -101,7 +101,7 @@ export default function FloatingChatMain({
               description="Cutting-edge AI solutions and implementation"
             >
               <svg
-                className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-[#9a19ff]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -121,7 +121,7 @@ export default function FloatingChatMain({
               description="Robust solution design and architecture planning"
             >
               <svg
-                className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-[#9a19ff]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -144,13 +144,13 @@ export default function FloatingChatMain({
           />
         ) : (
           isFloatingOpen && (
-            <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900">
+            <div className="fixed inset-0 z-50 bg-[#fafffe] dark:!bg-[#1F1925]">
               <div className="flex flex-col h-full">
                 {/* Header */}
                 <FloatingHeader />
 
                 {/* Messages Container */}
-                <div className="flex-1 overflow-y-auto bg-white dark:bg-gray-900">
+                <div className="flex-1 overflow-y-auto bg-[#fafffe] dark:!bg-[#1F1925]">
                   <Messages
                     messagesEndRef={messagesEndRef}
                     sendMessageToServer={sendMessageToServer}
@@ -159,7 +159,7 @@ export default function FloatingChatMain({
 
                 {/* Input Container */}
                 {!isThreadShareMode && (
-                  <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                  <div className="bg-[#fafffe] dark:!bg-[#1F1925] border-t border-gray-200 dark:border-gray-700">
                     <div className="w-full mx-auto">
                       <div className="flex flex-col gap-2">
                         <ChatInput handleSubmit={handleSubmit} />

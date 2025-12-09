@@ -4,24 +4,15 @@ import RenderReactMarkdown from '../RenderReactMarkdown';
 
 type BaseMessageProps = {
   message: Message;
-  borderColor: string;
-  proseColor: string;
   header?: React.ReactNode;
 };
 
-export default function BaseMessage({
-  message,
-  borderColor,
-  proseColor,
-  header,
-}: BaseMessageProps) {
+export default function BaseMessage({ message, header }: BaseMessageProps) {
   return (
-    <div
-      className={`border-l-4 border-${borderColor} dark:border-${borderColor}/60 bg-gradient-to-r from-blue-50 to-white dark:from-gray-700 dark:to-gray-700 text-black dark:text-gray-200`}
-    >
+    <div className="border-[#9a19ff] dark:border-[#9a19ff]/60 bg-gradient-to-r from-[#fafffe] to-[#fafffe] dark:from-[#1F1925] dark:to-[#1F1925] text-black dark:!text-[#fafffe]">
       <div className="px-6 py-5 text-left">
         {header && <div className="flex items-center mb-2">{header}</div>}
-        <div className={`prose prose-${proseColor} dark:prose-invert max-w-none`}>
+        <div className="prose dark:prose-invert max-w-none">
           <RenderReactMarkdown message={message} />
         </div>
       </div>

@@ -88,12 +88,12 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
   };
 
   return (
-    <div className="flex-1 flex-col bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900/20 h-full relative -z-[0]">
+    <div className="flex-1 flex-col bg-[#fafffe] dark:!bg-[#1F1925] h-full relative -z-[0]">
       {/* Floating background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-4 w-32 h-32 bg-blue-400/5 rounded-full blur-xl"></div>
-        <div className="absolute top-40 right-8 w-24 h-24 bg-purple-400/5 rounded-full blur-xl"></div>
-        <div className="absolute bottom-32 left-8 w-28 h-28 bg-emerald-400/5 rounded-full blur-xl"></div>
+        <div className="absolute top-20 left-4 w-32 h-32 bg-[#9a19ff]/5 rounded-full blur-xl"></div>
+        <div className="absolute top-40 right-8 w-24 h-24 bg-[#9a19ff]/5 rounded-full blur-xl"></div>
+        <div className="absolute bottom-32 left-8 w-28 h-28 bg-[#9a19ff]/5 rounded-full blur-xl"></div>
       </div>
 
       <div ref={scrollContainerRef} className="h-full overflow-y-auto relative z-10">
@@ -120,12 +120,12 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                     <div
                       className={`relative w-full ${
                         isFirstMessage && isUserMessage
-                          ? 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-500 dark:from-slate-900 dark:via-gray-700 dark:to-slate-600 text-white p-4 shadow-xl'
+                          ? 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white p-4 shadow-xl'
                           : isLastMessage && isAgentMessage
-                            ? 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-500 dark:from-slate-900 dark:via-gray-700 dark:to-slate-600 text-white rounded-b-2xl p-4 shadow-xl border-t border-white/20'
+                            ? 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white rounded-b-2xl p-4 shadow-xl border-t border-white/20'
                             : isAgentMessage
-                              ? 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-500 dark:from-slate-900 dark:via-gray-700 dark:to-slate-600 text-white p-4 shadow-xl border-t border-white/20'
-                              : 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-500 dark:from-slate-900 dark:via-gray-700 dark:to-slate-600 text-white p-4 shadow-xl'
+                              ? 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white p-4 shadow-xl border-t border-white/20'
+                              : 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white p-4 shadow-xl'
                       }`}
                     >
                       {/* Show agent header only for agent messages */}
@@ -165,15 +165,15 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                     className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'} animate-slideIn`}
                   >
                     <div
-                      className={`relative ${
+                      className={`relative w-full bg-[#fafffe]/90 dark:!bg-[#1F1925]/90 backdrop-blur-sm border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] text-slate-800 dark:!text-[#fafffe]  p-4 shadow-lg ${
                         isUserMessage
-                          ? 'max-w-[85%] bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl rounded-br-md p-4 shadow-lg shadow-blue-500/25'
-                          : 'w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-md p-4 shadow-lg'
+                          ? 'max-w-[85%] rounded-2xl rounded-br-md'
+                          : 'w-full rounded-2xl rounded-tl-md'
                       }`}
                     >
                       {isAgentMessage && (
                         <div className="flex items-center mb-3">
-                          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3 shadow-lg">
+                          <div className="w-8 h-8 bg-gradient-to-br from-[#9a19ff] to-purple-600 rounded-full flex items-center justify-center mr-3 shadow-lg">
                             <svg
                               className="w-4 h-4 text-white"
                               fill="none"
@@ -188,7 +188,7 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                               />
                             </svg>
                           </div>
-                          <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                          <span className="text-sm font-semibold text-[#9a19ff] dark:!text-[#9a19ff]">
                             Osca
                           </span>
                         </div>
@@ -213,11 +213,11 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
 
         {renderTopics && renderTopics.length > 0 && !isThinking && !isThreadShareMode && (
           <div className="px-4 pb-6 relative z-10">
-            <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 rounded-xl p-3 sm:p-6 shadow-2xl">
+            <div className="bg-[#fafffe]/60 dark:!bg-[#1F1925]/60 backdrop-blur-xl border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] rounded-xl p-3 sm:p-6 shadow-2xl">
               {/* Header with sparkle effect */}
               <div className="flex items-center justify-center mb-6">
                 <div className="relative">
-                  <h3 className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+                  <h3 className="text-lg font-bold bg-gradient-to-r from-[#9a19ff] via-purple-600 to-[#9a19ff] bg-clip-text text-transparent">
                     ✨ Explore Topics
                   </h3>
                 </div>

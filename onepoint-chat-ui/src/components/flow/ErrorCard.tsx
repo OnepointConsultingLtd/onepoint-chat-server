@@ -9,7 +9,7 @@ export default function ErrorCard({ title, message }: { title: string; message: 
         <div className="absolute inset-0 bg-gradient-to-r from-red-400 via-red-500 to-red-600 dark:from-red-600 dark:via-red-700 dark:to-red-800 rounded-2xl blur-sm opacity-75 animate-pulse"></div>
 
         {/* Main card */}
-        <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-red-200 dark:border-red-800/50 backdrop-blur-sm">
+        <div className="relative bg-[#fafffe] dark:!bg-[#1F1925] rounded-2xl shadow-2xl overflow-hidden border border-red-200 dark:border-red-800/50 backdrop-blur-sm">
           {/* Decorative top border */}
           <div className="h-1 bg-gradient-to-r from-red-400 via-red-500 to-red-600 dark:from-red-500 dark:via-red-600 dark:to-red-700"></div>
 
@@ -26,7 +26,7 @@ export default function ErrorCard({ title, message }: { title: string; message: 
             </div>
 
             {/* Title */}
-            <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2 tracking-tight">
+            <h3 className="text-2xl font-bold text-center text-gray-900 dark:!text-[#fafffe] mb-2 tracking-tight">
               {title}
             </h3>
 
@@ -40,7 +40,7 @@ export default function ErrorCard({ title, message }: { title: string; message: 
           <div className="px-8 py-6 bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-sm">
             <div className="flex items-start gap-3">
               <IoWarningOutline className="h-5 w-5 text-red-500 dark:text-red-400 mt-0.5 flex-shrink-0" />
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base">
+              <p className="text-gray-700 dark:!text-[#fafffe] leading-relaxed text-base">
                 {message}
               </p>
             </div>
