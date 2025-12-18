@@ -15,7 +15,7 @@ cd onepoint-chat-ui
 cp src/lib/server_staging.ts src/lib/server.ts
 
 # Replace the token with sed
-sed -i '/ONE_TIME_TOKEN/s/"[^"]*"/"eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvbmVwb2ludGx0ZCIsIm5hbWUiOiJvbmVwb2ludGx0ZCIsImlhdCI6MTc1NTUwMzMxMiwiZW1haWwiOiJvc2NhQG9uZXBvaW50bHRkLmNvbSIsInBlcm1pc3Npb25zIjpbInJlYWQiXX0.0r1g_L5WNN8bdiy58mTKn8Ktt3OUj6ZI6nbFJVSeJbdwwFJT6pe2pX4crLyUR-zprePcVIgjIpol320hB-7ksw"/' src/lib/constants.ts
+sed -i '/ONE_TIME_TOKEN/s/"[^"]*"/"eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtdXJ0YXphIiwibmFtZSI6Ik11cnRhemEiLCJpYXQiOjE3NTkxMzA3NDMsImVtYWlsIjoibXVydGF6YUBnbWFpbC5jb20iLCJwZXJtaXNzaW9ucyI6WyJyZWFkIiwid3JpdGUiXX0.Okbw0pfpEB4cNE2Qopu6Ckpl3lNwZiwXAfrY0CgdLZn_3IBTAv1dvXfs7BicXahgVl8Et7Rlm2ASjbDOCvkKoQ"/' src/lib/constants.ts
 
 $YARN_PATH
 $YARN_PATH build
