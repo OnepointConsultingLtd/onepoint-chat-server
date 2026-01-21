@@ -1,10 +1,12 @@
+import { useUser } from '@clerk/clerk-react';
+import { ReactFlowProvider } from '@xyflow/react';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { ReactFlowProvider } from '@xyflow/react';
 import './App.css';
 import ChatContainer from './components/ChatContainer';
-import useChatStore from './store/chatStore';
+import Loader from './components/Loader/Loader';
 import { getThreadId, isThreadMode } from './lib/persistence';
+import useChatStore from './store/chatStore';
 import { Message } from './type/types';
 
 export type SharedResponse = {
@@ -15,6 +17,8 @@ export type SharedResponse = {
 };
 
 export default function Home() {
+  const { isLoaded } = useUser();
+
   const { loadSharedChatById, loadSharedThreadById } = useChatStore(
     useShallow(state => ({
       loadSharedChatById: state.loadSharedChatById,
@@ -45,6 +49,8 @@ export default function Home() {
         const response: SharedResponse = await loadSharedThreadById(threadId);
 
         if (response.status) {
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
           document.title = 'Onepoint Chat';
         } else {
           console.error('Failed to load shared thread');
@@ -66,6 +72,9 @@ export default function Home() {
       }
     }
   }, [loadSharedChatById, loadSharedThreadById]);
+
+
+  if (!isLoaded) return <Loader />;
 
   return (
     <ReactFlowProvider>

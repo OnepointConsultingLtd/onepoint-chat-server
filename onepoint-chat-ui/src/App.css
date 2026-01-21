@@ -1,6 +1,18 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
+body,
+p,
+div,
+button,
+input,
+select,
+textarea {
+  font-family: Manrope, sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
 
 .logo {
   height: 6em;
@@ -54,8 +66,8 @@
 
 /* Apply disc styling only to lists outside of the chat markdown content */
 /* This prevents overriding the markdown styling in chat responses */
-:not([class*='markdown']) > ul,
-:not([class*='markdown']) > li {
+:not([class*='markdown'])>ul,
+:not([class*='markdown'])>li {
   list-style-type: disc;
   color: #000;
   font-weight: 500;
@@ -70,10 +82,12 @@
   0% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0 50%;
   }
 }
+
 
 .skeleton-container {
   width: 100%;
@@ -103,6 +117,7 @@
 .skeleton-line:nth-child(2) {
   width: 90%;
 }
+
 .skeleton-line:nth-child(3) {
   width: 80%;
 }
@@ -110,6 +125,7 @@
 .react-flow__panel {
   display: none !important;
 }
+
 ol,
 ul,
 menu {
@@ -146,24 +162,58 @@ menu {
     transform: translateX(-40%) scaleX(1);
     opacity: 0.9;
   }
+
   50% {
     transform: translateX(20%) scaleX(1.2);
     opacity: 1;
   }
+
   100% {
     transform: translateX(120%) scaleX(1);
     opacity: 0.9;
   }
 }
+
 .animate-progress-alive {
   animation: progressAlive 2.5s ease-in-out infinite;
 }
 
 /* --- Subtle glow pulse --- */
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 10px rgba(154, 25, 255, 0.2); }
-  50% { box-shadow: 0 0 20px rgba(154, 25, 255, 0.5); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(154, 25, 255, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(154, 25, 255, 0.5);
+  }
 }
+
 .animate-glow {
   animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+
+/* Hidding the clerk components */
+
+.cl-internal-l2l775 {
+  display: none !important;
+}
+
+.cl-internal-vorlia {
+  display: none !important;
+}
+
+.cl-footer {
+  display: none !important;
+}
+
+.cl-internal-1dauvpw {
+  display: none !important;
+}
+
+.cl-userButtonPopoverActionButton.cl-button.cl-userButtonPopoverActionButton__manageAccount.cl-button__manageAccount.cl-internal-8opd5o {
+  display: none !important;
 }

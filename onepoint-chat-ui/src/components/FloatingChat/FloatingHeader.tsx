@@ -4,6 +4,7 @@ import { FaMarkdown } from 'react-icons/fa';
 import { FiCheck, FiShare2 } from 'react-icons/fi';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
+import { useUser, SignInButton, UserButton } from '@clerk/clerk-react';
 import { useDarkMode } from '../../hooks/useDarkMode';
 import { useExport } from '../../hooks/useExport';
 import { handleCopyToClipboard } from '../../lib/handleCopyToClipboard';
@@ -12,6 +13,7 @@ import { PROJECT_INFO } from '../../lib/constants';
 
 export default function FloatingHeader() {
   const { isDark, toggleTheme } = useDarkMode();
+  const { isSignedIn, isLoaded } = useUser();
 
   const {
     messages,
@@ -97,8 +99,8 @@ export default function FloatingHeader() {
           </button>
           {!isThreadShareMode && (
             <>
-              {/* Share Button */}
-              {hasConversation && (
+              {/* Share Button - Only show when signed in */}
+              {isLoaded && isSignedIn && hasConversation && (
                 <button
                   onClick={handleShare}
                   className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
@@ -121,8 +123,8 @@ export default function FloatingHeader() {
                 <span className="text-xs hidden sm:block">New</span>
               </button>
 
-              {/* Export Button */}
-              {hasConversation && (
+              {/* Export Button - Only show when signed in */}
+              {isLoaded && isSignedIn && hasConversation && (
                 <div className="relative">
                   <button
                     onClick={() => setShowDropdown(!showDropdown)}
@@ -155,6 +157,33 @@ export default function FloatingHeader() {
                       </div>
                     </>
                   )}
+                </div>
+              )}
+
+              {/* Login Button - Show when not signed in */}
+              {isLoaded && !isSignedIn && (
+                <SignInButton mode="modal">
+                  <button
+                    className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
+                    title="Sign in"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                      />
+                    </svg>
+                    <span className="text-xs hidden sm:inline ml-1">Sign In</span>
+                  </button>
+                </SignInButton>
+              )}
+
+              {/* User Button - Show when signed in */}
+              {isLoaded && isSignedIn && (
+                <div className="flex items-center">
+                  <UserButton />
                 </div>
               )}
             </>

@@ -12,6 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.59.4",
     "@tailwindcss/vite": "^4.0.12",
     "@userback/widget": "^0.3.11",
     "@xyflow/react": "^12.6.0",

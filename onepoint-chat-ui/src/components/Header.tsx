@@ -4,6 +4,7 @@ import { FaMarkdown } from 'react-icons/fa';
 import { FiCheck, FiShare2 } from 'react-icons/fi';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
+import { useUser, SignInButton, UserButton, useSession } from '@clerk/clerk-react';
 import useChatStore from '../store/chatStore';
 import { useExport } from '../hooks/useExport';
 import GradientButton, { MiniGradientButton } from './GradientButton';
@@ -13,6 +14,11 @@ import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 import Toast from './Toast';
 
 export default function Header() {
+  const { isSignedIn, isLoaded } = useUser();
+  const { session } = useSession()
+
+  console.log("session", session?.user?.id)
+
   const [showDropdown, setShowDropdown] = useState(false);
   const [copied, setCopied] = useState(false);
   const [toast, setToast] = useState<{
@@ -92,8 +98,8 @@ export default function Header() {
         {/* Theme Toggle */}
         <ThemeToggle />
 
-        {/* Share Button */}
-        {hasConversation && !isThreadShareMode && (
+        {/* Share Button - Only show when signed in */}
+        {isLoaded && isSignedIn && hasConversation && !isThreadShareMode && (
           <GradientButton
             onClick={handleShare}
             icon={copied ? <FiCheck className="text-green-600" /> : <FiShare2 />}
@@ -104,11 +110,34 @@ export default function Header() {
         )}
 
         <div className="relative w-auto">
-          {!isThreadShareMode && (
+          {/* Export Button - Only show when signed in */}
+          {isLoaded && isSignedIn && !isThreadShareMode && (
             <GradientButton onClick={() => setShowDropdown(!showDropdown)} icon={<CiExport />}>
               Export
             </GradientButton>
           )}
+
+          {/* Login Button - Show when not signed in */}
+          {isLoaded && !isSignedIn && !isThreadShareMode && (
+            <SignInButton mode="modal">
+              <GradientButton
+                onClick={() => { }}
+                icon={
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                    />
+                  </svg>
+                }
+              >
+                Login
+              </GradientButton>
+            </SignInButton>
+          )}
+
 
           {showDropdown && (
             <>
@@ -133,11 +162,20 @@ export default function Header() {
             </>
           )}
         </div>
+
         {!isThreadShareMode && (
           <GradientButton onClick={handleRestart} icon={<MdOutlineRestartAlt />}>
             New
           </GradientButton>
         )}
+
+        {/* User Button - Show when signed in */}
+        {isLoaded && isSignedIn && !isThreadShareMode && (
+          <div className="flex items-center">
+            <UserButton />
+          </div>
+        )}
+
       </div>
 
       {/* Toast Notification */}

@@ -327,11 +327,19 @@ const useChatStore = create<ChatStore>()(
       // Load shared thread (single message pair)
       loadSharedThreadById: async (messageId: string): Promise<SharedResponse> => {
         try {
+          // Reset sessionId when loading a thread share to prevent conflicts
+          // This ensures thread mode doesn't conflict with full chat mode
+          localStorage.removeItem('sessionId');
           const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/thread-share/${messageId}`);
 
           if (!response.ok) {
             if (response.status === 404) {
               console.error('Thread not found:', messageId);
+              // Clear thread mode state when thread is not found
+              clearThreadData();
+              set(() => ({
+                isThreadShareMode: false,
+              }));
               return {
                 status: false,
                 error: 'Thread not found',
@@ -346,6 +354,11 @@ const useChatStore = create<ChatStore>()(
 
           if (!threadData.messages || !Array.isArray(threadData.messages)) {
             console.error('Invalid shared thread data: missing or invalid messages');
+            // Clear thread mode state when thread data is invalid
+            clearThreadData();
+            set(() => ({
+              isThreadShareMode: false,
+            }));
             return {
               status: false,
               error: 'Invalid shared thread data: missing or invalid messages',
@@ -385,6 +398,11 @@ const useChatStore = create<ChatStore>()(
           };
         } catch (error) {
           console.error('Error loading shared thread:', error);
+          // Clear thread mode state on error
+          clearThreadData();
+          set(() => ({
+            isThreadShareMode: false,
+          }));
           return {
             status: false,
             error: 'Failed to load shared thread',
