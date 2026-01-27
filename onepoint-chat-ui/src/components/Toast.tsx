@@ -41,11 +41,10 @@ export default function Toast({ message, type, isVisible, onClose, duration = 40
           </div>
           <div className="ml-3 w-0 flex-1">
             <p
-              className={`text-sm font-medium ${
-                type === 'success'
+              className={`text-sm font-medium ${type === 'success'
                   ? 'text-green-800 dark:text-green-200'
                   : 'text-red-800 dark:text-red-200'
-              }`}
+                }`}
             >
               {type === 'success' ? 'Success' : 'Error'}
             </p>

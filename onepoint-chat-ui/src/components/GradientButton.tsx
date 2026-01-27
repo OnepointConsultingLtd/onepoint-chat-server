@@ -40,25 +40,22 @@ export const MiniGradientButton = ({
     <button
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
-      className={`group w-full cursor-pointer px-3 py-2.5 text-left text-sm flex items-center transition-colors duration-200 rounded-lg mx-1 my-0.5 ${
-        disabled ? 'opacity-50 cursor-not-allowed' : ''
-      }`}
+      className={`group w-full cursor-pointer px-3 py-2.5 text-left text-sm flex items-center transition-colors duration-200 rounded-lg mx-1 my-0.5 ${disabled ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
     >
       <div
-        className={`mr-3 flex-shrink-0 transition-colors duration-200 ${
-          disabled
+        className={`mr-3 flex-shrink-0 transition-colors duration-200 ${disabled
             ? 'text-gray-400'
             : 'dark:!text-[#fafffe] text-gray-500 group-hover:text-[#9a19ff]'
-        }`}
+          }`}
       >
         {icon}
       </div>
       <span
-        className={`font-medium transition-colors duration-200 ${
-          disabled
+        className={`font-medium transition-colors duration-200 ${disabled
             ? 'text-gray-400'
             : 'dark:!text-[#fafffe] text-gray-500 group-hover:text-[#9a19ff]'
-        }`}
+          }`}
       >
         {children}
       </span>

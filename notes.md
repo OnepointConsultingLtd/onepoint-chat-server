@@ -4,6 +4,7 @@ Osca:
 - Remove the sidebar and add predefined question in the main chat box.
 
 - Add user login and history management:
-  ## Hide features:
-     - Share(Both).
+  ## Hide features if not logged in:
      - Download/Export.
+     - History
+     - 

@@ -89,8 +89,8 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
             <button
               onClick={handleShareClick}
               className={`p-1 md:p-2 rounded-full transition-all duration-200 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer ${sharedId === message.id
-                  ? 'bg-green-50 text-green-600 border border-green-200'
-                  : ' text-[#1F1925] dark:text-white hover:text-[#9a19ff] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]'
+                ? 'bg-green-50 text-green-600 border border-green-200'
+                : ' text-[#1F1925] dark:text-white hover:text-[#9a19ff] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]'
                 }`}
               title={sharedId === message.id ? 'Share URL copied!' : 'Share message'}
             >

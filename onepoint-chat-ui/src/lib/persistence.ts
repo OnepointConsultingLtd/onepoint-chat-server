@@ -1,6 +1,6 @@
 // Persistence keys
 enum PersistenceKeys {
-  SESSION_ID = 'sessionId',
+  CONVERSATION_ID = 'conversationId',
   HAS_ACTIVE_CHAT = 'activeSession',
   THREAD_ID = 'threadId',
   IS_THREAD_MODE = 'isThreadMode',
@@ -12,12 +12,12 @@ export function isChatActive(): boolean {
 
 export function saveConversationId(conversationId: string | null) {
   if (!conversationId) return;
-  localStorage.setItem(PersistenceKeys.SESSION_ID, conversationId);
+  localStorage.setItem(PersistenceKeys.CONVERSATION_ID, conversationId);
 }
 
 export function getConversationId(): string | null {
   try {
-    const conversationId = localStorage.getItem(PersistenceKeys.SESSION_ID);
+    const conversationId = localStorage.getItem(PersistenceKeys.CONVERSATION_ID);
     if (!conversationId) return null;
     return conversationId;
   } catch (error) {
@@ -59,7 +59,7 @@ export function markChatAsActive() {
 }
 
 export function clearChatData() {
-  localStorage.removeItem(PersistenceKeys.SESSION_ID);
+  localStorage.removeItem(PersistenceKeys.CONVERSATION_ID);
   localStorage.removeItem(PersistenceKeys.HAS_ACTIVE_CHAT);
   clearThreadData();
 }

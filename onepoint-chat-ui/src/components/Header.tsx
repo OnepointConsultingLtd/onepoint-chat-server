@@ -99,7 +99,7 @@ export default function Header() {
         <ThemeToggle />
 
         {/* Share Button - Only show when signed in */}
-        {isLoaded && isSignedIn && hasConversation && !isThreadShareMode && (
+        {hasConversation && !isThreadShareMode && (
           <GradientButton
             onClick={handleShare}
             icon={copied ? <FiCheck className="text-green-600" /> : <FiShare2 />}
@@ -108,7 +108,6 @@ export default function Header() {
             {copied ? 'Copied!' : 'Share'}
           </GradientButton>
         )}
-
         <div className="relative w-auto">
           {/* Export Button - Only show when signed in */}
           {isLoaded && isSignedIn && !isThreadShareMode && (

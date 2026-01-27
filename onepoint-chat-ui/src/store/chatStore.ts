@@ -327,9 +327,9 @@ const useChatStore = create<ChatStore>()(
       // Load shared thread (single message pair)
       loadSharedThreadById: async (messageId: string): Promise<SharedResponse> => {
         try {
-          // Reset sessionId when loading a thread share to prevent conflicts
+          // Reset conversationId when loading a thread share to prevent conflicts
           // This ensures thread mode doesn't conflict with full chat mode
-          localStorage.removeItem('sessionId');
+          localStorage.removeItem('conversationId');
           const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/thread-share/${messageId}`);
 
           if (!response.ok) {

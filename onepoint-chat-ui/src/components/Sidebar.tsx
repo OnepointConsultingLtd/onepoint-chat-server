@@ -125,9 +125,8 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
       <div className="flex flex-col h-screen">
         <div onClick={toggleSidebar}>
           <div
-            className={`fixed inset-y-0 min-h-screen ${
-              isSidebarOpen ? 'block left-0 w-[300px] lg:!w-[385px]' : '-left-[1180px] w-0 hidden'
-            } transition-all duration-300  lg:!relative z-50 flex flex-col h-full animate-fade-in bg-[#fafffe] dark:!bg-[#1F1925]`}
+            className={`fixed inset-y-0 min-h-screen ${isSidebarOpen ? 'block left-0 w-[300px] lg:!w-[385px]' : '-left-[1180px] w-0 hidden'
+              } transition-all duration-300  lg:!relative z-50 flex flex-col h-full animate-fade-in bg-[#fafffe] dark:!bg-[#1F1925]`}
             onClick={e => e.stopPropagation()}
           >
             {/* Mobile Header */}

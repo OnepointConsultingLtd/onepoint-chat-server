@@ -6,6 +6,9 @@ import { personaDirectives, servicesGuidance } from "../utils/personaPrompt";
 import { personaFirstQuestion } from "../utils/personaFirstQuestion";
 
 function truncateText(text: string, maxTokens = 5000): string {
+  if (!text || typeof text !== 'string') {
+    return '';
+  }
   const words = text.split(" ");
   return words.slice(0, maxTokens).join(" ") + (words.length > maxTokens ? "..." : "");
 }
