@@ -1,5 +1,5 @@
 import express, { RequestHandler } from "express";
-import { getChatHistory, getCollection, formatConversationHistory, extractUserMessageContent } from "./handleApi";
+import { getChatHistory, getChatHistoryWithMetadata, getCollection, formatConversationHistory, extractUserMessageContent } from "./handleApi";
 import cors from "cors";
 import path from "path";
 import wkhtmltopdf from "wkhtmltopdf";
@@ -23,14 +23,27 @@ console.log(`Serving static files from ${static_files_path}`);
  * 
  * This endpoint retrieves the chat history for a given conversation ID.
  * It returns the entire conversation history for the given conversation ID.
+ * 
+ * Query parameter: ?metadata=true to include conversation metadata (isActive, userId, etc.)
  */
-
-
 app.get("/api/chat/:conversationId", (async (req, res) => {
   try {
     const { conversationId } = req.params;
-    const history = await getChatHistory(conversationId);
-    res.json(history);
+    const includeMetadata = req.query.metadata === 'true';
+
+    if (includeMetadata) {
+      // Return history with metadata (isActive, userId, anonymousId, etc.)
+      const result = await getChatHistoryWithMetadata(conversationId);
+      if (result) {
+        res.json(result);
+      } else {
+        res.status(404).json({ error: "Conversation not found" });
+      }
+    } else {
+      // Return only chat history (backward compatible)
+      const history = await getChatHistory(conversationId);
+      res.json(history);
+    }
   } catch (error) {
     console.error("Error fetching chat history:", error);
     res.status(500).json({ error: "Failed to fetch chat history" });
@@ -212,6 +225,98 @@ app.get("/api/chat/thread-share/:messageId", (async (req, res) => {
   } catch (error) {
     console.error("Error fetching shared message pair:", error);
     res.status(500).json({ error: "Failed to fetch shared message pair" });
+  }
+}) as RequestHandler);
+
+
+/**
+ * Endpoint: /api/conversations/metadata
+ * Description: Store user metadata for a conversation in memory only
+ * This is used to associate userId/anonymousId with conversations when saving.
+ * We don't create database records here - only when actual messages are saved.
+ */
+app.post("/api/conversations/metadata", (async (req, res) => {
+  try {
+    const { conversationId, userId, anonymousId } = req.body;
+
+    console.log(`[metadata API] Received - conversationId: ${conversationId}, userId: ${userId}, anonymousId: ${anonymousId}`);
+
+    if (!conversationId) {
+      return res.status(400).json({ error: "conversationId is required" });
+    }
+
+    // Store in memory Map for use in save callback
+    // Don't create database record until messages are actually saved
+    const { setConversationMetadata } = await import("../callbacks/saveConversationHistory");
+    setConversationMetadata(conversationId, { userId, anonymousId });
+
+    console.log(`[metadata API] Stored metadata for conversationId: ${conversationId}`);
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error storing conversation metadata:", error);
+    res.status(500).json({ error: "Failed to store metadata" });
+  }
+}) as RequestHandler);
+
+/**
+ * Endpoint: /api/conversations/message-metadata
+ * Description: Store metadata from WebSocket messages
+ * This extracts metadata from incoming WebSocket messages and stores it
+ */
+app.post("/api/conversations/message-metadata", (async (req, res) => {
+  try {
+    const { conversationId, userId, anonymousId } = req.body;
+
+    console.log(`[message-metadata API] Received - conversationId: ${conversationId}, userId: ${userId}, anonymousId: ${anonymousId}`);
+
+    if (!conversationId) {
+      return res.status(400).json({ error: "conversationId is required" });
+    }
+
+    // Store metadata from WebSocket message
+    const { storeMessageMetadata } = await import("../callbacks/saveConversationHistory");
+    storeMessageMetadata(conversationId, { userId, anonymousId });
+
+    console.log(`[message-metadata API] Stored message metadata for conversationId: ${conversationId}`);
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error storing message metadata:", error);
+    res.status(500).json({ error: "Failed to store message metadata" });
+  }
+}) as RequestHandler);
+
+/**
+ * Endpoint: /api/conversations/user/:userId
+ * Description: Get all conversations for a user
+ */
+
+app.get("/api/conversations/user/:userId", (async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const collection = await getCollection();
+
+    const conversations = await collection
+      .find({ userId })
+      .sort({ lastUpdated: -1 })
+      .limit(50)
+      .toArray();
+
+    const conversationList = conversations.map(conv => ({
+      conversationId: conv.conversationId,
+      userMessage: conv.userMessage,
+      timestamp: conv.timestamp,
+      lastUpdated: conv.lastUpdated,
+      messageCount: conv.chatHistory?.length || 0,
+      isActive: conv.isActive || false,
+      chatHistory: conv.chatHistory,
+    }));
+
+    res.json({ conversations: conversationList });
+  } catch (error) {
+    console.error("Error fetching user conversations:", error);
+    res.status(500).json({ error: "Failed to fetch conversations" });
   }
 }) as RequestHandler);
 

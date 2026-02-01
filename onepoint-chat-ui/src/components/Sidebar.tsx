@@ -1,61 +1,119 @@
-import { useEffect, useRef } from 'react';
-import { TfiReload } from 'react-icons/tfi';
+import { useCallback, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { PROJECT_INFO } from '../lib/constants';
 import useChatStore from '../store/chatStore';
 import CloseIcon from './Menus/CloseIcon';
-import QuestionItem from './QuestionItem';
+import { useUserContext } from '../hooks/useUserContext';
+import { Conversation, fetchUserConversationHistory } from '../utils/fetchChatHistory';
 
 type SidebarProps = {
   sendMessageToServer: (text: string) => void;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function Sidebar({ sendMessageToServer }: SidebarProps) {
   const {
     isSidebarOpen,
     toggleSidebar,
-    topicQuestions,
-    topicQuestionsLoading,
-    topicQuestionsError,
-    refreshQuestions,
-    isInitialMessage,
+    loadSharedChatById,
   } = useChatStore(
     useShallow(state => ({
       isSidebarOpen: state.isSidebarOpen,
       toggleSidebar: state.toggleSidebar,
-      topicQuestions: state.topicQuestions,
-      topicQuestionsLoading: state.topicQuestionsLoading,
-      topicQuestionsError: state.topicQuestionsError,
-      refreshQuestions: state.refreshQuestions,
-      isInitialMessage: state.isInitialMessage,
+      loadSharedChatById: state.loadSharedChatById,
     }))
   );
 
-  const hasTriedFetchOnMount = useRef(false);
+  const [conversationHistoryState, setConversationHistoryState] = useState<Conversation[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { userId } = useUserContext();
 
-  // Fetch topic questions on component mount (only once)
-  useEffect(() => {
-    // Only fetch once on mount if there are no questions and we're not already loading
-    if (!hasTriedFetchOnMount.current && topicQuestions.length === 0 && !topicQuestionsLoading) {
-      hasTriedFetchOnMount.current = true;
-      refreshQuestions();
+  const conversationHistory = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      if (userId) {
+        const history = await fetchUserConversationHistory(userId);
+        setConversationHistoryState(history);
+        return history;
+      }
+      return [];
+    } catch (error) {
+      console.error('Error fetching conversation history:', error);
+      setError('Failed to load conversation history');
+      return [];
+    } finally {
+      setIsLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array - only run on mount to prevent infinite retry loop
+  }, [userId]);
 
-  const renderQuestionsContent = () => {
-    if (topicQuestionsLoading) {
+  useEffect(() => {
+    conversationHistory();
+  }, [conversationHistory]);
+
+  const handleConversationClick = async (conversationId: string) => {
+    try {
+      const success = await loadSharedChatById(conversationId);
+      if (success) {
+        toggleSidebar();
+      }
+    } catch (error) {
+      console.error('Error loading conversation:', error);
+    }
+  };
+
+  const formatDate = (date: Date | string): string => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const now = new Date();
+    const diffInMs = now.getTime() - dateObj.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    if (diffInDays === 0) {
+      return 'Today';
+    } else if (diffInDays === 1) {
+      return 'Yesterday';
+    } else if (diffInDays < 7) {
+      return `${diffInDays} days ago`;
+    } else {
+      return dateObj.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: dateObj.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
+      });
+    }
+  };
+
+  const formatTime = (date: Date | string): string => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  };
+
+  const truncateMessage = (message: string, maxLength: number = 100): string => {
+    if (!message) return 'No message preview';
+    // Remove markdown formatting for preview
+    const plainText = message.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1');
+    if (plainText.length <= maxLength) return plainText;
+    return plainText.substring(0, maxLength).trim() + '...';
+  };
+
+  const renderConversationHistory = () => {
+    if (isLoading) {
       return (
-        <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-200 dark:border-gray-600 border-t-[#9a19ff] dark:border-t-[#9a19ff]"></div>
-          <span className="ml-2 text-gray-600 dark:!text-[#fafffe]">Loading questions...</span>
+        <div className="flex flex-col justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 dark:border-gray-600 border-t-[#9a19ff] dark:border-t-[#9a19ff] mb-4"></div>
+          <span className="text-gray-600 dark:!text-[#fafffe]">Loading conversations...</span>
         </div>
       );
     }
 
-    if (topicQuestionsError) {
+    if (error) {
       return (
-        <div className="text-center py-8">
+        <div className="text-center py-12 px-4">
           <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
             <svg
               className="w-6 h-6 text-red-600 dark:text-red-400"
@@ -71,11 +129,9 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
               />
             </svg>
           </div>
-          <p className="text-red-600 dark:text-red-400 mb-2 font-medium">
-            Failed to load questions
-          </p>
+          <p className="text-red-600 dark:text-red-400 mb-2 font-medium">{error}</p>
           <button
-            onClick={refreshQuestions}
+            onClick={conversationHistory}
             className="text-[#9a19ff] dark:!text-[#9a19ff] hover:text-[#9a19ff] dark:hover:!text-[#9a19ff] underline text-sm font-medium transition-colors"
           >
             Try again
@@ -84,12 +140,12 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
       );
     }
 
-    if (topicQuestions.length === 0) {
+    if (conversationHistoryState.length === 0) {
       return (
-        <div className="text-center py-8">
-          <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+        <div className="text-center py-12 px-4">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
             <svg
-              className="w-6 h-6 text-gray-400 dark:text-gray-500"
+              className="w-8 h-8 text-gray-400 dark:text-gray-500"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -98,23 +154,74 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
               />
             </svg>
           </div>
-          <p className="text-gray-600 dark:!text-[#fafffe]">No questions available</p>
+          <p className="text-gray-600 dark:!text-[#fafffe] font-medium mb-1">No conversations yet</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Start a new conversation to see it here</p>
         </div>
       );
     }
 
     return (
       <div className="space-y-2">
-        {topicQuestions.map((question, index) => (
-          <QuestionItem
-            key={question.id || index}
-            question={question}
-            sendMessageToServer={sendMessageToServer}
-          />
+        {conversationHistoryState.map((conversation) => (
+          <button
+            key={conversation.conversationId}
+            onClick={() => handleConversationClick(conversation.conversationId)}
+            className="w-full text-left p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a1f35] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] hover:bg-gray-50 dark:hover:bg-[#352840] transition-all duration-200 group"
+          >
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  {conversation.isActive && (
+                    <span className="flex-shrink-0 w-2 h-2 rounded-full bg-[#9a19ff]"></span>
+                  )}
+                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    {formatDate(conversation.lastUpdated)}
+                  </span>
+                </div>
+                <p className="text-sm font-medium text-gray-900 dark:!text-[#fafffe] line-clamp-2 group-hover:text-[#9a19ff] dark:group-hover:text-[#9a19ff] transition-colors">
+                  {truncateMessage(conversation.userMessage)}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+              <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                <span className="flex items-center gap-1">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                    />
+                  </svg>
+                  {conversation.messageCount} {conversation.messageCount === 1 ? 'message' : 'messages'}
+                </span>
+                <span>{formatTime(conversation.lastUpdated)}</span>
+              </div>
+              <svg
+                className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-[#9a19ff] dark:group-hover:text-[#9a19ff] transition-colors"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </div>
+          </button>
         ))}
       </div>
     );
@@ -126,7 +233,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
         <div onClick={toggleSidebar}>
           <div
             className={`fixed inset-y-0 min-h-screen ${isSidebarOpen ? 'block left-0 w-[300px] lg:!w-[385px]' : '-left-[1180px] w-0 hidden'
-              } transition-all duration-300  lg:!relative z-50 flex flex-col h-full animate-fade-in bg-[#fafffe] dark:!bg-[#1F1925]`}
+              } transition-all duration-300 lg:!relative z-50 flex flex-col h-full animate-fade-in bg-[#fafffe] dark:!bg-[#1F1925]`}
             onClick={e => e.stopPropagation()}
           >
             {/* Mobile Header */}
@@ -156,7 +263,7 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
             </div>
 
             {/* Desktop Header */}
-            <div className="border-b border-gray-200 dark:border-gray-700 hidden lg:!flex justify-between items-center ">
+            <div className="border-b border-gray-200 dark:border-gray-700 hidden lg:!flex justify-between items-center">
               <div className="flex items-center px-6 py-5">
                 <div className="w-12 h-12 rounded-lg bg-[#9a19ff] flex items-center justify-center mr-4 shadow-sm">
                   <svg
@@ -183,40 +290,26 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
               </div>
             </div>
 
-            {/* Questions Section */}
+            {/* Conversation History Section */}
             <div
-              className="flex-1 overflow-y-auto"
+              className="flex-1 overflow-y-auto px-6 py-6"
               style={{
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#d1d5db transparent',
               }}
             >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:!text-[#fafffe] text-center">
-                    {isInitialMessage ? 'How can I help you today?' : 'Suggested Questions'}
-                  </h2>
-                  <button
-                    onClick={refreshQuestions}
-                    disabled={topicQuestionsLoading}
-                    className="p-2 cursor-pointer rounded-lg bg-[#fafffe] dark:!bg-[#1F1925] hover:bg-gray-50 dark:hover:bg-[#2a1f35] text-gray-600 dark:!text-[#fafffe] hover:text-gray-900 dark:hover:!text-[#fafffe] transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-[#636565] dark:border-[#fafffe] shadow-sm hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
-                    title="Get new questions"
-                  >
-                    <TfiReload
-                      className={`w-4 h-4 ${topicQuestionsLoading ? 'animate-spin' : ''}`}
-                    />
-                  </button>
-                </div>
-
-                {/* Label for clarity */}
-                <p className="text-sm text-gray-500 dark:!text-[#fafffe] mb-4">
-                  {isInitialMessage
-                    ? 'Please select a question below to get instant insights.'
-                    : 'Please select a question below to get instant insights.'}
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 dark:!text-[#fafffe] mb-1">
+                  Conversation History
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {conversationHistoryState.length > 0
+                    ? `${conversationHistoryState.length} ${conversationHistoryState.length === 1 ? 'conversation' : 'conversations'}`
+                    : 'Your past conversations'}
                 </p>
-
-                {renderQuestionsContent()}
               </div>
+
+              {renderConversationHistory()}
             </div>
           </div>
         </div>

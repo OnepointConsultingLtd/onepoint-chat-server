@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CiExport } from 'react-icons/ci';
 import { FaMarkdown } from 'react-icons/fa';
 import { FiCheck, FiShare2 } from 'react-icons/fi';
@@ -7,6 +7,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useUser, SignInButton, UserButton, useSession } from '@clerk/clerk-react';
 import useChatStore from '../store/chatStore';
 import { useExport } from '../hooks/useExport';
+import { useUserContext } from '../hooks/useUserContext';
 import GradientButton, { MiniGradientButton } from './GradientButton';
 import SideBarButton from './SideBarButton';
 import ThemeToggle from './ThemeToggle';
@@ -15,9 +16,10 @@ import Toast from './Toast';
 
 export default function Header() {
   const { isSignedIn, isLoaded } = useUser();
-  const { session } = useSession()
+  const { session } = useSession();
+  const { userId } = useUserContext();
+  const prevSignedInRef = useRef<boolean | undefined>(undefined);
 
-  console.log("session", session?.user?.id)
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -85,6 +87,57 @@ export default function Header() {
   };
 
   const hasConversation = messages && messages.length >= 2 && !isInitialMessage;
+
+  const { loadSharedChatById } = useChatStore(
+    useShallow(state => ({
+      loadSharedChatById: state.loadSharedChatById,
+    }))
+  );
+
+  // When user logs in, clear anonymous conversationId and fetch their active conversation
+  useEffect(() => {
+    if (isLoaded && prevSignedInRef.current === false && isSignedIn && userId) {
+
+      // CRITICAL: Clear conversationId from localStorage to prevent reusing anonymous conversation
+      const oldConversationId = localStorage.getItem('conversationId');
+      if (oldConversationId) {
+        console.log(`[Header] Clearing anonymous conversationId from localStorage: ${oldConversationId}`);
+        localStorage.removeItem('conversationId');
+      }
+
+      // User just logged in - fetch their active conversation
+      fetch(`${window.oscaConfig.httpUrl}/api/conversations/user/${userId}/active`)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          return { conversationId: null };
+        })
+        .then(data => {
+          if (data.conversationId && data.chatHistory && data.chatHistory.length > 0) {
+            // User has an active conversation with messages - load it
+            console.log(`[Header] Loading user active conversation: ${data.conversationId}`);
+            loadSharedChatById(data.conversationId).then(success => {
+              if (success) {
+                console.log('[Header] User active conversation loaded successfully');
+              } else {
+                console.error('[Header] Failed to load user active conversation');
+              }
+            });
+          } else {
+            // No active conversation or empty - will create new one when user sends first message
+            console.log('[Header] No active conversation found for user - will create new one on first message');
+          }
+        })
+        .catch(error => {
+          console.error('[Header] Error fetching user active conversation:', error);
+        });
+    }
+
+    if (isLoaded) {
+      prevSignedInRef.current = isSignedIn;
+    }
+  }, [isLoaded, isSignedIn, userId, loadSharedChatById]);
 
   return (
     <>

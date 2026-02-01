@@ -39,6 +39,39 @@ export async function getChatHistory(conversationId: string) {
   }
 }
 
+/**
+ * Get chat history with metadata (including isActive, userId, anonymousId, etc.)
+ * Returns both the messages and conversation metadata
+ */
+export async function getChatHistoryWithMetadata(conversationId: string) {
+  try {
+    const collection = await getCollection();
+
+    const conversation = await collection.findOne({ conversationId });
+
+    if (conversation) {
+      return {
+        conversationId: conversation.conversationId,
+        userId: conversation.userId || null,
+        anonymousId: conversation.anonymousId || null,
+        isActive: conversation.isActive || false,
+        timestamp: conversation.timestamp || null,
+        lastUpdated: conversation.lastUpdated || null,
+        createdAt: conversation.createdAt || null,
+        userMessage: conversation.userMessage || null,
+        messageCount: conversation.chatHistory?.length || 0,
+        chatHistory: formatConversationHistory(conversation),
+      };
+    }
+
+    console.warn(`No conversations found in database for ${conversationId}`);
+    return null;
+  } catch (error) {
+    console.error("Error retrieving conversation with metadata:", error);
+    return null;
+  }
+}
+
 export function formatConversationHistory(conversation: any) {
   const history = conversation.chatHistory
     .filter((msg: any) => ["assistant", "user"].includes(msg.role))
@@ -58,10 +91,13 @@ export async function saveChatHistory(
   chatHistory: any[],
   conversationId: string,
   referenceSources?: any[],
+  userId?: string | null,
+  anonymousId?: string | null,
 ) {
 
   const oldConversationId = chatHistory[chatHistory.length - 1]?.conversationId;
   const newConversationId = conversationId;
+
 
   try {
     const collection = await getCollection();
@@ -92,10 +128,46 @@ export async function saveChatHistory(
       }
     }
 
+    // Mark other conversations as inactive if this is a new active conversation
+    // Works for both logged-in users (by userId) and anonymous users (by anonymousId)
+    if (userId) {
+      // For logged-in users: mark other conversations with same userId as inactive
+      await collection.updateMany(
+        { userId, isActive: true, conversationId: { $ne: newConversationId } },
+        { $set: { isActive: false } }
+      );
+    } else if (anonymousId) {
+      // For anonymous users: mark other conversations with same anonymousId as inactive
+      await collection.updateMany(
+        { anonymousId, isActive: true, conversationId: { $ne: newConversationId } },
+        { $set: { isActive: false } }
+      );
+    }
+
     // Check if conversation already exists
     const existingConversation = await collection.findOne({ conversationId: newConversationId });
 
     if (existingConversation) {
+
+      const existingUserId = existingConversation.userId || null;
+      const existingAnonymousId = existingConversation.anonymousId || null;
+
+      // If existing is anonymous (has anonymousId, no userId) and we're trying to save with userId
+      if (existingAnonymousId && !existingUserId && userId) {
+        return;
+      }
+
+      // If existing has userId and we're trying to save with different userId
+      if (existingUserId && userId && existingUserId !== userId) {
+        return;
+      }
+
+      // If existing has userId and we're trying to save as anonymous
+      if (existingUserId && !userId && anonymousId) {
+        return;
+      }
+
+      console.log(`[saveChatHistory] Proceeding with update - user context matches`);
       // Update existing conversation - preserve existing reference sources
       const existingChatHistory = existingConversation.chatHistory || [];
 
@@ -125,38 +197,79 @@ export async function saveChatHistory(
         {
           $set: {
             conversationId: newConversationId,
+            userId: userId || null,
+            anonymousId: anonymousId || null,
             chatHistory: mergedChatHistory,
             userMessage: extractUserMessageContent(
               chatHistory[chatHistory.length - 1].content,
             ),
-            timestamp: new Date().toISOString(),
+            timestamp: existingConversation.timestamp || new Date().toISOString(),
+            lastUpdated: new Date().toISOString(),
+            isActive: true,
+            createdAt: existingConversation.createdAt || new Date().toISOString(),
           },
         }
       );
     } else {
+      // Only create new conversation if we have actual messages
+      if (chatHistoryWithIds.length === 0) {
+        console.warn("Skipping conversation creation - no messages to save");
+        return;
+      }
+
       // Create new conversation
+      const newConversationData = {
+        conversationId: newConversationId,
+        userId: userId || null,
+        anonymousId: anonymousId || null,
+        chatHistory: chatHistoryWithIds,
+        userMessage: extractUserMessageContent(
+          chatHistory[chatHistory.length - 1].content,
+        ),
+        timestamp: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
+        isActive: true,
+        createdAt: new Date().toISOString(),
+      };
+
       await collection.updateOne(
         { conversationId: newConversationId },
-        {
-          $set: {
-            conversationId: newConversationId,
-            chatHistory: chatHistoryWithIds,
-            userMessage: extractUserMessageContent(
-              chatHistory[chatHistory.length - 1].content,
-            ),
-            timestamp: new Date().toISOString(),
-          },
-        },
+        { $set: newConversationData },
         { upsert: true }
       );
     }
 
-    console.log("New conversation saved/updated in MongoDB.");
-
     // Delete the old conversation if it exists and is different
     if (oldConversationId && oldConversationId !== newConversationId) {
       const deleteResult = await collection.deleteOne({ conversationId: oldConversationId });
-      console.log(`Old conversation deleted: ${deleteResult.deletedCount} record(s) removed`);
+    }
+
+    // Clean up any empty conversations for this user (safety measure)
+    // Works for both logged-in users and anonymous users
+    if (userId) {
+      const emptyCleanup = await collection.deleteMany({
+        userId,
+        $or: [
+          { chatHistory: { $exists: false } },
+          { chatHistory: { $eq: [] } },
+          { chatHistory: { $size: 0 } },
+        ],
+      });
+      if (emptyCleanup.deletedCount > 0) {
+        console.log(`Cleaned up ${emptyCleanup.deletedCount} empty conversation(s) for logged-in user`);
+      }
+    } else if (anonymousId) {
+      const emptyCleanup = await collection.deleteMany({
+        anonymousId,
+        $or: [
+          { chatHistory: { $exists: false } },
+          { chatHistory: { $eq: [] } },
+          { chatHistory: { $size: 0 } },
+        ],
+      });
+      if (emptyCleanup.deletedCount > 0) {
+        console.log(`Cleaned up ${emptyCleanup.deletedCount} empty conversation(s) for anonymous user`);
+      }
     }
 
   } catch (error) {
