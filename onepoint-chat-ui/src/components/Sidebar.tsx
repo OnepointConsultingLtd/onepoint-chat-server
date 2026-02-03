@@ -165,7 +165,10 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
     }
 
     return (
-      <div className="space-y-2">
+      <div className="space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]" style={{
+        scrollbarWidth: 'thin',
+        scrollbarColor: '#d1d5db transparent',
+      }}>
         {conversationHistoryState.map((conversation) => (
           <button
             key={conversation.conversationId}
@@ -292,21 +295,14 @@ export default function Sidebar({ sendMessageToServer }: SidebarProps) {
 
             {/* Conversation History Section */}
             <div
-              className="flex-1 overflow-y-auto px-6 py-6"
-              style={{
-                scrollbarWidth: 'thin',
-                scrollbarColor: '#d1d5db transparent',
-              }}
+              className="flex-1 px-6 py-3"
             >
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:!text-[#fafffe] mb-1">
-                  Conversation History
+              <div className="mb-3">
+                <h2 className="text-xl font-semibold text-gray-900 dark:!text-[#fafffe] mb-1 flex items-center">
+                  Your chat{' '}
+                  (<span className="text-sm text-gray-500 dark:text-gray-400">{conversationHistoryState.length > 0 && `${conversationHistoryState.length}`}</span>)
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {conversationHistoryState.length > 0
-                    ? `${conversationHistoryState.length} ${conversationHistoryState.length === 1 ? 'conversation' : 'conversations'}`
-                    : 'Your past conversations'}
-                </p>
+
               </div>
 
               {renderConversationHistory()}

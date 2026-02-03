@@ -1,5 +1,5 @@
 import { Conversation } from "@gilf/chat-websocket-server";
-import { saveChatHistory } from "../api/handleApi";
+import { saveChatHistory, getChatHistoryWithMetadata } from "../api/handleApi";
 
 // Global storage for user metadata per conversation
 const conversationMetadata = new Map<string, { userId?: string | null; anonymousId?: string | null }>();
@@ -36,7 +36,23 @@ export async function saveConversation(
   // Try to get metadata from multiple sources:
   // 1. From conversationMetadata Map (stored via API)
   // 2. From messageMetadata Map (stored from WebSocket messages)
-  let metadata = conversationMetadata.get(conversationId) || messageMetadata.get(conversationId) || {};
+  // 3. From database (if conversation exists and metadata Maps are empty - e.g., after page refresh)
+  let metadata = conversationMetadata.get(conversationId) || messageMetadata.get(conversationId);
+  
+  // If metadata not found in Maps, try to get it from database (e.g., after page refresh)
+  if (!metadata) {
+    console.log(`[saveConversation] Metadata not found in Maps, checking database for conversationId: ${conversationId}`);
+    const dbConversation = await getChatHistoryWithMetadata(conversationId);
+    if (dbConversation) {
+      metadata = {
+        userId: dbConversation.userId || null,
+        anonymousId: dbConversation.anonymousId || null,
+      };
+      console.log(`[saveConversation] Restored metadata from database:`, metadata);
+    } else {
+      metadata = {};
+    }
+  }
   
   const userId = metadata.userId !== undefined ? metadata.userId : null;
   const anonymousId = metadata.anonymousId !== undefined ? metadata.anonymousId : null;
@@ -47,9 +63,13 @@ export async function saveConversation(
   console.log(`[saveConversation] Available messageMetadata keys:`, Array.from(messageMetadata.keys()));
   console.log(`[saveConversation] Metadata for this conversation:`, metadata);
 
-  // Clean up metadata after use
-  conversationMetadata.delete(conversationId);
-  messageMetadata.delete(conversationId);
+  // Clean up metadata after use (only if it was from Maps, not from database)
+  if (conversationMetadata.has(conversationId)) {
+    conversationMetadata.delete(conversationId);
+  }
+  if (messageMetadata.has(conversationId)) {
+    messageMetadata.delete(conversationId);
+  }
 
   await saveChatHistory(chatHistory, conversationId, referenceSources, userId, anonymousId);
 }

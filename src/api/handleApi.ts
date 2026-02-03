@@ -192,13 +192,18 @@ export async function saveChatHistory(
         }
       });
 
+      // Preserve existing userId/anonymousId if new values are null/undefined (e.g., after page refresh when metadata is lost)
+      // Only update if we have valid new values
+      const finalUserId = userId !== undefined && userId !== null ? userId : existingUserId;
+      const finalAnonymousId = anonymousId !== undefined && anonymousId !== null ? anonymousId : existingAnonymousId;
+
       await collection.updateOne(
         { conversationId: newConversationId },
         {
           $set: {
             conversationId: newConversationId,
-            userId: userId || null,
-            anonymousId: anonymousId || null,
+            userId: finalUserId,
+            anonymousId: finalAnonymousId,
             chatHistory: mergedChatHistory,
             userMessage: extractUserMessageContent(
               chatHistory[chatHistory.length - 1].content,
