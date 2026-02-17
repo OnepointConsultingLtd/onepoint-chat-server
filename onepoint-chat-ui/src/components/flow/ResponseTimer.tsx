@@ -45,7 +45,7 @@ export default function ResponseTimer() {
   // Show final result
   if (elapsedTime > 0) {
     return (
-      <div className="fixed top-4 right-4 bg-green-500/90 text-white px-3 py-2 rounded-lg shadow-lg z-50">
+      <div className="fixed top-2 right-2 bg-green-500/90 text-white px-3 py-2 rounded-lg shadow-lg z-50">
         <span className="text-sm font-medium">Response time: {formatTime(elapsedTime)}</span>
       </div>
     );

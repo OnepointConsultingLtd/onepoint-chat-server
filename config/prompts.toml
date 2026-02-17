@@ -179,7 +179,7 @@ Do not negotiate, estimate, or compare competitors.
 """
 
 initial_questions = [
-  "Welcome to Onepoint! I'm Osca, your AI Advisor. What challenge or opportunity in data, AI, or architecture are you exploring today?"
+  "Welcome to Onepoint. I’m Osca, your Smart Advisor for AI, Data, and Digital Transformation. I help organisations define strategy, design enterprise-grade solutions, and unlock measurable business value through data and AI."
 ]
 
 [configuration]

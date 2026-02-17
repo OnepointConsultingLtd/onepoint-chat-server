@@ -1,9 +1,10 @@
+import { useUser } from '@clerk/clerk-react';
 import { useState } from 'react';
 import { FiShare2 } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import { useShallow } from 'zustand/react/shallow';
-import { useUser } from '@clerk/clerk-react';
 import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
+import { predefinedQuestions } from '../lib/predefinedTopics';
 import useChatStore from '../store/chatStore';
 import { Message } from '../type/types';
 import CopyButton from './CopyButton';
@@ -14,11 +15,13 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [sharedId, setSharedId] = useState<string | null>(null);
 
-  const { generateThreadShareableId, isThreadShareMode, isInitialMessage } = useChatStore(
+  const { generateThreadShareableId, isThreadShareMode, isInitialMessage, handleTopicAction, handleSubmit } = useChatStore(
     useShallow(state => ({
       generateThreadShareableId: state.generateThreadShareableId,
       isThreadShareMode: state.isThreadShareMode,
       isInitialMessage: state.isInitialMessage,
+      handleTopicAction: state.handleTopicAction,
+      handleSubmit: state.handleSubmit,
     }))
   );
 
@@ -52,9 +55,29 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
   };
 
   const referenceSources = message.referenceSources;
+
+  const showQuickQuestions = isInitialMessage && !isThreadShareMode;
+
+  const quickQuestions = predefinedQuestions.slice(0, 4);
+  console.log('quickQuestions', quickQuestions);
+
+  const handleQuickQuestionClick = (question: { id: number; text: string; label?: string }) => {
+    // Match the Sidebar behavior: set topic context then submit the question as a message
+    handleTopicAction({
+      type: 'question',
+      question: {
+        id: question.id,
+        text: question.text,
+        label: question.label,
+      },
+    });
+    handleSubmit(question.text);
+  };
+
   return (
     <div className="group w-full">
       <div className="relative text-left">
+
         <ReactMarkdown
           components={{
             a: ({ ...props }) => (
@@ -71,19 +94,48 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
         >
           {message.text}
         </ReactMarkdown>
+        {isInitialMessage && (
+          <p className='!font-bold my-4'>
+            What challenge or goal would you like to explore today?
+          </p>
+        )}
+
+        {showQuickQuestions && quickQuestions.length > 0 && (
+          <div className="mt-3">
+            <h4 className="text-sm font-bold text-gray-700 dark:!text-[#fafffe]">
+              Quick Questions
+            </h4>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {quickQuestions.map(q => (
+                <button
+                  key={q.id}
+                  type="button"
+                  onClick={() => handleQuickQuestionClick(q)}
+                  className="px-3 py-1.5 text-xs cursor-pointer font-medium rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a1f35] text-gray-700 dark:text-gray-100 hover:border-[#9a19ff] dark:hover:border-[#9a19ff] hover:bg-gray-50 dark:hover:bg-[#352840] transition-colors"
+                  title={q.text}
+                >
+                  {q.label || q.text}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
 
         {referenceSources && referenceSources.length > 0 && (
           <ReferenceSources sources={referenceSources} />
         )}
 
         <div className="flex items-center justify-between mt-2 text-xs">
-          <CopyButton
-            text={message.text}
-            id={message.id}
-            copiedId={copiedId}
-            onCopy={copyToClipboard}
-          />
+          {!isInitialMessage && (
+            <CopyButton
+              text={message.text}
+              id={message.id}
+              copiedId={copiedId}
+              onCopy={copyToClipboard}
+            />
 
+          )}
           {/* Only show share button if signed in, not in thread share mode, and is agent message */}
           {isLoaded && isSignedIn && !isThreadShareMode && !isInitialMessage && message.type === 'agent' && (
             <button

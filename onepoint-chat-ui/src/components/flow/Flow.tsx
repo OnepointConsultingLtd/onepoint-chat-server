@@ -188,9 +188,9 @@ export default function Flow({
     previousMessagesLengthRef.current = filteredMessages.length;
   }, [filteredMessages, isThinking, reactFlowInstance, topicState, isThreadShareMode]);
 
-  const onNodesChange = useCallback(() => {}, []);
+  const onNodesChange = useCallback(() => { }, []);
 
-  const onEdgesChange = useCallback(() => {}, []);
+  const onEdgesChange = useCallback(() => { }, []);
 
   const isError = interceptServerError(messages);
 

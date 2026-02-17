@@ -7,15 +7,19 @@ import FloatingChatMain from './FloatingChat/FloatingChatMain';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Flow from './flow/Flow';
+import { useUser } from '@clerk/clerk-react';
+import Disclaimer from './Disclaimer';
 
 export default function ChatContainer() {
   const { messagesEndRef, handleSubmit, sendMessageToServer } = useChat();
+  const { isSignedIn, isLoaded } = useUser();
 
   const isMobile = useIsMobile();
 
-  const { setHandleSubmit } = useChatStore(
+  const { setHandleSubmit, isInitialMessage } = useChatStore(
     useShallow(state => ({
       setHandleSubmit: state.setHandleSubmit,
+      isInitialMessage: state.isInitialMessage,
     }))
   );
 
@@ -41,7 +45,9 @@ export default function ChatContainer() {
 
   return (
     <main className="flex min-h-screen bg-[#fafffe] dark:!bg-[#1F1925]">
-      <Sidebar sendMessageToServer={sendMessageToServer} />
+      {isLoaded && isSignedIn && (
+        <Sidebar sendMessageToServer={sendMessageToServer} />
+      )}
       <div className="flex flex-col flex-1 bg-[#fafffe] dark:!bg-[#1F1925]">
         <Header />
         <div className="flex-1 flex flex-col" style={{ height: 'calc(100vh - 10rem)' }}>
@@ -51,6 +57,8 @@ export default function ChatContainer() {
             sendMessageToServer={sendMessageToServer}
           />
         </div>
+        {!isInitialMessage && <Disclaimer />}
+
       </div>
     </main>
   );

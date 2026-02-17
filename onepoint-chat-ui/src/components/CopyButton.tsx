@@ -23,9 +23,9 @@ export default function CopyButton({ text, id, copiedId, onCopy }: CopyButtonPro
     >
       <span className="relative block w-3 h-3 transition-all duration-300 hover:scale-110">
         {isActive ? (
-          <BiSolidCheckboxChecked className="absolute md:w-6 md:h-6 w-3 h-3 inset-0 text-green-900 dark:text-green-400 transition-transform duration-300" />
+          <BiSolidCheckboxChecked className="absolute md:w-4 md:h-4 w-3 h-3 inset-0 text-green-900 dark:text-green-400 transition-transform duration-300" />
         ) : (
-          <FaCopy className="absolute md:w-6 md:h-6 w-5 h-5 inset-0 text-[#3f3c41] dark:text-white transition-transform duration-300" />
+          <FaCopy className="absolute md:w-4 md:h-4 w-3 h-3 inset-0 text-[#3f3c41] dark:text-white transition-transform duration-300" />
         )}
       </span>
     </button>

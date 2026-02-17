@@ -1,22 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { SignInButton, UserButton, useUser } from '@clerk/clerk-react';
+import { useEffect, useRef, useState } from 'react';
 import { CiExport } from 'react-icons/ci';
 import { FaMarkdown } from 'react-icons/fa';
 import { FiCheck, FiShare2 } from 'react-icons/fi';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
-import { useUser, SignInButton, UserButton, useSession } from '@clerk/clerk-react';
-import useChatStore from '../store/chatStore';
 import { useExport } from '../hooks/useExport';
 import { useUserContext } from '../hooks/useUserContext';
+import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
+import useChatStore from '../store/chatStore';
 import GradientButton, { MiniGradientButton } from './GradientButton';
 import SideBarButton from './SideBarButton';
 import ThemeToggle from './ThemeToggle';
-import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 import Toast from './Toast';
 
 export default function Header() {
   const { isSignedIn, isLoaded } = useUser();
-  const { session } = useSession();
   const { userId } = useUserContext();
   const prevSignedInRef = useRef<boolean | undefined>(undefined);
 
@@ -141,7 +140,7 @@ export default function Header() {
 
   return (
     <>
-      {!isThreadShareMode && (
+      {!isThreadShareMode && isLoaded && isSignedIn && (
         <div className="space-x-4 pr-4 float-left w-fit absolute top-3 left-4 !z-50">
           <SideBarButton />
         </div>

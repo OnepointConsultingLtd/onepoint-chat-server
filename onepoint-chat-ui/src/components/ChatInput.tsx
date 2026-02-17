@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import useChatStore from '../store/chatStore';
 import { ChatInputProps } from '../type/types';
-import { PROJECT_INFO } from '../lib/constants';
 
 export default function ChatInput({ handleSubmit }: ChatInputProps) {
   const [inputText, setInputText] = useState('');
@@ -94,15 +93,7 @@ export default function ChatInput({ handleSubmit }: ChatInputProps) {
             </button>
           </form>
 
-          <span className="text-[8px]  md:text-xs text-center text-slate-900 dark:!text-[#fafffe] z-[85]">
-            {PROJECT_INFO.NAME} can make mistakes. Check important information with your Onepoint
-            advisor.
-            <br /> Press{' '}
-            <kbd className="px-1 py-0.5 bg-[#9a19ff] text-white dark:!bg-[#1F1925] dark:!text-[#fafffe] rounded">
-              Esc
-            </kbd>{' '}
-            to close
-          </span>
+
         </div>
       </div>
     </div>

@@ -87,10 +87,10 @@ export default function MessageCard({
     >
       {/* Related Topics Label */}
       {isLastCard &&
-      !isThinking &&
-      (relatedTopicsLoading ||
-        (relatedTopics && relatedTopics.topics.length > 0) ||
-        isInitialMessage) ? (
+        !isThinking &&
+        (relatedTopicsLoading ||
+          (relatedTopics && relatedTopics.topics.length > 0) ||
+          isInitialMessage) ? (
         <div className="absolute top-1/2 -right-[114px] -translate-y-1/2 -z-[1] flex flex-col items-center">
           {/* Label */}
           <div
