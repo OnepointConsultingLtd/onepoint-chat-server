@@ -11,9 +11,8 @@ import {
   MIN_ZOOM,
 } from '../../lib/constants';
 import { interceptServerError } from '../../lib/interceptServerError';
-import { predefinedQuestions } from '../../lib/predefinedTopics';
 import useChatStore from '../../store/chatStore';
-import { nodeTypes, PredefinedQuestion, Topic, TopicOrQuestion } from '../../type/types';
+import { nodeTypes, Topic, TopicOrQuestion } from '../../type/types';
 import { filterDisplayableMessages } from '../../utils/messageFilter';
 import { createEdges } from './EdgeCreator';
 import ErrorCard from './ErrorCard';
@@ -76,30 +75,14 @@ export default function Flow({
     [handleTopicAction, sendMessageToServer]
   );
 
-  const handlePredefinedQuestionClick = useCallback(
-    (question: PredefinedQuestion) => {
-      handleTopicAction({ type: 'question', question });
-      sendMessageToServer(question.text);
-    },
-    [handleTopicAction, sendMessageToServer]
-  );
-
   const topicState = useMemo(
     () => ({
       isInitialMessage: isInitialMessage && !isThreadShareMode,
       isThreadShareMode,
-      predefinedQuestions: predefinedQuestions,
       relatedTopics: relatedTopics?.topics || [],
       handleRelatedTopicClick,
-      handlePredefinedQuestionClick,
     }),
-    [
-      isInitialMessage,
-      isThreadShareMode,
-      relatedTopics,
-      handleRelatedTopicClick,
-      handlePredefinedQuestionClick,
-    ]
+    [isInitialMessage, isThreadShareMode, relatedTopics, handleRelatedTopicClick]
   );
 
   const [cardHeights, setCardHeights] = useState<{ [id: string]: number }>({});
@@ -123,17 +106,13 @@ export default function Flow({
       filteredMessages,
       isThinking,
       handleSubmit,
-      // Don't show any topics when in thread share mode
-      isThreadShareMode
+      // Don't show topic nodes on initial message or in thread share mode
+      isThreadShareMode || topicState.isInitialMessage
         ? []
-        : topicState.isInitialMessage
-          ? predefinedQuestions
-          : !isThinking
-            ? topicState.relatedTopics
-            : [],
-      topicState.isInitialMessage
-        ? (handlePredefinedQuestionClick as (topic: TopicOrQuestion) => void)
-        : (handleRelatedTopicClick as (topic: TopicOrQuestion) => void),
+        : !isThinking
+          ? topicState.relatedTopics
+          : [],
+      handleRelatedTopicClick as (topic: TopicOrQuestion) => void,
       setCardHeight,
       cardHeights
     );
@@ -144,7 +123,6 @@ export default function Flow({
     topicState,
     handleSubmit,
     handleRelatedTopicClick,
-    handlePredefinedQuestionClick,
     cardHeights,
     setCardHeight,
   ]);
@@ -167,11 +145,9 @@ export default function Flow({
   const edges = useMemo(() => {
     return createEdges(
       filteredMessages,
-      isThreadShareMode
+      isThreadShareMode || topicState.isInitialMessage
         ? 0
-        : topicState.isInitialMessage
-          ? predefinedQuestions.length
-          : topicState.relatedTopics.length
+        : topicState.relatedTopics.length
     );
   }, [filteredMessages, topicState, isThreadShareMode]);
 
@@ -179,11 +155,9 @@ export default function Flow({
     focusOnLatestNode(
       reactFlowInstance,
       filteredMessages,
-      isThreadShareMode
+      isThreadShareMode || topicState.isInitialMessage
         ? 0
-        : topicState.isInitialMessage
-          ? predefinedQuestions.length
-          : topicState.relatedTopics.length
+        : topicState.relatedTopics.length
     );
     previousMessagesLengthRef.current = filteredMessages.length;
   }, [filteredMessages, isThinking, reactFlowInstance, topicState, isThreadShareMode]);

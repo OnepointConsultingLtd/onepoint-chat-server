@@ -86,7 +86,7 @@ export default function MessageCard({
       onMouseLeave={() => !isInitialMessage && setShowButton(false)}
     >
       {/* Related Topics Label */}
-      {isLastCard &&
+      {isLastCard && !isInitialMessage &&
         !isThinking &&
         (relatedTopicsLoading ||
           (relatedTopics && relatedTopics.topics.length > 0) ||

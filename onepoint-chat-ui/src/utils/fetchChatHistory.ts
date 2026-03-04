@@ -58,7 +58,6 @@ export async function fetchUserConversationHistory(userId: string): Promise<Conv
   try {
     const url = `${window.oscaConfig.httpUrl}/api/conversations/user/${userId}`;
 
-    console.log('fetching user conversation history from', url);
     const response = await fetch(url);
     if (!response.ok) throw new Error('Failed to fetch user conversations');
     const data: { conversations: Conversation[] } = await response.json();

@@ -53,9 +53,7 @@ export interface ChatStore {
   // Actions
   toggleSidebar: () => void;
   fetchRelatedTopics: (topicName: string, text?: string) => Promise<void>;
-  fetchRelatedQuestions: (topicName?: string, text?: string) => Promise<void>;
   handleTopicAction: (payload: TopicActionPayload) => Promise<void>;
-  refreshQuestions: () => void;
   handleClick: () => void;
   handleSubmit: (text: string) => void;
   handleQuestionClick: (question: Question) => void;

@@ -18,15 +18,17 @@ export default function TopicNode({ data }: { data: TopicNodeData }) {
       onClick={isStreaming ? undefined : data.onClick}
       style={{ minWidth: 250, maxWidth: 320, wordBreak: 'break-word' }}
     >
-      <div className="flex items-center gap-2 mb-1">
-        <span className="text-base font-semibold text-gray-800 dark:!text-[#fafffe] group-hover:!text-[#9a19ff] dark:group-hover:!text-[#9a19ff]">
-          {data.label}
-        </span>
-      </div>
+      {data.label && (
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-base font-semibold text-gray-800 dark:!text-[#fafffe] group-hover:!text-[#9a19ff] dark:group-hover:!text-[#9a19ff]">
+            {data.label}
+          </span>
+        </div>
+      )}
 
       {(data.topic?.description || data.topic?.text) && (
         <div
-          className="text-xs text-gray-600 dark:!text-[#fafffe] mt-1 line-clamp-2 group-hover:text-gray-800 dark:group-hover:!text-[#fafffe]"
+          className="text-xs text-gray-600 dark:!text-[#fafffe] line-clamp-2 group-hover:text-gray-800 dark:group-hover:!text-[#fafffe]"
           style={{ whiteSpace: 'pre-line' }}
         >
           {data.topic.description || data.topic.text}

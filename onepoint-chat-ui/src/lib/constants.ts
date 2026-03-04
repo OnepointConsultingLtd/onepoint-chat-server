@@ -36,8 +36,9 @@ export const PROJECT_CONFIG = {
   PROJECT: 'onepoint_v2',
   ENGINE: 'lightrag',
 }
+
 export const LOCAL_STORAGE_KEYS = {
   OSCA_STORE: 'osca-store',
 }
 
-export const ONE_TIME_TOKEN = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtdXJ0YXphIiwibmFtZSI6Ik11cnRhemEiLCJpYXQiOjE3NTkxMzA3NDMsImVtYWlsIjoibXVydGF6YUBnbWFpbC5jb20iLCJwZXJtaXNzaW9ucyI6WyJyZWFkIiwid3JpdGUiXX0.Okbw0pfpEB4cNE2Qopu6Ckpl3lNwZiwXAfrY0CgdLZn_3IBTAv1dvXfs7BicXahgVl8Et7Rlm2ASjbDOCvkKoQ"
+export const ONE_TIME_TOKEN = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaWxfZmVybmFuZGVzIiwibmFtZSI6ImdpbF9mZXJuYW5kZXMiLCJpYXQiOjE3NzE4MzkxODUsImVtYWlsIjoiZ2lsLmZlcm5hbmRlc0BvbmVwb2ludGx0ZC5jb20iLCJwZXJtaXNzaW9ucyI6WyJyZWFkIl19.lGRyN_u1cUyJmykm_px6u5LhEUplxYyc0RVoMtqeJwYdNEjDtqI064WXV8yRup1OuTBzIbCFW7v9o8QZIOa8ww"

@@ -15,7 +15,6 @@ export async function getContext(question: string) {
       "{question}",
       encodeURIComponent(question),
     );
-    // console.log("baseUrl", baseUrl);
     const url = `${baseUrl}`;
     const response = await fetch(url!, {
       headers: {

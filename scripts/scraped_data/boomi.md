@@ -60,161 +60,45 @@ At the top layer of our ecosystem sit the Onepoint AI Apps — production-ready 
 
 Article Analyser categorises content using ChatGPT, Gemini, and Google Search, providing accurate results with confidence scores for each classification.Watchdemo.
 
-demo[5]
-
-Exploreon the
-
-Explore[6]
-
 The AWS Cost Insights analyses cloud spend in real time using AWS Lambda, highlighting anomalies and offering cost-saving recommendations to help teams optimise their AWS usage.Watchdemo.
-
-demo[7]
-
-Exploreon the
-
-Explore[8]
 
 The AWS Log Analyser turns CloudWatch and CloudTrail logs into real-time insights, helping detect threats, spot anomalies, and optimise AWS operations using AWS Lambda.Watchdemo.
 
-demo[9]
-
-Exploreon the
-
-Explore[10]
-
 The AWS Resource Spinner automates deployment of scalable AWS infrastructure using Lambda — streamlining provisioning for performance, efficiency, and governance.Watchdemo.
-
-demo[11]
-
-Exploreon the
-
-Explore[12]
 
 The Azure Cost Buddy analyses cloud spending in real time, flags anomalies, and recommends optimisations to help control Azure costs.Watchdemo.
 
-demo[13]
-
-Exploreon the
-
-Explore[14]
-
 The Azure Log Analyser uses Azure AZ APIs to transform activity logs into actionable insights, helping teams monitor, analyse, and ensure security, compliance, and performance in real time.Watchdemo.
-
-demo[15]
-
-Exploreon the
-
-Explore[16]
 
 The Azure Resource Spinner automates scalable Azure infrastructure deployment using Azure Functions, optimising for performance, cost-efficiency, and seamless rollbacks.Watchdemo.
 
-demo[17]
-
-Exploreon the
-
-Explore[18]
-
 The Boomi Process Monitor uses Boomi Platform APIs to monitor, analyse, and control integration processes in real time, enabling faster diagnostics and proactive operations.Watchdemo.
-
-demo[19]
-
-Exploreon the
-
-Explore[20]
 
 The Boomi Scheduler Manager simplifies process scheduling with natural language commands, improving visibility and agility across Boomi operations.Watchdemo.
 
-demo[21]
-
-Exploreon the
-
-Explore[22]
-
 The Boomi User Management simplifies user admin with natural language commands for role management, permission tracking, and activity monitoring.Watchdemo.
 
-demo[23]
-
-Exploreon the
-
-Explore[24]
-
 The Database Explorer AI Agent lets users explore databases with natural language, auto-generating SQL and documenting structures for easy access and analysis.Watchdemo.
-
-demo[25]
 
 Coming soon
 
 Database Explorer uses Boomi APIs to enable natural language database exploration, generating queries and optimising SQL for instant data access and analysis.Watchdemo.
 
-demo[26]
-
-Exploreon the
-
-Explore[27]
-
 The DataHub Golden Records Explorer simplifies access and analysis of Boomi Golden Records through natural language queries, delivering clean, consolidated data for better decision-making.Watchdemo.
-
-demo[28]
-
-Exploreon the
-
-Explore[29]
 
 DataHub Model Manager AI Agent automates model tasks via Boomi APIs, simplifying creation, updation, deployment, and deletion of models  while enforcing governance.Watchdemo.
 
-demo[30]
-
-Exploreon the
-
-Explore[31]
-
 The DataHub Quarantine Resolver automates detection, analysis, and resolution of quarantined records in Boomi DataHub, ensuring clean data flow with minimal manual effort.Watchdemo.
-
-demo[32]
-
-Exploreon the
-
-Explore[33]
 
 The Data Management Smart Adviser offers an Interactive Data Health Check that leverages AI to pinpoint and clarify data issues, delivering a personalised, actionable report with transparent AI reasoning via UI and email.Watchdemo.
 
-demo[34]
-
-Exploreon the
-
-Explore[35]
-
 Data Quality automates data quality through smart rule creation, auditing, and validation using the OP Database connector, improving data governance with intelligent checks.Watchdemo.
-
-demo[36]
-
-Exploreon the
-
-Explore[37]
 
 AI Anomaly Detection, powered by Boomi and Eyer, detects anomalies, analyses patterns, and forecasts behaviour through simple conversations, enabling proactive decision-making without complex dashboards.Watchdemo.
 
-demo[38]
-
-Exploreon the
-
-Explore[39]
-
 Hotel Matcher performs RAG-based matching against a hotel knowledge base. Given a hotel name (with or without an address), it retrieves and returns all relevant attributes in structured JSON.Watchdemo.
 
-demo[40]
-
-Exploreon the
-
-Explore[41]
-
 Hotel Matcher is RAG-based AI that uses OP Intelligence to create embeddings and OP Database for cosine similarity search, then suggests the best-matched hotel records.Watchdemo.
-
-demo[42]
-
-Exploreon the
-
-Explore[43]
 
 HR Smart Advisor is a reverse chatbot that comes up with recommendations for employees’ issues.
 
@@ -226,161 +110,49 @@ Coming soon
 
 Maths Buddy AI Agent solves maths problem by generating code, ensuring accurate and reliable results without LLM guesswork.Watchdemo.
 
-demo[44]
-
 Coming soon
 
 News Ninja AI agent creates publish-ready articles from user topics, sourcing news, summarising key points, and ensuring originality with semantic checks for accurate, consistent content.Watchdemo.
 
-demo[45]
-
-Exploreon the
-
-Explore[46]
-
 Connect to multiple LLMs with OP Intelligence to generate insights and recommendations using natural language and AI to help organisations make smarter, data-driven decisions.Watchdemo.
-
-demo[47]
-
-Exploreon the
-
-Explore[48]
 
 Enables data processing and retrieval from any JDBC-supported database, supports CRUD, vector operations, named transactions, multiple savepoints, and rollbacks.Watchdemo.
 
-demo[49]
-
-Exploreon the
-
-Explore[50]
-
 Start connecting with OP WebSearch to find, extract, and integrate web data directly into your business workflows.Watchdemo.
 
-demo[51]
-
-Exploreon the
-
-Explore[52]
-
 Use OP Wikipedia to search, filter, and extract structured knowledge from Wikipedia for seamless integration into your workflows.Watchdemo.
-
-demo[53]
-
-Exploreon the
-
-Explore[54]
 
 Standardise ‘Person’ entities with simple rules and enrich them using Wikipedia data via the OP Wikipedia connector.
 
 Watchdemo.
 
-demo[55]
-
-Exploreon the
-
-Explore[56]
-
 The PII Data Detector validates and ensures that the input payload doesn’t contain Personally Identifiable Information.Watchdemo.
 
-demo[57]
-
-Exploreon the
-
-Explore[58]
-
 The Property Finder uses Savills APIs to interpret user preferences like location, budget, and property type, delivering instant, personalised recommendations through natural language.Watchdemo.
-
-demo[59]
 
 Coming soon
 
 Property Search interprets user preferences like location, budget, and property type to deliver personalised property recommendations using Savills APIs, streamlining the search process with natural language.Watchdemo.
 
-demo[60]
-
-Exploreon the
-
-Explore[61]
-
 SAP Low Stock Purchase Recommendation provides real-time purchase recommendations, detecting low stock and suggesting optimal orders based on sales, lead time, and safe stock, all through natural language.Watchdemo.
-
-demo[62]
-
-Exploreon the
-
-Explore[63]
 
 ServiceNow Asset Tracker uses ServiceNow APIs to provide instant, natural-language insights into hardware assets, enhancing IT support and asset visibility.Watchdemo.
 
-demo[64]
-
-Exploreon the
-
-Explore[65]
-
 ServiceNow Incident Management brings conversational power to ServiceNow, allowing users to create tickets, update records, and manage incidents through intuitive, natural language prompts.Watchdemo.
-
-demo[66]
-
-Exploreon the
-
-Explore[67]
 
 ServiceNow Knowledge Explorer uses ServiceNow APIs to retrieve and summarise knowledge articles, delivering precise, context-aware results for faster troubleshooting and improved user experience.Watchdemo.
 
-demo[68]
-
-Exploreon the
-
-Explore[69]
-
 ServiceNow License Tracker uses ServiceNow APIs to provide real-time insights into license usage and entitlements, streamlining license compliance and optimisation decisions.Watchdemo.
-
-demo[70]
-
-Exploreon the
-
-Explore[71]
 
 Test Data Generator quickly creates high-quality, realistic test data in formats like CSV, JSON, XML, EDI, and SQL—ideal for testers, developers, and business users. Watchdemo.
 
-demo[72]
-
-Exploreon the
-
-Explore[73]
-
 Test Data Generator creates realistic, customisable datasets from user-defined schemas. It auto-generates and delivers data to Azure Blob in JSON, CSV, or XML—eliminating manual effort.Watchdemo.
-
-demo[74]
-
-Exploreon the
-
-Explore[75]
 
 UK Company Search provides instant access to verified UK company data, including registration details, incorporation date, business type, address, and leadership, all through a simple, conversational interface. Watchdemo.
 
-demo[76]
-
-Exploreon the
-
-Explore[77]
-
 US Company Search provides instant access to verified US company data, including registration details, incorporation date, business type, address, and leadership, all through a simple, conversational interface.Watchdemo.
 
-demo[78]
-
-Exploreon the
-
-Explore[79]
-
 Wikipedia Explorer quickly retrieves accurate Wikipedia insights, presenting them as summaries, lists, or detailed explanations tailored to your needs.Watchdemo.
-
-demo[80]
-
-Exploreon the
-
-Explore[81]
 
 Get control of your data. Eliminate IT and data silos. Make legacy apps talk to each other. Experiment faster by combining emerging technologies with legacy systems. Cut costs. Develop efficiencies. Elevate customer and colleague experience. Create more business agility.
 
@@ -661,4 +433,3 @@ Contact us
 
 - URL: https://www.onepointltd.com/boomi/
 - Last Scraped: 2025-08-09 14:09:23
-- Content Type: Web Page

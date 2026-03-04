@@ -7,7 +7,7 @@ interface TopicButtonProps {
 }
 
 export default function TopicButton({ topic, index, onTopicClick }: TopicButtonProps) {
-  const topicName = 'name' in topic ? topic.name : topic.label;
+  const topicName = 'name' in topic ? topic.name : (topic.label || topic.text);
 
   return (
     <button

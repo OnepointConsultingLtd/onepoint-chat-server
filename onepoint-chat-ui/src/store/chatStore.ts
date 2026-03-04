@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { SharedResponse } from '..';
-import { fetchRelatedQuestions as fetchQuestionsFromApi, fetchRelatedTopics } from '../lib/apiClient';
+import { fetchRelatedTopics } from '../lib/apiClient';
 import { INITIAL_MESSAGE, LOCAL_STORAGE_KEYS } from '../lib/constants';
 import { clearChatData, clearThreadData, getConversationId, saveConversationId, saveThreadId } from '../lib/persistence';
 import { ChatStore, TopicActionPayload } from '../type/chatStore';
-import { Message, Question, Topic, TopicQuestionsResponse, Topics } from '../type/types';
+import { Message, Question, Topic, Topics } from '../type/types';
 import { exportChatToPDFApi } from '../utils/exportChat';
 
 function newChat() {
@@ -125,62 +125,9 @@ const useChatStore = create<ChatStore>()(
         }
       },
 
-      fetchRelatedQuestions: async (topicName: string = '', text: string = '') => {
-        set({ topicQuestionsLoading: true, topicQuestionsError: null });
-        try {
-          const isContextualSearch = !!topicName || !!text;
-          const topics = topicName ? [topicName] : [];
-          const data: TopicQuestionsResponse = await fetchQuestionsFromApi(topics, text);
-          let finalData = data;
-
-          if (isContextualSearch && (!data.topic_questions || data.topic_questions.length === 0)) {
-            finalData = await fetchQuestionsFromApi([], '');
-          }
-
-          const newQuestions: Question[] = [];
-
-          if (finalData.topic_questions && finalData.topic_questions.length > 0) {
-            if (isContextualSearch && finalData === data) {
-              const mainTopic = finalData.topic_questions[0];
-              if (mainTopic.questions.length > 0) {
-                const randomizedQuestions = mainTopic.questions.sort(() => 0.5 - Math.random()).slice(0, 5);
-                randomizedQuestions.forEach((qText, index) => {
-                  newQuestions.push({
-                    id: index + 1,
-                    text: qText,
-                    label: mainTopic.name,
-                  });
-                });
-              }
-            } else {
-              const generalQuestin = finalData.topic_questions.slice(0, 5);
-              generalQuestin.forEach((topicQuestion, index) => {
-                if (topicQuestion.questions.length > 0) {
-                  const questionText = topicQuestion.questions.sort(() => 0.5 - Math.random())[0];
-                  newQuestions.push({
-                    id: index + 1,
-                    text: questionText,
-                    label: topicQuestion.name,
-                  });
-                }
-              });
-            }
-          }
-
-          set({ topicQuestions: newQuestions, topicQuestionsLoading: false });
-        } catch (error) {
-          console.error('Error fetching topic questions:', error);
-          set({
-            topicQuestionsError: error instanceof Error ? error.message : 'Failed to fetch questions',
-            topicQuestionsLoading: false,
-          });
-        }
-      },
-
       handleTopicAction: async (payload: TopicActionPayload) => {
-        const { setSelectedTopic, fetchRelatedTopics, fetchRelatedQuestions } = get();
+        const { setSelectedTopic, fetchRelatedTopics } = get();
 
-        console.log('payload', payload.type);
         const manual = payload.type === 'manual';
         const question = payload.type === 'question';
         const related = payload.type === 'related';
@@ -192,21 +139,6 @@ const useChatStore = create<ChatStore>()(
             questions: [related ? payload.topic.name : manual ? payload.text : question ? payload.question.text : ''],
           });
           await fetchRelatedTopics('', related ? payload.topic.name : manual ? payload.text : question ? payload.question.text : '');
-          await fetchRelatedQuestions(related ? payload.topic.name : manual ? payload.text : question ? payload.question.text : '');
-        }
-      },
-
-      refreshQuestions: () => {
-        const { selectedTopic, fetchRelatedQuestions } = get();
-
-        if (selectedTopic) {
-          if (selectedTopic.type === 'manual' || selectedTopic.type === 'question') {
-            fetchRelatedQuestions('', selectedTopic.name);
-          } else {
-            fetchRelatedQuestions(selectedTopic.name);
-          }
-        } else {
-          fetchRelatedQuestions();
         }
       },
 

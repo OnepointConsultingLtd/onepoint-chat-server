@@ -1,5 +1,5 @@
 import { RelatedTopicsBody, Topics } from '../type/types';
-import { MAX_RELATED_TOPICS, ONE_TIME_TOKEN, PROJECT_CONFIG, QUESTION_PROMPT, TOPICS_PROMPT } from './constants';
+import { MAX_RELATED_TOPICS, ONE_TIME_TOKEN, PROJECT_CONFIG, TOPICS_PROMPT } from './constants';
 import { getServer } from './server';
 
 export function createHeaders() {
@@ -68,59 +68,6 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
   const data = await response.json();
   return data;
 }
-
-const DEFAULT_QUESTION = 'Tell me about Onepoint';
-
-export async function fetchRelatedQuestions(
-  selectedTopic: string[] = [],
-  text: string = DEFAULT_QUESTION
-) {
-  const project: string = PROJECT_CONFIG.PROJECT;
-  const engine: string = PROJECT_CONFIG.ENGINE;
-
-  const body = {
-    topics: selectedTopic,
-    text: text ? text : DEFAULT_QUESTION,
-    topic_limit: 10,
-    entity_type_filter: '',
-    format: 'json',
-    system_prompt: QUESTION_PROMPT
-  }
-
-  const url = `${getServer()}/project/questions?project=${project}&engine=${engine}`;
-
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${ONE_TIME_TOKEN}`,
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      const errorText = `HTTP error! status: ${response.status}`;
-      console.error('Failed to fetch questions:', errorText);
-      throw new Error(errorText);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    // Catch network errors (CORS, connection issues, etc.)
-    if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      const errorMessage = 'Network error: Unable to reach the server. Please check your connection or try again later.';
-      console.error('Network error fetching questions:', errorMessage);
-      throw new Error(errorMessage);
-    }
-    // Re-throw other errors
-    console.error('Error fetching questions:', error);
-    throw error;
-  }
-}
-
-
 
 //protected/pdf/generate
 export async function downloadPdf(

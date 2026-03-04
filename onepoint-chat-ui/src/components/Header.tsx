@@ -1,12 +1,11 @@
 import { SignInButton, UserButton, useUser } from '@clerk/clerk-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CiExport } from 'react-icons/ci';
 import { FaMarkdown } from 'react-icons/fa';
 import { FiCheck, FiShare2 } from 'react-icons/fi';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import { useExport } from '../hooks/useExport';
-import { useUserContext } from '../hooks/useUserContext';
 import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 import useChatStore from '../store/chatStore';
 import GradientButton, { MiniGradientButton } from './GradientButton';
@@ -16,10 +15,6 @@ import Toast from './Toast';
 
 export default function Header() {
   const { isSignedIn, isLoaded } = useUser();
-  const { userId } = useUserContext();
-  const prevSignedInRef = useRef<boolean | undefined>(undefined);
-
-
   const [showDropdown, setShowDropdown] = useState(false);
   const [copied, setCopied] = useState(false);
   const [toast, setToast] = useState<{
@@ -87,56 +82,23 @@ export default function Header() {
 
   const hasConversation = messages && messages.length >= 2 && !isInitialMessage;
 
-  const { loadSharedChatById } = useChatStore(
-    useShallow(state => ({
-      loadSharedChatById: state.loadSharedChatById,
-    }))
-  );
-
-  // When user logs in, clear anonymous conversationId and fetch their active conversation
+  // Clear chat on any auth transition (login or logout) so messages
+  // never leak across identity boundaries. We persist the last-known
+  // auth state in localStorage and compare on each Clerk load.
   useEffect(() => {
-    if (isLoaded && prevSignedInRef.current === false && isSignedIn && userId) {
+    if (!isLoaded) return;
 
-      // CRITICAL: Clear conversationId from localStorage to prevent reusing anonymous conversation
-      const oldConversationId = localStorage.getItem('conversationId');
-      if (oldConversationId) {
-        console.log(`[Header] Clearing anonymous conversationId from localStorage: ${oldConversationId}`);
-        localStorage.removeItem('conversationId');
-      }
+    const currentAuthState = isSignedIn ? 'signed-in' : 'anonymous';
+    const storedAuthState = localStorage.getItem('authState');
 
-      // User just logged in - fetch their active conversation
-      fetch(`${window.oscaConfig.httpUrl}/api/conversations/user/${userId}/active`)
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-          return { conversationId: null };
-        })
-        .then(data => {
-          if (data.conversationId && data.chatHistory && data.chatHistory.length > 0) {
-            // User has an active conversation with messages - load it
-            console.log(`[Header] Loading user active conversation: ${data.conversationId}`);
-            loadSharedChatById(data.conversationId).then(success => {
-              if (success) {
-                console.log('[Header] User active conversation loaded successfully');
-              } else {
-                console.error('[Header] Failed to load user active conversation');
-              }
-            });
-          } else {
-            // No active conversation or empty - will create new one when user sends first message
-            console.log('[Header] No active conversation found for user - will create new one on first message');
-          }
-        })
-        .catch(error => {
-          console.error('[Header] Error fetching user active conversation:', error);
-        });
+    if (storedAuthState && storedAuthState !== currentAuthState) {
+      localStorage.setItem('authState', currentAuthState);
+      handleRestart();
+      return;
     }
 
-    if (isLoaded) {
-      prevSignedInRef.current = isSignedIn;
-    }
-  }, [isLoaded, isSignedIn, userId, loadSharedChatById]);
+    localStorage.setItem('authState', currentAuthState);
+  }, [isLoaded, isSignedIn, handleRestart]);
 
   return (
     <>

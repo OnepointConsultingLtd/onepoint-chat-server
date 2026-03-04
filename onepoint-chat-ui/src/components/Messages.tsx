@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { INITIAL_MESSAGE, PROJECT_INFO } from '../lib/constants';
-import { predefinedQuestions } from '../lib/predefinedTopics';
+import { predefinedQuestions, shuffleArray } from '../lib/predefinedTopics';
 import chatStore from '../store/chatStore';
 import { PredefinedQuestion, Topic } from '../type/types';
 import BackToBottom from './FloatingChat/BackToBottom';
@@ -72,7 +72,8 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
     }
   };
 
-  const renderTopics = relatedTopics?.topics || predefinedQuestions;
+  const shuffledPredefinedQuestions = useMemo(() => shuffleArray(predefinedQuestions), []);
+  const renderTopics = relatedTopics?.topics || shuffledPredefinedQuestions;
 
   const handleTopicClick = (topic: Topic | PredefinedQuestion) => {
     if ('name' in topic) {
@@ -118,15 +119,14 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                 return (
                   <div key={`message-${index}`} className="flex justify-start animate-slideIn">
                     <div
-                      className={`relative w-full ${
-                        isFirstMessage && isUserMessage
+                      className={`relative w-full ${isFirstMessage && isUserMessage
                           ? 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white p-4 shadow-xl'
                           : isLastMessage && isAgentMessage
                             ? 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white rounded-b-2xl p-4 shadow-xl border-t border-white/20'
                             : isAgentMessage
                               ? 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white p-4 shadow-xl border-t border-white/20'
                               : 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white p-4 shadow-xl'
-                      }`}
+                        }`}
                     >
                       {/* Show agent header only for agent messages */}
                       {isAgentMessage && (
@@ -165,11 +165,10 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                     className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'} animate-slideIn`}
                   >
                     <div
-                      className={`relative w-full bg-[#fafffe]/90 dark:!bg-[#1F1925]/90 backdrop-blur-sm border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] text-slate-800 dark:!text-[#fafffe]  p-4 shadow-lg ${
-                        isUserMessage
+                      className={`relative w-full bg-[#fafffe]/90 dark:!bg-[#1F1925]/90 backdrop-blur-sm border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] text-slate-800 dark:!text-[#fafffe]  p-4 shadow-lg ${isUserMessage
                           ? 'max-w-[85%] rounded-2xl rounded-br-md'
                           : 'w-full rounded-2xl rounded-tl-md'
-                      }`}
+                        }`}
                     >
                       {isAgentMessage && (
                         <div className="flex items-center mb-3">

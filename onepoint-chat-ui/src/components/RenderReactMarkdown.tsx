@@ -1,10 +1,10 @@
 import { useUser } from '@clerk/clerk-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FiShare2 } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import { useShallow } from 'zustand/react/shallow';
 import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
-import { predefinedQuestions } from '../lib/predefinedTopics';
+import { predefinedQuestions, shuffleArray } from '../lib/predefinedTopics';
 import useChatStore from '../store/chatStore';
 import { Message } from '../type/types';
 import CopyButton from './CopyButton';
@@ -45,7 +45,6 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
           id: messageId,
           setCopiedId: setSharedId,
         });
-        console.log('Share URL copied to clipboard:', shareableUrl);
       } else {
         console.error('Failed to generate shareable URL');
       }
@@ -58,8 +57,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
 
   const showQuickQuestions = isInitialMessage && !isThreadShareMode;
 
-  const quickQuestions = predefinedQuestions.slice(0, 4);
-  console.log('quickQuestions', quickQuestions);
+  const quickQuestions = useMemo(() => shuffleArray(predefinedQuestions).slice(0, 4), []);
 
   const handleQuickQuestionClick = (question: { id: number; text: string; label?: string }) => {
     // Match the Sidebar behavior: set topic context then submit the question as a message
@@ -94,6 +92,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
         >
           {message.text}
         </ReactMarkdown>
+
         {isInitialMessage && (
           <p className='!font-bold my-4'>
             What challenge or goal would you like to explore today?
@@ -103,7 +102,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
         {showQuickQuestions && quickQuestions.length > 0 && (
           <div className="mt-3">
             <h4 className="text-sm font-bold text-gray-700 dark:!text-[#fafffe]">
-              Quick Questions
+              Quick Questions to Accelerate Your Journey
             </h4>
             <div className="flex flex-wrap gap-2 mt-2">
               {quickQuestions.map(q => (

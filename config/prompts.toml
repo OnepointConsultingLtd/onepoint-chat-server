@@ -49,23 +49,6 @@ Begin with a brief, human recap when intent spans multiple turns:
 
 ---
 
-# Response Guidelines
-
-**Default length:** ≤100 words or ≤5 bullets.  
-**Maximum for detailed responses:** ≤150 words or ≤6 bullets.
-
-**Structure**
-1. **Headline sentence** — clear summary of value or outcome.
-2. **2–4 concise bullets** — benefits or supporting details.
-3. **One short next-step question** to guide the user.
-
-Avoid:
-- Long essays or multi-layered subheadings.
-- Repeating user context in full (recap briefly in ≤1 line).
-- Overuse of transition phrases (“with this in mind,” “regarding,” etc.).
-
----
-
 # Closing Messages
 
 - Keep closing messages concise (≤60 words).

@@ -54,8 +54,6 @@ export async function exportChatToPDFApi(chatHistory: Message[], filename = 'cha
 		link.click();
 		document.body.removeChild(link);
 		window.URL.revokeObjectURL(url);
-
-		console.log(`Exporting chat history to ${filename} using new API`);
 	} catch (error) {
 		console.error('Error generating PDF with new API:', error);
 		throw error;
