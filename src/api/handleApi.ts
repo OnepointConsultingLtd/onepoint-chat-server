@@ -1,4 +1,6 @@
 import { getCollection } from "./mongoClient";
+import type { ChatMessage, MongoConversation, ReferenceSource, StoredChatMessage } from "../types";
+
 export { getCollection };
 
 const MESSAGE_START_STRING = "User Message to which you are responding:";
@@ -25,7 +27,7 @@ export async function getChatHistory(conversationId: string) {
   try {
     const collection = await getCollection();
 
-    const conversation = await collection.findOne({ conversationId });
+    const conversation = await collection.findOne({ conversationId }) as MongoConversation | null;
 
     if (conversation) {
       return formatConversationHistory(conversation);
@@ -33,21 +35,17 @@ export async function getChatHistory(conversationId: string) {
 
     console.warn(`No conversations found in database for ${conversationId}`);
     return [];
-  } catch (error) {
-    console.error("Error retrieving conversation:", error);
+  } catch (error: any) {
+    console.error("Error retrieving conversation:", error.message);
     return [];
   }
 }
 
-/**
- * Get chat history with metadata (including isActive, userId, anonymousId, etc.)
- * Returns both the messages and conversation metadata
- */
 export async function getChatHistoryWithMetadata(conversationId: string) {
   try {
     const collection = await getCollection();
 
-    const conversation = await collection.findOne({ conversationId });
+    const conversation = await collection.findOne({ conversationId }) as MongoConversation | null;
 
     if (conversation) {
       return {
@@ -66,15 +64,15 @@ export async function getChatHistoryWithMetadata(conversationId: string) {
 
     console.warn(`No conversations found in database for ${conversationId}`);
     return null;
-  } catch (error) {
-    console.error("Error retrieving conversation with metadata:", error);
+  } catch (error: any) {
+    console.error("Error retrieving conversation with metadata:", error.message);
     return null;
   }
 }
 
-export function formatConversationHistory(conversation: any) {
+export function formatConversationHistory(conversation: MongoConversation) {
   const history = conversation.chatHistory
-    .filter((msg: any) => ["assistant", "user"].includes(msg.role))
+    .filter((msg: StoredChatMessage) => ["assistant", "user"].includes(msg.role))
     .map((msg: any) => {
       return {
         ...msg,
@@ -88,25 +86,23 @@ export function formatConversationHistory(conversation: any) {
 }
 
 export async function saveChatHistory(
-  chatHistory: any[],
+  chatHistory: ChatMessage[],
   conversationId: string,
-  referenceSources?: any[],
+  referenceSources?: ReferenceSource[],
   userId?: string | null,
   anonymousId?: string | null,
 ) {
-
   const oldConversationId = chatHistory[chatHistory.length - 1]?.conversationId;
   const newConversationId = conversationId;
 
-
   try {
     const collection = await getCollection();
-
-    // Filter out system messages before saving
-    const filteredChatHistory = chatHistory.filter((msg) => msg.role !== 'system');
+    const filteredChatHistory = chatHistory.filter((msg) => msg.role !== "system");
+    const lastMsg = filteredChatHistory.at(-1);
+    if (!lastMsg?.content) return;
 
     const chatHistoryWithIds = filteredChatHistory.map((msg) => {
-      const messageData: any = {
+      const messageData: StoredChatMessage = {
         ...msg,
         conversationId: newConversationId,
         messageId: msg.id,
@@ -167,16 +163,14 @@ export async function saveChatHistory(
         return;
       }
 
-      console.log(`[saveChatHistory] Proceeding with update - user context matches`);
-      // Update existing conversation - preserve existing reference sources
+      // Update existing conversation
       const existingChatHistory = existingConversation.chatHistory || [];
 
-      // Merge existing chat history with new messages, preserving reference sources
-      const mergedChatHistory = [...existingChatHistory];
+      const mergedChatHistory: StoredChatMessage[] = [...existingChatHistory];
 
       // Update or add new messages
-      chatHistoryWithIds.forEach((newMsg: any) => {
-        const existingIndex = mergedChatHistory.findIndex((existingMsg: any) =>
+      chatHistoryWithIds.forEach((newMsg: StoredChatMessage) => {
+        const existingIndex = mergedChatHistory.findIndex((existingMsg: StoredChatMessage) =>
           existingMsg.id === newMsg.id || existingMsg.messageId === newMsg.messageId
         );
 
@@ -205,9 +199,7 @@ export async function saveChatHistory(
             userId: finalUserId,
             anonymousId: finalAnonymousId,
             chatHistory: mergedChatHistory,
-            userMessage: extractUserMessageContent(
-              chatHistory[chatHistory.length - 1].content,
-            ),
+            userMessage: extractUserMessageContent(lastMsg.content),
             timestamp: existingConversation.timestamp || new Date().toISOString(),
             lastUpdated: new Date().toISOString(),
             isActive: true,
@@ -228,9 +220,7 @@ export async function saveChatHistory(
         userId: userId || null,
         anonymousId: anonymousId || null,
         chatHistory: chatHistoryWithIds,
-        userMessage: extractUserMessageContent(
-          chatHistory[chatHistory.length - 1].content,
-        ),
+        userMessage: extractUserMessageContent(lastMsg.content),
         timestamp: new Date().toISOString(),
         lastUpdated: new Date().toISOString(),
         isActive: true,
@@ -246,7 +236,7 @@ export async function saveChatHistory(
 
     // Delete the old conversation if it exists and is different
     if (oldConversationId && oldConversationId !== newConversationId) {
-      const deleteResult = await collection.deleteOne({ conversationId: oldConversationId });
+      await collection.deleteOne({ conversationId: oldConversationId });
     }
 
     // Clean up any empty conversations for this user (safety measure)
@@ -260,11 +250,8 @@ export async function saveChatHistory(
           { chatHistory: { $size: 0 } },
         ],
       });
-      if (emptyCleanup.deletedCount > 0) {
-        console.log(`Cleaned up ${emptyCleanup.deletedCount} empty conversation(s) for logged-in user`);
-      }
     } else if (anonymousId) {
-      const emptyCleanup = await collection.deleteMany({
+      await collection.deleteMany({
         anonymousId,
         $or: [
           { chatHistory: { $exists: false } },
@@ -272,12 +259,33 @@ export async function saveChatHistory(
           { chatHistory: { $size: 0 } },
         ],
       });
-      if (emptyCleanup.deletedCount > 0) {
-        console.log(`Cleaned up ${emptyCleanup.deletedCount} empty conversation(s) for anonymous user`);
-      }
     }
 
-  } catch (error) {
-    console.error("Error saving conversation:", error);
+  } catch (error: any) {
+    console.error("Error saving conversation:", error.message);
+  }
+}
+
+export async function deleteConversation(
+  conversationId: string,
+  userId: string,
+): Promise<{ deleted: boolean; reason?: string }> {
+  try {
+    const collection = await getCollection();
+    const conversation = await collection.findOne({ conversationId });
+
+    if (!conversation) {
+      return { deleted: false, reason: "not_found" };
+    }
+
+    if (conversation.userId !== userId) {
+      return { deleted: false, reason: "forbidden" };
+    }
+
+    await collection.deleteOne({ conversationId });
+    return { deleted: true };
+  } catch (error: any) {
+    console.error("Error deleting conversation:", error.message);
+    return { deleted: false, reason: "error" };
   }
 }

@@ -100,26 +100,3 @@ export async function downloadPdf(
     throw error;
   }
 }
-
-// Get a single file preview
-export async function filePreview(
-  file: string
-) {
-
-  const url = `${getServer()}/project/download/single_file?project=${PROJECT_CONFIG.PROJECT}&engine=${PROJECT_CONFIG.ENGINE}&file=${file}&token=${ONE_TIME_TOKEN}`;
-
-  const response = await fetch(url, {
-    method: 'GET',
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  try {
-    return response;
-  } catch (error) {
-    console.error('Error fetching file:', error);
-    throw error;
-  }
-}

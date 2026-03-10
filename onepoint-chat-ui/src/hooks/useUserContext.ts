@@ -4,20 +4,16 @@ import { useRef, useEffect } from 'react';
 export function useUserContext() {
   const { isSignedIn, isLoaded } = useUser();
   const { session } = useSession();
-  const anonymousIdRef = useRef<string | null>(null);
+  const anonymousIdRef = useRef<string | null>(localStorage.getItem('anonymousId'));
 
-  // Generate/retrieve anonymous ID for non-logged-in users
   useEffect(() => {
     if (!isSignedIn && isLoaded) {
-      // Generate or retrieve anonymous ID from localStorage
-      let anonymousId = localStorage.getItem('anonymousId');
-      if (!anonymousId) {
-        anonymousId = `anon_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        localStorage.setItem('anonymousId', anonymousId);
+      if (!anonymousIdRef.current) {
+        const newId = `anon_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        localStorage.setItem('anonymousId', newId);
+        anonymousIdRef.current = newId;
       }
-      anonymousIdRef.current = anonymousId;
-    } else {
-      // Clear anonymous ID when user logs in
+    } else if (isSignedIn) {
       localStorage.removeItem('anonymousId');
       anonymousIdRef.current = null;
     }

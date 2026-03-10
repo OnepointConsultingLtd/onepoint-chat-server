@@ -11,7 +11,7 @@ import { useUser } from '@clerk/clerk-react';
 import Disclaimer from './Disclaimer';
 
 export default function ChatContainer() {
-  const { messagesEndRef, handleSubmit, sendMessageToServer } = useChat();
+  const { messagesEndRef, handleSubmit, sendMessageToServer, continueConversation, deleteConversation } = useChat();
   const { isSignedIn, isLoaded } = useUser();
 
   const isMobile = useIsMobile();
@@ -22,10 +22,6 @@ export default function ChatContainer() {
       isInitialMessage: state.isInitialMessage,
     }))
   );
-
-  useEffect(() => {
-    setHandleSubmit(handleSubmit);
-  }, [handleSubmit, setHandleSubmit]);
 
   useEffect(() => {
     setHandleSubmit(handleSubmit);
@@ -46,7 +42,10 @@ export default function ChatContainer() {
   return (
     <main className="flex min-h-screen bg-[#fafffe] dark:!bg-[#1F1925]">
       {isLoaded && isSignedIn && (
-        <Sidebar sendMessageToServer={sendMessageToServer} />
+        <Sidebar
+          continueConversation={continueConversation}
+          deleteConversation={deleteConversation}
+        />
       )}
       <div className="flex flex-col flex-1 bg-[#fafffe] dark:!bg-[#1F1925]">
         <Header />

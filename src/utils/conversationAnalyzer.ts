@@ -1,5 +1,5 @@
 // utils/conversationAnalyzer.ts
-import { ChatMessage } from "@gilf/chat-websocket-server";
+import { ChatMessage } from "../types";
 import { ConversationAnalysis } from "../types/conversation";
 import { personaMappings, serviceMappings } from "../data/mappings";
 

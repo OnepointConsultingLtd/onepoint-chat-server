@@ -1,31 +1,23 @@
 import express, { RequestHandler } from "express";
-import { getChatHistory, getChatHistoryWithMetadata, getCollection, formatConversationHistory, extractUserMessageContent } from "./handleApi";
+import { getChatHistory, getChatHistoryWithMetadata, getCollection, formatConversationHistory, extractUserMessageContent, deleteConversation } from "./handleApi";
+import type { MongoConversation } from "../types";
+import { isWelcomeMessage } from "../utils/isWelcomeMessage";
+import { getVerifiedUserId } from "./verifyClerkAuth";
 import cors from "cors";
 import path from "path";
-import wkhtmltopdf from "wkhtmltopdf";
 
-/**
- * This is the server that will be used to fetch the chat history for a client ID
- */
+const ALLOWED_ORIGINS = ["https://osca.onepointltd.ai", "http://localhost:5173", "http://localhost:3000"];
 
 const app = express();
-app.use(express.json({ limit: "50mb" })); // Increased limit for HTML content
-app.use(cors());
+app.use(express.json({ limit: "50mb" }));
+app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
 
 // Serve static files from the dist directory
 const static_files_path = path.join(__dirname, "../../onepoint-chat-ui/dist");
 app.use(express.static(static_files_path));
 console.log(`Serving static files from ${static_files_path}`);
 
-/**
- * Endpoint: /api/chat/:conversationId
- * Description: Get chat history for a given conversation ID
- * 
- * This endpoint retrieves the chat history for a given conversation ID.
- * It returns the entire conversation history for the given conversation ID.
- * 
- * Query parameter: ?metadata=true to include conversation metadata (isActive, userId, etc.)
- */
+// ?metadata=true to include isActive, userId, anonymousId alongside messages
 app.get("/api/chat/:conversationId", (async (req, res) => {
   try {
     const { conversationId } = req.params;
@@ -44,25 +36,11 @@ app.get("/api/chat/:conversationId", (async (req, res) => {
       const history = await getChatHistory(conversationId);
       res.json(history);
     }
-  } catch (error) {
-    console.error("Error fetching chat history:", error);
+  } catch (error: any) {
+    console.error("Error fetching chat history:", error.message);
     res.status(500).json({ error: "Failed to fetch chat history" });
   }
 }) as RequestHandler);
-
-/**
- * Endpoint: /api/chat/:conversationId/message/:messageId/references
- * Description: Get reference sources for a specific message
- * example:
- * http://localhost:5000/api/chat/123/message/456/references
- * 
- * This endpoint retrieves the reference sources for a specific message in a given conversation.
- * It returns the reference sources for the message.
- * 
- * This endpoint is used to get the reference sources for a specific message in a given conversation.
- * It returns the reference sources for the message.
- */
-
 
 app.get("/api/chat/:conversationId/message/:messageId/references", (async (req, res) => {
   try {
@@ -75,29 +53,18 @@ app.get("/api/chat/:conversationId/message/:messageId/references", (async (req, 
     }
 
     // Find the specific message with reference sources
-    const message = conversation.chatHistory.find((msg: any) => msg.id === messageId || msg.messageId === messageId);
+    const message = conversation.chatHistory.find((msg: { id?: string; messageId?: string }) => msg.id === messageId || msg.messageId === messageId);
     if (!message) {
       return res.status(404).json({ error: "Message not found" });
     }
 
     const referenceSources = message.referenceSources || [];
     res.json({ referenceSources });
-  } catch (error) {
-    console.error("Error fetching reference sources:", error);
+  } catch (error: any) {
+    console.error("Error fetching reference sources:", error.message);
     res.status(500).json({ error: "Failed to fetch reference sources" });
   }
 }) as RequestHandler);
-
-/**
- * Endpoint: /api/chat/share/:conversationId
- * Description: Share a conversation based on a conversation ID
- * 
- * This endpoint retrieves a conversation based on a given conversation ID.
- * It formats the chat history for sharing and returns a list of messages.
- * 
- * This endpoint share the entire conversation history for a given conversation ID.
- */
-
 
 app.get("/api/chat/share/:conversationId", (async (req, res) => {
   try {
@@ -106,16 +73,14 @@ app.get("/api/chat/share/:conversationId", (async (req, res) => {
 
     // Get the full conversation document
     const conversation = await collection.findOne({ conversationId });
-
     if (!conversation) {
       return res.status(404).json({ error: "Conversation not found" });
     }
 
-    // Format the chat history for sharing
-    const formattedHistory = formatConversationHistory(conversation);
+    const formattedHistory = formatConversationHistory(conversation as unknown as MongoConversation);
 
     const shareData = {
-      messages: formattedHistory.map((msg: any) => ({
+      messages: formattedHistory.map((msg: { id?: string; role: string; content: string; referenceSources?: unknown[] }) => ({
         id: msg.id || `${conversationId}-${msg.role}-${Date.now()}`,
         text: msg.content,
         type: msg.role === 'user' ? 'user' : 'agent',
@@ -127,26 +92,13 @@ app.get("/api/chat/share/:conversationId", (async (req, res) => {
       conversationId: conversation.conversationId,
     };
 
-    console.log("shareData for conversationId", conversationId, shareData);
     res.json(shareData);
-  } catch (error) {
-    console.error("Error fetching shared chat:", error);
+  } catch (error: any) {
+    console.error("Error fetching shared chat:", error.message);
     res.status(500).json({ error: "Failed to fetch shared chat" });
   }
 }) as RequestHandler);
 
-
-/**
- * Endpoint: /api/chat/thread-share/:messageId
- * Description: Share a thread of messages based on a message ID
- * 
- * This endpoint retrieves a thread of messages based on a given message ID.
- * It filters out system messages and the welcome message, and returns a list of messages
- * that form a complete conversation thread.
- * 
- * Example:
- * http://localhost:5000/api/chat/thread-share/d0f39cf5-b13b-41f0-9e66-fe70df50b248
- */
 
 app.get("/api/chat/thread-share/:messageId", (async (req, res) => {
   try {
@@ -154,9 +106,6 @@ app.get("/api/chat/thread-share/:messageId", (async (req, res) => {
 
     const messageId = req.params.messageId;
 
-    console.log('messageId is in>>>>', messageId);
-
-    // Get the full conversation document
     const conversation = await collection.findOne({
       "chatHistory.messageId": messageId
     });
@@ -166,24 +115,20 @@ app.get("/api/chat/thread-share/:messageId", (async (req, res) => {
     }
 
 
-    console.log('conversation is', conversation);
     // Filter out system messages and welcome message
-    const chatHistory = conversation.chatHistory.filter((msg: any) => {
-      if (msg.role === 'system') return false;
-
-      if (msg.role === 'assistant' && msg.content.includes("Welcome to Onepoint")) return false;
-
+    const chatHistory = conversation.chatHistory.filter((msg: { role: string; content?: string }) => {
+      if (msg.role === "system") return false;
+      if (msg.role === "assistant" && isWelcomeMessage(msg.content)) return false;
       return true;
     });
 
-    // Find the specific message and its pair in filtered history
-    const messageIndex = chatHistory.findIndex((msg: any) => msg.messageId === messageId);
-
+    const messageIndex = chatHistory.findIndex((msg: { messageId?: string }) => msg.messageId === messageId);
     if (messageIndex === -1) {
       return res.status(404).json({ error: "Message not found or is not shareable" });
     }
 
-    let messagePair: any[] = [];
+    type MessagePair = { id?: string; role: string; content: string; referenceSources?: unknown[] };
+    const messagePair: MessagePair[] = [];
     const targetMessage = chatHistory[messageIndex];
 
     if (targetMessage.role === 'assistant') {
@@ -209,7 +154,7 @@ app.get("/api/chat/thread-share/:messageId", (async (req, res) => {
 
 
     const shareData = {
-      messages: messagePair.map((msg: any) => ({
+      messages: messagePair.map((msg: MessagePair) => ({
         text: extractUserMessageContent(msg.content),
         type: msg.role === 'user' ? 'user' : 'agent',
         timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
@@ -220,77 +165,13 @@ app.get("/api/chat/thread-share/:messageId", (async (req, res) => {
       conversationId: conversation.conversationId,
     };
 
-    console.log("Single message pair shareData for messageId", messageId, shareData);
     res.json(shareData);
-  } catch (error) {
-    console.error("Error fetching shared message pair:", error);
+  } catch (error: any) {
+    console.error("Error fetching shared message pair:", error.message);
     res.status(500).json({ error: "Failed to fetch shared message pair" });
   }
 }) as RequestHandler);
 
-
-/**
- * Endpoint: /api/conversations/metadata
- * Description: Store user metadata for a conversation in memory only
- * This is used to associate userId/anonymousId with conversations when saving.
- * We don't create database records here - only when actual messages are saved.
- */
-app.post("/api/conversations/metadata", (async (req, res) => {
-  try {
-    const { conversationId, userId, anonymousId } = req.body;
-
-    console.log(`[metadata API] Received - conversationId: ${conversationId}, userId: ${userId}, anonymousId: ${anonymousId}`);
-
-    if (!conversationId) {
-      return res.status(400).json({ error: "conversationId is required" });
-    }
-
-    // Store in memory Map for use in save callback
-    // Don't create database record until messages are actually saved
-    const { setConversationMetadata } = await import("../callbacks/saveConversationHistory");
-    setConversationMetadata(conversationId, { userId, anonymousId });
-
-    console.log(`[metadata API] Stored metadata for conversationId: ${conversationId}`);
-
-    res.json({ success: true });
-  } catch (error) {
-    console.error("Error storing conversation metadata:", error);
-    res.status(500).json({ error: "Failed to store metadata" });
-  }
-}) as RequestHandler);
-
-/**
- * Endpoint: /api/conversations/message-metadata
- * Description: Store metadata from WebSocket messages
- * This extracts metadata from incoming WebSocket messages and stores it
- */
-app.post("/api/conversations/message-metadata", (async (req, res) => {
-  try {
-    const { conversationId, userId, anonymousId } = req.body;
-
-    console.log(`[message-metadata API] Received - conversationId: ${conversationId}, userId: ${userId}, anonymousId: ${anonymousId}`);
-
-    if (!conversationId) {
-      return res.status(400).json({ error: "conversationId is required" });
-    }
-
-    // Store metadata from WebSocket message
-    const { storeMessageMetadata } = await import("../callbacks/saveConversationHistory");
-    storeMessageMetadata(conversationId, { userId, anonymousId });
-
-    console.log(`[message-metadata API] Stored message metadata for conversationId: ${conversationId}`);
-
-    res.json({ success: true });
-  } catch (error) {
-    console.error("Error storing message metadata:", error);
-    res.status(500).json({ error: "Failed to store message metadata" });
-  }
-}) as RequestHandler);
-
-/**
- * Endpoint: /api/conversations/user/:userId
- * Description: Get all conversations for a user
- */
 
 app.get("/api/conversations/user/:userId", (async (req, res) => {
   try {
@@ -314,12 +195,37 @@ app.get("/api/conversations/user/:userId", (async (req, res) => {
     }));
 
     res.json({ conversations: conversationList });
-  } catch (error) {
-    console.error("Error fetching user conversations:", error);
+  } catch (error: any) {
+    console.error("Error fetching user conversations:", error.message);
     res.status(500).json({ error: "Failed to fetch conversations" });
   }
 }) as RequestHandler);
 
+
+app.delete("/api/conversations/:conversationId", (async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const userId = await getVerifiedUserId(req);
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const result = await deleteConversation(conversationId, userId);
+
+    if (!result.deleted) {
+      const status = result.reason === "not_found" ? 404
+        : result.reason === "forbidden" ? 403
+        : 500;
+      return res.status(status).json({ error: result.reason });
+    }
+
+    res.json({ deleted: true });
+  } catch (error: any) {
+    console.error("Error deleting conversation:", error.message);
+    res.status(500).json({ error: "Failed to delete conversation" });
+  }
+}) as RequestHandler);
 
 const PORT = process.env.REST_API_PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

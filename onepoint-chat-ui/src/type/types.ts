@@ -49,8 +49,8 @@ export type Message = {
 export type ReferenceSource = {
   id: string;
   title: string;
-  filePath: string;
   description?: string;
+  url: string;
 };
 
 export type ChatContextType = {

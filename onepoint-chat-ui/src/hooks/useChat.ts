@@ -1,9 +1,10 @@
 import WebSocket from 'isomorphic-ws';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MessageEvent } from 'ws';
+import { useAuth } from '@clerk/clerk-react';
 import { useShallow } from 'zustand/react/shallow';
 import { messageFactoryAgent, messageFactoryUser } from '../lib/messageFactory';
-import { getConversationId, markChatAsActive, saveConversationId } from '../lib/persistence';
+import { clearChatData, getConversationId, markChatAsActive, saveConversationId } from '../lib/persistence';
 import { createWebSocket, sendMessage } from '../lib/websocket';
 import { useUserContext } from './useUserContext';
 import useChatStore from '../store/chatStore';
@@ -11,6 +12,7 @@ import { Message, ServerMessage } from '../type/types';
 import { fetchRawHistory, formatChatHistory } from '../utils/fetchChatHistory';
 
 export function useChat() {
+  const { getToken } = useAuth();
   const { userId, anonymousId } = useUserContext();
   const { messages, isThinking, setMessages, setIsThinking, isRestarting, isStreaming, setIsStreaming, handleTopicAction, setIsSidebarOpen } =
     useChatStore(
@@ -87,7 +89,6 @@ export function useChat() {
     }
   };
 
-  // Fetch reference sources for a specific message
   const fetchReferenceSources = useCallback(async (conversationId: string, messageId: string) => {
     try {
       const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/${conversationId}/message/${messageId}/references`);
@@ -95,12 +96,12 @@ export function useChat() {
 
       const data = await response.json();
       if (data.referenceSources && data.referenceSources.length > 0) {
-        // Update the message with reference sources
         setMessages((prev: Message[]) =>
-          updateLastMessage(prev, (msg) => ({
-            ...msg,
-            referenceSources: data.referenceSources,
-          }))
+          prev.map((m) =>
+            (m.id === messageId || m.messageId === messageId)
+              ? { ...m, referenceSources: data.referenceSources }
+              : m
+          )
         );
       }
     } catch (error) {
@@ -139,7 +140,7 @@ export function useChat() {
     window.barrier = true;
 
     try {
-      wsRef.current = createWebSocket();
+      wsRef.current = createWebSocket(userId, anonymousId);
     } catch (error) {
       console.error('Failed to create WebSocket:', error);
       window.barrier = false;
@@ -170,7 +171,7 @@ export function useChat() {
             timestamp: heartbeatTimestamp
           }));
         }
-      }, 100000); // 10 minutes interval (10 * 60 * 1000 = 600000ms)
+      }, 600000); // 10 minutes
     };
 
     const stopHeartbeat = () => {
@@ -233,18 +234,7 @@ export function useChat() {
           case 'conversation-id': {
             const { conversationId } = message;
             const lastConversationId = getConversationId();
-            
-            // Store metadata for this conversation
-            if (conversationId && (userId || anonymousId)) {
-              fetch(`${window.oscaConfig.httpUrl}/api/conversations/metadata`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ conversationId, userId, anonymousId }),
-              }).catch(error => {
-                console.error('Error storing conversation metadata:', error);
-              });
-            }
-            
+
             if (lastConversationId !== conversationId) {
               currentConversationId.current = conversationId;
               saveConversationId(conversationId);
@@ -279,15 +269,6 @@ export function useChat() {
       } catch (error) {
         console.error('Error parsing message:', error);
       }
-    };
-
-    ws.onerror = error => {
-      console.error('WebSocket error:', error);
-      const errorMessage: Message = messageFactoryAgent(
-        `Connection error: Unable to connect to server`
-      );
-      setMessages((prev: Message[]) => [...prev, errorMessage]);
-      setIsStreaming(false);
     };
 
     ws.onclose = (event) => {
@@ -387,21 +368,6 @@ export function useChat() {
       return;
     }
 
-    // CRITICAL: Store metadata for this conversationId BEFORE sending message
-    // This ensures metadata is available when saveConversation is called
-    console.log(`[useChat] Storing metadata for conversationId: ${currentConversationId.current} before sending message`);
-    fetch(`${window.oscaConfig.httpUrl}/api/conversations/message-metadata`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        conversationId: currentConversationId.current, 
-        userId: userId || null, 
-        anonymousId: anonymousId || null 
-      }),
-    }).catch(error => {
-      console.error('[useChat] Error storing message metadata:', error);
-    });
-
     console.log(`[useChat] Sending message with conversationId: ${currentConversationId.current}, metadata:`, userMetadata);
     setIsThinking(true);
     const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
@@ -417,12 +383,54 @@ export function useChat() {
     handleTopicAction({ type: 'manual', text });
   };
 
+  const continueConversation = useCallback(async (conversationId: string) => {
+    saveConversationId(conversationId);
+    currentConversationId.current = conversationId;
+
+    const rawHistory = await loadChatHistory(conversationId);
+
+    if (rawHistory.length > 0 && wsRef.current) {
+      sendMessage(wsRef.current, 'import-history', { history: rawHistory }, conversationId, { userId, anonymousId });
+    }
+
+    setIsSidebarOpen(false);
+  }, [loadChatHistory, userId, anonymousId, setIsSidebarOpen]);
+
+  const deleteConversation = useCallback(async (conversationId: string): Promise<boolean> => {
+    if (!userId) return false;
+
+    try {
+      const token = await getToken();
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const response = await fetch(`${window.oscaConfig.httpUrl}/api/conversations/${conversationId}`, {
+        method: 'DELETE',
+        headers,
+      });
+
+      if (!response.ok) return false;
+
+      if (conversationId === currentConversationId.current) {
+        setMessages([]);
+        currentConversationId.current = null;
+        clearChatData();
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+      return false;
+    }
+  }, [userId, getToken, setMessages]);
 
   return {
     messages,
     messagesEndRef,
     handleSubmit,
     sendMessageToServer,
+    continueConversation,
+    deleteConversation,
     isThinking,
     isRestarting,
     isStreaming,
