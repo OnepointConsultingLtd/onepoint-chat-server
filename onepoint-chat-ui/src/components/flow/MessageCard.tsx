@@ -8,7 +8,6 @@ import ChatInput from '../ChatInput';
 import ThinkingIndicator from '../ThinkingIndicator';
 import AgentMessage from './AgentMessage';
 import ResponseTimer from './ResponseTimer';
-import SharedModeRender from './SharedModeRender';
 import UserMessage from './UserMessage';
 
 type MessageCardProps = {
@@ -46,11 +45,8 @@ export default function MessageCard({
     setShowButton,
     setIsInitialMessage,
     handleClick,
-    isThreadShareMode,
-    exitThreadShareMode,
     relatedTopics,
     relatedTopicsLoading,
-    handleRestart,
   } = useChatStore(
     useShallow(state => ({
       showInput: state.showInput,
@@ -59,11 +55,8 @@ export default function MessageCard({
       setShowButton: state.setShowButton,
       setIsInitialMessage: state.setIsInitialMessage,
       handleClick: state.handleClick,
-      isThreadShareMode: state.isThreadShareMode,
-      exitThreadShareMode: state.exitThreadShareMode,
       relatedTopics: state.relatedTopics,
       relatedTopicsLoading: state.relatedTopicsLoading,
-      handleRestart: state.handleRestart,
     }))
   );
 
@@ -117,15 +110,6 @@ export default function MessageCard({
         <RenderHandle />
       )}
 
-      {/* Thread Share Mode Indicator */}
-      {isThreadShareMode && (
-        <SharedModeRender
-          userMessage={userMessage}
-          exitThreadShareMode={exitThreadShareMode}
-          handleRestart={handleRestart}
-        />
-      )}
-
       {/* Show thinking indicator for entire card when thinking */}
       {isLastCard && isThinking ? (
         <div className="border-l-4 border-[#9a19ff] bg-[#9a19ff]/20 transition-all duration-300 h-auto">
@@ -160,7 +144,7 @@ export default function MessageCard({
         !showInput &&
         !isThinking &&
         isLastCard &&
-        !isThreadShareMode && (
+        (
           <div
             className="fixed left-1/2 transform -translate-x-1/2 transition-all duration-300 opacity-0 group-hover:opacity-100 animate-fade-up"
             style={{

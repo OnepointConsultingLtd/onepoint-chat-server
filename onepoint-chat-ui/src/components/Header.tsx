@@ -6,7 +6,6 @@ import { FiCheck, FiShare2 } from 'react-icons/fi';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import { useExport } from '../hooks/useExport';
-import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 import useChatStore from '../store/chatStore';
 import GradientButton, { MiniGradientButton } from './GradientButton';
 import SideBarButton from './SideBarButton';
@@ -16,7 +15,7 @@ import Toast from './Toast';
 export default function Header() {
   const { isSignedIn, isLoaded } = useUser();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copied] = useState(false);
   const [toast, setToast] = useState<{
     isVisible: boolean;
     message: string;
@@ -30,17 +29,13 @@ export default function Header() {
   const {
     messages,
     handleRestart,
-    generateShareableId,
     isInitialMessage,
-    isThreadShareMode,
     exportChatToPDF,
   } = useChatStore(
     useShallow(state => ({
       messages: state.messages,
       handleRestart: state.handleRestart,
-      generateShareableId: state.generateShareableId,
       isInitialMessage: state.isInitialMessage,
-      isThreadShareMode: state.isThreadShareMode,
       exportChatToPDF: state.exportChatToPDF,
     }))
   );
@@ -70,16 +65,6 @@ export default function Header() {
     },
   });
 
-  const handleShare = async () => {
-    const shareableUrl = generateShareableId();
-
-    if (isInitialMessage || !shareableUrl) {
-      return;
-    }
-
-    handleCopyToClipboard({ text: shareableUrl, setCopied });
-  };
-
   const hasConversation = messages && messages.length >= 2 && !isInitialMessage;
 
   // Clear chat on any auth transition (login or logout) so messages
@@ -102,7 +87,7 @@ export default function Header() {
 
   return (
     <>
-      {!isThreadShareMode && isLoaded && isSignedIn && (
+      {isLoaded && isSignedIn && (
         <div className="space-x-4 pr-4 float-left w-fit absolute top-3 left-4 !z-50">
           <SideBarButton />
         </div>
@@ -113,9 +98,9 @@ export default function Header() {
         <ThemeToggle />
 
         {/* Share Button - Only show when signed in */}
-        {hasConversation && !isThreadShareMode && (
+        {hasConversation && (
           <GradientButton
-            onClick={handleShare}
+            onClick={() => {}}
             icon={copied ? <FiCheck className="text-green-600" /> : <FiShare2 />}
             title={copied ? 'URL copied!' : 'Share this conversation'}
           >
@@ -124,14 +109,14 @@ export default function Header() {
         )}
         <div className="relative w-auto">
           {/* Export Button - Only show when signed in */}
-          {isLoaded && isSignedIn && !isThreadShareMode && (
+          {isLoaded && isSignedIn && (
             <GradientButton onClick={() => setShowDropdown(!showDropdown)} icon={<CiExport />}>
               Export
             </GradientButton>
           )}
 
           {/* Login Button - Show when not signed in */}
-          {isLoaded && !isSignedIn && !isThreadShareMode && (
+          {isLoaded && !isSignedIn && (
             <SignInButton mode="modal">
               <GradientButton
                 onClick={() => { }}
@@ -176,14 +161,12 @@ export default function Header() {
           )}
         </div>
 
-        {!isThreadShareMode && (
-          <GradientButton onClick={handleRestart} icon={<MdOutlineRestartAlt />}>
-            New
-          </GradientButton>
-        )}
+        <GradientButton onClick={handleRestart} icon={<MdOutlineRestartAlt />}>
+          New
+        </GradientButton>
 
         {/* User Button - Show when signed in */}
-        {isLoaded && isSignedIn && !isThreadShareMode && (
+        {isLoaded && isSignedIn && (
           <div className="flex items-center">
             <UserButton />
           </div>

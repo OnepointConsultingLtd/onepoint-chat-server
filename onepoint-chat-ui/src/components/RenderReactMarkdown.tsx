@@ -13,12 +13,10 @@ import ReferenceSources from './ReferenceSources';
 export default function RenderReactMarkdown({ message }: { message: Message }) {
   const { isSignedIn, isLoaded } = useUser();
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [sharedId, setSharedId] = useState<string | null>(null);
+  const [sharedId] = useState<string | null>(null);
 
-  const { generateThreadShareableId, isThreadShareMode, isInitialMessage, handleTopicAction, handleSubmit } = useChatStore(
+  const { isInitialMessage, handleTopicAction, handleSubmit } = useChatStore(
     useShallow(state => ({
-      generateThreadShareableId: state.generateThreadShareableId,
-      isThreadShareMode: state.isThreadShareMode,
       isInitialMessage: state.isInitialMessage,
       handleTopicAction: state.handleTopicAction,
       handleSubmit: state.handleSubmit,
@@ -29,33 +27,9 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
     handleCopyToClipboard({ text, id, setCopiedId });
   };
 
-  const handleShareClick = async () => {
-    try {
-      if (message.type !== 'agent') {
-        console.error('Share is only available for user and agent messages');
-        return;
-      }
-
-      const messageId = message.id || message.messageId;
-      const shareableUrl = generateThreadShareableId(messageId);
-
-      if (shareableUrl) {
-        handleCopyToClipboard({
-          text: shareableUrl,
-          id: messageId,
-          setCopiedId: setSharedId,
-        });
-      } else {
-        console.error('Failed to generate shareable URL');
-      }
-    } catch (error) {
-      console.error('Failed to copy share URL:', error);
-    }
-  };
-
   const referenceSources = message.referenceSources;
 
-  const showQuickQuestions = isInitialMessage && !isThreadShareMode;
+  const showQuickQuestions = isInitialMessage;
 
   const quickQuestions = useMemo(() => shuffleArray(predefinedQuestions).slice(0, 4), []);
 
@@ -136,9 +110,9 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
 
           )}
           {/* Only show share button if signed in, not in thread share mode, and is agent message */}
-          {isLoaded && isSignedIn && !isThreadShareMode && !isInitialMessage && message.type === 'agent' && (
+          {isLoaded && isSignedIn && !isInitialMessage && message.type === 'agent' && (
             <button
-              onClick={handleShareClick}
+              onClick={() => {}}
               className={`p-1 md:p-2 rounded-full transition-all duration-200 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer ${sharedId === message.id
                 ? 'bg-green-50 text-green-600 border border-green-200'
                 : ' text-[#1F1925] dark:text-white hover:text-[#9a19ff] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]'

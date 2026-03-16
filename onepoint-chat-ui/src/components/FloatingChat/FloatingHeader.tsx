@@ -7,7 +7,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { useUser, SignInButton, UserButton } from '@clerk/clerk-react';
 import { useDarkMode } from '../../hooks/useDarkMode';
 import { useExport } from '../../hooks/useExport';
-import { handleCopyToClipboard } from '../../lib/handleCopyToClipboard';
 import useChatStore from '../../store/chatStore';
 import { PROJECT_INFO } from '../../lib/constants';
 
@@ -17,26 +16,22 @@ export default function FloatingHeader() {
 
   const {
     messages,
-    generateShareableId,
     isInitialMessage,
     exportChatToPDF,
     handleRestart,
     toggleFloatingChat,
-    isThreadShareMode,
   } = useChatStore(
     useShallow(state => ({
       messages: state.messages,
-      generateShareableId: state.generateShareableId,
       isInitialMessage: state.isInitialMessage,
       exportChatToPDF: state.exportChatToPDF,
       handleRestart: state.handleRestart,
       toggleFloatingChat: state.toggleFloatingChat,
-      isThreadShareMode: state.isThreadShareMode,
     }))
   );
 
   const [showDropdown, setShowDropdown] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copied] = useState(false);
 
   const { handleExport, isExportingPdf } = useExport({
     messages,
@@ -48,16 +43,6 @@ export default function FloatingHeader() {
       setShowDropdown(false);
     },
   });
-
-  const handleShare = async () => {
-    const shareableUrl = generateShareableId();
-
-    if (isInitialMessage || !shareableUrl) {
-      return;
-    }
-
-    handleCopyToClipboard({ text: shareableUrl, setCopied });
-  };
 
   const hasConversation = messages && messages.length >= 2 && !isInitialMessage;
 
@@ -97,12 +82,11 @@ export default function FloatingHeader() {
               </svg>
             )}
           </button>
-          {!isThreadShareMode && (
-            <>
-              {/* Share Button - Only show when signed in */}
-              {isLoaded && isSignedIn && hasConversation && (
-                <button
-                  onClick={handleShare}
+          <>
+            {/* Share Button - Only show when signed in */}
+            {isLoaded && isSignedIn && hasConversation && (
+              <button
+                onClick={() => {}}
                   className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
                   title={copied ? 'URL copied!' : 'Share this conversation'}
                 >
@@ -186,8 +170,7 @@ export default function FloatingHeader() {
                   <UserButton />
                 </div>
               )}
-            </>
-          )}
+          </>
         </div>
 
         {/* Right side buttons */}

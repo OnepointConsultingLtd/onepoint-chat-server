@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { INITIAL_MESSAGE, PROJECT_INFO } from '../lib/constants';
 import { predefinedQuestions, shuffleArray } from '../lib/predefinedTopics';
 import chatStore from '../store/chatStore';
 import { PredefinedQuestion, Topic } from '../type/types';
 import BackToBottom from './FloatingChat/BackToBottom';
-import SharedModeRender from './flow/SharedModeRender';
 import RenderReactMarkdown from './RenderReactMarkdown';
 import ThinkingIndicator from './ThinkingIndicator';
 import TopicButton from './TopicButton';
@@ -24,32 +22,19 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
     isThinking,
     relatedTopics,
     handleTopicAction,
-    isThreadShareMode,
-    exitThreadShareMode,
-    handleRestart,
   } = chatStore(
     useShallow(state => ({
       messages: state.messages,
       isThinking: state.isThinking,
       relatedTopics: state.relatedTopics,
       handleTopicAction: state.handleTopicAction,
-      isThreadShareMode: state.isThreadShareMode,
-      exitThreadShareMode: state.exitThreadShareMode,
-      handleRestart: state.handleRestart,
     }))
   );
 
   const filteredMessages = useMemo(() => {
-    let filtered = messages.filter(message => !message.text.includes('Connection closed'));
+    return messages.filter(message => !message.text.includes('Connection closed'));
+  }, [messages]);
 
-    if (isThreadShareMode) {
-      filtered = filtered.filter(message => !message.text.includes(INITIAL_MESSAGE));
-    }
-
-    return filtered;
-  }, [messages, isThreadShareMode]);
-
-  const userMessage = filteredMessages.find(message => message.type === 'user');
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     if (!scrollContainer) return;
@@ -99,75 +84,20 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
 
       <div ref={scrollContainerRef} className="h-full overflow-y-auto relative z-10">
         <div className="max-w-full px-4 py-6">
-          {isThreadShareMode && userMessage && (
-            <SharedModeRender
-              userMessage={userMessage}
-              exitThreadShareMode={exitThreadShareMode}
-              handleRestart={handleRestart}
-            />
-          )}
-
-          <div className={`flex flex-col ${!isThreadShareMode && 'gap-4'}`}>
-            {filteredMessages.map((message, index) => {
-              const isFirstMessage = index === 0;
-              const isLastMessage = index === filteredMessages.length - 1;
+          <div className="flex flex-col gap-4">
+            {filteredMessages.map((message) => {
               const isUserMessage = message.type === 'user';
               const isAgentMessage = message.type === 'agent';
 
-              // In thread share mode, combine user and agent messages with same background
-              if (isThreadShareMode && userMessage) {
-                return (
-                  <div key={`message-${index}`} className="flex justify-start animate-slideIn">
-                    <div
-                      className={`relative w-full ${isFirstMessage && isUserMessage
-                          ? 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white p-4 shadow-xl'
-                          : isLastMessage && isAgentMessage
-                            ? 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white rounded-b-2xl p-4 shadow-xl border-t border-white/20'
-                            : isAgentMessage
-                              ? 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white p-4 shadow-xl border-t border-white/20'
-                              : 'bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] dark:from-[#1F1925] dark:via-[#2a1f35] dark:to-[#1F1925] text-white p-4 shadow-xl'
-                        }`}
-                    >
-                      {/* Show agent header only for agent messages */}
-                      {isAgentMessage && (
-                        <div className="flex items-center mb-3">
-                          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center mr-3 shadow-lg">
-                            <svg
-                              className="w-4 h-4 text-white"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                              />
-                            </svg>
-                          </div>
-                          <span className="text-sm font-semibold text-white">
-                            {' '}
-                            {PROJECT_INFO.NAME}
-                          </span>
-                        </div>
-                      )}
-
-                      <RenderReactMarkdown message={message} />
-                    </div>
-                  </div>
-                );
-              } else {
-                // Normal mode - separate styling for user and agent
-                return (
+              return (
                   <div
                     key={message.id}
                     className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'} animate-slideIn`}
                   >
                     <div
                       className={`relative w-full bg-[#fafffe]/90 dark:!bg-[#1F1925]/90 backdrop-blur-sm border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] text-slate-800 dark:!text-[#fafffe]  p-4 shadow-lg ${isUserMessage
-                          ? 'max-w-[85%] rounded-2xl rounded-br-md'
-                          : 'w-full rounded-2xl rounded-tl-md'
+                        ? 'max-w-[85%] rounded-2xl rounded-br-md'
+                        : 'w-full rounded-2xl rounded-tl-md'
                         }`}
                     >
                       {isAgentMessage && (
@@ -197,7 +127,6 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                     </div>
                   </div>
                 );
-              }
             })}
 
             {isThinking && (
@@ -210,7 +139,7 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
           </div>
         </div>
 
-        {renderTopics && renderTopics.length > 0 && !isThinking && !isThreadShareMode && (
+        {renderTopics && renderTopics.length > 0 && !isThinking && (
           <div className="px-4 pb-6 relative z-10">
             <div className="bg-[#fafffe]/60 dark:!bg-[#1F1925]/60 backdrop-blur-xl border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] rounded-xl p-3 sm:p-6 shadow-2xl">
               {/* Header with sparkle effect */}

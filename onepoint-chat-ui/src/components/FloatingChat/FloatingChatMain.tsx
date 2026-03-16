@@ -20,12 +20,11 @@ export default function FloatingChatMain({
   sendMessageToServer,
   messagesEndRef,
 }: FloatingChatMainProps) {
-  const { isFloatingOpen, toggleFloatingChat, messages, isThreadShareMode } = useChatStore(
+  const { isFloatingOpen, toggleFloatingChat, messages } = useChatStore(
     useShallow(state => ({
       isFloatingOpen: state.isFloatingOpen,
       toggleFloatingChat: state.toggleFloatingChat,
       messages: state.messages,
-      isThreadShareMode: state.isThreadShareMode,
     }))
   );
   const isError = interceptServerError(messages);
@@ -158,15 +157,13 @@ export default function FloatingChatMain({
                 </div>
 
                 {/* Input Container */}
-                {!isThreadShareMode && (
-                  <div className="bg-[#fafffe] dark:!bg-[#1F1925] border-t border-gray-200 dark:border-gray-700">
-                    <div className="w-full mx-auto">
-                      <div className="flex flex-col gap-2">
-                        <ChatInput handleSubmit={handleSubmit} />
-                      </div>
+                <div className="bg-[#fafffe] dark:!bg-[#1F1925] border-t border-gray-200 dark:border-gray-700">
+                  <div className="w-full mx-auto">
+                    <div className="flex flex-col gap-2">
+                      <ChatInput handleSubmit={handleSubmit} />
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             </div>
           )

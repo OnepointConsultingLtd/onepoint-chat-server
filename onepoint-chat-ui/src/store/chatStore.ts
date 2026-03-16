@@ -1,9 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { SharedResponse } from '..';
 import { fetchRelatedTopics } from '../lib/apiClient';
 import { INITIAL_MESSAGE, LOCAL_STORAGE_KEYS } from '../lib/constants';
-import { clearChatData, clearThreadData, getConversationId, saveConversationId, saveThreadId } from '../lib/persistence';
+import { clearChatData } from '../lib/persistence';
 import { ChatStore, TopicActionPayload } from '../type/chatStore';
 import { Message, Question, Topic, Topics } from '../type/types';
 import { exportChatToPDFApi } from '../utils/exportChat';
@@ -30,7 +29,6 @@ function newChat() {
     topicQuestions: [],
     topicQuestionsLoading: false,
     topicQuestionsError: null,
-    isThreadShareMode: false,
     isFloatingOpen: false,
   };
 }
@@ -59,7 +57,6 @@ const useChatStore = create<ChatStore>()(
       topicQuestionsLoading: false,
       topicQuestionsError: null,
       isSelectedTopicFromTopic: false,
-      isThreadShareMode: false,
       isFloatingOpen: true,
 
       // setters
@@ -108,7 +105,6 @@ const useChatStore = create<ChatStore>()(
       setTopicQuestions: (questions: Question[]) => set({ topicQuestions: questions }),
       setTopicQuestionsLoading: (loading: boolean) => set({ topicQuestionsLoading: loading }),
       setTopicQuestionsError: (error: string | null) => set({ topicQuestionsError: error }),
-      setIsThreadShareMode: (isThreadMode: boolean) => set({ isThreadShareMode: isThreadMode }),
       setIsFloatingOpen: (open: boolean) => set({ isFloatingOpen: open }),
 
       toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
@@ -153,196 +149,6 @@ const useChatStore = create<ChatStore>()(
         get().handleTopicAction({ type: 'question', question });
       },
 
-      exitThreadShareMode: () => {
-        clearThreadData();
-
-        const url = new URL(window.location.href);
-        url.searchParams.delete('threadId');
-        window.history.replaceState({}, document.title, url.pathname + url.search);
-
-        window.location.reload();
-
-        set(() => ({
-          ...newChat(),
-        }));
-      },
-
-      // Share functionality
-      generateShareableId: () => {
-        const { messages } = get();
-
-        if (!messages || messages.length === 0) {
-          return null;
-        }
-
-        const shareableMessages = messages.filter(msg =>
-          msg.type === 'user' || msg.type === 'agent'
-        );
-
-        if (shareableMessages.length === 0) {
-          return null;
-        }
-
-        const conversationId = getConversationId();
-        if (!conversationId) {
-          console.warn('No conversationId found in messages');
-          return null;
-        }
-
-        const currentUrl = window.location.origin + window.location.pathname;
-        const shareableUrl = `${currentUrl}?id=${conversationId}`;
-        return shareableUrl;
-      },
-
-      // Thread share functionality (single message pair)
-      generateThreadShareableId: (messageId: string) => {
-        const { messages } = get();
-
-        if (!messages || messages.length === 0) {
-          return null;
-        }
-
-        // Find the message with the given messageId
-        const targetMessage = messages.find(msg => msg.id || msg.messageId === messageId);
-
-        if (!targetMessage || targetMessage.type !== 'agent') {
-          console.warn('Message not found or not a user/agent message');
-          return null;
-        }
-
-        const currentUrl = window.location.origin + window.location.pathname;
-        const shareableUrl = `${currentUrl}?threadId=${messageId}`;
-        return shareableUrl;
-      },
-
-      loadSharedChatById: async (conversationId: string) => {
-        try {
-          saveConversationId(conversationId);
-          const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/share/${conversationId}`);
-
-          if (!response.ok) {
-            if (response.status === 404) {
-              console.error('Conversation not found:', conversationId);
-              return false;
-            }
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const chatData = await response.json();
-
-          if (!chatData.messages || !Array.isArray(chatData.messages)) {
-            console.error('Invalid shared chat data: missing or invalid messages');
-            return false;
-          }
-
-          const messages = chatData.messages.map((msg: { id: string; text: string; type: string; timestamp: string; conversationId?: string; messageId?: string }) => ({
-            ...msg,
-            timestamp: new Date(msg.timestamp)
-          }));
-
-          set(() => ({
-            messages: messages,
-            isSidebarOpen: false,
-            showInput: false,
-            showButton: false,
-            isInitialMessage: false,
-            isThreadShareMode: false,
-          }));
-
-          return true;
-        } catch (error) {
-          console.error('Error loading shared chat:', error);
-          return false;
-        }
-      },
-
-      // Load shared thread (single message pair)
-      loadSharedThreadById: async (messageId: string): Promise<SharedResponse> => {
-        try {
-          // Reset conversationId when loading a thread share to prevent conflicts
-          // This ensures thread mode doesn't conflict with full chat mode
-          localStorage.removeItem('conversationId');
-          const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/thread-share/${messageId}`);
-
-          if (!response.ok) {
-            if (response.status === 404) {
-              console.error('Thread not found:', messageId);
-              // Clear thread mode state when thread is not found
-              clearThreadData();
-              set(() => ({
-                isThreadShareMode: false,
-              }));
-              return {
-                status: false,
-                error: 'Thread not found',
-                messages: [],
-              };
-            }
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const threadData = await response.json();
-
-
-          if (!threadData.messages || !Array.isArray(threadData.messages)) {
-            console.error('Invalid shared thread data: missing or invalid messages');
-            // Clear thread mode state when thread data is invalid
-            clearThreadData();
-            set(() => ({
-              isThreadShareMode: false,
-            }));
-            return {
-              status: false,
-              error: 'Invalid shared thread data: missing or invalid messages',
-              messages: [],
-            };
-          }
-
-          const messages = threadData.messages.map((msg: {
-            id: string;
-            text: string;
-            type: string;
-            timestamp: string;
-            messageId: string;
-          }) => ({
-            ...msg,
-            timestamp: new Date(msg.timestamp)
-          }));
-          // saveConversationId(messages?.conversationId);
-
-          saveThreadId(messageId);
-
-          set(() => ({
-            messages: messages,
-            isSidebarOpen: false,
-            isThreadShareMode: true,
-            selectedTopic: null,
-            relatedTopics: null,
-            relatedTopicsLoading: false,
-            topicQuestions: [],
-            topicQuestionsLoading: false,
-            topicQuestionsError: null,
-          }));
-
-          return {
-            status: true,
-            messages: messages,
-          };
-        } catch (error) {
-          console.error('Error loading shared thread:', error);
-          // Clear thread mode state on error
-          clearThreadData();
-          set(() => ({
-            isThreadShareMode: false,
-          }));
-          return {
-            status: false,
-            error: 'Failed to load shared thread',
-            messages: [],
-          };
-        }
-      },
-
       handleRestart: () => {
         localStorage.removeItem(LOCAL_STORAGE_KEYS.OSCA_STORE);
         clearChatData();
@@ -370,7 +176,6 @@ const useChatStore = create<ChatStore>()(
         selectedTopic: state.selectedTopic,
         relatedTopics: state.relatedTopics,
         topicQuestions: state.topicQuestions,
-        isThreadShareMode: state.isThreadShareMode,
       }),
     }
   )

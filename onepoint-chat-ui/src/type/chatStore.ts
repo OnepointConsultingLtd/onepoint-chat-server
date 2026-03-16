@@ -1,4 +1,3 @@
-import { SharedResponse } from '..';
 import { Message, Question, Topic, Topics } from './types';
 
 export interface ChatStore {
@@ -24,7 +23,6 @@ export interface ChatStore {
   topicQuestionsLoading: boolean;
   topicQuestionsError: string | null;
   isSelectedTopicFromTopic: boolean;
-  isThreadShareMode: boolean;
   isFloatingOpen: boolean;
 
   // Setters
@@ -47,7 +45,6 @@ export interface ChatStore {
   setTopicQuestions: (questions: Question[]) => void;
   setTopicQuestionsLoading: (loading: boolean) => void;
   setTopicQuestionsError: (error: string | null) => void;
-  setIsThreadShareMode: (isThreadMode: boolean) => void;
   setIsFloatingOpen: (open: boolean) => void;
 
   // Actions
@@ -57,11 +54,6 @@ export interface ChatStore {
   handleClick: () => void;
   handleSubmit: (text: string) => void;
   handleQuestionClick: (question: Question) => void;
-  generateShareableId: () => string | null;
-  generateThreadShareableId: (messageId: string) => string | null;
-  loadSharedChatById: (conversationId: string) => Promise<boolean>;
-  loadSharedThreadById: (messageId: string) => Promise<SharedResponse>;
-  exitThreadShareMode: () => void;
   handleRestart: () => void;
   exportChatToPDF: (filename?: string) => Promise<void>;
   toggleFloatingChat: () => void;

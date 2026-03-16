@@ -6,7 +6,6 @@ import { useDarkMode } from '../../hooks/useDarkMode';
 import {
   CONNECTION_ERROR,
   DEFAULT_ZOOM,
-  INITIAL_MESSAGE,
   MAX_ZOOM,
   MIN_ZOOM,
 } from '../../lib/constants';
@@ -40,7 +39,6 @@ export default function Flow({
     isInitialMessage,
     relatedTopics,
     handleTopicAction,
-    isThreadShareMode,
   } = useChatStore(
     useShallow(state => ({
       messages: state.messages,
@@ -48,7 +46,6 @@ export default function Flow({
       isInitialMessage: state.isInitialMessage,
       relatedTopics: state.relatedTopics,
       handleTopicAction: state.handleTopicAction,
-      isThreadShareMode: state.isThreadShareMode,
     }))
   );
 
@@ -77,12 +74,11 @@ export default function Flow({
 
   const topicState = useMemo(
     () => ({
-      isInitialMessage: isInitialMessage && !isThreadShareMode,
-      isThreadShareMode,
+      isInitialMessage,
       relatedTopics: relatedTopics?.topics || [],
       handleRelatedTopicClick,
     }),
-    [isInitialMessage, isThreadShareMode, relatedTopics, handleRelatedTopicClick]
+    [isInitialMessage, relatedTopics, handleRelatedTopicClick]
   );
 
   const [cardHeights, setCardHeights] = useState<{ [id: string]: number }>({});
@@ -94,32 +90,20 @@ export default function Flow({
   }, []);
 
   const nodes = useMemo(() => {
-    // Filter out system messages first, then initial message in thread share mode
-    let filteredMessages = filterDisplayableMessages(messages);
-    if (isThreadShareMode) {
-      filteredMessages = filteredMessages.filter(
-        message => !message.text.includes(INITIAL_MESSAGE)
-      );
-    }
+    const filteredMessages = filterDisplayableMessages(messages);
 
     return createNodes(
       filteredMessages,
       isThinking,
       handleSubmit,
-      // Don't show topic nodes on initial message or in thread share mode
-      isThreadShareMode || topicState.isInitialMessage
-        ? []
-        : !isThinking
-          ? topicState.relatedTopics
-          : [],
+      topicState.isInitialMessage || isThinking ? [] : topicState.relatedTopics,
       handleRelatedTopicClick as (topic: TopicOrQuestion) => void,
       setCardHeight,
       cardHeights
     );
-  }, [
+  },     [
     messages,
     isThinking,
-    isThreadShareMode,
     topicState,
     handleSubmit,
     handleRelatedTopicClick,
@@ -135,32 +119,24 @@ export default function Flow({
   }, [messages]);
 
   const filteredMessages = useMemo(() => {
-    let filtered = filterDisplayableMessages(messages);
-    if (isThreadShareMode) {
-      filtered = filtered.filter(message => !message.text.includes(INITIAL_MESSAGE));
-    }
-    return filtered;
-  }, [messages, isThreadShareMode]);
+    return filterDisplayableMessages(messages);
+  }, [messages]);
 
   const edges = useMemo(() => {
     return createEdges(
       filteredMessages,
-      isThreadShareMode || topicState.isInitialMessage
-        ? 0
-        : topicState.relatedTopics.length
+      topicState.isInitialMessage ? 0 : topicState.relatedTopics.length
     );
-  }, [filteredMessages, topicState, isThreadShareMode]);
+  }, [filteredMessages, topicState]);
 
   useEffect(() => {
     focusOnLatestNode(
       reactFlowInstance,
       filteredMessages,
-      isThreadShareMode || topicState.isInitialMessage
-        ? 0
-        : topicState.relatedTopics.length
+      topicState.isInitialMessage ? 0 : topicState.relatedTopics.length
     );
     previousMessagesLengthRef.current = filteredMessages.length;
-  }, [filteredMessages, isThinking, reactFlowInstance, topicState, isThreadShareMode]);
+  }, [filteredMessages, isThinking, reactFlowInstance, topicState]);
 
   const onNodesChange = useCallback(() => { }, []);
 

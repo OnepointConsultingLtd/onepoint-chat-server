@@ -357,10 +357,9 @@ export function useChat() {
   const sendMessageToServer = (text: string) => {
     if (!text.trim() || !wsRef.current) return;
     setIsSidebarOpen(false);
-    
+
     const userMetadata = { userId, anonymousId };
-    console.log(`[useChat] sendMessageToServer - userId: ${userId}, anonymousId: ${anonymousId}, currentConversationId: ${currentConversationId.current}`);
-    
+
     if (!currentConversationId.current) {
       console.log(`[useChat] No conversationId, requesting new one with metadata:`, userMetadata);
       messageQueue.current.push({ text: text.trim() });
