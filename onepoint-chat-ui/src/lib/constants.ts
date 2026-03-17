@@ -38,6 +38,7 @@ export const PROJECT_CONFIG = {
 
 export const LOCAL_STORAGE_KEYS = {
   OSCA_STORE: 'osca-store',
+  CONVERSATION_ID: 'conversationId',
 }
 
 export const ONE_TIME_TOKEN = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaWxfZmVybmFuZGVzIiwibmFtZSI6ImdpbF9mZXJuYW5kZXMiLCJpYXQiOjE3NzE4MzkxODUsImVtYWlsIjoiZ2lsLmZlcm5hbmRlc0BvbmVwb2ludGx0ZC5jb20iLCJwZXJtaXNzaW9ucyI6WyJyZWFkIl19.lGRyN_u1cUyJmykm_px6u5LhEUplxYyc0RVoMtqeJwYdNEjDtqI064WXV8yRup1OuTBzIbCFW7v9o8QZIOa8ww"

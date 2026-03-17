@@ -53,3 +53,8 @@ export async function getCollection(): Promise<Collection> {
   const db = await getDB();
   return db.collection(COLLECTION_NAME);
 }
+
+export async function getSharesCollection(): Promise<Collection> {
+  const db = await getDB();
+  return db.collection("shares");
+}

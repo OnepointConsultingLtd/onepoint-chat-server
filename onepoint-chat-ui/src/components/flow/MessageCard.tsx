@@ -74,7 +74,7 @@ export default function MessageCard({
   return (
     <div
       ref={cardRef}
-      className="flex flex-col w-full overflow-hidden rounded-xl bg-[#fafffe] dark:!bg-[#1F1925] border border-[#636565] dark:border-[#fafffe] shadow-lg hover:shadow-xl hover:border-[#9a19ff] dark:hover:border-[#9a19ff] transition-all duration-300 group animate-fade-in z-50"
+      className="flex flex-col w-full overflow-visible rounded-xl bg-[#fafffe] dark:!bg-[#1F1925] border border-[#636565] dark:border-[#fafffe] shadow-lg hover:shadow-xl hover:border-[#9a19ff] dark:hover:border-[#9a19ff] transition-all duration-300 group animate-fade-in z-50"
       onMouseEnter={() => !isInitialMessage && setShowButton(true)}
       onMouseLeave={() => !isInitialMessage && setShowButton(false)}
     >
@@ -118,13 +118,13 @@ export default function MessageCard({
       ) : (
         <>
           {/* Always show user message first */}
-          <div className="transition-all duration-300 transform hover:scale-[1.01]">
+          <div className="transition-all duration-300 overflow-hidden rounded-xl">
             <UserMessage message={userMessage} isInitialMessage={isInitialMessage} />
           </div>
 
           {/* If AI has replied, show agent message next */}
           {agentMessage && (
-            <div className="transition-all duration-300 transform hover:scale-[1.01]">
+            <div className="transition-all duration-300 overflow-hidden rounded-xl">
               <AgentMessage message={agentMessage} />
             </div>
           )}
@@ -151,14 +151,14 @@ export default function MessageCard({
               bottom: '-15px',
               zIndex: 9999,
             }}
+        >
+          <button
+            onClick={handleClick}
+            className="bg-gradient-to-r from-[#9a19ff] to-[#9a19ff] hover:from-[#9a19ff] hover:to-[#9a19ff] dark:from-[#9a19ff] dark:to-[#9a19ff] dark:hover:from-[#9a19ff] dark:hover:to-[#9a19ff] text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-xl dark:shadow-[#9a19ff]/20 dark:hover:shadow-[#9a19ff]/30 transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
           >
-            <button
-              onClick={handleClick}
-              className="bg-gradient-to-r from-[#9a19ff] to-[#9a19ff] hover:from-[#9a19ff] hover:to-[#9a19ff] dark:from-[#9a19ff] dark:to-[#9a19ff] dark:hover:from-[#9a19ff] dark:hover:to-[#9a19ff] text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-xl dark:shadow-[#9a19ff]/20 dark:hover:shadow-[#9a19ff]/30 transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
-            >
-              <BiMessageRoundedDots />
-              <span>Ask a follow up question</span>
-            </button>
+            <BiMessageRoundedDots />
+            <span>Ask a follow up question</span>
+          </button>
           </div>
         )}
     </div>

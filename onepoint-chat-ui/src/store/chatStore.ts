@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { fetchRelatedTopics } from '../lib/apiClient';
 import { INITIAL_MESSAGE, LOCAL_STORAGE_KEYS } from '../lib/constants';
 import { clearChatData } from '../lib/persistence';
+import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 import { ChatStore, TopicActionPayload } from '../type/chatStore';
 import { Message, Question, Topic, Topics } from '../type/types';
 import { exportChatToPDFApi } from '../utils/exportChat';
@@ -149,14 +150,52 @@ const useChatStore = create<ChatStore>()(
         get().handleTopicAction({ type: 'question', question });
       },
 
+      generateShareableId: async (userId?: string | null, anonymousId?: string | null): Promise<boolean> => {
+        const conversationId = localStorage.getItem(LOCAL_STORAGE_KEYS.CONVERSATION_ID);
+        const { messages } = get();
+        const shareable = messages.filter(m => !m.text.includes(INITIAL_MESSAGE));
+        if (!conversationId || shareable.length < 2) return false;
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (userId) headers['x-user-id'] = userId;
+        if (anonymousId) headers['anonymousid'] = anonymousId;
+        const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/share/create`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ conversationId, type: 'full' }),
+        });
+        if (!response.ok) return false;
+        const { token } = await response.json();
+        const url = `${window.location.origin}/share/${token}`;
+        handleCopyToClipboard({ text: url });
+        return true;
+      },
+
+      generateThreadShareableId: async (messageId: string, userId?: string | null, anonymousId?: string | null): Promise<boolean> => {
+        const conversationId = localStorage.getItem(LOCAL_STORAGE_KEYS.CONVERSATION_ID);
+        if (!conversationId) return false;
+        const { messages } = get();
+        const message = messages.find(m => m.messageId === messageId);
+        if (!message || message.type !== 'agent') return false;
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (userId) headers['x-user-id'] = userId;
+        if (anonymousId) headers['anonymousid'] = anonymousId;
+        const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/share/create`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ conversationId, type: 'thread', messageId }),
+        });
+        if (!response.ok) return false;
+        const { token } = await response.json();
+        const url = `${window.location.origin}/share/${token}`;
+        handleCopyToClipboard({ text: url });
+        return true;
+      },
+
       handleRestart: () => {
         localStorage.removeItem(LOCAL_STORAGE_KEYS.OSCA_STORE);
         clearChatData();
         window.location.reload();
-
-        set(() => ({
-          ...newChat(),
-        }));
+        set(() => ({ ...newChat() }));
       },
 
       exportChatToPDF: async (filename?: string) => {

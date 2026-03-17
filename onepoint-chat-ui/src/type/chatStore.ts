@@ -54,6 +54,8 @@ export interface ChatStore {
   handleClick: () => void;
   handleSubmit: (text: string) => void;
   handleQuestionClick: (question: Question) => void;
+  generateShareableId: (userId?: string | null, anonymousId?: string | null) => Promise<boolean>;
+  generateThreadShareableId: (messageId: string, userId?: string | null, anonymousId?: string | null) => Promise<boolean>;
   handleRestart: () => void;
   exportChatToPDF: (filename?: string) => Promise<void>;
   toggleFloatingChat: () => void;

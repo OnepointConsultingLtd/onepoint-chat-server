@@ -13,7 +13,7 @@ export default function TopicButton({ topic, index, onTopicClick }: TopicButtonP
     <button
       key={'name' in topic ? topic.name : topic.label || index}
       onClick={() => onTopicClick(topic)}
-      className={`group relative bg-[#fafffe] dark:!bg-[#1F1925] p-3 rounded-xl border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] transition-all duration-200 hover:shadow-md active:scale-95`}
+      className={`group relative bg-[#fafffe] dark:!bg-[#1F1925] p-3 rounded dark:hover:border-[#9a19ff] transition-all duration-200 hover:shadow-md active:scale-95`}
     >
       {/* Content */}
       <div className="flex items-center">

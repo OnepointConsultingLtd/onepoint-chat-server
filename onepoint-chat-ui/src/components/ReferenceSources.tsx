@@ -20,7 +20,7 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
   return (
     <>
       <div className="mt-2">
-        <div className="border border-[#636565] dark:border-[#fafffe] rounded-lg overflow-hidden bg-[#fafffe] dark:!bg-[#1F1925]/50 shadow-sm hover:shadow-md hover:border-[#9a19ff] dark:hover:border-[#9a19ff] transition-shadow duration-300">
+        <div className="border border-[#636565] dark:border-[#fafffe] rounded overflow-hidden bg-[#fafffe] dark:!bg-[#1F1925]/50 shadow-sm hover:shadow-md hover:border-[#9a19ff] dark:hover:border-[#9a19ff] transition-shadow duration-300">
           <button
             className="w-full flex items-center cursor-pointer justify-between p-3 sm:p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-all duration-300 group"
             onClick={toggleAccordion}
@@ -64,7 +64,7 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
                       {index + 1}
                     </span>
                     <div className="flex-1 min-w-0 pt-0.5">
-                      <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-[#70389b] hover:text-[#9a19ff] dark:text-[#8852b2] dark:hover:text-[#9a19ff] group-hover:!underline group-hover:!text-[#9a19ff] dark:group-hover:!text-[#9a19ff]">{source.title}</a>
+                      <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-[#5a4d6e] hover:text-[#6b5b7a] dark:text-[#9d4dff] dark:hover:text-[#ed9cffee] hover:underline">{source.title}</a>
                     </div>
                   </div>
                 ))}

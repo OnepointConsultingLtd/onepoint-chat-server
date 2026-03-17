@@ -26,10 +26,5 @@ export function useUserContext() {
     anonymousId: anonymousIdRef.current,
   };
   
-  // Log when values change
-  useEffect(() => {
-    console.log(`[useUserContext] Returned values - userId: ${result.userId}, anonymousId: ${result.anonymousId}, isSignedIn: ${result.isSignedIn}`);
-  }, [result.userId, result.anonymousId, result.isSignedIn]);
-
   return result;
 }

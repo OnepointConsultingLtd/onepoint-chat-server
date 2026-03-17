@@ -152,7 +152,7 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
               </div>
 
               {/* Topic Cards Grid */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2">
                 {renderTopics?.map((topic, index) => (
                   <TopicButton
                     key={'name' in topic ? topic.name : topic.label || index}

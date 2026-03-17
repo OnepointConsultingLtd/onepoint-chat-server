@@ -2,7 +2,7 @@ import { PROJECT_INFO } from '../../lib/constants';
 import { Message } from '../../type/types';
 import BaseMessage from './BaseMessage';
 
-export default function AgentMessage({ message }: { message: Message }) {
+export default function AgentMessage({ message, readOnly }: { message: Message; readOnly?: boolean }) {
   const header = (
     <div className="flex items-center">
       <div className="text-xs font-medium text-[#9a19ff] dark:!text-[#9a19ff] uppercase tracking-wider">
@@ -14,5 +14,5 @@ export default function AgentMessage({ message }: { message: Message }) {
     </div>
   );
 
-  return <BaseMessage message={message} header={header} />;
+  return <BaseMessage message={message} header={header} readOnly={readOnly} />;
 }

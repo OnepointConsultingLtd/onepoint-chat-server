@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './index.tsx';
 import Test from './test.tsx';
+import SharePage from './components/SharePage';
 import { ClerkProvider } from '@clerk/clerk-react'
 
 // Import your Publishable Key
@@ -14,11 +15,11 @@ if (!PUBLISHABLE_KEY) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {/* <Userback accessToken="A-oP0EhRGrso4PR7ClnvRv1yNA0" /> */}
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/share/:token" element={<SharePage />} />
           <Route path="/test" element={<Test />} />
         </Routes>
       </BrowserRouter>

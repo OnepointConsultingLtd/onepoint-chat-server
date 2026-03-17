@@ -1,5 +1,7 @@
+import crypto from "crypto";
 import express, { RequestHandler } from "express";
 import { getChatHistory, getChatHistoryWithMetadata, getCollection, formatConversationHistory, extractUserMessageContent, deleteConversation } from "./handleApi";
+import { getSharesCollection } from "./mongoClient";
 import type { MongoConversation } from "../types";
 import { isWelcomeMessage } from "../utils/isWelcomeMessage";
 import { getVerifiedUserId } from "./verifyClerkAuth";
@@ -42,6 +44,7 @@ app.get("/api/chat/:conversationId", (async (req, res) => {
   }
 }) as RequestHandler);
 
+// Get reference sources for a specific message
 app.get("/api/chat/:conversationId/message/:messageId/references", (async (req, res) => {
   try {
     const { conversationId, messageId } = req.params;
@@ -66,109 +69,117 @@ app.get("/api/chat/:conversationId/message/:messageId/references", (async (req, 
   }
 }) as RequestHandler);
 
-app.get("/api/chat/share/:conversationId", (async (req, res) => {
+// Token-based share (new) - must be before :conversationId to avoid conflict
+app.post("/api/chat/share/create", (async (req, res) => {
   try {
-    const { conversationId } = req.params;
-    const collection = await getCollection();
-
-    // Get the full conversation document
-    const conversation = await collection.findOne({ conversationId });
-    if (!conversation) {
-      return res.status(404).json({ error: "Conversation not found" });
+    const userId = req.headers["x-user-id"] as string | undefined;
+    const anonymousId = req.headers["anonymousid"] as string | undefined;
+    if (!userId && !anonymousId) {
+      return res.status(401).json({ error: "x-user-id or anonymousId header required" });
     }
-
-    const formattedHistory = formatConversationHistory(conversation as unknown as MongoConversation);
-
-    const shareData = {
-      messages: formattedHistory.map((msg: { id?: string; role: string; content: string; referenceSources?: unknown[] }) => ({
-        id: msg.id || `${conversationId}-${msg.role}-${Date.now()}`,
-        text: msg.content,
-        type: msg.role === 'user' ? 'user' : 'agent',
-        timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
-        conversationId: conversation.conversationId,
-        sessionId: conversation.conversationId,
-        referenceSources: msg.referenceSources,
-      })),
-      conversationId: conversation.conversationId,
-    };
-
-    res.json(shareData);
+    const { conversationId, type, messageId } = req.body;
+    if (!conversationId || !type) {
+      return res.status(400).json({ error: "conversationId and type required" });
+    }
+    if (type !== "full" && type !== "thread") {
+      return res.status(400).json({ error: "type must be 'full' or 'thread'" });
+    }
+    if (type === "thread" && !messageId) {
+      return res.status(400).json({ error: "messageId required for thread share" });
+    }
+    const token = crypto.randomBytes(9).toString("base64url").slice(0, 12);
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const sharesCollection = await getSharesCollection();
+    await sharesCollection.createIndex({ token: 1 }, { unique: true });
+    await sharesCollection.insertOne({
+      token,
+      type,
+      conversationId,
+      ...(type === "thread" && { messageId }),
+      ...(userId && { userId }),
+      createdAt: now,
+      expiresAt,
+    });
+    res.json({ token });
   } catch (error: any) {
-    console.error("Error fetching shared chat:", error.message);
-    res.status(500).json({ error: "Failed to fetch shared chat" });
+    console.error("Error creating share:", error.message);
+    res.status(500).json({ error: "Failed to create share" });
   }
 }) as RequestHandler);
 
-
-app.get("/api/chat/thread-share/:messageId", (async (req, res) => {
+// Get share by token
+app.get("/api/chat/share/token/:token", (async (req, res) => {
   try {
+    const { token } = req.params;
+    const sharesCollection = await getSharesCollection();
+    const share = await sharesCollection.findOne({ token });
+    if (!share) {
+      return res.status(404).json({ error: "Share not found" });
+    }
+    if (new Date() > share.expiresAt) {
+      return res.status(410).json({ error: "Share expired" });
+    }
     const collection = await getCollection();
-
-    const messageId = req.params.messageId;
-
-    const conversation = await collection.findOne({
-      "chatHistory.messageId": messageId
-    });
-
+    if (share.type === "full") {
+      const conversation = await collection.findOne({ conversationId: share.conversationId });
+      if (!conversation) {
+        return res.status(404).json({ error: "Conversation not found" });
+      }
+      const formattedHistory = formatConversationHistory(conversation as unknown as MongoConversation);
+      const filteredHistory = formattedHistory.filter(
+        (msg: { role: string; content?: string }) => !(msg.role === "assistant" && isWelcomeMessage(msg.content))
+      );
+      const messages = filteredHistory.map((msg: { id?: string; role: string; content: string; referenceSources?: unknown[] }) => ({
+        id: msg.id || `${share.conversationId}-${msg.role}-${Date.now()}`,
+        text: msg.content,
+        type: msg.role === "user" ? "user" : "agent",
+        timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
+        referenceSources: msg.referenceSources,
+      }));
+      return res.json({ type: "full", messages, conversationId: share.conversationId });
+    }
+    // type === 'thread'
+    const conversation = await collection.findOne({ "chatHistory.messageId": share.messageId });
     if (!conversation) {
       return res.status(404).json({ error: "Conversation not found" });
     }
-
-
-    // Filter out system messages and welcome message
     const chatHistory = conversation.chatHistory.filter((msg: { role: string; content?: string }) => {
       if (msg.role === "system") return false;
       if (msg.role === "assistant" && isWelcomeMessage(msg.content)) return false;
       return true;
     });
-
-    const messageIndex = chatHistory.findIndex((msg: { messageId?: string }) => msg.messageId === messageId);
+    const messageIndex = chatHistory.findIndex((msg: { messageId?: string }) => msg.messageId === share.messageId);
     if (messageIndex === -1) {
-      return res.status(404).json({ error: "Message not found or is not shareable" });
+      return res.status(404).json({ error: "Message not found" });
     }
-
-    type MessagePair = { id?: string; role: string; content: string; referenceSources?: unknown[] };
-    const messagePair: MessagePair[] = [];
     const targetMessage = chatHistory[messageIndex];
-
-    if (targetMessage.role === 'assistant') {
-      // Get previous user message + this assistant message
-      if (messageIndex - 1 >= 0 && chatHistory[messageIndex - 1].role === 'user') {
-        messagePair.push(chatHistory[messageIndex - 1]); // User message first
+    const messagePair: { id?: string; role: string; content: string; referenceSources?: unknown[] }[] = [];
+    if (targetMessage.role === "assistant") {
+      if (messageIndex - 1 >= 0 && chatHistory[messageIndex - 1].role === "user") {
+        messagePair.push(chatHistory[messageIndex - 1]);
       }
-      messagePair.push(targetMessage); // Assistant message second
-    } else if (targetMessage.role === 'user') {
-      // Get this user message + next assistant message
-      messagePair.push(targetMessage); // User message first
-      if (messageIndex + 1 < chatHistory.length && chatHistory[messageIndex + 1].role === 'assistant') {
-        messagePair.push(chatHistory[messageIndex + 1]); // Assistant message second
+      messagePair.push(targetMessage);
+    } else if (targetMessage.role === "user") {
+      messagePair.push(targetMessage);
+      if (messageIndex + 1 < chatHistory.length && chatHistory[messageIndex + 1].role === "assistant") {
+        messagePair.push(chatHistory[messageIndex + 1]);
       }
-    } else {
-      // If somehow we get a non-user/assistant message, return error
-      return res.status(400).json({ error: "Share is only available for user and assistant messages" });
     }
-
     if (messagePair.length === 0) {
       return res.status(404).json({ error: "No shareable message pair found" });
     }
-
-
-    const shareData = {
-      messages: messagePair.map((msg: MessagePair) => ({
-        text: extractUserMessageContent(msg.content),
-        type: msg.role === 'user' ? 'user' : 'agent',
-        timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
-        conversationId: conversation.conversationId,
-        messageId: msg.id,
-        referenceSources: msg.referenceSources,
-      })),
-      conversationId: conversation.conversationId,
-    };
-
-    res.json(shareData);
+    const messages = messagePair.map((msg: { id?: string; role: string; content: string; referenceSources?: unknown[] }) => ({
+      id: msg.id,
+      text: extractUserMessageContent(msg.content),
+      type: msg.role === "user" ? "user" : "agent",
+      timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
+      referenceSources: msg.referenceSources,
+    }));
+    return res.json({ type: "thread", messages, conversationId: conversation.conversationId });
   } catch (error: any) {
-    console.error("Error fetching shared message pair:", error.message);
-    res.status(500).json({ error: "Failed to fetch shared message pair" });
+    console.error("Error fetching share by token:", error.message);
+    res.status(500).json({ error: "Failed to fetch share" });
   }
 }) as RequestHandler);
 

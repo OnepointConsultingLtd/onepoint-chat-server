@@ -63,3 +63,4 @@ export function clearChatData() {
   localStorage.removeItem(PersistenceKeys.HAS_ACTIVE_CHAT);
   clearThreadData();
 }
+

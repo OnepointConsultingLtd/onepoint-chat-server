@@ -329,7 +329,7 @@ export function useChat() {
       // Don't reset barrier on cleanup - let it persist to prevent rapid reconnections
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRestarting]); // Only recreate on restart, not when userId/anonymousId changes
+  }, [isRestarting]);
 
   useEffect(() => {
     if (isThinking) {

@@ -6,6 +6,7 @@ import { FiCheck, FiShare2 } from 'react-icons/fi';
 import { MdOutlineRestartAlt, MdPictureAsPdf } from 'react-icons/md';
 import { useShallow } from 'zustand/react/shallow';
 import { useExport } from '../hooks/useExport';
+import { useUserContext } from '../hooks/useUserContext';
 import useChatStore from '../store/chatStore';
 import GradientButton, { MiniGradientButton } from './GradientButton';
 import SideBarButton from './SideBarButton';
@@ -14,8 +15,9 @@ import Toast from './Toast';
 
 export default function Header() {
   const { isSignedIn, isLoaded } = useUser();
+  const { userId, anonymousId } = useUserContext();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [copied] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [toast, setToast] = useState<{
     isVisible: boolean;
     message: string;
@@ -31,12 +33,14 @@ export default function Header() {
     handleRestart,
     isInitialMessage,
     exportChatToPDF,
+    generateShareableId,
   } = useChatStore(
     useShallow(state => ({
       messages: state.messages,
       handleRestart: state.handleRestart,
       isInitialMessage: state.isInitialMessage,
       exportChatToPDF: state.exportChatToPDF,
+      generateShareableId: state.generateShareableId,
     }))
   );
 
@@ -100,7 +104,13 @@ export default function Header() {
         {/* Share Button - Only show when signed in */}
         {hasConversation && (
           <GradientButton
-            onClick={() => {}}
+            onClick={async () => {
+              const ok = await generateShareableId(userId, anonymousId);
+              if (ok) {
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }
+            }}
             icon={copied ? <FiCheck className="text-green-600" /> : <FiShare2 />}
             title={copied ? 'URL copied!' : 'Share this conversation'}
           >

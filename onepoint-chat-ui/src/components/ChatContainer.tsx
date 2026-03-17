@@ -1,14 +1,14 @@
+import { useUser } from '@clerk/clerk-react';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useChat } from '../hooks/useChat';
 import { useIsMobile } from '../hooks/useIsMobile';
 import useChatStore from '../store/chatStore';
+import Disclaimer from './Disclaimer';
 import FloatingChatMain from './FloatingChat/FloatingChatMain';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Flow from './flow/Flow';
-import { useUser } from '@clerk/clerk-react';
-import Disclaimer from './Disclaimer';
 
 export default function ChatContainer() {
   const { messagesEndRef, handleSubmit, sendMessageToServer, continueConversation, deleteConversation } = useChat();
@@ -16,10 +16,9 @@ export default function ChatContainer() {
 
   const isMobile = useIsMobile();
 
-  const { setHandleSubmit, isInitialMessage } = useChatStore(
+  const { setHandleSubmit } = useChatStore(
     useShallow(state => ({
       setHandleSubmit: state.setHandleSubmit,
-      isInitialMessage: state.isInitialMessage,
     }))
   );
 
@@ -56,7 +55,7 @@ export default function ChatContainer() {
             sendMessageToServer={sendMessageToServer}
           />
         </div>
-        {!isInitialMessage && <Disclaimer />}
+        <Disclaimer />
 
       </div>
     </main>

@@ -187,12 +187,20 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
         {conversationHistoryState.map((conversation) => {
           const isSelected = conversation.conversationId === activeId;
           return (
-            <button
+            <div
               key={conversation.conversationId}
+              role="button"
+              tabIndex={0}
               onClick={() => handleConversationClick(conversation.conversationId)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleConversationClick(conversation.conversationId);
+                }
+              }}
               className={`cursor-pointer w-full text-left p-4 rounded-lg border transition-all duration-200 group ${isSelected
-                  ? 'border-[#9a19ff] dark:border-[#9a19ff] bg-[#f5f0ff] dark:bg-[#352840]'
-                  : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a1f35] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] hover:bg-gray-50 dark:hover:bg-[#352840]'
+                ? 'border-[#9a19ff] dark:border-[#9a19ff] bg-[#f5f0ff] dark:bg-[#352840]'
+                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a1f35] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] hover:bg-gray-50 dark:hover:bg-[#352840]'
                 }`}
             >
               <div className="flex items-start justify-between mb-2">
@@ -245,7 +253,7 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
                   </svg>
                 </div>
               </div>
-            </button>
+            </div>
           );
         })}
       </div>

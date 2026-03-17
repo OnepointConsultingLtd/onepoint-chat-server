@@ -145,9 +145,10 @@ export default function Flow({
   const isError = interceptServerError(messages);
 
   return (
-    <div style={{ height: '100%', width: '100%' }} className="bg-[#fafffe] dark:!bg-[#1F1925]">
+    <div style={{ height: '100%', width: '100%' }} className="bg-[#fafffe] dark:!bg-[#1F1925] flex flex-col">
+      <div className="flex-1 min-h-0 relative">
       {isError ? (
-        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center">
           <ErrorCard
             title="Connection Error"
             message="We were unable to connect to the server. Please check your internet connection or try again later."
@@ -170,6 +171,7 @@ export default function Flow({
           <Controls showInteractive={false} />
         </ReactFlow>
       )}
+      </div>
       <div ref={messagesEndRef} />
     </div>
   );

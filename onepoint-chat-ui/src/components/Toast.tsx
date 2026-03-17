@@ -25,7 +25,7 @@ export default function Toast({ message, type, isVisible, onClose, duration = 40
   if (!isVisible) return null;
 
   const baseClasses =
-    'fixed top-4 right-4 z-[9999] max-w-sm w-full bg-[#fafffe] rounded-lg shadow-lg border border-[#636565] dark:!bg-[#1F1925] dark:border-[#fafffe] transform transition-all duration-300 ease-in-out';
+    'fixed top-16 right-4 z-[9999] max-w-sm w-full bg-[#fafffe] rounded-lg shadow-lg border border-[#636565] dark:!bg-[#1F1925] dark:border-[#fafffe] transform transition-all duration-300 ease-in-out';
   const visibilityClasses = isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0';
 
   return (
