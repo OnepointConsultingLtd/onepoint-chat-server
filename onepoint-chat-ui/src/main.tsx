@@ -4,7 +4,10 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './index.tsx';
 import Test from './test.tsx';
 import SharePage from './components/SharePage';
-import { ClerkProvider } from '@clerk/clerk-react'
+import { ClerkProvider } from '@clerk/clerk-react';
+import { resolveOscaConfig } from './lib/resolveOscaConfig';
+
+resolveOscaConfig();
 
 // Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY

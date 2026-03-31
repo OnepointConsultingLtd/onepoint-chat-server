@@ -28,17 +28,8 @@
       var s = d.createElement('script'); s.async = true; s.src = 'https://static.userback.io/widget/v1.js'; (d.head || d.body).appendChild(s);
     })(document);
   </script>
-  <script>
-    const server = 'localhost';
-    const port = 4000;
-    const restPort = 5000;
-    const protocol = window.location.protocol;
-    const wsProtocol = protocol.includes('https') ? 'wss' : 'ws';
-    window.oscaConfig = {
-      websocketUrl: `${wsProtocol}://${server}:${port}`,
-      httpUrl: `${protocol}//${server}:${restPort}`,
-    };
-  </script>
+  <!-- Osca API URLs: resolved in src/lib/resolveOscaConfig.ts (query ?oscaHttp=&oscaWs=, VITE_OSCA_*, or defaults). -->
+  <!-- Optional embed: set before main — window.__OSCA_CONFIG__ = { httpUrl, websocketUrl }; -->
 
   <script type="module" src="/src/main.tsx"></script>
 </body>
