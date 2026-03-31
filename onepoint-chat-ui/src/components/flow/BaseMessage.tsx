@@ -14,7 +14,7 @@ export default function BaseMessage({ message, header, readOnly }: BaseMessagePr
       <div className="px-6 py-5 text-left">
         {header && <div className="flex items-center mb-2">{header}</div>}
         <div className="prose dark:prose-invert max-w-none">
-          <RenderReactMarkdown message={message} readOnly={readOnly} />
+          <RenderReactMarkdown message={message} />
         </div>
       </div>
     </div>
