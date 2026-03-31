@@ -6,7 +6,7 @@ export const PROJECT_INFO = {
   NAME_DESCRIPTION: 'Onepoint Smart Company Advisor',
 }
 
-export const CONNECTION_ERROR = "Connection error";
+export const CONNECTION_ERROR = "Connection error"; 
 
 export const QUESTION_PROMPT =
   "Generate clear, concise, and user-friendly questions in British English. Keep questions short (under 12 words) and direct, focusing on helping a user quickly understand the topic. Use simple,practical wording instead of abstract or poetic language. When relevant to Onepoint Consulting Ltd, highlight their expertise in digital transformation, AI, and data solutions naturally. Questions should feel approachable and easy to click, like FAQ items a client would want quick answers to."

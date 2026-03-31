@@ -57,8 +57,24 @@ export async function onepointCallback(
       return true;
     });
 
+  const messagesForLLM: ChatMessage[] = [
+    ...slicedHistory,
+    systemInstructions,
+    lastMessage,
+  ];
+
+  // TODO: remove after debugging
+  console.log(
+    "[OSCA DEBUG] Messages sent to LLM:",
+    JSON.stringify(messagesForLLM, null, 2),
+  );
+  console.log(
+    "[OSCA DEBUG] Current user message:",
+    lastMessage?.content ?? "",
+  );
+
   return {
-    chatHistory: [...slicedHistory, systemInstructions, lastMessage],
+    chatHistory: messagesForLLM,
     referenceSources,
   };
 }

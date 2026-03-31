@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow';
 import useChatStore from '../store/chatStore';
 import { ChatInputProps } from '../type/types';
 
-export default function ChatInput({ handleSubmit }: ChatInputProps) {
+export default function ChatInput({ handleSubmit, embedded = false }: ChatInputProps) {
   const [inputText, setInputText] = useState('');
 
   const { isThinking, setShowInput, isInitialMessage } = useChatStore(
@@ -16,7 +16,7 @@ export default function ChatInput({ handleSubmit }: ChatInputProps) {
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !isInitialMessage) {
+      if (e.key === 'Escape' && !isInitialMessage && !embedded) {
         setShowInput(false);
       }
     };
@@ -25,7 +25,7 @@ export default function ChatInput({ handleSubmit }: ChatInputProps) {
     return () => {
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [setShowInput, isInitialMessage]);
+  }, [setShowInput, isInitialMessage, embedded]);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,11 +40,13 @@ export default function ChatInput({ handleSubmit }: ChatInputProps) {
     [inputText]
   );
 
+  const useBottomBar = embedded || isInitialMessage;
+
   return (
     <div
-      className={`${!isInitialMessage ? 'flex flex-col md:fixed inset-0 justify-center items-center rounded-sm md:rounded-lg md:px-24 z-[85] w-full h-full' : 'bg-[#fafffe] p-3 border-t border-gray-200 dark:border-gray-700 dark:!bg-[#1F1925]'}`}
+      className={`${useBottomBar ? 'bg-[#fafffe] p-2 md:p-3 border-t border-gray-200 dark:border-gray-700 dark:!bg-[#1F1925]' : 'flex flex-col md:fixed inset-0 justify-center items-center rounded-sm md:rounded-lg md:px-24 z-[85] w-full h-full'}`}
     >
-      {!isInitialMessage && (
+      {!isInitialMessage && !embedded && (
         <div
           className="md:fixed inset-0 bg-[#fafffe]/50 dark:!bg-[#1F1925]/60 backdrop-blur-sm w-full h-full"
           onClick={() => setShowInput(false)}
@@ -58,7 +60,7 @@ export default function ChatInput({ handleSubmit }: ChatInputProps) {
               value={inputText}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputText(e.target.value)}
               placeholder="Type your message here..."
-              className="w-full p-2 pr-24 overflow-hidden transition-all duration-300 bg-[#fafffe] dark:!bg-[#1F1925] border-2 shadow-sm outline-none resize-none rounded-sm md:rounded-xl border-[#636565] dark:border-[#fafffe] focus:border-[#9a19ff] dark:focus:border-[#9a19ff] focus:ring-4 focus:ring-[#9a19ff]/20 dark:focus:ring-[#9a19ff]/50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:!text-[#fafffe] placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full text-sm md:text-lg p-2 pr-24 overflow-hidden transition-all duration-300 bg-[#fafffe] dark:!bg-[#1F1925] border-2 shadow-sm outline-none resize-none rounded border-[#636565] dark:border-[#fafffe] focus:border-[#9a19ff] dark:focus:border-[#9a19ff] focus:ring-4 focus:ring-[#9a19ff]/20 dark:focus:ring-[#9a19ff]/50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:!text-[#fafffe] placeholder-gray-500 dark:placeholder-gray-400"
               disabled={isThinking}
               style={textareaStyle}
               onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {

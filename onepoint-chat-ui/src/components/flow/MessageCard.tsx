@@ -146,19 +146,18 @@ export default function MessageCard({
         isLastCard &&
         (
           <div
-            className="fixed left-1/2 transform -translate-x-1/2 transition-all duration-300 opacity-0 group-hover:opacity-100 animate-fade-up"
+            className="fixed z-[9999]! left-1/2 transform -translate-x-1/2 transition-all duration-300 opacity-0 group-hover:opacity-100 animate-fade-up"
             style={{
               bottom: '-15px',
-              zIndex: 9999,
             }}
-        >
-          <button
-            onClick={handleClick}
-            className="bg-gradient-to-r from-[#9a19ff] to-[#9a19ff] hover:from-[#9a19ff] hover:to-[#9a19ff] dark:from-[#9a19ff] dark:to-[#9a19ff] dark:hover:from-[#9a19ff] dark:hover:to-[#9a19ff] text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-xl dark:shadow-[#9a19ff]/20 dark:hover:shadow-[#9a19ff]/30 transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
           >
-            <BiMessageRoundedDots />
-            <span>Ask a follow up question</span>
-          </button>
+            <button
+              onClick={handleClick}
+              className="bg-gradient-to-r from-[#9a19ff] to-[#9a19ff] hover:from-[#9a19ff] hover:to-[#9a19ff] dark:from-[#9a19ff] dark:to-[#9a19ff] dark:hover:from-[#9a19ff] dark:hover:to-[#9a19ff] text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-xl dark:shadow-[#9a19ff]/20 dark:hover:shadow-[#9a19ff]/30 transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
+            >
+              <BiMessageRoundedDots />
+              <span>Ask a follow up question</span>
+            </button>
           </div>
         )}
     </div>

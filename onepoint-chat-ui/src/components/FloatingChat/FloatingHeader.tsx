@@ -86,90 +86,89 @@ export default function FloatingHeader() {
             {/* Share Button - Only show when signed in */}
             {isLoaded && isSignedIn && hasConversation && (
               <button
-                onClick={() => {}}
-                  className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
-                  title={copied ? 'URL copied!' : 'Share this conversation'}
-                >
-                  {copied ? (
-                    <FiCheck className="w-4 h-4 text-green-600" />
-                  ) : (
-                    <FiShare2 className="w-4 h-4" />
-                  )}
-                </button>
-              )}
-
-              <button
-                onClick={handleRestart}
+                onClick={() => { }}
                 className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
-                title="Start new chat"
+                title={copied ? 'URL copied!' : 'Share this conversation'}
               >
-                <MdOutlineRestartAlt />
-                <span className="text-xs hidden sm:block">New</span>
+                {copied ? (
+                  <FiCheck className="w-4 h-4 text-green-600" />
+                ) : (
+                  <FiShare2 className="w-4 h-4" />
+                )}
               </button>
+            )}
 
-              {/* Export Button - Only show when signed in */}
-              {isLoaded && isSignedIn && hasConversation && (
-                <div className="relative">
-                  <button
-                    onClick={() => setShowDropdown(!showDropdown)}
-                    className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
-                    title="Export conversation"
-                  >
-                    <CiExport className="w-4 h-4" />
-                  </button>
+            <button
+              onClick={handleRestart}
+              className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
+              title="Start new chat"
+            >
+              <MdOutlineRestartAlt />
+            </button>
 
-                  {showDropdown && (
-                    <>
-                      {/* Dropdown menu */}
-                      {/* center from left and right */}
-                      <div className="absolute mt-2 w-fit md:w-40 bg-[#fafffe] dark:!bg-[#1F1925] rounded-lg shadow-lg z-40 border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] overflow-hidden transform left-1/2 -translate-x-1/2">
-                        <button
-                          onClick={() => handleExport('markdown')}
-                          className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-[#2a1f35] transition-colors text-gray-700 dark:!text-[#fafffe] hover:text-[#9a19ff]"
-                        >
-                          <FaMarkdown className="w-4 h-4 mr-2" />
-                          Markdown
-                        </button>
-                        <button
-                          onClick={() => handleExport('pdf')}
-                          disabled={isExportingPdf}
-                          className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-[#2a1f35] transition-colors disabled:opacity-50 text-gray-700 dark:!text-[#fafffe] hover:text-[#9a19ff]"
-                        >
-                          <MdPictureAsPdf className="w-4 h-4 mr-2" />
-                          {isExportingPdf ? 'Generating...' : 'PDF'}
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
+            {/* Export Button - Only show when signed in */}
+            {isLoaded && isSignedIn && hasConversation && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
+                  title="Export conversation"
+                >
+                  <CiExport className="w-4 h-4" />
+                </button>
 
-              {/* Login Button - Show when not signed in */}
-              {isLoaded && !isSignedIn && (
-                <SignInButton mode="modal">
-                  <button
-                    className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
-                    title="Sign in"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                      />
-                    </svg>
-                    <span className="text-xs hidden sm:inline ml-1">Sign In</span>
-                  </button>
-                </SignInButton>
-              )}
+                {showDropdown && (
+                  <>
+                    {/* Dropdown menu */}
+                    {/* center from left and right */}
+                    <div className="absolute mt-2 w-fit md:w-40 bg-[#fafffe] dark:!bg-[#1F1925] rounded-lg shadow-lg z-40 border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] overflow-hidden transform left-1/2 -translate-x-1/2">
+                      <button
+                        onClick={() => handleExport('markdown')}
+                        className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-[#2a1f35] transition-colors text-gray-700 dark:!text-[#fafffe] hover:text-[#9a19ff]"
+                      >
+                        <FaMarkdown className="w-4 h-4 mr-2" />
+                        Markdown
+                      </button>
+                      <button
+                        onClick={() => handleExport('pdf')}
+                        disabled={isExportingPdf}
+                        className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-[#2a1f35] transition-colors disabled:opacity-50 text-gray-700 dark:!text-[#fafffe] hover:text-[#9a19ff]"
+                      >
+                        <MdPictureAsPdf className="w-4 h-4 mr-2" />
+                        {isExportingPdf ? 'Generating...' : 'PDF'}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
 
-              {/* User Button - Show when signed in */}
-              {isLoaded && isSignedIn && (
-                <div className="flex items-center">
-                  <UserButton />
-                </div>
-              )}
+            {/* Login Button - Show when not signed in */}
+            {isLoaded && !isSignedIn && (
+              <SignInButton mode="modal">
+                <button
+                  className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
+                  title="Sign in"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  <span className="text-xs hidden sm:inline ml-1">Sign In</span>
+                </button>
+              </SignInButton>
+            )}
+
+            {/* User Button - Show when signed in */}
+            {isLoaded && isSignedIn && (
+              <div className="flex items-center">
+                <UserButton />
+              </div>
+            )}
           </>
         </div>
 

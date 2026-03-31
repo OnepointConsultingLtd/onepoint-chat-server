@@ -112,6 +112,7 @@ export type RelatedTopicsBody = {
   text?: string;
   topics_prompt?: string;
   deduplicate_topics?: boolean;
+  engine?: string;
   random_walk_parameters?: {
     samples: number;
     path_length: number;
@@ -132,6 +133,8 @@ export type TopicQuestionsResponse = {
 
 
 export type ChatInputProps = {
-  handleSubmit: (text: string) => void
+  handleSubmit: (text: string) => void;
+  /** Use bottom bar only (no modal overlay). Required for mobile floating chat. */
+  embedded?: boolean;
 };
 

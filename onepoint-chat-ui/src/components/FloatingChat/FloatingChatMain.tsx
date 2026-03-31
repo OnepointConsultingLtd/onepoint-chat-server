@@ -341,12 +341,12 @@ export default function FloatingChatMain({
 
       {/* ── CHAT OVERLAY ─────────────────────────────────────────────── */}
       {isFloatingOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-[#fafffe] dark:!bg-[#1F1925]">
+        <div className="fixed inset-0 z-50 flex min-h-0 flex-col bg-[#fafffe] dark:!bg-[#1F1925]">
           <FloatingHeader />
 
-          <div className="flex-1 overflow-y-auto bg-[#fafffe] dark:!bg-[#1F1925]">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#fafffe] dark:!bg-[#1F1925]">
             {isError ? (
-              <div className="flex items-center justify-center h-full p-6">
+              <div className="flex h-full items-center justify-center p-6">
                 <ErrorCard
                   title="Connection Error"
                   message="We were unable to connect to the server. Please check your internet connection or try again later."
@@ -360,8 +360,8 @@ export default function FloatingChatMain({
             )}
           </div>
 
-          <div className="bg-[#fafffe] dark:!bg-[#1F1925] border-t border-gray-200 dark:border-gray-700">
-            <ChatInput handleSubmit={handleSubmit} />
+          <div className="shrink-0 border-t border-gray-200 bg-[#fafffe] pb-[env(safe-area-inset-bottom)] dark:border-gray-700 dark:!bg-[#1F1925]">
+            <ChatInput handleSubmit={handleSubmit} embedded />
           </div>
         </div>
       )}

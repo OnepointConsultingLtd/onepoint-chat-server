@@ -340,9 +340,7 @@ export function useChat() {
   // Auto-reload page when connection is lost (only once)
   useEffect(() => {
     if (connectionLost && !reloadAttemptedRef.current) {
-      reloadAttemptedRef.current = true;
-      console.log('Connection lost - reloading page in 2 seconds...');
-      
+      reloadAttemptedRef.current = true;      
       // Reset barrier before reload to allow reconnection
       window.barrier = false;
       

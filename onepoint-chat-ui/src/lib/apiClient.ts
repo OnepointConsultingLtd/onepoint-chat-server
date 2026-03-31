@@ -22,6 +22,7 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
     text: text.trim() || '',
     topics_prompt: TOPICS_PROMPT,
     deduplicate_topics: false,
+    engine: PROJECT_CONFIG.ENGINE,
     random_walk_parameters: {
       samples: 50000,
       path_length: 5,

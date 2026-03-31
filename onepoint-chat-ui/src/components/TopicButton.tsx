@@ -2,38 +2,29 @@ import { TopicOrQuestion } from '../type/types';
 
 interface TopicButtonProps {
   topic: TopicOrQuestion;
-  index: number;
   onTopicClick: (topic: TopicOrQuestion) => void;
 }
 
-export default function TopicButton({ topic, index, onTopicClick }: TopicButtonProps) {
+export default function TopicButton({ topic, onTopicClick }: TopicButtonProps) {
   const topicName = 'name' in topic ? topic.name : (topic.label || topic.text);
 
   return (
     <button
-      key={'name' in topic ? topic.name : topic.label || index}
+      type="button"
       onClick={() => onTopicClick(topic)}
-      className={`group relative bg-[#fafffe] dark:!bg-[#1F1925] p-3 rounded dark:hover:border-[#9a19ff] transition-all duration-200 hover:shadow-md active:scale-95`}
+      className="group flex min-h-[44px] w-full items-center gap-2 rounded-md border border-transparent bg-[#fafffe] px-2.5 py-2 text-left transition-colors active:bg-[#9a19ff]/10 dark:bg-[#2a2235] dark:active:bg-[#9a19ff]/20"
     >
-      {/* Content */}
-      <div className="flex items-center">
-        <div className="flex-1 text-left min-w-0">
-          <h4
-            className={`font-medium text-gray-700 dark:!text-[#fafffe] group-hover:text-[#9a19ff] dark:group-hover:text-[#9a19ff] text-sm leading-tight truncate`}
-          >
-            {topicName}
-          </h4>
-        </div>
-        <div className="flex-shrink-0 ml-2">
-          <div
-            className={`w-4 h-4 text-gray-700 dark:!text-[#fafffe] group-hover:text-[#9a19ff] dark:group-hover:text-[#9a19ff] opacity-50 group-hover:opacity-80 transition-opacity`}
-          >
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-full h-full">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </div>
-        </div>
-      </div>
+      <span className="min-w-0 flex-1 text-[13px] leading-snug text-slate-700 line-clamp-2 dark:text-[#e8e4ef] sm:text-sm">
+        {topicName}
+      </span>
+      <span
+        className="shrink-0 text-slate-400 transition-colors group-hover:text-[#9a19ff] dark:text-slate-500 dark:group-hover:text-[#c084fc]"
+        aria-hidden
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-4 w-4">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </span>
     </button>
   );
 }

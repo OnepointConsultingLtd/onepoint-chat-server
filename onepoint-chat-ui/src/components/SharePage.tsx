@@ -84,13 +84,13 @@ export default function SharePage() {
   return (
     <div className="min-h-screen bg-[#fafffe] dark:bg-[#1F1925] flex flex-col">
       <header className="px-6 py-4 border-b border-gray-200 dark:border-[#352840]">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-center">
           <span className="text-lg font-semibold text-gray-800 dark:text-[#fafffe]">{PROJECT_INFO.NAME}</span>
           <span className="text-sm text-gray-500 dark:text-gray-400">{PROJECT_INFO.NAME_DESCRIPTION}</span>
         </div>
       </header>
 
-      <div className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 bg-gray-100/80 dark:bg-[#2a1f35]/80 border-b border-gray-200 dark:border-[#352840]">
+      <div className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 bg-gray-100/80 dark:bg-[#2a1f35]/80 border-b border-gray-200 dark:border-[#352840] text-center">
         {bannerText}
       </div>
 
@@ -101,9 +101,7 @@ export default function SharePage() {
             className="rounded-xl overflow-hidden border border-[#636565] dark:border-[#fafffe] bg-[#fafffe] dark:bg-[#1F1925]"
           >
             <div className="px-6 py-5">
-              <div className="text-xs font-medium text-[#9a19ff] dark:!text-[#9a19ff] uppercase tracking-wider mb-2">
-                {msg.type === 'user' ? 'You' : PROJECT_INFO.NAME}
-              </div>
+
               {msg.type === 'user' ? (
                 <div className="text-gray-800 dark:text-[#fafffe] whitespace-pre-wrap">{msg.text}</div>
               ) : (
@@ -134,7 +132,7 @@ export default function SharePage() {
         ))}
       </main>
 
-      <div className="p-6 border-t border-gray-200 dark:border-[#352840] flex justify-center">
+      <div className="p-6 border-t border-gray-200 dark:border-[#352840] flex justify-center fixed bottom-0 left-0 right-0">
         <Link
           to="/"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#9a19ff] text-white font-medium hover:opacity-90 transition-opacity"
