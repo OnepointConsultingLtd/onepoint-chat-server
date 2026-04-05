@@ -5,29 +5,51 @@ import { useShallow } from 'zustand/react/shallow';
 import useDelayedVisible from '../hooks/useDelayedVisible';
 import { PROJECT_INFO } from '../lib/constants';
 import useChatStore from '../store/chatStore';
+import { useEffect, useState } from 'react';
+
+const MESSAGES = {
+  initial: [
+    { title: 'Processing your request...', subtitle: 'Gathering context and preparing an intelligent response.' },
+    { title: 'On it...', subtitle: 'Spinning up the thinking machine. Should be just a moment.' },
+    { title: 'Let me think...', subtitle: 'Connecting the dots so you don\'t have to.' },
+    { title: 'Working on it...', subtitle: 'Good things take a second. This is one of them.' },
+    { title: 'Loading brilliance...', subtitle: 'Assembling neurons. Virtually, of course.' },
+    { title: 'Thinking cap: on.', subtitle: 'Give me just a sec to get this right.' },
+    { title: 'Crunching away...', subtitle: 'The hamsters are running. Please hold.' },
+  ],
+  step1: [
+    { title: 'Analyzing deeper patterns...', subtitle: 'Reviewing data, comparing possibilities, and aligning conclusions.' },
+    { title: 'Going deeper...', subtitle: 'This needs a bit more thought. Worth it, promise.' },
+    { title: 'Digging in...', subtitle: 'Peeling back the layers. Almost there.' },
+    { title: 'Cross-referencing...', subtitle: 'Making sure I get this exactly right for you.' },
+    { title: 'Connecting the dots...', subtitle: 'A few more seconds and this will all make sense.' },
+  ],
+  step2: [
+    { title: 'Umm...', subtitle: 'This one\'s taking a bit longer than my ego expected. Hang tight.' },
+    { title: 'Still here...', subtitle: 'Just making absolutely sure this is worth the wait. It will be.' },
+    { title: 'Big question, this one.', subtitle: 'Taking my time so I don\'t embarrass myself.' },
+    { title: 'Almost, almost...', subtitle: 'Definitely not frozen. Definitely thinking very hard.' },
+    { title: 'Bear with me...', subtitle: 'This is either very complex or I\'m being thorough. Let\'s say both.' },
+  ],
+};
+
+const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
 export default function ThinkingIndicator() {
   const { isThinking } = useChatStore(useShallow(state => ({ isThinking: state.isThinking })));
   const delayedMessages = useDelayedVisible(isThinking);
+  const [message, setMessage] = useState(() => pick(MESSAGES.initial));
 
-  const getMessage = () => {
-    if (delayedMessages.step2)
-      return {
-        title: 'Umm...',
-        subtitle: 'This one’s taking a bit longer than my ego expected. Hang tight.',
-      };
-    if (delayedMessages.step1)
-      return {
-        title: 'Analyzing deeper patterns...',
-        subtitle: 'Reviewing data, comparing possibilities, and aligning conclusions.',
-      };
-    return {
-      title: 'Processing your request...',
-      subtitle: 'Gathering context and preparing an intelligent response.',
-    };
-  };
+  useEffect(() => {
+    if (!isThinking) return;
+    // Pick a fresh initial message each time thinking starts
+    setMessage(pick(MESSAGES.initial));
+  }, [isThinking]);
 
-  const message = getMessage();
+  useEffect(() => {
+    if (delayedMessages.step2) setMessage(pick(MESSAGES.step2));
+    else if (delayedMessages.step1) setMessage(pick(MESSAGES.step1));
+  }, [delayedMessages.step1, delayedMessages.step2]);
 
   return (
     <AnimatePresence>
