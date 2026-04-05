@@ -63,16 +63,6 @@ export async function onepointCallback(
     lastMessage,
   ];
 
-  // TODO: remove after debugging
-  console.log(
-    "[OSCA DEBUG] Messages sent to LLM:",
-    JSON.stringify(messagesForLLM, null, 2),
-  );
-  console.log(
-    "[OSCA DEBUG] Current user message:",
-    lastMessage?.content ?? "",
-  );
-
   return {
     chatHistory: messagesForLLM,
     referenceSources,
