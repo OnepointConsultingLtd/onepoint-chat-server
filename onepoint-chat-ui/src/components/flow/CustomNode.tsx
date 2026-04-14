@@ -5,7 +5,7 @@ export default function CustomNode({ data }: { data: { content: React.ReactNode 
   return (
     <div className="custom-node rounded-md overflow-hidden">
       {data.content}
-      <Handle type="target" position={Position.Left} id="left" className="!bg-[#9a19ff]" />
+      <Handle type="target" position={Position.Left} id="left" className="!bg-[color:var(--osca-accent)]" />
     </div>
   );
 }

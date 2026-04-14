@@ -17,6 +17,8 @@ type MessageCardProps = {
   isThinking: boolean;
   handleSubmit: (text: string) => void;
   onHeightChange: (height: number) => void;
+  /** First paint: only the tenant welcome exists (skipped for user/agent pairing). */
+  welcomeOnly?: Message;
 };
 
 function RenderHandle() {
@@ -25,7 +27,7 @@ function RenderHandle() {
       type="source"
       position={Position.Right}
       id="right"
-      style={{ background: '#9a19ff', top: '50%', transform: 'translateY(-50%)' }}
+      style={{ background: 'var(--osca-accent)', top: '50%', transform: 'translateY(-50%)' }}
     />
   );
 }
@@ -37,6 +39,7 @@ export default function MessageCard({
   isThinking,
   handleSubmit,
   onHeightChange,
+  welcomeOnly,
 }: MessageCardProps) {
   const {
     showInput,
@@ -61,8 +64,8 @@ export default function MessageCard({
   );
 
   useEffect(() => {
-    setIsInitialMessage(userMessage, isLastCard);
-  }, [userMessage, isLastCard, setIsInitialMessage]);
+    setIsInitialMessage(welcomeOnly ?? userMessage, isLastCard);
+  }, [welcomeOnly, userMessage, isLastCard, setIsInitialMessage]);
 
   const cardRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -74,7 +77,7 @@ export default function MessageCard({
   return (
     <div
       ref={cardRef}
-      className="flex flex-col w-full overflow-visible rounded-xl bg-[#fafffe] dark:!bg-[#1F1925] border border-[#636565] dark:border-[#fafffe] shadow-lg hover:shadow-xl hover:border-[#9a19ff] dark:hover:border-[#9a19ff] transition-all duration-300 group animate-fade-in z-50"
+      className="flex flex-col w-full overflow-visible rounded-xl bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)] border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] shadow-lg hover:shadow-xl hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)] transition-all duration-300 group animate-fade-in z-50"
       onMouseEnter={() => !isInitialMessage && setShowButton(true)}
       onMouseLeave={() => !isInitialMessage && setShowButton(false)}
     >
@@ -88,15 +91,15 @@ export default function MessageCard({
           {/* Label */}
           <div
             className="relative flex items-center gap-2 px-4 py-2 rounded-full border border-white/30 
-                  bg-gradient-to-r from-white/40 to-white/20 dark:from-[#1f2a38]/40 dark:to-[#0f1621]/20
+                  bg-gradient-to-r from-white/40 to-white/20 dark:from-[color:color-mix(in_srgb,var(--osca-bg-dark)_40%,transparent)] dark:to-[color:color-mix(in_srgb,var(--osca-surface-dark)_20%,transparent)]
                   backdrop-blur-md shadow-lg text-xs font-semibold text-gray-800 dark:text-white
-                  hover:shadow-[#9a19ff]/50 transition-shadow duration-300"
+                  hover:shadow-[0_0_24px_color-mix(in_srgb,var(--osca-accent)_40%,transparent)] transition-shadow duration-300"
           >
             {relatedTopicsLoading ? (
               <>
                 <div className="flex items-center gap-5">
                   <span>Loading...</span>
-                  <div className="w-2 h-2 rounded-full border border-[#9a19ff] border-t-transparent animate-spin"></div>
+                  <div className="w-2 h-2 rounded-full border border-[color:var(--osca-accent)] border-t-transparent animate-spin"></div>
                 </div>
               </>
             ) : (
@@ -112,8 +115,12 @@ export default function MessageCard({
 
       {/* Show thinking indicator for entire card when thinking */}
       {isLastCard && isThinking ? (
-        <div className="border-l-4 border-[#9a19ff] bg-[#9a19ff]/20 transition-all duration-300 h-auto">
+        <div className="border-l-4 border-[color:var(--osca-accent)] bg-[color:color-mix(in_srgb,var(--osca-accent)_20%,transparent)] transition-all duration-300 h-auto">
           <ThinkingIndicator />
+        </div>
+      ) : welcomeOnly ? (
+        <div className="transition-all duration-300 overflow-hidden rounded-xl border-l-4 border-[color:var(--osca-accent)]">
+          <AgentMessage message={welcomeOnly} />
         </div>
       ) : (
         <>
@@ -153,7 +160,7 @@ export default function MessageCard({
           >
             <button
               onClick={handleClick}
-              className="bg-gradient-to-r from-[#9a19ff] to-[#9a19ff] hover:from-[#9a19ff] hover:to-[#9a19ff] dark:from-[#9a19ff] dark:to-[#9a19ff] dark:hover:from-[#9a19ff] dark:hover:to-[#9a19ff] text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-xl dark:shadow-[#9a19ff]/20 dark:hover:shadow-[#9a19ff]/30 transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
+              className="bg-[color:var(--osca-accent)] hover:brightness-110 text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-[0_8px_28px_color-mix(in_srgb,var(--osca-accent)_35%,transparent)] dark:shadow-[0_6px_20px_color-mix(in_srgb,var(--osca-accent)_25%,transparent)] transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
             >
               <BiMessageRoundedDots />
               <span>Ask a follow up question</span>

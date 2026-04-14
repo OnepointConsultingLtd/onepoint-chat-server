@@ -5,6 +5,7 @@ import { useAuth } from '@clerk/clerk-react';
 import { useShallow } from 'zustand/react/shallow';
 import { messageFactoryAgent, messageFactoryUser } from '../lib/messageFactory';
 import { clearChatData, getConversationId, markChatAsActive, saveConversationId } from '../lib/persistence';
+import { oscaTenantHeaders } from '../lib/resolveOscaConfig';
 import { createWebSocket, sendMessage } from '../lib/websocket';
 import { useUserContext } from './useUserContext';
 import useChatStore from '../store/chatStore';
@@ -91,7 +92,9 @@ export function useChat() {
 
   const fetchReferenceSources = useCallback(async (conversationId: string, messageId: string) => {
     try {
-      const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/${conversationId}/message/${messageId}/references`);
+      const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/${conversationId}/message/${messageId}/references`, {
+        headers: oscaTenantHeaders(),
+      });
       if (!response.ok) return;
 
       const data = await response.json();
@@ -224,13 +227,17 @@ export function useChat() {
               }
             }
             break;
-          case 'message':
+          case 'message': {
             setIsThinking(false);
+            const welcome =
+              message.welcome === true ||
+              (message.message && typeof message.message === 'object' && message.message.isWelcome === true);
             setMessages((prev: Message[]) => [
               ...prev,
-              messageFactoryAgent(message.message.content),
+              messageFactoryAgent(message.message.content, { isWelcome: welcome }),
             ]);
             break;
+          }
           case 'conversation-id': {
             const { conversationId } = message;
             const lastConversationId = getConversationId();
@@ -398,8 +405,9 @@ export function useChat() {
 
     try {
       const token = await getToken();
-      const headers: Record<string, string> = {};
-      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const headers = oscaTenantHeaders({
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      });
 
       const response = await fetch(`${window.oscaConfig.httpUrl}/api/conversations/${conversationId}`, {
         method: 'DELETE',

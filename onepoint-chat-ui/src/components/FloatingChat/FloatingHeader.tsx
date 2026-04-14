@@ -8,9 +8,12 @@ import { useUser, SignInButton, UserButton } from '@clerk/clerk-react';
 import { useDarkMode } from '../../hooks/useDarkMode';
 import { useExport } from '../../hooks/useExport';
 import useChatStore from '../../store/chatStore';
+import { useTenantBranding } from '../../hooks/useTenantBranding';
 import { PROJECT_INFO } from '../../lib/constants';
 
 export default function FloatingHeader() {
+  const branding = useTenantBranding();
+  const headerTitle = branding?.assistantName?.trim() || PROJECT_INFO.NAME;
   const { isDark, toggleTheme } = useDarkMode();
   const { isSignedIn, isLoaded } = useUser();
 
@@ -47,11 +50,11 @@ export default function FloatingHeader() {
   const hasConversation = messages && messages.length >= 2 && !isInitialMessage;
 
   return (
-    <header className="sticky top-0 z-10 w-full p-3 py-2 bg-[#fafffe] dark:!bg-[#1F1925] border-b border-gray-200 dark:border-gray-700">
+    <header className="sticky top-0 z-10 w-full p-3 py-2 bg-[color:var(--osca-bg-light)] dark:bg-[color:var(--osca-bg-dark)] border-b border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between w-full space-x-2">
-        <h1 className="text-3xl font-bold text-[#9a19ff] dark:!text-[#9a19ff]">
+        <h1 className="text-3xl font-bold text-[color:var(--osca-accent)] dark:text-[color:var(--osca-accent)]">
           {' '}
-          {PROJECT_INFO.NAME}
+          {headerTitle}
         </h1>
 
         {/* Action Buttons */}
@@ -59,7 +62,7 @@ export default function FloatingHeader() {
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
+            className="p-2 rounded-lg cursor-pointer bg-[color:var(--osca-bg-light)] hover:bg-gray-200 dark:!bg-[color:var(--osca-bg-dark)] dark:hover:bg-[color:var(--osca-surface-dark)] transition-all duration-200 text-gray-600 dark:!text-[color:var(--osca-text-on-dark)] border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)]"
             title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {isDark ? (
@@ -87,7 +90,7 @@ export default function FloatingHeader() {
             {isLoaded && isSignedIn && hasConversation && (
               <button
                 onClick={() => { }}
-                className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
+                className="p-2 rounded-lg cursor-pointer bg-[color:var(--osca-bg-light)] hover:bg-gray-200 dark:!bg-[color:var(--osca-bg-dark)] dark:hover:bg-[color:var(--osca-surface-dark)] transition-all duration-200 text-gray-600 dark:!text-[color:var(--osca-text-on-dark)] border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)]"
                 title={copied ? 'URL copied!' : 'Share this conversation'}
               >
                 {copied ? (
@@ -100,7 +103,7 @@ export default function FloatingHeader() {
 
             <button
               onClick={handleRestart}
-              className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
+              className="p-2 rounded-lg cursor-pointer bg-[color:var(--osca-bg-light)] hover:bg-gray-200 dark:!bg-[color:var(--osca-bg-dark)] dark:hover:bg-[color:var(--osca-surface-dark)] transition-all duration-200 text-gray-600 dark:!text-[color:var(--osca-text-on-dark)] border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)]"
               title="Start new chat"
             >
               <MdOutlineRestartAlt />
@@ -111,7 +114,7 @@ export default function FloatingHeader() {
               <div className="relative">
                 <button
                   onClick={() => setShowDropdown(!showDropdown)}
-                  className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
+                  className="p-2 rounded-lg cursor-pointer bg-[color:var(--osca-bg-light)] hover:bg-gray-200 dark:!bg-[color:var(--osca-bg-dark)] dark:hover:bg-[color:var(--osca-surface-dark)] transition-all duration-200 text-gray-600 dark:!text-[color:var(--osca-text-on-dark)] border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)]"
                   title="Export conversation"
                 >
                   <CiExport className="w-4 h-4" />
@@ -121,10 +124,10 @@ export default function FloatingHeader() {
                   <>
                     {/* Dropdown menu */}
                     {/* center from left and right */}
-                    <div className="absolute mt-2 w-fit md:w-40 bg-[#fafffe] dark:!bg-[#1F1925] rounded-lg shadow-lg z-40 border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] overflow-hidden transform left-1/2 -translate-x-1/2">
+                    <div className="absolute mt-2 w-fit md:w-40 bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)] rounded-lg shadow-lg z-40 border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)] overflow-hidden transform left-1/2 -translate-x-1/2">
                       <button
                         onClick={() => handleExport('markdown')}
-                        className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-[#2a1f35] transition-colors text-gray-700 dark:!text-[#fafffe] hover:text-[#9a19ff]"
+                        className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-[color:var(--osca-surface-dark)] transition-colors text-gray-700 dark:!text-[color:var(--osca-text-on-dark)] hover:text-[color:var(--osca-accent)]"
                       >
                         <FaMarkdown className="w-4 h-4 mr-2" />
                         Markdown
@@ -132,7 +135,7 @@ export default function FloatingHeader() {
                       <button
                         onClick={() => handleExport('pdf')}
                         disabled={isExportingPdf}
-                        className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-[#2a1f35] transition-colors disabled:opacity-50 text-gray-700 dark:!text-[#fafffe] hover:text-[#9a19ff]"
+                        className="w-full px-3 py-2 text-left text-sm cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-[color:var(--osca-surface-dark)] transition-colors disabled:opacity-50 text-gray-700 dark:!text-[color:var(--osca-text-on-dark)] hover:text-[color:var(--osca-accent)]"
                       >
                         <MdPictureAsPdf className="w-4 h-4 mr-2" />
                         {isExportingPdf ? 'Generating...' : 'PDF'}
@@ -147,7 +150,7 @@ export default function FloatingHeader() {
             {isLoaded && !isSignedIn && (
               <SignInButton mode="modal">
                 <button
-                  className="p-2 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
+                  className="p-2 rounded-lg cursor-pointer bg-[color:var(--osca-bg-light)] hover:bg-gray-200 dark:!bg-[color:var(--osca-bg-dark)] dark:hover:bg-[color:var(--osca-surface-dark)] transition-all duration-200 text-gray-600 dark:!text-[color:var(--osca-text-on-dark)] border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)]"
                   title="Sign in"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -178,7 +181,7 @@ export default function FloatingHeader() {
 
           {/* Close Button */}
           <button
-            className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-[#2a1f35] rounded-lg transition-colors text-gray-600 dark:!text-[#fafffe]"
+            className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-[color:var(--osca-surface-dark)] rounded-lg transition-colors text-gray-600 dark:!text-[color:var(--osca-text-on-dark)]"
             onClick={toggleFloatingChat}
             title="Close chat"
           >

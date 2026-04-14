@@ -1,7 +1,12 @@
 import WebSocket from 'isomorphic-ws';
 
 export function createWebSocket(userId?: string | null, anonymousId?: string | null): WebSocket {
-  const url = new URL(window.oscaConfig.websocketUrl);
+  const { websocketUrl, clientToken } = window.oscaConfig;
+  if (!websocketUrl || !clientToken) {
+    throw new Error('[Osca] websocketUrl and clientToken are required — call resolveOscaConfig() first');
+  }
+  const url = new URL(websocketUrl);
+  url.searchParams.set('token', clientToken);
   if (userId) url.searchParams.set('userId', userId);
   if (anonymousId) url.searchParams.set('anonymousId', anonymousId);
   return new WebSocket(url.toString());

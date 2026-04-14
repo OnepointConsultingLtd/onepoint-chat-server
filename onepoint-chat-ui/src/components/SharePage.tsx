@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { PROJECT_INFO } from '../lib/constants';
+import { hydrateOscaTenantProject, oscaTenantHeaders, resolveOscaConfig } from '../lib/resolveOscaConfig';
 import ReferenceSources from './ReferenceSources';
 import '../App.css';
 
@@ -29,31 +30,35 @@ export default function SharePage() {
       setStatus('404');
       return;
     }
-    fetch(`${window.oscaConfig?.httpUrl || ''}/api/chat/share/token/${token}`)
-      .then((res) => {
-        if (res.status === 404) {
-          setStatus('404');
-          return;
-        }
-        if (res.status === 410) {
-          setStatus('410');
-          return;
-        }
-        if (!res.ok) throw new Error('Failed to fetch');
-        return res.json();
-      })
-      .then((json) => {
-        if (json) {
-          setData(json);
-          setStatus('success');
-        }
-      })
-      .catch(() => setStatus('404'));
+    void (async () => {
+      resolveOscaConfig();
+      await hydrateOscaTenantProject();
+      fetch(`${window.oscaConfig.httpUrl}/api/chat/share/token/${token}`, { headers: oscaTenantHeaders() })
+        .then((res) => {
+          if (res.status === 404) {
+            setStatus('404');
+            return;
+          }
+          if (res.status === 410) {
+            setStatus('410');
+            return;
+          }
+          if (!res.ok) throw new Error('Failed to fetch');
+          return res.json();
+        })
+        .then((json) => {
+          if (json) {
+            setData(json);
+            setStatus('success');
+          }
+        })
+        .catch(() => setStatus('404'));
+    })();
   }, [token]);
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-[#fafffe] dark:bg-[#1F1925] flex items-center justify-center">
+      <div className="min-h-screen bg-[color:var(--osca-bg-light)] dark:bg-[color:var(--osca-bg-dark)] flex items-center justify-center">
         <div className="text-gray-600 dark:text-gray-400">Loading...</div>
       </div>
     );
@@ -61,18 +66,18 @@ export default function SharePage() {
 
   if (status === '404') {
     return (
-      <div className="min-h-screen bg-[#fafffe] dark:bg-[#1F1925] flex flex-col items-center justify-center p-8">
+      <div className="min-h-screen bg-[color:var(--osca-bg-light)] dark:bg-[color:var(--osca-bg-dark)] flex flex-col items-center justify-center p-8">
         <p className="text-gray-700 dark:text-gray-300 text-lg">This link is invalid or has been removed.</p>
-        <Link to="/" className="mt-4 text-[#9a19ff] hover:underline">Start your own conversation →</Link>
+        <Link to="/" className="mt-4 text-[color:var(--osca-accent)] hover:underline">Start your own conversation →</Link>
       </div>
     );
   }
 
   if (status === '410') {
     return (
-      <div className="min-h-screen bg-[#fafffe] dark:bg-[#1F1925] flex flex-col items-center justify-center p-8">
+      <div className="min-h-screen bg-[color:var(--osca-bg-light)] dark:bg-[color:var(--osca-bg-dark)] flex flex-col items-center justify-center p-8">
         <p className="text-gray-700 dark:text-gray-300 text-lg">This shared link has expired.</p>
-        <Link to="/" className="mt-4 text-[#9a19ff] hover:underline">Start your own conversation →</Link>
+        <Link to="/" className="mt-4 text-[color:var(--osca-accent)] hover:underline">Start your own conversation →</Link>
       </div>
     );
   }
@@ -82,15 +87,15 @@ export default function SharePage() {
     : "You're viewing a shared Osca thread.";
 
   return (
-    <div className="min-h-screen bg-[#fafffe] dark:bg-[#1F1925] flex flex-col">
-      <header className="px-6 py-4 border-b border-gray-200 dark:border-[#352840]">
+    <div className="min-h-screen bg-[color:var(--osca-bg-light)] dark:bg-[color:var(--osca-bg-dark)] flex flex-col">
+      <header className="px-6 py-4 border-b border-gray-200 dark:border-[color:var(--osca-surface-dark-hover)]">
         <div className="flex items-center gap-2 justify-center">
-          <span className="text-lg font-semibold text-gray-800 dark:text-[#fafffe]">{PROJECT_INFO.NAME}</span>
+          <span className="text-lg font-semibold text-gray-800 dark:text-[color:var(--osca-text-on-dark)]">{PROJECT_INFO.NAME}</span>
           <span className="text-sm text-gray-500 dark:text-gray-400">{PROJECT_INFO.NAME_DESCRIPTION}</span>
         </div>
       </header>
 
-      <div className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 bg-gray-100/80 dark:bg-[#2a1f35]/80 border-b border-gray-200 dark:border-[#352840] text-center">
+      <div className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 bg-gray-100/80 dark:bg-[color:color-mix(in_srgb,var(--osca-surface-dark)_80%,transparent)] border-b border-gray-200 dark:border-[color:var(--osca-surface-dark-hover)] text-center">
         {bannerText}
       </div>
 
@@ -98,12 +103,12 @@ export default function SharePage() {
         {data?.messages.map((msg) => (
           <div
             key={msg.id || msg.timestamp + msg.type}
-            className="rounded-xl overflow-hidden border border-[#636565] dark:border-[#fafffe] bg-[#fafffe] dark:bg-[#1F1925]"
+            className="rounded-xl overflow-hidden border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] bg-[color:var(--osca-bg-light)] dark:bg-[color:var(--osca-bg-dark)]"
           >
             <div className="px-6 py-5">
 
               {msg.type === 'user' ? (
-                <div className="text-gray-800 dark:text-[#fafffe] whitespace-pre-wrap">{msg.text}</div>
+                <div className="text-gray-800 dark:text-[color:var(--osca-text-on-dark)] whitespace-pre-wrap">{msg.text}</div>
               ) : (
                 <div className="prose dark:prose-invert max-w-none">
                   <ReactMarkdown
@@ -111,7 +116,7 @@ export default function SharePage() {
                       a: ({ ...props }) => (
                         <a
                           {...props}
-                          className="text-[#9a19ff] hover:text-[#9a19ff] dark:text-[#9a19ff]"
+                          className="text-[color:var(--osca-accent)] hover:text-[color:var(--osca-accent)] dark:text-[color:var(--osca-accent)]"
                           target="_blank"
                           rel="noopener noreferrer"
                         />
@@ -132,10 +137,10 @@ export default function SharePage() {
         ))}
       </main>
 
-      <div className="p-6 border-t border-gray-200 dark:border-[#352840] flex justify-center fixed bottom-0 left-0 right-0">
+      <div className="p-6 border-t border-gray-200 dark:border-[color:var(--osca-surface-dark-hover)] flex justify-center fixed bottom-0 left-0 right-0">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#9a19ff] text-white font-medium hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[color:var(--osca-accent)] text-white font-medium hover:opacity-90 transition-opacity"
         >
           Start your own conversation →
         </Link>

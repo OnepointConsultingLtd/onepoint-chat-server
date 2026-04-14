@@ -1,11 +1,10 @@
 import { Edge, MarkerType } from '@xyflow/react';
 import { Message } from '../../type/types';
-import { getConversationStartIndex } from '../../utils/messageUtils';
+import { getMessageFlowCardCount } from '../../utils/messageUtils';
 
 export function createEdges(messages: Message[], topicCount: number = 0): Edge[] {
   const edges: Edge[] = [];
-  const startIndex = getConversationStartIndex(messages);
-  const cardCount = Math.ceil((messages.length - startIndex) / 2);
+  const cardCount = getMessageFlowCardCount(messages);
 
   for (let i = 0; i < cardCount - 1; i++) {
     edges.push({

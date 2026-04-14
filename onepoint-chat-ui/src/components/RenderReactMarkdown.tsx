@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { FiCheck, FiShare2 } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import { useShallow } from 'zustand/react/shallow';
-import { INITIAL_MESSAGE } from '../lib/constants';
 import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 import { predefinedQuestions, shuffleArray } from '../lib/predefinedTopics';
 import { useUserContext } from '../hooks/useUserContext';
@@ -30,10 +29,15 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
   };
 
   const referenceSources = message.referenceSources;
-
+  const isSentraMessage = message.text.includes("Welcome. I'm AegisAI — your advisor for responsible")
   const showQuickQuestions = isInitialMessage;
 
-  const quickQuestions = useMemo(() => shuffleArray(predefinedQuestions).slice(0, 4), []);
+  const quickQuestions = useMemo(() => {
+    const tenant = typeof window !== 'undefined' ? window.oscaTenantUi?.quickQuestions : undefined;
+    const pool =
+      tenant && tenant.length > 0 ? tenant : predefinedQuestions.map(({ id, text, label }) => ({ id, text, label }));
+    return shuffleArray(pool).slice(0, 4);
+  }, []);
 
   const handleQuickQuestionClick = (question: { id: number; text: string; label?: string }) => {
     // Match the Sidebar behavior: set topic context then submit the question as a message
@@ -57,7 +61,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
             a: ({ ...props }) => (
               <a
                 {...props}
-                className="text-[#9a19ff] hover:text-[#9a19ff] dark:text-[#9a19ff] dark:hover:text-[#9a19ff] group-hover:!underline group-hover:!text-[#9a19ff] dark:group-hover:!text-[#9a19ff]"
+                className="text-[color:var(--osca-accent)] hover:text-[color:var(--osca-accent)] dark:text-[color:var(--osca-accent)] dark:hover:text-[color:var(--osca-accent)] group-hover:!underline group-hover:!text-[color:var(--osca-accent)] dark:group-hover:!text-[color:var(--osca-accent)]"
                 target="_blank"
                 rel="noopener noreferrer"
               />
@@ -69,7 +73,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
           {message.text}
         </ReactMarkdown>
 
-        {isInitialMessage && (
+        {isInitialMessage && !isSentraMessage && (
           <p className='!font-bold my-4'>
             What challenge or goal would you like to explore today?
           </p>
@@ -77,7 +81,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
 
         {showQuickQuestions && quickQuestions.length > 0 && (
           <div className="mt-3">
-            <h4 className="text-sm font-bold text-gray-700 dark:!text-[#fafffe]">
+            <h4 className="text-sm font-bold text-gray-700 dark:!text-[color:var(--osca-text-on-dark)]">
               Quick Questions to Accelerate Your Journey
             </h4>
             <div className="flex flex-wrap gap-2 mt-2">
@@ -86,7 +90,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
                   key={q.id}
                   type="button"
                   onClick={() => handleQuickQuestionClick(q)}
-                  className="px-3 py-1.5 text-xs cursor-pointer font-medium rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a1f35] text-gray-700 dark:text-gray-100 hover:border-[#9a19ff] dark:hover:border-[#9a19ff] hover:bg-gray-50 dark:hover:bg-[#352840] transition-colors"
+                  className="px-3 py-1.5 text-xs cursor-pointer font-medium rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-[color:var(--osca-surface-dark)] text-gray-700 dark:text-gray-100 hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)] hover:bg-gray-50 dark:hover:bg-[color:var(--osca-surface-dark-hover)] transition-colors"
                   title={q.text}
                 >
                   {q.label || q.text}
@@ -112,7 +116,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
 
           )}
           {/* Share icon: agent message, not welcome */}
-          {message.type === 'agent' && !message.text.includes(INITIAL_MESSAGE) && (
+          {message.type === 'agent' && !message.isWelcome && (
             <button
               onClick={async () => {
                 const ok = await generateThreadShareableId(message.messageId || message.id, userId, anonymousId);
@@ -121,7 +125,7 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
                   setTimeout(() => setThreadShareCopied(false), 2000);
                 }
               }}
-              className="p-1 md:p-2 rounded-full transition-all duration-200 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer text-[#1F1925] dark:text-white hover:text-[#9a19ff] border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff]"
+              className="p-1 md:p-2 rounded-full transition-all duration-200 transform scale-90 group-hover:scale-100 shadow-sm hover:shadow-md cursor-pointer text-[color:var(--osca-bg-dark)] dark:text-white hover:text-[color:var(--osca-accent)] border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)]"
               title={threadShareCopied ? 'Copied!' : 'Share message'}
             >
               {threadShareCopied ? (

@@ -1,5 +1,6 @@
 import { WebSocket } from "ws";
 import { Role, LLMProviderName } from "./enums";
+import type { ClientDocument } from "./clientDocument";
 
 export { Role, LLMProviderName } from "./enums";
 export { MessageType, MessageSubtype } from "./enums";
@@ -17,6 +18,8 @@ export interface ChatMessage {
   id: string;
   role: Role | string;
   content: string;
+  /** True for the tenant welcome bubble from `initial_questions` (not LLM stream). */
+  isWelcome?: boolean;
   timestamp?: Date;
   referenceSources?: ReferenceSource[];
   conversationId?: string;
@@ -44,6 +47,9 @@ export interface Conversation {
   ws: WebSocket;
   chatHistory: ChatMessage[];
   metadata: UserMetadata;
+  /** Resolved osca-registry client for this WebSocket connection */
+  tenant: ClientDocument;
+  promptConfig: PromptConfig;
 }
 
 export interface UserMetadata {
@@ -57,6 +63,12 @@ export interface SystemBlock {
   cache_control?: { type: "ephemeral" };
 }
 
+/**
+ * Parsed from each tenant’s registry `prompt` TOML (`[persona]`, `[welcome]`, etc.).
+ * The WebSocket server builds the welcome bubble from `basic.initial_questions` and the LLM system
+ * block from `basic.system_message`. To drive more UI copy per tenant later, add optional fields
+ * under `basic` (e.g. product label) and expose them via a small config API or the first WS payload.
+ */
 export interface PromptConfig {
   basic: {
     system_message: string;

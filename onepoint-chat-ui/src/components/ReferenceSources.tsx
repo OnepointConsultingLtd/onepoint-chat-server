@@ -20,7 +20,7 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
   return (
     <>
       <div className="mt-2">
-        <div className="border border-[#636565] dark:border-[#fafffe] rounded overflow-hidden bg-[#fafffe] dark:!bg-[#1F1925]/50 shadow-sm hover:shadow-md hover:border-[#9a19ff] dark:hover:border-[#9a19ff] transition-shadow duration-300">
+        <div className="border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] rounded overflow-hidden bg-[color:var(--osca-bg-light)] dark:!bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_50%,transparent)] shadow-sm hover:shadow-md hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)] transition-shadow duration-300">
           <button
             className="w-full flex items-center cursor-pointer justify-between p-3 sm:p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-all duration-300 group"
             onClick={toggleAccordion}
@@ -29,7 +29,7 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
               <span className="text-base sm:text-lg transition-transform duration-300 group-hover:scale-110">
                 📚
               </span>
-              <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:!text-[#fafffe] group-hover:text-[#9a19ff] dark:group-hover:text-[#9a19ff] transition-colors duration-300">
+              <h4 className="text-xs sm:text-sm font-semibold text-gray-700 dark:!text-[color:var(--osca-text-on-dark)] group-hover:text-[color:var(--osca-accent)] dark:group-hover:text-[color:var(--osca-accent)] transition-colors duration-300">
                 Reference Sources ({sources.length})
               </h4>
             </div>
@@ -60,11 +60,11 @@ export default function ReferenceSources({ sources }: ReferenceSourcesProps) {
                     key={index}
                     className="flex items-start gap-2.5 sm:gap-3 px-2.5 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200 animate-fade-in-up"
                   >
-                    <span className="flex-shrink-0 w-6 h-6 sm:w-5 sm:h-5 bg-gray-100 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 rounded-full flex items-center justify-center text-xs font-semibold border border-[#636565] dark:border-[#fafffe]">
+                    <span className="flex-shrink-0 w-6 h-6 sm:w-5 sm:h-5 bg-gray-100 dark:bg-gray-700/80 text-gray-700 dark:text-gray-300 rounded-full flex items-center justify-center text-xs font-semibold border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)]">
                       {index + 1}
                     </span>
                     <div className="flex-1 min-w-0 pt-0.5">
-                      <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-[#5a4d6e] hover:text-[#6b5b7a] dark:text-[#9d4dff] dark:hover:text-[#ed9cffee] hover:underline">{source.title}</a>
+                      <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-slate-800 dark:text-[color:var(--osca-accent)] dark:hover:text-[color:var(--osca-accent-secondary)] hover:underline">{source.title}</a>
                     </div>
                   </div>
                 ))}

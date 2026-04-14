@@ -1,6 +1,5 @@
 import { verifyToken } from "@clerk/backend";
-
-const ALLOWED_ORIGINS = ["https://osca.onepointltd.ai", "http://localhost:5173", "http://localhost:3000"];
+import { getCachedAllowedOrigins } from "../db/registry";
 
 export async function getVerifiedUserId(req: { headers: { authorization?: string } }): Promise<string | null> {
   const auth = req.headers.authorization;
@@ -14,9 +13,10 @@ export async function getVerifiedUserId(req: { headers: { authorization?: string
   }
 
   try {
+    const authorizedParties = getCachedAllowedOrigins();
     const { sub } = await verifyToken(token, {
       secretKey,
-      authorizedParties: ALLOWED_ORIGINS,
+      authorizedParties: authorizedParties.length > 0 ? authorizedParties : undefined,
     });
     return sub ?? null;
   } catch {

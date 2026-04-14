@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClientStore } from './store/clientStore'
 import type { Client, LLMProvider } from './Types'
+import { emptyPublicBranding } from './Types'
 
 function initials(name: string) {
 	return name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2)
@@ -19,7 +20,7 @@ const providerColors: Record<LLMProvider, string> = {
 }
 
 export default function Clients() {
-	const { clients, setSelected, toggleActive, deleteClient } = useClientStore()
+	const { clients, setSelected, toggleActive, deleteClient, registryMode, registryError } = useClientStore()
 	const navigate = useNavigate()
 	const [search, setSearch] = useState('')
 	const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
@@ -35,11 +36,15 @@ export default function Clients() {
 			id: crypto.randomUUID(),
 			name: '',
 			projectName: '',
+			dbName: '',
 			provider: 'openai',
 			model: 'gpt-4o',
 			domains: [],
 			token: generateToken(),
 			prompt: '',
+			topicsPrompt: '',
+			predefinedQuickQuestions: [],
+			publicBranding: emptyPublicBranding(),
 			active: true,
 			createdAt: new Date().toISOString().split('T')[0],
 		}
@@ -54,6 +59,23 @@ export default function Clients() {
 
 	return (
 		<div>
+			{registryMode === 'demo' && (
+				<p className="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-lg px-4 py-3 mb-4">
+					<strong>Demo data.</strong> Add <code className="text-xs bg-amber-100 px-1 rounded">VITE_OSCA_ADMIN_SECRET</code> and{' '}
+					<code className="text-xs bg-amber-100 px-1 rounded">VITE_OSCA_API_URL</code> (optional, default http://localhost:5000) in{' '}
+					<code className="text-xs bg-amber-100 px-1 rounded">osca-configurator/.env</code> — same value as server <code className="text-xs bg-amber-100 px-1 rounded">ADMIN_SECRET</code> — then reload to load/save the real Mongo registry.
+				</p>
+			)}
+			{registryMode === 'error' && registryError && (
+				<p className="text-sm text-red-800 bg-red-50 border border-red-100 rounded-lg px-4 py-3 mb-4">
+					<strong>Registry API error:</strong> {registryError}
+				</p>
+			)}
+			{registryMode === 'live' && (
+				<p className="text-sm text-emerald-800 bg-emerald-50 border border-emerald-100 rounded-lg px-4 py-3 mb-4">
+					Connected to registry API — changes persist to <code className="text-xs bg-emerald-100 px-1 rounded">osca-registry</code>.
+				</p>
+			)}
 			<div className="flex items-center justify-between mb-6">
 				<div>
 					<h1 className="text-xl font-semibold text-gray-900">Clients</h1>
@@ -178,7 +200,11 @@ export default function Clients() {
 								Cancel
 							</button>
 							<button
-								onClick={() => { deleteClient(confirmDelete); setConfirmDelete(null) }}
+								type="button"
+								onClick={() => {
+									void deleteClient(confirmDelete)
+									setConfirmDelete(null)
+								}}
 								className="text-sm px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
 							>
 								Delete

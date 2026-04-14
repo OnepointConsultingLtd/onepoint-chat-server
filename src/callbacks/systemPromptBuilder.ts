@@ -2,7 +2,7 @@ import { analyzeConversation } from "../utils/conversationAnalyzer";
 import { personaDirectives, servicesGuidance } from "../utils/personaPrompt";
 import { personaFirstQuestion } from "../utils/personaFirstQuestion";
 import { getSystemMessage } from "../utils/prompts";
-import { LLMProviderName } from "../types";
+import type { LLMProviderName, PromptConfig } from "../types";
 
 const BRITISH_LANGUAGE_BLOCK = `
 # LANGUAGE AND STYLE POLICY
@@ -38,8 +38,8 @@ Name Policy: Never address the user by name under any circumstances,
 even if a name appears in persona metadata or conversation history.
 `.trim();
 
-export function buildStaticBlock(): string {
-  const baseSystemMessage = getSystemMessage();
+export function buildStaticBlock(promptConfig: PromptConfig): string {
+  const baseSystemMessage = getSystemMessage(promptConfig);
   return `
 You are Osca — Onepoint Smart Company Advisor.
 Your role is to represent Onepoint in business conversations — explaining our approach, services, and client outcomes, not technical tutorials.
@@ -110,10 +110,8 @@ export function buildSystemContent(
   staticPart: string,
   personaPart: string,
   dynamicPart: string,
+  provider: LLMProviderName,
 ): string {
-  const provider: LLMProviderName =
-    (process.env.LLM_PROVIDER as LLMProviderName) || "openai";
-
   if (provider === "claude") {
     return [staticPart, personaPart, dynamicPart].join(
       "\n\n__CACHE_SPLIT__\n\n",

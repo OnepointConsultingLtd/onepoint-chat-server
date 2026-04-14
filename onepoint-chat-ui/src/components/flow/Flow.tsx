@@ -3,6 +3,7 @@ import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useDarkMode } from '../../hooks/useDarkMode';
+import { useOscaFlowBackgroundColors } from '../../hooks/useOscaFlowBackgroundColors';
 import {
   CONNECTION_ERROR,
   DEFAULT_ZOOM,
@@ -50,6 +51,7 @@ export default function Flow({
   );
 
   const { isDark } = useDarkMode();
+  const shellColors = useOscaFlowBackgroundColors();
   const reactFlowInstance = useReactFlow();
   const previousMessagesLengthRef = useRef<number>(0);
 
@@ -101,7 +103,7 @@ export default function Flow({
       setCardHeight,
       cardHeights
     );
-  },     [
+  }, [
     messages,
     isThinking,
     topicState,
@@ -117,6 +119,7 @@ export default function Flow({
       window.location.reload();
     }
   }, [messages]);
+
 
   const filteredMessages = useMemo(() => {
     return filterDisplayableMessages(messages);
@@ -145,32 +148,35 @@ export default function Flow({
   const isError = interceptServerError(messages);
 
   return (
-    <div style={{ height: '100%', width: '100%' }} className="bg-[#fafffe] dark:!bg-[#1F1925] flex flex-col">
+    <div
+      style={{ height: '100%', width: '100%' }}
+      className="bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)] flex flex-col"
+    >
       <div className="flex-1 min-h-0 relative">
-      {isError ? (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <ErrorCard
-            title="Connection Error"
-            message="We were unable to connect to the server. Please check your internet connection or try again later."
-          />
-        </div>
-      ) : (
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          nodeTypes={nodeTypes}
-          nodesDraggable={false}
-          minZoom={zoomSettings.minZoom}
-          maxZoom={zoomSettings.maxZoom}
-          defaultViewport={{ x: 0, y: 0, zoom: zoomSettings.defaultZoom }}
-        >
-          <Background color={isDark ? '#1F1925' : '#fafffe'} gap={9000} size={1} />
+        {isError ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <ErrorCard
+              title="Connection Error"
+              message="We were unable to connect to the server. Please check your internet connection or try again later."
+            />
+          </div>
+        ) : (
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            nodeTypes={nodeTypes}
+            nodesDraggable={false}
+            minZoom={zoomSettings.minZoom}
+            maxZoom={zoomSettings.maxZoom}
+            defaultViewport={{ x: 0, y: 0, zoom: zoomSettings.defaultZoom }}
+          >
+            <Background color={isDark ? shellColors.dark : shellColors.light} gap={9000} size={1} />
 
-          <Controls showInteractive={false} />
-        </ReactFlow>
-      )}
+            <Controls showInteractive={false} />
+          </ReactFlow>
+        )}
       </div>
       <div ref={messagesEndRef} />
     </div>

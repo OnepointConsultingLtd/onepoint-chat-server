@@ -29,7 +29,7 @@
     })(document);
   </script>
   <!-- Osca API URLs: resolved in src/lib/resolveOscaConfig.ts (query ?oscaHttp=&oscaWs=, VITE_OSCA_*, or defaults). -->
-  <!-- Optional embed: set before main — window.__OSCA_CONFIG__ = { httpUrl, websocketUrl }; -->
+  <!-- Optional embed: __OSCA_CONFIG__ = { httpUrl, websocketUrl, clientToken, projectName? }; or ?oscaToken=, ?oscaProject=, VITE_OSCA_* -->
 
   <script type="module" src="/src/main.tsx"></script>
 </body>

@@ -1,4 +1,5 @@
-import { ChatMessage, Role } from "../types";
+import { ChatMessage, Role, type LLMProviderName, type PromptConfig } from "../types";
+import { getMaxHistorySize } from "../utils/prompts";
 import type { ReferenceSource } from "../types";
 import { getContext } from "../api";
 import { analyzeConversation } from "../utils/conversationAnalyzer";
@@ -30,25 +31,31 @@ function contextAdapter(response: { success?: boolean; data?: unknown }): string
 
 export async function onepointCallback(
   chatHistory: ChatMessage[],
+  promptConfig: PromptConfig,
+  llmProvider: LLMProviderName,
+  /** Registry `projectName` → LightRAG `project=` query param on CONTEXT_API_URL */
+  contextProjectName: string,
 ): Promise<{ chatHistory: ChatMessage[]; referenceSources: ReferenceSource[] }> {
 
   const analysis = analyzeConversation(chatHistory);
   const lastMessage = chatHistory.slice(-1)[0];
-  const contextResponse = await getContext(lastMessage.content);
+  const contextResponse = await getContext(lastMessage.content, {
+    projectName: contextProjectName,
+  });
   const knowledgeBase = truncateText(contextAdapter(contextResponse), 1000);
   const referenceSources = extractReferenceSources(contextResponse.data);
 
-  const staticPart = buildStaticBlock();
+  const staticPart = buildStaticBlock(promptConfig);
   const personaPart = buildPersonaBlock(analysis);
   const dynamicPart = buildDynamicBlock(knowledgeBase, analysis, referenceSources);
 
   const systemInstructions: ChatMessage = {
     id: `system-instructions-${Date.now()}`,
     role: Role.SYSTEM,
-    content: buildSystemContent(staticPart, personaPart, dynamicPart),
+    content: buildSystemContent(staticPart, personaPart, dynamicPart, llmProvider),
   };
 
-  const MAX_HISTORY = 10;
+  const MAX_HISTORY = getMaxHistorySize(promptConfig);
   const slicedHistory = chatHistory
     .slice(-MAX_HISTORY - 1, -1)
     .filter((m) => {

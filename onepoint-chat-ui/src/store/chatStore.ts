@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { fetchRelatedTopics } from '../lib/apiClient';
-import { INITIAL_MESSAGE, LOCAL_STORAGE_KEYS } from '../lib/constants';
+import { LOCAL_STORAGE_KEYS } from '../lib/constants';
+import { isConversationInWelcomePhase } from '../utils/messageUtils';
+import { oscaTenantHeaders } from '../lib/resolveOscaConfig';
 import { clearChatData } from '../lib/persistence';
 import { handleCopyToClipboard } from '../lib/handleCopyToClipboard';
 import { ChatStore, TopicActionPayload } from '../type/chatStore';
@@ -61,11 +63,11 @@ const useChatStore = create<ChatStore>()(
       isFloatingOpen: true,
 
       // setters
-      setIsInitialMessage: (message: Message, isLastCard: boolean) => {
-        const isInitialMessage = message.text.includes(INITIAL_MESSAGE);
+      setIsInitialMessage: (_message: Message, isLastCard: boolean) => {
+        const inWelcomePhase = isConversationInWelcomePhase(get().messages);
         set({
-          isInitialMessage,
-          showInput: isInitialMessage && isLastCard,
+          isInitialMessage: inWelcomePhase && isLastCard,
+          showInput: inWelcomePhase && isLastCard,
           showButton: false,
         });
       },
@@ -153,11 +155,13 @@ const useChatStore = create<ChatStore>()(
       generateShareableId: async (userId?: string | null, anonymousId?: string | null): Promise<boolean> => {
         const conversationId = localStorage.getItem(LOCAL_STORAGE_KEYS.CONVERSATION_ID);
         const { messages } = get();
-        const shareable = messages.filter(m => !m.text.includes(INITIAL_MESSAGE));
+        const shareable = messages.filter(m => !m.isWelcome);
         if (!conversationId || shareable.length < 2) return false;
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-        if (userId) headers['x-user-id'] = userId;
-        if (anonymousId) headers['anonymousid'] = anonymousId;
+        const headers = oscaTenantHeaders({
+          'Content-Type': 'application/json',
+          ...(userId ? { 'x-user-id': userId } : {}),
+          ...(anonymousId ? { anonymousid: anonymousId } : {}),
+        });
         const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/share/create`, {
           method: 'POST',
           headers,
@@ -176,9 +180,11 @@ const useChatStore = create<ChatStore>()(
         const { messages } = get();
         const message = messages.find(m => m.messageId === messageId);
         if (!message || message.type !== 'agent') return false;
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-        if (userId) headers['x-user-id'] = userId;
-        if (anonymousId) headers['anonymousid'] = anonymousId;
+        const headers = oscaTenantHeaders({
+          'Content-Type': 'application/json',
+          ...(userId ? { 'x-user-id': userId } : {}),
+          ...(anonymousId ? { anonymousid: anonymousId } : {}),
+        });
         const response = await fetch(`${window.oscaConfig.httpUrl}/api/chat/share/create`, {
           method: 'POST',
           headers,

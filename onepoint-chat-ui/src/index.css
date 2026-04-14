@@ -1,17 +1,34 @@
 @tailwind utilities;
 
+/* Defaults; overridden by applyTenantBrandingCss() after tenant context load */
+:root {
+  --osca-accent: #9a19ff;
+  --osca-accent-secondary: #c084fc;
+  --osca-bg-light: #fafffe;
+  --osca-bg-dark: #1f1925;
+  --osca-surface-dark: #2a1f35;
+  --osca-surface-dark-hover: #352840;
+  --osca-text-on-dark: #fafffe;
+  --osca-text-muted: #7b6a90;
+  --osca-border-light: #636565;
+  --osca-border-dark: #fafffe;
+  --osca-landing-bg: #0d0a14;
+  --osca-font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  --osca-font-display: Georgia, 'Times New Roman', serif;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #fafffe;
+  background: var(--osca-bg-light);
   border-radius: 4px;
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: #1F1925;
+  background: var(--osca-bg-dark);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -20,11 +37,11 @@
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #9a19ff;
+  background: var(--osca-accent);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9a19ff;
+  background: var(--osca-accent);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {

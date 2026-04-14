@@ -1,11 +1,49 @@
 import { useState } from 'react'
-import type { Client, LLMProvider } from './Types';
+import type { Client, LLMProvider, PredefinedQuickQuestion, TenantPublicTheme } from './Types';
+import { emptyPublicBranding } from './Types';
 import { useClientStore } from './store/clientStore';
 import { useToast } from './hooks/useToast';
+import { isRegistryApiConfigured, regenRegistryToken } from './lib/oscaAdminApi';
 
 function generateToken() {
 	const hex = () => Math.floor(Math.random() * 16).toString(16)
 	return 'osca_live_' + Array.from({ length: 32 }, hex).join('')
+}
+
+function isPublicBrandingConfigured(b: Client['publicBranding']): boolean {
+	const s = (x: string) => x.trim().length > 0
+	for (const [k, v] of Object.entries(b)) {
+		if (k === 'theme' || typeof v !== 'string') continue
+		if (s(v)) return true
+	}
+	return Object.values(b.theme).some((v) => s(v))
+}
+
+function parseQuickQuestionsJson(
+	raw: string,
+): { ok: true; value: PredefinedQuickQuestion[] } | { ok: false; error: string } {
+	const trimmed = raw.trim()
+	if (!trimmed) return { ok: true, value: [] }
+	try {
+		const parsed = JSON.parse(trimmed) as unknown
+		if (!Array.isArray(parsed)) return { ok: false, error: 'Must be a JSON array' }
+		const out: PredefinedQuickQuestion[] = []
+		for (let i = 0; i < parsed.length; i++) {
+			const item = parsed[i]
+			if (!item || typeof item !== 'object')
+				return { ok: false, error: `Item ${i + 1}: expected an object` }
+			const o = item as Record<string, unknown>
+			const id = typeof o.id === 'number' ? o.id : Number(o.id)
+			const text = typeof o.text === 'string' ? o.text : ''
+			if (!Number.isFinite(id)) return { ok: false, error: `Item ${i + 1}: id must be a number` }
+			if (!text.trim()) return { ok: false, error: `Item ${i + 1}: text is required` }
+			const label = typeof o.label === 'string' && o.label.trim() ? o.label : undefined
+			out.push({ id, text, ...(label ? { label } : {}) })
+		}
+		return { ok: true, value: out }
+	} catch (e) {
+		return { ok: false, error: e instanceof Error ? e.message : 'Invalid JSON' }
+	}
 }
 
 const modelsByProvider: Record<LLMProvider, string[]> = {
@@ -32,20 +70,35 @@ type WidgetBuilderFormProps = {
 function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 	const { saveClient, setSelected } = useClientStore()
 	const { toasts, addToast } = useToast()
-	const [form, setForm] = useState<Client>(() => ({ ...initialClient }))
+	const [form, setForm] = useState<Client>(() => ({
+		...initialClient,
+		publicBranding: initialClient.publicBranding ?? emptyPublicBranding(),
+	}))
+	const [quickQuestionsJson, setQuickQuestionsJson] = useState(() =>
+		JSON.stringify(initialClient.predefinedQuickQuestions ?? [], null, 2),
+	)
 	const [newDomain, setNewDomain] = useState('')
 	const [copied, setCopied] = useState<string | null>(null)
-	const [tab, setTab] = useState<'config' | 'prompt' | 'token'>('config')
+	const [tab, setTab] = useState<'config' | 'prompt' | 'branding' | 'token'>('config')
 
+	const embedHttpUrl =
+		(import.meta.env.VITE_EMBED_SNIPPET_HTTP_URL as string | undefined)?.trim() || 'https://api.yourdomain.com'
+	const embedWsUrl =
+		(import.meta.env.VITE_EMBED_SNIPPET_WS_URL as string | undefined)?.trim() || 'wss://ws.yourdomain.com'
+	const embedScriptUrl =
+		(import.meta.env.VITE_EMBED_SNIPPET_WIDGET_SCRIPT_URL as string | undefined)?.trim() ||
+		'https://cdn.osca.ai/widget.js'
+
+	// OscaChatConfig: clientToken → X-Osca-Token; projectName → LightRAG / related_topics slug (registry field).
 	const snippet = `<script>
   window.__OSCA_CONFIG__ = {
-    httpUrl: "https://api.yourdomain.com",
-    websocketUrl: "wss://ws.yourdomain.com",
-    token: "${form.token}",
-    project: "${form.projectName}"
+    httpUrl: ${JSON.stringify(embedHttpUrl)},
+    websocketUrl: ${JSON.stringify(embedWsUrl)},
+    clientToken: ${JSON.stringify(form.token)},
+    projectName: ${JSON.stringify(form.projectName)},
   };
 </script>
-<script src="https://cdn.osca.ai/widget.js"></script>`
+<script src=${JSON.stringify(embedScriptUrl)}></script>`
 
 	function copy(text: string, key: string) {
 		navigator.clipboard.writeText(text).catch(() => { })
@@ -64,13 +117,27 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 		setForm((f) => ({ ...f, domains: f.domains.filter((x) => x !== d) }))
 	}
 
-	function handleSave() {
-		if (!form.name || !form.projectName) {
-			addToast('Name and project name are required', 'error')
+	async function handleSave() {
+		if (!form.name?.trim() || !form.projectName?.trim() || !form.dbName?.trim()) {
+			addToast('Name, project name, and Mongo DB name are required', 'error')
 			return
 		}
-		saveClient(form)
-		addToast('Client saved successfully')
+		const parsedQs = parseQuickQuestionsJson(quickQuestionsJson)
+		if (!parsedQs.ok) {
+			addToast(`Quick questions JSON: ${parsedQs.error}`, 'error')
+			return
+		}
+		try {
+			await saveClient(
+				{ ...form, predefinedQuickQuestions: parsedQs.value },
+				isNew,
+			)
+			setForm((f) => ({ ...f, predefinedQuickQuestions: parsedQs.value }))
+			setQuickQuestionsJson(JSON.stringify(parsedQs.value, null, 2))
+			addToast('Client saved successfully')
+		} catch (e) {
+			addToast(e instanceof Error ? e.message : String(e), 'error')
+		}
 	}
 
 	return (
@@ -96,7 +163,7 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 					</button>
 					<button
 						type="button"
-						onClick={handleSave}
+						onClick={() => void handleSave()}
 						className="text-sm px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition-colors font-medium"
 					>
 						Save client
@@ -106,7 +173,7 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 
 			{/* Sub-tabs */}
 			<div className="flex gap-1 bg-gray-100 p-1 rounded-lg mb-6 w-fit">
-				{(['config', 'prompt', 'token'] as const).map((t) => (
+				{(['config', 'prompt', 'branding', 'token'] as const).map((t) => (
 					<button
 						key={t}
 						type="button"
@@ -114,7 +181,7 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 						className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors capitalize ${tab === t ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
 							}`}
 					>
-						{t === 'token' ? 'Token & embed' : t}
+						{t === 'token' ? 'Token & embed' : t === 'branding' ? 'Branding' : t}
 					</button>
 				))}
 			</div>
@@ -148,6 +215,19 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono"
 										/>
 										<p className="text-xs text-gray-400 mt-1">Used in API calls and the embed snippet.</p>
+									</div>
+									<div className="col-span-2">
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Mongo DB name</label>
+										<input
+											type="text"
+											value={form.dbName}
+											onChange={(e) => setForm((f) => ({ ...f, dbName: e.target.value.trim() }))}
+											placeholder="e.g. acme-agent-db"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono"
+										/>
+										<p className="text-xs text-gray-400 mt-1">
+											Tenant database in MongoDB (collections: conversations, shares). Must be unique per client.
+										</p>
 									</div>
 								</div>
 							</div>
@@ -218,19 +298,286 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 
 					{/* PROMPT */}
 					{tab === 'prompt' && (
-						<div className="bg-white border border-gray-200 rounded-xl p-6">
-							<div className="flex items-center justify-between mb-1">
-								<h2 className="text-sm font-semibold text-gray-700">System prompt (TOML)</h2>
-								<span className="text-xs text-gray-400">{form.prompt.length} chars</span>
+						<div className="space-y-5">
+							<div className="bg-white border border-gray-200 rounded-xl p-6">
+								<div className="flex items-center justify-between mb-1">
+									<h2 className="text-sm font-semibold text-gray-700">System prompt (TOML)</h2>
+									<span className="text-xs text-gray-400">{form.prompt.length} chars</span>
+								</div>
+								<p className="text-xs text-gray-400 mb-4">Leave empty to inherit the global default prompt.</p>
+								<textarea
+									value={form.prompt}
+									onChange={(e) => setForm((f) => ({ ...f, prompt: e.target.value }))}
+									rows={14}
+									className="w-full border border-gray-200 rounded-lg px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono resize-none"
+									placeholder={`[persona]\nname = "Osca"\nrole = "Smart adviser"\nmax_history_size = 20\n\n[welcome]\nmessage = "Hi, I'm Osca."\ninitial_questions = [\n  "What services do you offer?"\n]`}
+								/>
 							</div>
-							<p className="text-xs text-gray-400 mb-4">Leave empty to inherit the global default prompt.</p>
-							<textarea
-								value={form.prompt}
-								onChange={(e) => setForm((f) => ({ ...f, prompt: e.target.value }))}
-								rows={20}
-								className="w-full border border-gray-200 rounded-lg px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono resize-none"
-								placeholder={`[persona]\nname = "Osca"\nrole = "Smart adviser"\nmax_history_size = 20\n\n[welcome]\nmessage = "Hi, I'm Osca."\ninitial_questions = [\n  "What services do you offer?"\n]`}
-							/>
+
+							<div className="bg-white border border-gray-200 rounded-xl p-6">
+								<h2 className="text-sm font-semibold text-gray-700 mb-1">Related topics prompt (LightRAG)</h2>
+								<p className="text-xs text-gray-400 mb-4">
+									Sent as <code className="rounded bg-gray-100 px-1">topics_prompt</code> when loading related topics. Leave empty to use the chat
+									app default.
+								</p>
+								<textarea
+									value={form.topicsPrompt}
+									onChange={(e) => setForm((f) => ({ ...f, topicsPrompt: e.target.value }))}
+									rows={6}
+									className="w-full border border-gray-200 rounded-lg px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono resize-y min-h-[120px]"
+									placeholder="Instruction text for the related-topics model…"
+								/>
+							</div>
+
+							<div className="bg-white border border-gray-200 rounded-xl p-6">
+								<h2 className="text-sm font-semibold text-gray-700 mb-1">Welcome quick questions (JSON)</h2>
+								<p className="text-xs text-gray-400 mb-4">
+									Buttons under the first assistant message. Empty array <code className="rounded bg-gray-100 px-1">[]</code> keeps the built-in
+									default list. Each item: <code className="rounded bg-gray-100 px-1">id</code> (number),{' '}
+									<code className="rounded bg-gray-100 px-1">text</code> (string), optional{' '}
+									<code className="rounded bg-gray-100 px-1">label</code> (shorter button text).
+								</p>
+								<textarea
+									value={quickQuestionsJson}
+									onChange={(e) => setQuickQuestionsJson(e.target.value)}
+									rows={12}
+									className="w-full border border-gray-200 rounded-lg px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono resize-y min-h-[200px]"
+									placeholder={`[\n  { "id": 1, "text": "What services do you offer?", "label": "Services" }\n]`}
+								/>
+							</div>
+						</div>
+					)}
+
+					{/* BRANDING — public widget profile (GET /api/tenant/context) */}
+					{tab === 'branding' && (
+						<div className="space-y-5">
+							<div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
+								<h2 className="text-sm font-semibold text-gray-700">Chat UI identity & copy</h2>
+								<p className="text-xs text-gray-400">
+									Served to the browser with the token; never includes DB name, domains, or system prompt. Empty fields use app defaults.
+								</p>
+								<div className="grid grid-cols-2 gap-4">
+									<div>
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Assistant name</label>
+										<input
+											type="text"
+											value={form.publicBranding.assistantName}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, assistantName: e.target.value },
+												}))
+											}
+											placeholder="e.g. OSCA"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+										/>
+									</div>
+									<div>
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Role badge</label>
+										<input
+											type="text"
+											value={form.publicBranding.assistantBadge}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, assistantBadge: e.target.value },
+												}))
+											}
+											placeholder="e.g. AI advisor"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+										/>
+									</div>
+									<div className="col-span-2">
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Byline (landing header)</label>
+										<input
+											type="text"
+											value={form.publicBranding.byline}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, byline: e.target.value },
+												}))
+											}
+											placeholder="e.g. by Onepoint"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+										/>
+									</div>
+									<div className="col-span-2">
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Hero eyebrow</label>
+										<input
+											type="text"
+											value={form.publicBranding.heroEyebrow}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, heroEyebrow: e.target.value },
+												}))
+											}
+											placeholder="Short uppercase line above the headline"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+										/>
+									</div>
+									<div className="col-span-2">
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Hero title (optional)</label>
+										<input
+											type="text"
+											value={form.publicBranding.heroTitle}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, heroTitle: e.target.value },
+												}))
+											}
+											placeholder="If set, replaces the default two-line hero"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+										/>
+									</div>
+									<div className="col-span-2">
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Hero subtitle</label>
+										<textarea
+											value={form.publicBranding.heroSubtitle}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, heroSubtitle: e.target.value },
+												}))
+											}
+											rows={3}
+											placeholder="Paragraph under the hero title"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent resize-y"
+										/>
+									</div>
+									<div className="col-span-2">
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Disclaimer (plain text)</label>
+										<textarea
+											value={form.publicBranding.disclaimerText}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, disclaimerText: e.target.value },
+												}))
+											}
+											rows={2}
+											placeholder="Overrides default footer disclaimer when non-empty"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent resize-y"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
+								<h2 className="text-sm font-semibold text-gray-700">Logo</h2>
+								<p className="text-xs text-gray-400">HTTPS URLs only. Shown on the floating landing header when set.</p>
+								<div className="grid grid-cols-1 gap-4">
+									<div>
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Logo URL</label>
+										<input
+											type="url"
+											value={form.publicBranding.logoUrl}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, logoUrl: e.target.value },
+												}))
+											}
+											placeholder="https://…"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono"
+										/>
+									</div>
+									<div>
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Logo URL (dark) — optional</label>
+										<input
+											type="url"
+											value={form.publicBranding.logoUrlDark}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, logoUrlDark: e.target.value },
+												}))
+											}
+											placeholder="https://…"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono"
+										/>
+									</div>
+									<div>
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Logo alt text</label>
+										<input
+											type="text"
+											value={form.publicBranding.logoAlt}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, logoAlt: e.target.value },
+												}))
+											}
+											placeholder="Accessibility description"
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
+								<h2 className="text-sm font-semibold text-gray-700">Typography</h2>
+								<p className="text-xs text-gray-400">CSS font-family stacks, e.g. Inter, system-ui, sans-serif</p>
+								<div className="grid grid-cols-1 gap-4">
+									<div>
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Sans / UI</label>
+										<input
+											type="text"
+											value={form.publicBranding.fontSans}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, fontSans: e.target.value },
+												}))
+											}
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono"
+										/>
+									</div>
+									<div>
+										<label className="block text-xs font-medium text-gray-500 mb-1.5">Display / hero</label>
+										<input
+											type="text"
+											value={form.publicBranding.fontDisplay}
+											onChange={(e) =>
+												setForm((f) => ({
+													...f,
+													publicBranding: { ...f.publicBranding, fontDisplay: e.target.value },
+												}))
+											}
+											className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
+								<h2 className="text-sm font-semibold text-gray-700">Theme colors (hex)</h2>
+								<p className="text-xs text-gray-400 mb-2">Examples: accent #9a19ff, bg dark #1F1925. Leave blank for built-in defaults.</p>
+								<div className="grid grid-cols-2 gap-3">
+									{(Object.keys(form.publicBranding.theme) as (keyof TenantPublicTheme)[]).map((key) => (
+										<div key={key}>
+											<label className="block text-xs font-medium text-gray-500 mb-1.5 font-mono">{key}</label>
+											<input
+												type="text"
+												value={form.publicBranding.theme[key]}
+												onChange={(e) =>
+													setForm((f) => ({
+														...f,
+														publicBranding: {
+															...f.publicBranding,
+															theme: { ...f.publicBranding.theme, [key]: e.target.value },
+														},
+													}))
+												}
+												placeholder="#RRGGBB"
+												className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono"
+											/>
+										</div>
+									))}
+								</div>
+							</div>
 						</div>
 					)}
 
@@ -254,7 +601,22 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 								</div>
 								<button
 									type="button"
-									onClick={() => setForm((f) => ({ ...f, token: generateToken() }))}
+									onClick={() => {
+										void (async () => {
+											try {
+												if (isRegistryApiConfigured() && !isNew) {
+													const c = await regenRegistryToken(form.id)
+													setForm(c)
+													addToast('New token saved in registry')
+												} else {
+													setForm((f) => ({ ...f, token: generateToken() }))
+													addToast('Token regenerated locally — click Save client to persist')
+												}
+											} catch (e) {
+												addToast(e instanceof Error ? e.message : String(e), 'error')
+											}
+										})()
+									}}
 									className="text-xs text-red-500 hover:text-red-700 border border-red-100 hover:border-red-200 px-3 py-1.5 rounded-lg transition-colors"
 								>
 									Regenerate token
@@ -268,7 +630,23 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 								<div className="flex items-center justify-between mb-4">
 									<div>
 										<h2 className="text-sm font-semibold text-gray-700">Embed snippet</h2>
-										<p className="text-xs text-gray-400 mt-0.5">Paste before the closing &lt;/body&gt; tag.</p>
+										<p className="text-xs text-gray-400 mt-0.5 space-y-1">
+											<span className="block">
+												Paste before the closing &lt;/body&gt; tag. <code className="text-gray-500">httpUrl</code> is the OSCA REST
+												API; <code className="text-gray-500">websocketUrl</code> is the chat WebSocket.{' '}
+												<code className="text-gray-500">clientToken</code> is this client’s registry token (the widget sends it as the{' '}
+												<code className="text-gray-500">X-Osca-Token</code> header).
+											</span>
+											<span className="block">
+												Production snippet values: set <code className="text-gray-500">VITE_EMBED_SNIPPET_HTTP_URL</code>,{' '}
+												<code className="text-gray-500">VITE_EMBED_SNIPPET_WS_URL</code>, and{' '}
+												<code className="text-gray-500">VITE_EMBED_SNIPPET_WIDGET_SCRIPT_URL</code> in{' '}
+												<code className="text-gray-500">osca-configurator/.env</code> (hosted <code className="text-gray-500">widget.iife.js</code> URL), then restart Vite.
+											</span>
+											<span className="block">
+												The Context / LightRAG service (<code className="text-gray-500">CONTEXT_API_*</code>) is server-only — not set here.
+											</span>
+										</p>
 									</div>
 									<button
 										type="button"
@@ -281,6 +659,11 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 								<pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-xs font-mono text-gray-600 overflow-x-auto leading-relaxed">
 									{snippet}
 								</pre>
+								<p className="text-xs text-gray-400 mt-3">
+									<strong className="text-gray-500">Reminder:</strong>{' '}
+									<code className="rounded bg-gray-100 px-1">clientToken</code> in the snippet is always this saved client’s token; only the
+									three <code className="rounded bg-gray-100 px-1">VITE_EMBED_SNIPPET_*</code> env vars change the default URLs in the copied HTML.
+								</p>
 							</div>
 						</>
 					)}
@@ -309,12 +692,32 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 								<dd className="text-sm text-gray-700 font-mono mt-0.5">{form.model}</dd>
 							</div>
 							<div>
+								<dt className="text-xs text-gray-400">Mongo DB</dt>
+								<dd className="text-sm text-gray-700 font-mono mt-0.5">{form.dbName || '—'}</dd>
+							</div>
+							<div>
 								<dt className="text-xs text-gray-400">Domains</dt>
 								<dd className="text-sm text-gray-700 mt-0.5">{form.domains.length} allowed</dd>
 							</div>
 							<div>
 								<dt className="text-xs text-gray-400">Prompt</dt>
 								<dd className="text-sm text-gray-700 mt-0.5">{form.prompt ? 'Custom' : 'Global default'}</dd>
+							</div>
+							<div>
+								<dt className="text-xs text-gray-400">Topics prompt</dt>
+								<dd className="text-sm text-gray-700 mt-0.5">{form.topicsPrompt?.trim() ? 'Custom' : 'App default'}</dd>
+							</div>
+							<div>
+								<dt className="text-xs text-gray-400">Quick questions</dt>
+								<dd className="text-sm text-gray-700 mt-0.5">
+									{form.predefinedQuickQuestions?.length ? `${form.predefinedQuickQuestions.length} custom` : 'App default'}
+								</dd>
+							</div>
+							<div>
+								<dt className="text-xs text-gray-400">Public branding</dt>
+								<dd className="text-sm text-gray-700 mt-0.5">
+									{isPublicBrandingConfigured(form.publicBranding) ? 'Custom' : 'App default'}
+								</dd>
 							</div>
 						</dl>
 					</div>

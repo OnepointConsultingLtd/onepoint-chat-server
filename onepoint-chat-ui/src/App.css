@@ -91,13 +91,13 @@ textarea {
 
 .skeleton-container {
   width: 100%;
-  background-color: #fafffe;
+  background-color: var(--osca-bg-light);
   padding: 16px;
   border-radius: 8px;
 }
 
 .dark .skeleton-container {
-  background-color: #1F1925;
+  background-color: var(--osca-bg-dark);
 }
 
 .skeleton-line {

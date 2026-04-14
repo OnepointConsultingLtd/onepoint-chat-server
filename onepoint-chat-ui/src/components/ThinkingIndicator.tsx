@@ -6,6 +6,7 @@ import useDelayedVisible from '../hooks/useDelayedVisible';
 import { PROJECT_INFO } from '../lib/constants';
 import useChatStore from '../store/chatStore';
 import { useEffect, useState } from 'react';
+import { useTenantBranding } from '../hooks/useTenantBranding';
 
 const MESSAGES = {
   initial: [
@@ -39,7 +40,8 @@ export default function ThinkingIndicator() {
   const { isThinking } = useChatStore(useShallow(state => ({ isThinking: state.isThinking })));
   const delayedMessages = useDelayedVisible(isThinking);
   const [message, setMessage] = useState(() => pick(MESSAGES.initial));
-
+  const branding = useTenantBranding();
+  const assistantName = branding?.assistantName?.trim() || PROJECT_INFO.NAME;
   useEffect(() => {
     if (!isThinking) return;
     // Pick a fresh initial message each time thinking starts
@@ -60,11 +62,11 @@ export default function ThinkingIndicator() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.4 }}
-          className="w-full px-5 md:px-10 py-6 md:py-10 bg-gradient-to-br from-[#fafffe] to-[#fafffe] dark:from-[#1F1925] dark:to-[#1F1925] border-t border-gray-200 dark:border-gray-600 backdrop-blur-sm shadow-inner"
+          className="w-full px-5 md:px-10 py-6 md:py-10 bg-gradient-to-br from-[color:var(--osca-bg-light)] to-[color:var(--osca-bg-light)] dark:from-[color:var(--osca-bg-dark)] dark:to-[color:var(--osca-bg-dark)] border-t border-gray-200 dark:border-gray-600 backdrop-blur-sm shadow-inner"
         >
           {/* Header */}
           <div className="flex items-center mb-4">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#9a19ff] to-[#9a19ff] flex items-center justify-center mr-3 shadow-sm">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[color:var(--osca-accent)] to-[color:var(--osca-accent)] flex items-center justify-center mr-3 shadow-sm">
               <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -74,21 +76,21 @@ export default function ThinkingIndicator() {
               </svg>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700 dark:!text-[#fafffe]">
+              <span className="text-sm font-medium text-gray-700 dark:!text-[color:var(--osca-text-on-dark)]">
                 {' '}
-                {PROJECT_INFO.NAME}
+                {assistantName}
               </span>
               <div className="flex space-x-1">
                 <div
-                  className="w-2 h-2 bg-[#9a19ff] dark:bg-[#9a19ff] rounded-full animate-bounce"
+                  className="w-2 h-2 bg-[color:var(--osca-accent)] dark:bg-[color:var(--osca-accent)] rounded-full animate-bounce"
                   style={{ animationDelay: '0ms' }}
                 ></div>
                 <div
-                  className="w-2 h-2 bg-[#9a19ff] dark:bg-[#9a19ff] rounded-full animate-bounce"
+                  className="w-2 h-2 bg-[color:var(--osca-accent)] dark:bg-[color:var(--osca-accent)] rounded-full animate-bounce"
                   style={{ animationDelay: '150ms' }}
                 ></div>
                 <div
-                  className="w-2 h-2 bg-[#9a19ff] dark:bg-[#9a19ff] rounded-full animate-bounce"
+                  className="w-2 h-2 bg-[color:var(--osca-accent)] dark:bg-[color:var(--osca-accent)] rounded-full animate-bounce"
                   style={{ animationDelay: '300ms' }}
                 ></div>
               </div>
@@ -120,9 +122,9 @@ export default function ThinkingIndicator() {
           >
             <div className="flex items-start gap-4 mb-5">
               <div className="relative flex-shrink-0">
-                <div className="absolute inset-0 bg-[#9a19ff]/25 rounded-full blur-md animate-pulse" />
+                <div className="absolute inset-0 bg-[color:color-mix(in_srgb,var(--osca-accent)_25%,transparent)] rounded-full blur-md animate-pulse" />
                 <svg
-                  className="w-7 h-7 text-[#9a19ff] dark:text-[#9a19ff]"
+                  className="w-7 h-7 text-[color:var(--osca-accent)] dark:text-[color:var(--osca-accent)]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -138,10 +140,10 @@ export default function ThinkingIndicator() {
               </div>
 
               <div>
-                <h4 className="text-base md:text-lg font-semibold text-gray-800 dark:!text-[#fafffe]">
+                <h4 className="text-base md:text-lg font-semibold text-gray-800 dark:!text-[color:var(--osca-text-on-dark)]">
                   {message.title}
                 </h4>
-                <p className="text-sm md:text-base text-gray-600 dark:!text-[#fafffe] mt-1 leading-relaxed">
+                <p className="text-sm md:text-base text-gray-600 dark:!text-[color:var(--osca-text-on-dark)] mt-1 leading-relaxed">
                   {message.subtitle}
                 </p>
               </div>
@@ -150,13 +152,13 @@ export default function ThinkingIndicator() {
             {/* ALIVE Progress Bar */}
             <div className="relative mt-4 h-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               {/* Base shimmer wave */}
-              <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] animate-progress-alive rounded-full"></div>
+              <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-[color:var(--osca-accent)] via-[color:var(--osca-accent)] to-[color:var(--osca-accent)] animate-progress-alive rounded-full"></div>
 
               {/* Subtle glowing overlay */}
-              <div className="absolute inset-y-0 left-0 w-full rounded-full bg-gradient-to-r from-[#9a19ff]/10 via-[#9a19ff]/10 to-[#9a19ff]/10 animate-glow"></div>
+              <div className="absolute inset-y-0 left-0 w-full rounded-full bg-gradient-to-r from-[color:color-mix(in_srgb,var(--osca-accent)_10%,transparent)] via-[color:color-mix(in_srgb,var(--osca-accent)_10%,transparent)] to-[color:color-mix(in_srgb,var(--osca-accent)_10%,transparent)] animate-glow"></div>
 
               {/* Optional fine "signal" line — adds intelligence vibe */}
-              <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-[#9a19ff] via-[#9a19ff] to-[#9a19ff] blur-sm animate-pulse"></div>
+              <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-[color:var(--osca-accent)] via-[color:var(--osca-accent)] to-[color:var(--osca-accent)] blur-sm animate-pulse"></div>
             </div>
           </motion.div>
         </motion.div>

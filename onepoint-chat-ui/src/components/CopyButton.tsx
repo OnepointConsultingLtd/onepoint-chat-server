@@ -13,7 +13,7 @@ export default function CopyButton({ text, id, copiedId, onCopy }: CopyButtonPro
   const isActive = copiedId === id;
 
   const baseColorClass =
-    'text-[#64748b] hover:text-[#9a19ff] dark:text-gray-500 dark:hover:text-[#9a19ff]';
+    'text-[#64748b] hover:text-[color:var(--osca-accent)] dark:text-gray-500 dark:hover:text-[color:var(--osca-accent)]';
 
   return (
     <button

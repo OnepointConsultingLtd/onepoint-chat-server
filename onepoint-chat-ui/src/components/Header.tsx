@@ -155,7 +155,7 @@ export default function Header() {
                 aria-label="Close dropdown"
               ></div>
               {/* Dropdown menu */}
-              <div className="absolute right-0 mt-2 w-48 bg-[#fafffe] dark:!bg-[#1F1925] rounded-lg shadow-lg z-40 border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] overflow-hidden flex flex-col py-1 ">
+              <div className="absolute right-0 mt-2 w-48 bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)] rounded-lg shadow-lg z-40 border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)] overflow-hidden flex flex-col py-1 ">
                 <MiniGradientButton onClick={() => handleExport('markdown')} icon={<FaMarkdown />}>
                   Markdown
                 </MiniGradientButton>

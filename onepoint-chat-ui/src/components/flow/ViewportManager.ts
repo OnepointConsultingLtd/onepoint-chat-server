@@ -1,12 +1,12 @@
 import { ReactFlowInstance } from '@xyflow/react';
 import { Message } from '../../type/types';
+import { getMessageFlowCardCount } from '../../utils/messageUtils';
 
 /**
  * Calculates the last card ID based on the messages
  */
 export const getLastCardId = (messages: Message[]): string => {
-  const startIndex = messages.length > 1 ? 1 : 0;
-  const cardCount = Math.ceil((messages.length - startIndex) / 2);
+  const cardCount = getMessageFlowCardCount(messages);
   return `card-${Math.max(0, cardCount - 1)}`;
 };
 

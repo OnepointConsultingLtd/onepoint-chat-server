@@ -1,126 +1,95 @@
 import crypto from "crypto";
-import express, { RequestHandler } from "express";
-import { getChatHistory, getChatHistoryWithMetadata, getCollection, formatConversationHistory, extractUserMessageContent, deleteConversation } from "./handleApi";
-import { getSharesCollection } from "./mongoClient";
+import express, { RequestHandler, Router } from "express";
+import {
+  getChatHistory,
+  getChatHistoryWithMetadata,
+  formatConversationHistory,
+  extractUserMessageContent,
+  deleteConversation,
+} from "./handleApi";
 import type { MongoConversation } from "../types";
 import { isWelcomeMessage } from "../utils/isWelcomeMessage";
 import { getVerifiedUserId } from "./verifyClerkAuth";
 import cors from "cors";
 import path from "path";
-
-const ALLOWED_ORIGINS = ["https://osca.onepointltd.ai", "http://localhost:5173", "http://localhost:3000"];
+import { resolveClient } from "../middleware/resolveClient";
+import { getCachedAllowedOrigins, insertClientDoc, updateClientDoc, deleteClientDoc, listAllClients } from "../db/registry";
+import type { ClientDocument } from "../types/clientDocument";
+import type { LLMProviderName } from "../types/enums";
+import { sanitizeTenantPublicBranding } from "../types/tenantPublicBranding";
 
 const app = express();
 app.use(express.json({ limit: "50mb" }));
-app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
+function isLocalDevHttpOrigin(origin: string): boolean {
+  try {
+    const u = new URL(origin);
+    return u.protocol === "http:" && (u.hostname === "localhost" || u.hostname === "127.0.0.1");
+  } catch {
+    return false;
+  }
+}
 
-// Serve static files from the dist directory
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+      const allowed = getCachedAllowedOrigins();
+      if (allowed.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      if (process.env.NODE_ENV !== "production" && isLocalDevHttpOrigin(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    },
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "X-Osca-Token", "X-Admin-Secret"],
+  }),
+);
+
+function requireAdmin(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+): void {
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) {
+    res.status(503).json({ error: "ADMIN_SECRET is not configured" });
+    return;
+  }
+  const hdr = req.headers["x-admin-secret"];
+  if (hdr !== secret) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+  next();
+}
+
 const static_files_path = path.join(__dirname, "../../onepoint-chat-ui/dist");
 app.use(express.static(static_files_path));
 console.log(`Serving static files from ${static_files_path}`);
 
-// ?metadata=true to include isActive, userId, anonymousId alongside messages
-app.get("/api/chat/:conversationId", (async (req, res) => {
+const chatRouter = Router();
+chatRouter.use(resolveClient);
+
+chatRouter.get("/share/token/:token", (async (req, res) => {
   try {
-    const { conversationId } = req.params;
-    const includeMetadata = req.query.metadata === 'true';
-
-    if (includeMetadata) {
-      // Return history with metadata (isActive, userId, anonymousId, etc.)
-      const result = await getChatHistoryWithMetadata(conversationId);
-      if (result) {
-        res.json(result);
-      } else {
-        res.status(404).json({ error: "Conversation not found" });
-      }
-    } else {
-      // Return only chat history (backward compatible)
-      const history = await getChatHistory(conversationId);
-      res.json(history);
-    }
-  } catch (error: any) {
-    console.error("Error fetching chat history:", error.message);
-    res.status(500).json({ error: "Failed to fetch chat history" });
-  }
-}) as RequestHandler);
-
-// Get reference sources for a specific message
-app.get("/api/chat/:conversationId/message/:messageId/references", (async (req, res) => {
-  try {
-    const { conversationId, messageId } = req.params;
-    const collection = await getCollection();
-
-    const conversation = await collection.findOne({ conversationId });
-    if (!conversation) {
-      return res.status(404).json({ error: "Conversation not found" });
-    }
-
-    // Find the specific message with reference sources
-    const message = conversation.chatHistory.find((msg: { id?: string; messageId?: string }) => msg.id === messageId || msg.messageId === messageId);
-    if (!message) {
-      return res.status(404).json({ error: "Message not found" });
-    }
-
-    const referenceSources = message.referenceSources || [];
-    res.json({ referenceSources });
-  } catch (error: any) {
-    console.error("Error fetching reference sources:", error.message);
-    res.status(500).json({ error: "Failed to fetch reference sources" });
-  }
-}) as RequestHandler);
-
-// Token-based share (new) - must be before :conversationId to avoid conflict
-app.post("/api/chat/share/create", (async (req, res) => {
-  try {
-    const userId = req.headers["x-user-id"] as string | undefined;
-    const anonymousId = req.headers["anonymousid"] as string | undefined;
-    if (!userId && !anonymousId) {
-      return res.status(401).json({ error: "x-user-id or anonymousId header required" });
-    }
-    const { conversationId, type, messageId } = req.body;
-    if (!conversationId || !type) {
-      return res.status(400).json({ error: "conversationId and type required" });
-    }
-    if (type !== "full" && type !== "thread") {
-      return res.status(400).json({ error: "type must be 'full' or 'thread'" });
-    }
-    if (type === "thread" && !messageId) {
-      return res.status(400).json({ error: "messageId required for thread share" });
-    }
-    const token = crypto.randomBytes(9).toString("base64url").slice(0, 12);
-    const now = new Date();
-    const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    const sharesCollection = await getSharesCollection();
-    await sharesCollection.createIndex({ token: 1 }, { unique: true });
-    await sharesCollection.insertOne({
-      token,
-      type,
-      conversationId,
-      ...(type === "thread" && { messageId }),
-      ...(userId && { userId }),
-      createdAt: now,
-      expiresAt,
-    });
-    res.json({ token });
-  } catch (error: any) {
-    console.error("Error creating share:", error.message);
-    res.status(500).json({ error: "Failed to create share" });
-  }
-}) as RequestHandler);
-
-// Get share by token
-app.get("/api/chat/share/token/:token", (async (req, res) => {
-  try {
-    const { token } = req.params;
-    const sharesCollection = await getSharesCollection();
-    const share = await sharesCollection.findOne({ token });
+    const { token: shareToken } = req.params;
+    const db = req.clientDb!;
+    const sharesCollection = db.collection("shares");
+    const share = await sharesCollection.findOne({ token: shareToken });
     if (!share) {
       return res.status(404).json({ error: "Share not found" });
     }
     if (new Date() > share.expiresAt) {
       return res.status(410).json({ error: "Share expired" });
     }
-    const collection = await getCollection();
+    const collection = db.collection("conversations");
     if (share.type === "full") {
       const conversation = await collection.findOne({ conversationId: share.conversationId });
       if (!conversation) {
@@ -128,18 +97,19 @@ app.get("/api/chat/share/token/:token", (async (req, res) => {
       }
       const formattedHistory = formatConversationHistory(conversation as unknown as MongoConversation);
       const filteredHistory = formattedHistory.filter(
-        (msg: { role: string; content?: string }) => !(msg.role === "assistant" && isWelcomeMessage(msg.content))
+        (msg: { role: string; content?: string }) => !(msg.role === "assistant" && isWelcomeMessage(msg.content)),
       );
-      const messages = filteredHistory.map((msg: { id?: string; role: string; content: string; referenceSources?: unknown[] }) => ({
-        id: msg.id || `${share.conversationId}-${msg.role}-${Date.now()}`,
-        text: msg.content,
-        type: msg.role === "user" ? "user" : "agent",
-        timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
-        referenceSources: msg.referenceSources,
-      }));
+      const messages = filteredHistory.map(
+        (msg: { id?: string; role: string; content: string; referenceSources?: unknown[] }) => ({
+          id: msg.id || `${share.conversationId}-${msg.role}-${Date.now()}`,
+          text: msg.content,
+          type: msg.role === "user" ? "user" : "agent",
+          timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
+          referenceSources: msg.referenceSources,
+        }),
+      );
       return res.json({ type: "full", messages, conversationId: share.conversationId });
     }
-    // type === 'thread'
     const conversation = await collection.findOne({ "chatHistory.messageId": share.messageId });
     if (!conversation) {
       return res.status(404).json({ error: "Conversation not found" });
@@ -177,17 +147,110 @@ app.get("/api/chat/share/token/:token", (async (req, res) => {
       referenceSources: msg.referenceSources,
     }));
     return res.json({ type: "thread", messages, conversationId: conversation.conversationId });
-  } catch (error: any) {
-    console.error("Error fetching share by token:", error.message);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error fetching share by token:", msg);
     res.status(500).json({ error: "Failed to fetch share" });
   }
 }) as RequestHandler);
 
+chatRouter.post("/share/create", (async (req, res) => {
+  try {
+    const userId = req.headers["x-user-id"] as string | undefined;
+    const anonymousId = req.headers["anonymousid"] as string | undefined;
+    if (!userId && !anonymousId) {
+      return res.status(401).json({ error: "x-user-id or anonymousId header required" });
+    }
+    const { conversationId, type, messageId } = req.body;
+    if (!conversationId || !type) {
+      return res.status(400).json({ error: "conversationId and type required" });
+    }
+    if (type !== "full" && type !== "thread") {
+      return res.status(400).json({ error: "type must be 'full' or 'thread'" });
+    }
+    if (type === "thread" && !messageId) {
+      return res.status(400).json({ error: "messageId required for thread share" });
+    }
+    const token = crypto.randomBytes(9).toString("base64url").slice(0, 12);
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const sharesCollection = req.clientDb!.collection("shares");
+    await sharesCollection.createIndex({ token: 1 }, { unique: true });
+    await sharesCollection.insertOne({
+      token,
+      type,
+      conversationId,
+      ...(type === "thread" && { messageId }),
+      ...(userId && { userId }),
+      ...(anonymousId && { anonymousId }),
+      createdAt: now,
+      expiresAt,
+    });
+    res.json({ token });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error creating share:", msg);
+    res.status(500).json({ error: "Failed to create share" });
+  }
+}) as RequestHandler);
 
-app.get("/api/conversations/user/:userId", (async (req, res) => {
+chatRouter.get("/:conversationId/message/:messageId/references", (async (req, res) => {
+  try {
+    const { conversationId, messageId } = req.params;
+    const collection = req.clientDb!.collection("conversations");
+
+    const conversation = await collection.findOne({ conversationId });
+    if (!conversation) {
+      return res.status(404).json({ error: "Conversation not found" });
+    }
+
+    const message = conversation.chatHistory.find((msg: { id?: string; messageId?: string }) => msg.id === messageId || msg.messageId === messageId);
+    if (!message) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+
+    const referenceSources = message.referenceSources || [];
+    res.json({ referenceSources });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error fetching reference sources:", msg);
+    res.status(500).json({ error: "Failed to fetch reference sources" });
+  }
+}) as RequestHandler);
+
+chatRouter.get("/:conversationId", (async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const includeMetadata = req.query.metadata === "true";
+    const db = req.clientDb!;
+
+    if (includeMetadata) {
+      const result = await getChatHistoryWithMetadata(db, conversationId);
+      if (result) {
+        res.json(result);
+      } else {
+        res.status(404).json({ error: "Conversation not found" });
+      }
+    } else {
+      const history = await getChatHistory(db, conversationId);
+      res.json(history);
+    }
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error fetching chat history:", msg);
+    res.status(500).json({ error: "Failed to fetch chat history" });
+  }
+}) as RequestHandler);
+
+app.use("/api/chat", chatRouter);
+
+const conversationsRouter = Router();
+conversationsRouter.use(resolveClient);
+
+conversationsRouter.get("/user/:userId", (async (req, res) => {
   try {
     const { userId } = req.params;
-    const collection = await getCollection();
+    const collection = req.clientDb!.collection("conversations");
 
     const conversations = await collection
       .find({ userId })
@@ -195,7 +258,7 @@ app.get("/api/conversations/user/:userId", (async (req, res) => {
       .limit(50)
       .toArray();
 
-    const conversationList = conversations.map(conv => ({
+    const conversationList = conversations.map((conv) => ({
       conversationId: conv.conversationId,
       userMessage: conv.userMessage,
       timestamp: conv.timestamp,
@@ -206,14 +269,14 @@ app.get("/api/conversations/user/:userId", (async (req, res) => {
     }));
 
     res.json({ conversations: conversationList });
-  } catch (error: any) {
-    console.error("Error fetching user conversations:", error.message);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error fetching user conversations:", msg);
     res.status(500).json({ error: "Failed to fetch conversations" });
   }
 }) as RequestHandler);
 
-
-app.delete("/api/conversations/:conversationId", (async (req, res) => {
+conversationsRouter.delete("/:conversationId", (async (req, res) => {
   try {
     const { conversationId } = req.params;
     const userId = await getVerifiedUserId(req);
@@ -222,26 +285,144 @@ app.delete("/api/conversations/:conversationId", (async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const result = await deleteConversation(conversationId, userId);
+    const result = await deleteConversation(req.clientDb!, conversationId, userId);
 
     if (!result.deleted) {
-      const status = result.reason === "not_found" ? 404
-        : result.reason === "forbidden" ? 403
-        : 500;
+      const status =
+        result.reason === "not_found" ? 404 : result.reason === "forbidden" ? 403 : 500;
       return res.status(status).json({ error: result.reason });
     }
 
     res.json({ deleted: true });
-  } catch (error: any) {
-    console.error("Error deleting conversation:", error.message);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error deleting conversation:", msg);
     res.status(500).json({ error: "Failed to delete conversation" });
   }
 }) as RequestHandler);
 
-// SPA fallback: serve index.html for non-API client-side routes (e.g. /share/:token)
+app.use("/api/conversations", conversationsRouter);
+
+const tenantRouter = Router();
+tenantRouter.use(resolveClient);
+tenantRouter.get("/context", ((req, res) => {
+  const c = req.client!;
+  const publicBranding = sanitizeTenantPublicBranding(c.publicBranding);
+  res.json({
+    projectName: c.projectName,
+    name: c.name,
+    clientId: c._id,
+    topicsPrompt: c.topicsPrompt ?? "",
+    predefinedQuickQuestions: c.predefinedQuickQuestions ?? [],
+    ...(publicBranding ? { publicBranding } : {}),
+  });
+}) as RequestHandler);
+app.use("/api/tenant", tenantRouter);
+
+app.get("/admin/clients", requireAdmin, async (_req, res) => {
+  try {
+    const clients = await listAllClients();
+    res.json(clients);
+    return;
+  } catch (e: unknown) {
+    res.status(500).json({ error: String(e) });
+  }
+});
+
+app.post("/admin/clients", requireAdmin, async (req, res) => {
+  try {
+    const b = req.body as Partial<ClientDocument>;
+    if (!b.name || !b.projectName || !b.dbName || !b.domains?.length) {
+      res.status(400).json({ error: "name, projectName, dbName, and domains[] are required" });
+      return;
+    }
+    const token = b.token || `osca_live_${crypto.randomBytes(24).toString("hex")}`;
+    const doc = await insertClientDoc({
+      name: b.name,
+      projectName: b.projectName,
+      token,
+      domains: b.domains,
+      provider: (b.provider as LLMProviderName) || "openai",
+      model: b.model || "gpt-4o",
+      prompt: typeof b.prompt === "string" ? b.prompt : "",
+      dbName: b.dbName,
+      active: b.active !== false,
+      ...(typeof b.topicsPrompt === "string" ? { topicsPrompt: b.topicsPrompt } : {}),
+      ...(Array.isArray(b.predefinedQuickQuestions)
+        ? { predefinedQuickQuestions: b.predefinedQuickQuestions }
+        : {}),
+      ...(b.publicBranding !== undefined
+        ? (() => {
+            const pb = sanitizeTenantPublicBranding(b.publicBranding);
+            return pb ? { publicBranding: pb } : {};
+          })()
+        : {}),
+    });
+    res.status(201).json(doc);
+    return;
+  } catch (e: unknown) {
+    res.status(500).json({ error: String(e) });
+  }
+});
+
+app.put("/admin/clients/:id", requireAdmin, async (req, res) => {
+  try {
+    const body = req.body as Partial<Omit<ClientDocument, "_id" | "createdAt">> & { publicBranding?: unknown };
+    const patch = { ...body } as Partial<Omit<ClientDocument, "_id" | "createdAt">>;
+    delete (patch as { _id?: unknown })._id;
+    delete (patch as { createdAt?: unknown }).createdAt;
+
+    let unset: Record<string, 1> | undefined;
+    if ("publicBranding" in body) {
+      delete patch.publicBranding;
+      const pb = sanitizeTenantPublicBranding(body.publicBranding);
+      if (pb) patch.publicBranding = pb;
+      else unset = { publicBranding: 1 };
+    }
+
+    const updated = await updateClientDoc(req.params.id, patch, unset);
+    if (!updated) {
+      res.status(404).json({ error: "Client not found" });
+      return;
+    }
+    res.json(updated);
+    return;
+  } catch (e: unknown) {
+    res.status(500).json({ error: String(e) });
+  }
+});
+
+app.delete("/admin/clients/:id", requireAdmin, async (req, res) => {
+  try {
+    const ok = await deleteClientDoc(req.params.id);
+    if (!ok) {
+      res.status(404).json({ error: "Client not found" });
+      return;
+    }
+    res.json({ deleted: true });
+    return;
+  } catch (e: unknown) {
+    res.status(500).json({ error: String(e) });
+  }
+});
+
+app.post("/admin/clients/:id/regen-token", requireAdmin, async (req, res) => {
+  try {
+    const newToken = `osca_live_${crypto.randomBytes(24).toString("hex")}`;
+    const updated = await updateClientDoc(req.params.id, { token: newToken });
+    if (!updated) {
+      res.status(404).json({ error: "Client not found" });
+      return;
+    }
+    res.json(updated);
+    return;
+  } catch (e: unknown) {
+    res.status(500).json({ error: String(e) });
+  }
+});
+
 app.get(/^\/(?!api\/).*/, (_req, res) => {
   res.sendFile(path.join(static_files_path, "index.html"));
 });
 
-const PORT = process.env.REST_API_PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+export default app;

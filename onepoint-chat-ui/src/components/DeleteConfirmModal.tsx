@@ -35,7 +35,7 @@ export default function DeleteConfirmModal({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: 'spring', duration: 0.3 }}
-            className="relative w-full max-w-sm rounded-2xl bg-white dark:bg-[#1F1925] shadow-xl border border-gray-200 dark:border-gray-700 p-6"
+            className="relative w-full max-w-sm rounded-2xl bg-white dark:bg-[color:var(--osca-bg-dark)] shadow-xl border border-gray-200 dark:border-gray-700 p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 mb-4">
@@ -45,7 +45,7 @@ export default function DeleteConfirmModal({
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-[#fafffe]">{title}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-[color:var(--osca-text-on-dark)]">{title}</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{message}</p>
               </div>
             </div>

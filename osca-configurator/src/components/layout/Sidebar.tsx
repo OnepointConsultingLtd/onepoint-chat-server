@@ -4,6 +4,7 @@ const links = [
   { to: '/clients', label: 'Clients' },
   { to: '/widget-builder', label: 'Widget builder' },
   { to: '/global-defaults', label: 'Global defaults' },
+  { to: '/documentation', label: 'Documentation' },
 ]
 
 export default function Sidebar() {

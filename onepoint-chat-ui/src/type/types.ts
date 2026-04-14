@@ -19,6 +19,8 @@ export type ServerMessage = {
   role: 'user' | 'assistant' | 'operator' | 'system';
   content: string;
   id?: string;
+  /** From server / Mongo when tenant welcome was flagged. */
+  isWelcome?: boolean;
   timestamp?: Date;
   hl_keywords?: string[];
   ll_keywords?: string[];
@@ -30,6 +32,8 @@ export type Message = {
   messageId: string;
   text: string;
   type: 'user' | 'agent';
+  /** Tenant welcome from `initial_questions` (WebSocket / history); not user-authored. */
+  isWelcome?: boolean;
   timestamp: Date;
   conversationId?: string;
   hl_keywords?: string[];
@@ -64,10 +68,7 @@ export type ChatContextType = {
 
 declare global {
   interface Window {
-    oscaConfig: {
-      websocketUrl: string;
-      httpUrl: string;
-    };
+    oscaConfig: Partial<import('./window').OscaChatConfig>;
   }
 }
 

@@ -7,7 +7,7 @@ import { getContext } from "../../api";
 describe.skip("getContext Integration Tests", () => {
   it("should successfully fetch context for a valid question", async () => {
     const question = "What are Onepoint's AI capabilities?";
-    const result = await getContext(question);
+    const result = await getContext(question, { projectName: "onepoint_v2" });
     // Verify the result
     expect(result.success).toBeTruthy();
     console.log("This is the result: ", result);

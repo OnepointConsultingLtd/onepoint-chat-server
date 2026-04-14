@@ -5,13 +5,14 @@ import { Message } from '../type/types';
  * @param text - The text of the message
  * @returns A message object
  */
-export function messageFactoryAgent(text: string): Message {
+export function messageFactoryAgent(text: string, opts?: { isWelcome?: boolean }): Message {
   return {
     id: uuidv4(),
     messageId: uuidv4(),
     text,
     type: 'agent',
     timestamp: new Date(),
+    ...(opts?.isWelcome ? { isWelcome: true } : {}),
   };
 }
 
@@ -22,7 +23,11 @@ export function messageFactoryAgent(text: string): Message {
  * @param metadata - Optional metadata for the message
  * @returns A message object
  */
-export function messageFactoryUser(text: string, conversationId: string, metadata?: Message['metadata']): Message {
+export function messageFactoryUser(
+  text: string,
+  conversationId: string,
+  metadata?: Message['metadata']
+): Message {
   return {
     id: uuidv4(),
     messageId: uuidv4(),

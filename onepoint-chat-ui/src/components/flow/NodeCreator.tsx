@@ -18,8 +18,7 @@ export function createNodes(
   if (!messages || messages.length === 0) return [];
 
   const startIndex = getConversationStartIndex(messages);
-  const cardCount = Math.ceil((messages.length - startIndex) / 2);
-  const lastCardIndex = cardCount - 1;
+  const remainder = messages.length - startIndex;
 
   // Use desktop constants
   const cardWidth = CARD_WIDTH;
@@ -27,10 +26,38 @@ export function createNodes(
   const messageCardY = CARD_Y_POSITION;
   const messageCardHeights: number[] = [];
 
+  // Skipped-prefix welcome with no user/agent pairs yet → one card (welcome + input).
+  if (startIndex >= 1 && remainder === 0 && messages[0]?.type === 'agent') {
+    const cardId = 'card-0';
+    const cardHeight = cardHeights?.[cardId] ?? 200;
+    messageCardHeights.push(cardHeight);
+    nodes.push({
+      id: cardId,
+      type: 'custom',
+      data: {
+        content: (
+          <MessageCard
+            welcomeOnly={messages[0]}
+            userMessage={messages[0]}
+            agentMessage={null}
+            isLastCard={true}
+            isThinking={isThinking}
+            handleSubmit={handleSubmit}
+            onHeightChange={h => setCardHeight && setCardHeight(cardId, h)}
+          />
+        ),
+      },
+      position: { x: 0, y: messageCardY },
+      style: { width: cardWidth },
+    });
+  }
+
+  const lastCardIndex = nodes.length + Math.ceil(remainder / 2) - 1;
+
   for (let i = startIndex; i < messages.length; i += 2) {
     const userMessage = messages[i];
     const agentMessage = i + 1 < messages.length ? messages[i + 1] : null;
-    const cardIndex = Math.floor((i - startIndex) / 2);
+    const cardIndex = nodes.length;
     const isLastCard = cardIndex === lastCardIndex;
     const cardId = `card-${cardIndex}`;
     const cardHeight = cardHeights?.[cardId] ?? 200;

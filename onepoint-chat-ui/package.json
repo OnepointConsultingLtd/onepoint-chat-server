@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build:widget": "vite build -c vite.widget.config.ts",
+    "build": "tsc -b && vite build && vite build -c vite.widget.config.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "cd dist && npx http-server",

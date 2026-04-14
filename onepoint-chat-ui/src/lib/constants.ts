@@ -1,5 +1,4 @@
 // constants.ts
-export const INITIAL_MESSAGE = "Welcome to Onepoint. I'm Osca — your advisor for data";
 
 export const PROJECT_INFO = {
   NAME: 'Osca',

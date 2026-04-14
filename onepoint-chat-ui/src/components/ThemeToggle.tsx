@@ -6,7 +6,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-3 w-12 rounded-lg cursor-pointer bg-[#fafffe] hover:bg-gray-200 border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] dark:!bg-[#1F1925] dark:hover:bg-[#2a1f35] transition-all duration-200 text-gray-600 dark:!text-[#fafffe] hover:text-gray-900 dark:hover:!text-[#fafffe] group"
+      className="p-3 w-12 rounded-lg cursor-pointer bg-[color:var(--osca-bg-light)] hover:bg-gray-200 border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)] dark:!bg-[color:var(--osca-bg-dark)] dark:hover:bg-[color:var(--osca-surface-dark)] transition-all duration-200 text-gray-600 dark:!text-[color:var(--osca-text-on-dark)] hover:text-gray-900 dark:hover:!text-[color:var(--osca-text-on-dark)] group"
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       type="button"
     >

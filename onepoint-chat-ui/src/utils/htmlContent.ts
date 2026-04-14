@@ -1,4 +1,3 @@
-import { INITIAL_MESSAGE } from "../lib/constants";
 import { Message } from "../type/types";
 import markdownToHtmlFormat from "./markdownToHtmlFormat";
 
@@ -179,7 +178,7 @@ export function htmlContent(chatHistory: Message[]) {
 		</div>
 		<div class="conversation">
 			${chatHistory
-			.filter(message => !message.text.includes(INITIAL_MESSAGE))
+			.filter(message => !message.isWelcome)
 			.map((message, index) => `
 				<div class="message ${message.type}">
 					<div class="sender-label">${message.type === 'user' ? 'User Query' : 'OSCA Response'}</div>

@@ -39,14 +39,14 @@ export default function ChatContainer() {
   }
 
   return (
-    <main className="flex min-h-screen bg-[#fafffe] dark:!bg-[#1F1925]">
+    <main className="flex min-h-screen bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)]">
       {isLoaded && isSignedIn && (
         <Sidebar
           continueConversation={continueConversation}
           deleteConversation={deleteConversation}
         />
       )}
-      <div className="flex flex-col flex-1 bg-[#fafffe] dark:!bg-[#1F1925]">
+      <div className="flex flex-col flex-1 bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)]">
         <Header />
         <div className="flex-1 flex flex-col" style={{ height: 'calc(100vh - 10rem)' }}>
           <Flow

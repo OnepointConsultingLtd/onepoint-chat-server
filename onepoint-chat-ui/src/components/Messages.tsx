@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import chatStore from '../store/chatStore';
 import { PredefinedQuestion, Topic } from '../type/types';
-import { getLastCardUserMessage } from '../utils/messageUtils';
+import { getLastCardUserMessage, isConversationInWelcomePhase } from '../utils/messageUtils';
 import BackToBottom from './FloatingChat/BackToBottom';
 import RenderReactMarkdown from './RenderReactMarkdown';
 import ThinkingIndicator from './ThinkingIndicator';
@@ -45,6 +45,8 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
     const userMessage = getLastCardUserMessage(msgs);
     if (userMessage) {
       setIsInitialMessage(userMessage, true);
+    } else if (isConversationInWelcomePhase(msgs)) {
+      chatStore.setState({ isInitialMessage: true, showInput: true, showButton: false });
     }
   }, [messages, setIsInitialMessage]);
 
@@ -96,12 +98,12 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
   };
 
   return (
-    <div className="relative -z-[0] flex min-h-0 flex-1 flex-col bg-[#fafffe] dark:!bg-[#1F1925]">
+    <div className="relative -z-[0] flex min-h-0 flex-1 flex-col bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)]">
       {/* Floating background elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-4 w-32 h-32 bg-[#9a19ff]/5 rounded-full blur-xl"></div>
-        <div className="absolute top-40 right-8 w-24 h-24 bg-[#9a19ff]/5 rounded-full blur-xl"></div>
-        <div className="absolute bottom-32 left-8 w-28 h-28 bg-[#9a19ff]/5 rounded-full blur-xl"></div>
+        <div className="absolute top-20 left-4 w-32 h-32 rounded-full blur-xl bg-[color:color-mix(in_srgb,var(--osca-accent)_5%,transparent)]"></div>
+        <div className="absolute top-40 right-8 w-24 h-24 rounded-full blur-xl bg-[color:color-mix(in_srgb,var(--osca-accent)_5%,transparent)]"></div>
+        <div className="absolute bottom-32 left-8 w-28 h-28 rounded-full blur-xl bg-[color:color-mix(in_srgb,var(--osca-accent)_5%,transparent)]"></div>
       </div>
 
       <div ref={scrollContainerRef} className="relative z-10 min-h-0 flex-1 overflow-y-auto">
@@ -117,14 +119,14 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                   className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'} animate-slideIn`}
                 >
                   <div
-                    className={`relative w-full bg-[#fafffe]/90 dark:!bg-[#1F1925]/90 backdrop-blur-sm border border-[#636565] dark:border-[#fafffe] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] text-slate-800 dark:!text-[#fafffe]  p-4 shadow-lg ${isUserMessage
+                    className={`relative w-full backdrop-blur-sm border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)] text-slate-800 dark:!text-[color:var(--osca-text-on-dark)] p-4 shadow-lg bg-[color:color-mix(in_srgb,var(--osca-bg-light)_90%,transparent)] dark:bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_90%,transparent)] ${isUserMessage
                       ? 'max-w-[85%] rounded-2xl rounded-br-md'
                       : 'w-full rounded-2xl rounded-tl-md'
                       }`}
                   >
                     {isAgentMessage && (
                       <div className="flex items-center mb-3">
-                        <div className="w-8 h-8 md:flex hidden bg-gradient-to-br from-[#9a19ff] to-purple-600 rounded-full items-center justify-center mr-3 shadow-lg">
+                        <div className="w-8 h-8 md:flex hidden bg-gradient-to-br from-[color:var(--osca-accent)] to-[color:var(--osca-accent-secondary)] rounded-full items-center justify-center mr-3 shadow-lg">
                           <svg
                             className="w-4 h-4 text-white"
                             fill="none"
@@ -139,7 +141,7 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                             />
                           </svg>
                         </div>
-                        <span className="text-sm font-semibold text-[#9a19ff] dark:!text-[#9a19ff]">
+                        <span className="text-sm font-semibold text-[color:var(--osca-accent)] dark:!text-[color:var(--osca-accent)]">
                           Osca
                         </span>
                       </div>
@@ -159,8 +161,8 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
 
             {renderTopics && renderTopics.length > 0 && !isThinking && (
               <div className="relative z-10 -mx-1 pb-2">
-                <div className="rounded-lg border border-[#636565]/40 bg-[#fafffe]/80 px-2 py-2 dark:border-[#fafffe]/25 dark:!bg-[#1F1925]/80">
-                  <p className="mb-1.5 px-1 text-[11px] font-semibold uppercase tracking-wider text-[#9a19ff]/90 dark:text-[#c084fc]">
+                <div className="rounded-lg border border-[color:color-mix(in_srgb,var(--osca-border-light)_40%,transparent)] bg-[color:color-mix(in_srgb,var(--osca-bg-light)_80%,transparent)] px-2 py-2 dark:border-[color:color-mix(in_srgb,var(--osca-border-dark)_25%,transparent)] dark:bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_80%,transparent)]">
+                  <p className="mb-1.5 px-1 text-[11px] font-semibold uppercase tracking-wider text-[color:color-mix(in_srgb,var(--osca-accent)_90%,transparent)] dark:text-[color:var(--osca-accent-secondary)]">
                     Related topics
                   </p>
                   <ul className="flex flex-col gap-1" role="list">

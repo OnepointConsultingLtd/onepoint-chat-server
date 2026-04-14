@@ -11,16 +11,30 @@ export function createHeaders() {
   };
 }
 
-export async function fetchRelatedTopics(selectedTopic: string, text: string): Promise<Topics> {
-  const url = `${getServer()}/project/related_topics?project=${PROJECT_CONFIG.PROJECT}&engine=${PROJECT_CONFIG.ENGINE}`;
+function resolvedContextProject(): string {
+  const p =
+    typeof window !== 'undefined' ? window.oscaConfig?.projectName?.trim() : undefined;
+  return p || PROJECT_CONFIG.PROJECT;
+}
 
+function resolvedTopicsPrompt(): string {
+  const t =
+    typeof window !== 'undefined' ? window.oscaTenantUi?.topicsPrompt?.trim() : undefined;
+  return t || TOPICS_PROMPT;
+}
+
+export async function fetchRelatedTopics(selectedTopic: string, text: string): Promise<Topics> {
+  const project = resolvedContextProject();
+  const url = `${getServer()}/project/related_topics?project=${encodeURIComponent(project)}&engine=${PROJECT_CONFIG.ENGINE}`;
+
+  console.log('resolvedTopicsPrompt', resolvedTopicsPrompt());
   const body: RelatedTopicsBody = {
     samples: 25000,
     restart_prob: 0.15,
     limit: MAX_RELATED_TOPICS,
     source: selectedTopic || '',
     text: text.trim() || '',
-    topics_prompt: TOPICS_PROMPT,
+    topics_prompt: resolvedTopicsPrompt(),
     deduplicate_topics: false,
     engine: PROJECT_CONFIG.ENGINE,
     random_walk_parameters: {

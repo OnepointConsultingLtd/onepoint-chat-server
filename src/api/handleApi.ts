@@ -1,7 +1,5 @@
-import { getCollection } from "./mongoClient";
+import type { Db } from "mongodb";
 import type { ChatMessage, MongoConversation, ReferenceSource, StoredChatMessage } from "../types";
-
-export { getCollection };
 
 const MESSAGE_START_STRING = "User Message to which you are responding:";
 
@@ -23,11 +21,11 @@ export function extractUserMessageContent(content: string): string {
   return userMessage.trim();
 }
 
-export async function getChatHistory(conversationId: string) {
+export async function getChatHistory(db: Db, conversationId: string) {
   try {
-    const collection = await getCollection();
+    const collection = db.collection("conversations");
 
-    const conversation = await collection.findOne({ conversationId }) as MongoConversation | null;
+    const conversation = (await collection.findOne({ conversationId })) as MongoConversation | null;
 
     if (conversation) {
       return formatConversationHistory(conversation);
@@ -35,17 +33,18 @@ export async function getChatHistory(conversationId: string) {
 
     console.warn(`No conversations found in database for ${conversationId}`);
     return [];
-  } catch (error: any) {
-    console.error("Error retrieving conversation:", error.message);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error retrieving conversation:", msg);
     return [];
   }
 }
 
-export async function getChatHistoryWithMetadata(conversationId: string) {
+export async function getChatHistoryWithMetadata(db: Db, conversationId: string) {
   try {
-    const collection = await getCollection();
+    const collection = db.collection("conversations");
 
-    const conversation = await collection.findOne({ conversationId }) as MongoConversation | null;
+    const conversation = (await collection.findOne({ conversationId })) as MongoConversation | null;
 
     if (conversation) {
       return {
@@ -64,8 +63,9 @@ export async function getChatHistoryWithMetadata(conversationId: string) {
 
     console.warn(`No conversations found in database for ${conversationId}`);
     return null;
-  } catch (error: any) {
-    console.error("Error retrieving conversation with metadata:", error.message);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error retrieving conversation with metadata:", msg);
     return null;
   }
 }
@@ -73,7 +73,7 @@ export async function getChatHistoryWithMetadata(conversationId: string) {
 export function formatConversationHistory(conversation: MongoConversation) {
   const history = conversation.chatHistory
     .filter((msg: StoredChatMessage) => ["assistant", "user"].includes(msg.role))
-    .map((msg: any) => {
+    .map((msg: StoredChatMessage) => {
       return {
         ...msg,
         content: extractUserMessageContent(msg.content),
@@ -86,6 +86,7 @@ export function formatConversationHistory(conversation: MongoConversation) {
 }
 
 export async function saveChatHistory(
+  db: Db,
   chatHistory: ChatMessage[],
   conversationId: string,
   referenceSources?: ReferenceSource[],
@@ -96,7 +97,7 @@ export async function saveChatHistory(
   const newConversationId = conversationId;
 
   try {
-    const collection = await getCollection();
+    const collection = db.collection("conversations");
     const filteredChatHistory = chatHistory.filter((msg) => msg.role !== "system");
     const lastMsg = filteredChatHistory.at(-1);
     if (!lastMsg?.content) return;
@@ -108,7 +109,6 @@ export async function saveChatHistory(
         messageId: msg.id,
       };
 
-      // Preserve existing reference sources for each message
       if (msg.referenceSources && msg.referenceSources.length > 0) {
         messageData.referenceSources = msg.referenceSources;
       }
@@ -116,80 +116,67 @@ export async function saveChatHistory(
       return messageData;
     });
 
-    // Add reference sources to the last assistant message if they exist
     if (referenceSources && referenceSources.length > 0) {
       const lastMessageIndex = chatHistoryWithIds.length - 1;
-      if (lastMessageIndex >= 0 && chatHistoryWithIds[lastMessageIndex].role === 'assistant') {
+      if (lastMessageIndex >= 0 && chatHistoryWithIds[lastMessageIndex].role === "assistant") {
         chatHistoryWithIds[lastMessageIndex].referenceSources = referenceSources;
       }
     }
 
-    // Mark other conversations as inactive if this is a new active conversation
-    // Works for both logged-in users (by userId) and anonymous users (by anonymousId)
     if (userId) {
-      // For logged-in users: mark other conversations with same userId as inactive
       await collection.updateMany(
         { userId, isActive: true, conversationId: { $ne: newConversationId } },
-        { $set: { isActive: false } }
+        { $set: { isActive: false } },
       );
     } else if (anonymousId) {
-      // For anonymous users: mark other conversations with same anonymousId as inactive
       await collection.updateMany(
         { anonymousId, isActive: true, conversationId: { $ne: newConversationId } },
-        { $set: { isActive: false } }
+        { $set: { isActive: false } },
       );
     }
 
-    // Check if conversation already exists
     const existingConversation = await collection.findOne({ conversationId: newConversationId });
 
     if (existingConversation) {
-
       const existingUserId = existingConversation.userId || null;
       const existingAnonymousId = existingConversation.anonymousId || null;
 
-      // If existing is anonymous (has anonymousId, no userId) and we're trying to save with userId
       if (existingAnonymousId && !existingUserId && userId) {
         return;
       }
 
-      // If existing has userId and we're trying to save with different userId
       if (existingUserId && userId && existingUserId !== userId) {
         return;
       }
 
-      // If existing has userId and we're trying to save as anonymous
       if (existingUserId && !userId && anonymousId) {
         return;
       }
 
-      // Update existing conversation
       const existingChatHistory = existingConversation.chatHistory || [];
 
       const mergedChatHistory: StoredChatMessage[] = [...existingChatHistory];
 
-      // Update or add new messages
       chatHistoryWithIds.forEach((newMsg: StoredChatMessage) => {
-        const existingIndex = mergedChatHistory.findIndex((existingMsg: StoredChatMessage) =>
-          existingMsg.id === newMsg.id || existingMsg.messageId === newMsg.messageId
+        const existingIndex = mergedChatHistory.findIndex(
+          (existingMsg: StoredChatMessage) =>
+            existingMsg.id === newMsg.id || existingMsg.messageId === newMsg.messageId,
         );
 
         if (existingIndex >= 0) {
-          // Update existing message, preserve its reference sources
           mergedChatHistory[existingIndex] = {
             ...mergedChatHistory[existingIndex],
             ...newMsg,
-            referenceSources: newMsg.referenceSources || mergedChatHistory[existingIndex].referenceSources
+            referenceSources: newMsg.referenceSources || mergedChatHistory[existingIndex].referenceSources,
           };
         } else {
           mergedChatHistory.push(newMsg);
         }
       });
 
-      // Preserve existing userId/anonymousId if new values are null/undefined (e.g., after page refresh when metadata is lost)
-      // Only update if we have valid new values
       const finalUserId = userId !== undefined && userId !== null ? userId : existingUserId;
-      const finalAnonymousId = anonymousId !== undefined && anonymousId !== null ? anonymousId : existingAnonymousId;
+      const finalAnonymousId =
+        anonymousId !== undefined && anonymousId !== null ? anonymousId : existingAnonymousId;
 
       await collection.updateOne(
         { conversationId: newConversationId },
@@ -205,16 +192,14 @@ export async function saveChatHistory(
             isActive: true,
             createdAt: existingConversation.createdAt || new Date().toISOString(),
           },
-        }
+        },
       );
     } else {
-      // Only create new conversation if we have actual messages
       if (chatHistoryWithIds.length === 0) {
         console.warn("Skipping conversation creation - no messages to save");
         return;
       }
 
-      // Create new conversation
       const newConversationData = {
         conversationId: newConversationId,
         userId: userId || null,
@@ -227,22 +212,15 @@ export async function saveChatHistory(
         createdAt: new Date().toISOString(),
       };
 
-      await collection.updateOne(
-        { conversationId: newConversationId },
-        { $set: newConversationData },
-        { upsert: true }
-      );
+      await collection.updateOne({ conversationId: newConversationId }, { $set: newConversationData }, { upsert: true });
     }
 
-    // Delete the old conversation if it exists and is different
     if (oldConversationId && oldConversationId !== newConversationId) {
       await collection.deleteOne({ conversationId: oldConversationId });
     }
 
-    // Clean up any empty conversations for this user (safety measure)
-    // Works for both logged-in users and anonymous users
     if (userId) {
-      const emptyCleanup = await collection.deleteMany({
+      await collection.deleteMany({
         userId,
         $or: [
           { chatHistory: { $exists: false } },
@@ -260,18 +238,19 @@ export async function saveChatHistory(
         ],
       });
     }
-
-  } catch (error: any) {
-    console.error("Error saving conversation:", error.message);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error saving conversation:", msg);
   }
 }
 
 export async function deleteConversation(
+  db: Db,
   conversationId: string,
   userId: string,
 ): Promise<{ deleted: boolean; reason?: string }> {
   try {
-    const collection = await getCollection();
+    const collection = db.collection("conversations");
     const conversation = await collection.findOne({ conversationId });
 
     if (!conversation) {
@@ -284,8 +263,9 @@ export async function deleteConversation(
 
     await collection.deleteOne({ conversationId });
     return { deleted: true };
-  } catch (error: any) {
-    console.error("Error deleting conversation:", error.message);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error deleting conversation:", msg);
     return { deleted: false, reason: "error" };
   }
 }

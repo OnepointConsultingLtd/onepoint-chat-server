@@ -44,11 +44,11 @@ export default function ChatInput({ handleSubmit, embedded = false }: ChatInputP
 
   return (
     <div
-      className={`${useBottomBar ? 'bg-[#fafffe] p-2 md:p-3 border-t border-gray-200 dark:border-gray-700 dark:!bg-[#1F1925]' : 'flex flex-col md:fixed inset-0 justify-center items-center rounded-sm md:rounded-lg md:px-24 z-[85] w-full h-full'}`}
+      className={`${useBottomBar ? 'bg-[color:var(--osca-bg-light)] p-2 md:p-3 border-t border-gray-200 dark:border-gray-700 dark:!bg-[color:var(--osca-bg-dark)]' : 'flex flex-col md:fixed inset-0 justify-center items-center rounded-sm md:rounded-lg md:px-24 z-[85] w-full h-full'}`}
     >
       {!isInitialMessage && !embedded && (
         <div
-          className="md:fixed inset-0 bg-[#fafffe]/50 dark:!bg-[#1F1925]/60 backdrop-blur-sm w-full h-full"
+          className="md:fixed inset-0 backdrop-blur-sm w-full h-full bg-[color:color-mix(in_srgb,var(--osca-bg-light)_50%,transparent)] dark:bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_60%,transparent)]"
           onClick={() => setShowInput(false)}
         ></div>
       )}
@@ -60,7 +60,7 @@ export default function ChatInput({ handleSubmit, embedded = false }: ChatInputP
               value={inputText}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputText(e.target.value)}
               placeholder="Type your message here..."
-              className="w-full text-sm md:text-lg p-2 pr-24 overflow-hidden transition-all duration-300 bg-[#fafffe] dark:!bg-[#1F1925] border-2 shadow-sm outline-none resize-none rounded border-[#636565] dark:border-[#fafffe] focus:border-[#9a19ff] dark:focus:border-[#9a19ff] focus:ring-4 focus:ring-[#9a19ff]/20 dark:focus:ring-[#9a19ff]/50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:!text-[#fafffe] placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full text-sm md:text-lg p-2 pr-24 overflow-hidden transition-all duration-300 bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)] border-2 shadow-sm outline-none resize-none rounded border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] focus:border-[color:var(--osca-accent)] dark:focus:border-[color:var(--osca-accent)] focus:ring-4 focus:ring-[color:color-mix(in_srgb,var(--osca-accent)_20%,transparent)] dark:focus:ring-[color:color-mix(in_srgb,var(--osca-accent)_50%,transparent)] disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 dark:!text-[color:var(--osca-text-on-dark)] placeholder-gray-500 dark:placeholder-gray-400"
               disabled={isThinking}
               style={textareaStyle}
               onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -74,7 +74,7 @@ export default function ChatInput({ handleSubmit, embedded = false }: ChatInputP
             />
             <button
               type="submit"
-              className="absolute flex items-center gap-2 p-1 text-white transition-all duration-300 rounded shadow-md cursor-pointer right-2 bottom-[1.3rem] bg-gradient-to-r from-[#9a19ff] to-[#9a19ff] hover:from-[#9a19ff] hover:to-[#9a19ff] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group rotate-90"
+              className="absolute flex items-center gap-2 p-1 text-white transition-all duration-300 rounded shadow-md cursor-pointer right-2 bottom-[1.3rem] bg-[color:var(--osca-accent)] hover:brightness-110 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group rotate-90"
               disabled={isThinking}
             >
               <svg

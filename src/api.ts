@@ -9,14 +9,51 @@ if (!CONTEXT_API_URL) {
   throw new Error("CONTEXT_API_URL is not set");
 }
 
-export async function getContext(question: string) {
+/**
+ * Build LightRAG / engine context URL.
+ * - Replaces `{question}` with the encoded user message.
+ * - Sets `project` query param from the registry client's `projectName` (per-tenant), unless the URL
+ *   template uses `{project}` (then that placeholder is replaced).
+ * - Optional `CONTEXT_DEFAULT_PROJECT` in .env if a call ever lacks `projectName`.
+ */
+function buildContextUrl(question: string, projectName: string): string {
+  const project =
+    projectName.trim() ||
+    process.env.CONTEXT_DEFAULT_PROJECT ||
+    "onepoint_v21";
+
+
+    console.log("projectName",projectName)
+    console.log("CONTEXT_API_URL",CONTEXT_API_URL)
+
+  let urlString = CONTEXT_API_URL!.replace("{question}", encodeURIComponent(question));
+
+  console.log("urlString",urlString)
+
+  if (urlString.includes("{project}")) {
+    return urlString.replace("{project}", encodeURIComponent(project));
+  }
+  
+
   try {
-    const baseUrl = CONTEXT_API_URL?.replace(
-      "{question}",
-      encodeURIComponent(question),
-    );
-    const url = `${baseUrl}`;
-    const response = await fetch(url!, {
+    const u = new URL(urlString);
+    u.searchParams.set("project", project);
+    return u.toString();
+  } catch {
+    return urlString.replace(/([?&])project=[^&]*/i, `$1project=${encodeURIComponent(project)}`);
+  }
+}
+
+export type GetContextOptions = {
+  /** Registry `projectName` → LightRAG `project=` (e.g. `onepoint_v2`). */
+  projectName: string;
+};
+
+export async function getContext(question: string, options?: GetContextOptions) {
+  try {
+    const url = buildContextUrl(question, options?.projectName ?? "");
+    console.log("url in getContext",url)
+    const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${API_KEY!}`,
       },

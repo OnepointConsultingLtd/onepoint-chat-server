@@ -1,4 +1,5 @@
 import { useShallow } from 'zustand/react/shallow';
+import { useTenantBranding } from '../../hooks/useTenantBranding';
 import { interceptServerError } from '../../lib/interceptServerError';
 import useChatStore from '../../store/chatStore';
 import ChatInput from '../ChatInput';
@@ -16,8 +17,8 @@ const capabilities = [
   {
     title: 'Data Strategy & Governance',
     desc: 'Data Wellness assessments, architecture planning, and D-Well / D-Wise guidance.',
-    iconColor: '#C084FC',
-    iconBg: 'rgba(154,25,255,0.12)',
+    iconColor: 'var(--osca-accent-secondary)',
+    iconBg: 'color-mix(in srgb, var(--osca-accent) 12%, transparent)',
     icon: (
       <path
         strokeLinecap="round"
@@ -84,20 +85,35 @@ export default function FloatingChatMain({
   );
 
   const isError = interceptServerError(messages);
+  const branding = useTenantBranding();
+  const assistantName = branding?.assistantName?.trim() || 'OSCA';
+  const byline = branding?.byline?.trim() || 'by Onepoint';
+  const roleBadge = branding?.assistantBadge?.trim() || 'AI Advisor';
+  const heroEyebrow = branding?.heroEyebrow?.trim() || 'Onepoint AI Ecosystem';
+  const heroTitleCustom = branding?.heroTitle?.trim();
+  const heroSubtitle =
+    branding?.heroSubtitle?.trim() ||
+    "Expert guidance on data strategy, AI innovation, and enterprise architecture — grounded in Onepoint's verified knowledge base.";
+  const logoUrl = branding?.logoUrl?.trim();
+  const logoAlt = branding?.logoAlt?.trim() || assistantName;
 
   return (
     <>
       {/* ── LANDING PAGE ─────────────────────────────────────────────── */}
       <div
         className="relative min-h-screen overflow-x-hidden"
-        style={{ background: '#0D0A14', color: '#F0EDF6' }}
+        style={{
+          background: 'var(--osca-landing-bg)',
+          color: 'var(--osca-text-on-dark)',
+          fontFamily: 'var(--osca-font-sans)',
+        }}
       >
         {/* Grid background */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(154,25,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(154,25,255,0.045) 1px, transparent 1px)',
+              'linear-gradient(color-mix(in srgb, var(--osca-accent) 4.5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--osca-accent) 4.5%, transparent) 1px, transparent 1px)',
             backgroundSize: '40px 40px',
           }}
         />
@@ -111,7 +127,8 @@ export default function FloatingChatMain({
             transform: 'translateX(-50%)',
             width: '500px',
             height: '340px',
-            background: 'radial-gradient(ellipse, rgba(154,25,255,0.2) 0%, transparent 70%)',
+            background:
+              'radial-gradient(ellipse, color-mix(in srgb, var(--osca-accent) 20%, transparent) 0%, transparent 70%)',
           }}
         />
 
@@ -121,33 +138,43 @@ export default function FloatingChatMain({
           {/* ── Header ── */}
           <div className="flex items-center justify-between pt-6 pb-1">
             <div className="flex items-center gap-2.5">
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, #9a19ff 0%, #5b0ea6 100%)' }}
-              >
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" />
-                </svg>
-              </div>
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt={logoAlt}
+                  className="h-8 w-auto max-w-[120px] object-contain flex-shrink-0 rounded-lg"
+                />
+              ) : (
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--osca-accent) 0%, color-mix(in srgb, var(--osca-accent) 55%, #000) 100%)',
+                  }}
+                >
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" />
+                  </svg>
+                </div>
+              )}
               <div>
-                <p className="text-sm font-semibold leading-none tracking-wide" style={{ color: '#F0EDF6' }}>
-                  OSCA
+                <p className="text-sm font-semibold leading-none tracking-wide" style={{ color: 'var(--osca-text-on-dark)' }}>
+                  {assistantName}
                 </p>
-                <p className="text-[10px] leading-none mt-1 tracking-widest uppercase" style={{ color: '#6B5F80' }}>
-                  by Onepoint
+                <p className="text-[10px] leading-none mt-1 tracking-widest uppercase" style={{ color: 'var(--osca-text-muted)' }}>
+                  {byline}
                 </p>
               </div>
             </div>
             <span
               className="text-[11px] px-3 py-1 rounded-full"
               style={{
-                color: '#9a19ff',
-                border: '1px solid rgba(154,25,255,0.35)',
+                color: 'var(--osca-accent)',
+                border: '1px solid color-mix(in srgb, var(--osca-accent) 35%, transparent)',
                 letterSpacing: '0.04em',
               }}
             >
-              AI Advisor
+              {roleBadge}
             </span>
           </div>
 
@@ -156,36 +183,54 @@ export default function FloatingChatMain({
             {/* Eyebrow */}
             <div
               className="inline-flex items-center gap-2 mb-5"
-              style={{ color: '#9a19ff', fontSize: '10px', letterSpacing: '0.12em', textTransform: 'uppercase' }}
+              style={{
+                color: 'var(--osca-accent)',
+                fontSize: '10px',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+              }}
             >
-              <span className="w-1 h-1 rounded-full block" style={{ background: '#9a19ff' }} />
-              Onepoint AI Ecosystem
-              <span className="w-1 h-1 rounded-full block" style={{ background: '#9a19ff' }} />
+              <span className="w-1 h-1 rounded-full block" style={{ background: 'var(--osca-accent)' }} />
+              {heroEyebrow}
+              <span className="w-1 h-1 rounded-full block" style={{ background: 'var(--osca-accent)' }} />
             </div>
 
             {/* H1 */}
-            <h1
-              className="mb-4 leading-tight"
-              style={{
-                fontFamily: '"Georgia", "Times New Roman", serif',
-                fontSize: '36px',
-                color: '#F0EDF6',
-                letterSpacing: '-0.01em',
-              }}
-            >
-              Your{' '}
-              <em style={{ fontStyle: 'italic', color: '#C084FC' }}>intelligent</em>
-              <br />
-              Onepoint advisor
-            </h1>
+            {heroTitleCustom ? (
+              <h1
+                className="mb-4 leading-tight"
+                style={{
+                  fontFamily: 'var(--osca-font-display)',
+                  fontSize: '36px',
+                  color: 'var(--osca-text-on-dark)',
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                {heroTitleCustom}
+              </h1>
+            ) : (
+              <h1
+                className="mb-4 leading-tight"
+                style={{
+                  fontFamily: 'var(--osca-font-display)',
+                  fontSize: '36px',
+                  color: 'var(--osca-text-on-dark)',
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                Your{' '}
+                <em style={{ fontStyle: 'italic', color: 'var(--osca-accent-secondary)' }}>intelligent</em>
+                <br />
+                Onepoint advisor
+              </h1>
+            )}
 
             {/* Subtitle */}
             <p
               className="mb-9 leading-relaxed mx-auto"
-              style={{ fontSize: '14px', color: '#7B6A90', maxWidth: '300px' }}
+              style={{ fontSize: '14px', color: 'var(--osca-text-muted)', maxWidth: '300px' }}
             >
-              Expert guidance on data strategy, AI innovation, and enterprise architecture —
-              grounded in Onepoint's verified knowledge base.
+              {heroSubtitle}
             </p>
 
             {/* CTAs */}
@@ -194,7 +239,7 @@ export default function FloatingChatMain({
                 onClick={toggleFloatingChat}
                 className="flex items-center justify-center gap-2 w-full rounded-xl font-medium transition-opacity active:opacity-80"
                 style={{
-                  background: '#9a19ff',
+                  background: 'var(--osca-accent)',
                   color: '#fff',
                   padding: '13px 20px',
                   fontSize: '14px',
@@ -214,7 +259,7 @@ export default function FloatingChatMain({
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full rounded-xl transition-opacity active:opacity-70"
                 style={{
-                  color: '#9B8FB0',
+                  color: 'var(--osca-text-muted)',
                   padding: '12px 20px',
                   fontSize: '14px',
                   border: '1px solid rgba(255,255,255,0.09)',
@@ -239,7 +284,7 @@ export default function FloatingChatMain({
             <span
               style={{
                 fontSize: '10px',
-                color: '#4A3F5C',
+                color: 'var(--osca-text-muted)',
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap',
@@ -255,16 +300,9 @@ export default function FloatingChatMain({
             {capabilities.map(({ title, desc, iconColor, iconBg, icon }) => (
               <div
                 key={title}
-                className="flex items-start gap-3.5 rounded-xl p-4 transition-all"
+                className="flex items-start gap-3.5 rounded-xl p-4 transition-all border border-[color:rgba(255,255,255,0.07)] hover:border-[color:color-mix(in_srgb,var(--osca-accent)_30%,transparent)]"
                 style={{
                   background: 'rgba(255,255,255,0.025)',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(154,25,255,0.3)';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(255,255,255,0.07)';
                 }}
               >
                 <div
@@ -282,10 +320,10 @@ export default function FloatingChatMain({
                   </svg>
                 </div>
                 <div>
-                  <p className="font-medium mb-0.5" style={{ fontSize: '13px', color: '#E2DAF0' }}>
+                  <p className="font-medium mb-0.5" style={{ fontSize: '13px', color: 'var(--osca-text-on-dark)' }}>
                     {title}
                   </p>
-                  <p className="leading-relaxed" style={{ fontSize: '12px', color: '#5E5272' }}>
+                  <p className="leading-relaxed" style={{ fontSize: '12px', color: 'var(--osca-text-muted)' }}>
                     {desc}
                   </p>
                 </div>
@@ -297,37 +335,37 @@ export default function FloatingChatMain({
           <div
             className="flex items-start gap-3 rounded-xl p-4 mb-10"
             style={{
-              background: 'rgba(154,25,255,0.05)',
-              border: '1px solid rgba(154,25,255,0.18)',
+              background: 'color-mix(in srgb, var(--osca-accent) 5%, transparent)',
+              border: '1px solid color-mix(in srgb, var(--osca-accent) 18%, transparent)',
             }}
           >
             <div
               className="w-8 h-8 flex-shrink-0 rounded-lg flex items-center justify-center"
-              style={{ background: 'rgba(154,25,255,0.15)' }}
+              style={{ background: 'color-mix(in srgb, var(--osca-accent) 15%, transparent)' }}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C084FC" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--osca-accent-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
             </div>
             <div>
-              <p className="font-medium mb-0.5" style={{ fontSize: '12px', color: '#C084FC' }}>
+              <p className="font-medium mb-0.5" style={{ fontSize: '12px', color: 'var(--osca-accent-secondary)' }}>
                 Grounded in verified knowledge
               </p>
-              <p className="leading-relaxed" style={{ fontSize: '11px', color: '#6B5F80' }}>
+              <p className="leading-relaxed" style={{ fontSize: '11px', color: 'var(--osca-text-muted)' }}>
                 Osca only uses information from Onepoint's knowledge base. It will never fabricate services, prices, or capabilities.
               </p>
             </div>
           </div>
 
           {/* ── Footer ── */}
-          <div className="text-center" style={{ fontSize: '11px', color: '#38304A', lineHeight: 1.8 }}>
+          <div className="text-center" style={{ fontSize: '11px', color: 'var(--osca-text-muted)', lineHeight: 1.8 }}>
             <p>Built on the Onepoint AI Engine</p>
             <p>
               <a
                 href="https://www.onepointltd.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: '#5E4880', textDecoration: 'none' }}
+                style={{ color: 'var(--osca-accent-secondary)', textDecoration: 'none' }}
               >
                 onepointltd.com
               </a>
@@ -341,10 +379,10 @@ export default function FloatingChatMain({
 
       {/* ── CHAT OVERLAY ─────────────────────────────────────────────── */}
       {isFloatingOpen && (
-        <div className="fixed inset-0 z-50 flex min-h-0 flex-col bg-[#fafffe] dark:!bg-[#1F1925]">
+        <div className="fixed inset-0 z-50 flex min-h-0 flex-col bg-[color:var(--osca-bg-light)] dark:bg-[color:var(--osca-bg-dark)]">
           <FloatingHeader />
 
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#fafffe] dark:!bg-[#1F1925]">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[color:var(--osca-bg-light)] dark:bg-[color:var(--osca-bg-dark)]">
             {isError ? (
               <div className="flex h-full items-center justify-center p-6">
                 <ErrorCard
@@ -360,7 +398,7 @@ export default function FloatingChatMain({
             )}
           </div>
 
-          <div className="shrink-0 border-t border-gray-200 bg-[#fafffe] pb-[env(safe-area-inset-bottom)] dark:border-gray-700 dark:!bg-[#1F1925]">
+          <div className="shrink-0 border-t border-gray-200 bg-[color:var(--osca-bg-light)] pb-[env(safe-area-inset-bottom)] dark:border-gray-700 dark:bg-[color:var(--osca-bg-dark)]">
             <ChatInput handleSubmit={handleSubmit} embedded />
           </div>
         </div>

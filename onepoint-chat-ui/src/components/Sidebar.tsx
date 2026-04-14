@@ -120,8 +120,8 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
     if (isLoading) {
       return (
         <div className="flex flex-col justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 dark:border-gray-600 border-t-[#9a19ff] dark:border-t-[#9a19ff] mb-4"></div>
-          <span className="text-gray-600 dark:!text-[#fafffe]">Loading conversations...</span>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 dark:border-gray-600 border-t-[color:var(--osca-accent)] dark:border-t-[color:var(--osca-accent)] mb-4"></div>
+          <span className="text-gray-600 dark:!text-[color:var(--osca-text-on-dark)]">Loading conversations...</span>
         </div>
       );
     }
@@ -147,7 +147,7 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
           <p className="text-red-600 dark:text-red-400 mb-2 font-medium">{error}</p>
           <button
             onClick={conversationHistory}
-            className="cursor-pointer text-[#9a19ff] dark:!text-[#9a19ff] hover:text-[#9a19ff] dark:hover:!text-[#9a19ff] underline text-sm font-medium transition-colors"
+            className="cursor-pointer text-[color:var(--osca-accent)] dark:!text-[color:var(--osca-accent)] hover:brightness-110 underline text-sm font-medium transition-colors"
           >
             Try again
           </button>
@@ -173,7 +173,7 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
               />
             </svg>
           </div>
-          <p className="text-gray-600 dark:!text-[#fafffe] font-medium mb-1">No conversations yet</p>
+          <p className="text-gray-600 dark:!text-[color:var(--osca-text-on-dark)] font-medium mb-1">No conversations yet</p>
           <p className="text-sm text-gray-500 dark:text-gray-400">Start a new conversation to see it here</p>
         </div>
       );
@@ -199,21 +199,21 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
                 }
               }}
               className={`cursor-pointer w-full text-left p-4 rounded-lg border transition-all duration-200 group ${isSelected
-                ? 'border-[#9a19ff] dark:border-[#9a19ff] bg-[#f5f0ff] dark:bg-[#352840]'
-                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-[#2a1f35] hover:border-[#9a19ff] dark:hover:border-[#9a19ff] hover:bg-gray-50 dark:hover:bg-[#352840]'
+                ? 'border-[color:var(--osca-accent)] dark:border-[color:var(--osca-accent)] bg-[color:color-mix(in_srgb,var(--osca-accent)_10%,var(--osca-bg-light))] dark:bg-[color:var(--osca-surface-dark-hover)]'
+                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-[color:var(--osca-surface-dark)] hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)] hover:bg-gray-50 dark:hover:bg-[color:var(--osca-surface-dark-hover)]'
                 }`}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     {conversation.isActive && (
-                      <span className="flex-shrink-0 w-2 h-2 rounded-full bg-[#9a19ff]"></span>
+                      <span className="flex-shrink-0 w-2 h-2 rounded-full bg-[color:var(--osca-accent)]"></span>
                     )}
                     <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
                       {formatDate(conversation.lastUpdated)}
                     </span>
                   </div>
-                  <p className="text-sm font-medium text-gray-900 dark:!text-[#fafffe] line-clamp-2 group-hover:text-[#9a19ff] dark:group-hover:text-[#9a19ff] transition-colors">
+                  <p className="text-sm font-medium text-gray-900 dark:!text-[color:var(--osca-text-on-dark)] line-clamp-2 group-hover:text-[color:var(--osca-accent)] dark:group-hover:text-[color:var(--osca-accent)] transition-colors">
                     {truncateMessage(conversation.userMessage)}
                   </p>
                 </div>
@@ -248,7 +248,7 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                   </button>
-                  <svg className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-[#9a19ff] dark:group-hover:text-[#9a19ff] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-[color:var(--osca-accent)] dark:group-hover:text-[color:var(--osca-accent)] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -273,14 +273,14 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
           <div onClick={toggleSidebar}>
             <div
               className={`fixed inset-y-0 min-h-screen ${isSidebarOpen ? 'block left-0 w-[300px] lg:!w-[385px]' : '-left-[1180px] w-0 hidden'
-                } transition-all duration-300 lg:!relative z-50 flex flex-col h-full animate-fade-in bg-[#fafffe] dark:!bg-[#1F1925]`}
+                } transition-all duration-300 lg:!relative z-50 flex flex-col h-full animate-fade-in bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)]`}
               onClick={e => e.stopPropagation()}
             >
               {/* Mobile Header */}
-              <div className="border-b border-gray-200 dark:border-gray-700 lg:!hidden !block bg-[#fafffe] dark:!bg-[#1F1925] shadow-sm">
+              <div className="border-b border-gray-200 dark:border-gray-700 lg:!hidden !block bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)] shadow-sm">
                 <div className="flex items-center justify-between px-5 h-16">
                   <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-lg bg-[#9a19ff] flex items-center justify-center mr-3 shadow-sm">
+                    <div className="w-10 h-10 rounded-lg bg-[color:var(--osca-accent)] flex items-center justify-center mr-3 shadow-sm">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -292,10 +292,10 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
                       </svg>
                     </div>
                     <div>
-                      <h1 className="text-lg font-semibold text-gray-900 dark:!text-[#fafffe]">
+                      <h1 className="text-lg font-semibold text-gray-900 dark:!text-[color:var(--osca-text-on-dark)]">
                         {PROJECT_INFO.NAME}
                       </h1>
-                      <p className="text-xs text-gray-500 dark:!text-[#fafffe]">AI Assistant</p>
+                      <p className="text-xs text-gray-500 dark:!text-[color:var(--osca-text-on-dark)]">AI Assistant</p>
                     </div>
                   </div>
                   <CloseIcon />
@@ -305,7 +305,7 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
               {/* Desktop Header */}
               <div className="border-b border-gray-200 dark:border-gray-700 hidden lg:!flex justify-between items-center">
                 <div className="flex items-center px-6 py-5">
-                  <div className="w-12 h-12 rounded-lg bg-[#9a19ff] flex items-center justify-center mr-4 shadow-sm">
+                  <div className="w-12 h-12 rounded-lg bg-[color:var(--osca-accent)] flex items-center justify-center mr-4 shadow-sm">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -317,10 +317,10 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
                     </svg>
                   </div>
                   <div>
-                    <h1 className="text-xl font-semibold text-gray-900 dark:!text-[#fafffe]">
+                    <h1 className="text-xl font-semibold text-gray-900 dark:!text-[color:var(--osca-text-on-dark)]">
                       {PROJECT_INFO.NAME}
                     </h1>
-                    <p className="text-sm text-gray-600 dark:!text-[#fafffe] mt-0.5">
+                    <p className="text-sm text-gray-600 dark:!text-[color:var(--osca-text-on-dark)] mt-0.5">
                       {PROJECT_INFO.NAME_DESCRIPTION}
                     </p>
                   </div>
@@ -335,7 +335,7 @@ export default function Sidebar({ continueConversation, deleteConversation }: Si
                 className="flex-1 px-6 py-3"
               >
                 <div className="mb-3">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:!text-[#fafffe] mb-1 flex items-center">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:!text-[color:var(--osca-text-on-dark)] mb-1 flex items-center">
                     Your chat{' '}
                     (<span className="text-sm text-gray-500 dark:text-gray-400">{conversationHistoryState.length > 0 && `${conversationHistoryState.length}`}</span>)
                   </h2>
