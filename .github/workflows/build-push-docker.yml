@@ -1,0 +1,52 @@
+name: Build and push Docker image for Onepoint Chat Server.
+
+on:
+  push:
+    branches:
+      - deployment
+
+env:
+  IMAGE_NAME: onepoint-chat-server/osca
+  AWS_REGION: eu-west-2
+  ECR_REGISTRY: 303872128380.dkr.ecr.eu-west-2.amazonaws.com
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        run: |
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
+
+      - name: Update git submodules
+        run: |
+          git submodule update --init --recursive
+
+      - name: Build Docker image
+        run: |
+          docker build -f Dockerfile -t ${{ env.IMAGE_NAME }}:deploy-${{ github.run_number }} .
+
+      - name: Tag image for ECR
+        run: |
+          docker tag ${{ env.IMAGE_NAME }}:deploy-${{ github.run_number }} ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:deploy-${{ github.run_number }}
+          docker tag ${{ env.IMAGE_NAME }}:deploy-${{ github.run_number }} ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Push image to ECR
+        run: |
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:deploy-${{ github.run_number }}
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
