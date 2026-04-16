@@ -1,4 +1,4 @@
-name: Build and push Docker image for Onepoint Chat Server.
+name: Build and push Docker image for Onepoint Chat Server
 
 on:
   push:
