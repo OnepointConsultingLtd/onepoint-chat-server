@@ -22,9 +22,10 @@ function readQueryParams(search: string): Partial<OscaChatConfig> {
 function localDevDefaults(): OscaChatConfig {
   const protocol = window.location.protocol;
   const wsProtocol = protocol === 'https:' ? 'wss' : 'ws';
+  const defaultPort = 5000;
   return {
-    httpUrl: `${protocol}//localhost:5000`,
-    websocketUrl: `${wsProtocol}://localhost:4000`,
+    httpUrl: `${protocol}//localhost:${defaultPort}`,
+    websocketUrl: `${wsProtocol}://localhost:${defaultPort}/ws`,
   };
 }
 
@@ -35,7 +36,7 @@ function sameOriginDefaults(): OscaChatConfig {
   const host = window.location.host;
   return {
     httpUrl: `${protocol}//${host}`,
-    websocketUrl: `${wsProtocol}://${host}`,
+    websocketUrl: `${wsProtocol}://${host}/ws`,
   };
 }
 
@@ -66,9 +67,16 @@ export function resolveOscaConfig(): OscaChatConfig {
     return window.oscaConfig;
   }
 
+  function createWebsocketUrl() {
+    if(!import.meta.env.VITE_OSCA_WS_URL) {
+      return import.meta.env.VITE_OSCA_WS_URL
+    }
+    return import.meta.env.VITE_OSCA_WS_URL + (import.meta.env.VITE_OSCA_WS_URL.endsWith('/ws') ? '' : '/ws');
+  }
+
   const fromEnv: Partial<OscaChatConfig> = {
     httpUrl: import.meta.env.VITE_OSCA_HTTP_URL,
-    websocketUrl: import.meta.env.VITE_OSCA_WS_URL,
+    websocketUrl: createWebsocketUrl()
   };
   if (isComplete(fromEnv)) {
     window.oscaConfig = fromEnv;

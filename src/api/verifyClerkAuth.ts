@@ -1,6 +1,6 @@
 import { verifyToken } from "@clerk/backend";
 
-const ALLOWED_ORIGINS = ["https://osca.onepointltd.ai", "http://localhost:5173", "http://localhost:3000"];
+const ALLOWED_ORIGINS = ["https://osca.onepointltd.ai", "http://localhost:5173", "http://localhost:3000", "http://localhost:5000"];
 
 export async function getVerifiedUserId(req: { headers: { authorization?: string } }): Promise<string | null> {
   const auth = req.headers.authorization;
