@@ -48,7 +48,7 @@ INITIAL_PROVIDER=openai
 # GEMINI_MODEL=gemini-2.5-pro
 
 # Server Settings
-PORT=4000  # Main WebSocket server
+PORT=5000  # Main WebSocket server
 REST_API_PORT=5000  # Chat history REST server
 
 # RAG Configuration

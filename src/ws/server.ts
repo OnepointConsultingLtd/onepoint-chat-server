@@ -12,28 +12,17 @@ import { streamLLM } from "../service/llm";
 import { onepointCallback } from "../callbacks/onepoint";
 import { saveChatHistory } from "../api/handleApi";
 import { readPrompts } from "../utils/prompts";
+import app from "../api/server";
 
 const conversations = new Map<string, Conversation>();
 
-const ALLOWED_ORIGINS = ["https://osca.onepointltd.ai", "http://localhost:5173", "http://localhost:3000"];
-
-const httpServer = http.createServer((_req, res) => {
-  const origin = _req.headers.origin;
-  res.setHeader("Access-Control-Allow-Origin", origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]);
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  if (_req.method === "OPTIONS") {
-    res.writeHead(204);
-    res.end();
-    return;
-  }
-  res.writeHead(404);
-  res.end();
-});
+const httpServer = http.createServer(app);
 
 const wss = new WebSocketServer({ noServer: true });
 
 httpServer.on("upgrade", (request, socket, head) => {
+  // optional: only allow specific WS path, e.g. /ws
+  if (!request.url?.startsWith("/ws")) return socket.destroy();
   wss.handleUpgrade(request, socket, head, (ws) => {
     wss.emit("connection", ws, request);
   });

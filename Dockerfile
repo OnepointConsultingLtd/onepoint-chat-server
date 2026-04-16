@@ -49,7 +49,11 @@ COPY --from=builder /app/onepoint-chat-ui/dist ./onepoint-chat-ui/dist
 COPY --from=builder /app/run_frpc.sh ./run_frpc.sh
 COPY --from=builder /app/run.sh ./run.sh
 
+RUN apt-get update && apt-get install -y dos2unix
+RUN dos2unix /app/run.sh && chmod +x /app/run.sh
+RUN dos2unix /app/run_frpc.sh && chmod +x /app/run_frpc.sh
 
-EXPOSE 4000 5000
 
-CMD ["node", "dist/index.js"]
+EXPOSE 5000
+
+CMD ["/app/run.sh"]

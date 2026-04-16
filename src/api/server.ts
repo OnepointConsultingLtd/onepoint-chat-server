@@ -243,5 +243,4 @@ app.get(/^\/(?!api\/).*/, (_req, res) => {
   res.sendFile(path.join(static_files_path, "index.html"));
 });
 
-const PORT = process.env.REST_API_PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+export default app;
