@@ -217,7 +217,10 @@ export function useChat() {
               setMessages((prev: Message[]) =>
                 updateLastMessage(prev, (msg) => ({
                   ...msg,
+                  // Persist both ids to the backend-assigned message id.
+                  // Thread share API expects chatHistory.messageId from Mongo.
                   id: message.message.id,
+                  messageId: message.message.id,
                 }))
               );
 
@@ -302,6 +305,20 @@ export function useChat() {
     };
   }, [setIsThinking, setIsStreaming, setMessages, loadChatHistory, userId, anonymousId, fetchReferenceSources]);
 
+  const stopStreaming = useCallback(() => {
+    const socket = wsRef.current;
+    if (!socket) return;
+    if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
+      // Close current stream/socket, then reconnect quickly for next turn.
+      socket.close(1000, 'User stopped streaming');
+      setIsThinking(false);
+      setIsStreaming(false);
+      setTimeout(() => {
+        setupWebSocket();
+      }, 120);
+    }
+  }, [setIsThinking, setIsStreaming, setupWebSocket]);
+
   // Note: Clearing conversationId when user logs in is handled by Header.tsx
   // This effect is removed to prevent clearing conversationId during normal chat operations
   // The conversationId should only be cleared when:
@@ -337,6 +354,12 @@ export function useChat() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRestarting]);
+
+  useEffect(() => {
+    const onStop = () => stopStreaming();
+    window.addEventListener('osca-stop-stream', onStop);
+    return () => window.removeEventListener('osca-stop-stream', onStop);
+  }, [stopStreaming]);
 
   useEffect(() => {
     if (isThinking) {

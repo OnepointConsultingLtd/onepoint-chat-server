@@ -1,6 +1,5 @@
 import { Handle, Position } from '@xyflow/react';
 import { useEffect, useRef } from 'react';
-import { BiMessageRoundedDots } from 'react-icons/bi';
 import { useShallow } from 'zustand/react/shallow';
 import useChatStore from '../../store/chatStore';
 import { Message } from '../../type/types';
@@ -42,22 +41,14 @@ export default function MessageCard({
   welcomeOnly,
 }: MessageCardProps) {
   const {
-    showInput,
-    showButton,
     isInitialMessage,
-    setShowButton,
     setIsInitialMessage,
-    handleClick,
     relatedTopics,
     relatedTopicsLoading,
   } = useChatStore(
     useShallow(state => ({
-      showInput: state.showInput,
-      showButton: state.showButton,
       isInitialMessage: state.isInitialMessage,
-      setShowButton: state.setShowButton,
       setIsInitialMessage: state.setIsInitialMessage,
-      handleClick: state.handleClick,
       relatedTopics: state.relatedTopics,
       relatedTopicsLoading: state.relatedTopicsLoading,
     }))
@@ -78,8 +69,6 @@ export default function MessageCard({
     <div
       ref={cardRef}
       className="flex flex-col w-full overflow-visible rounded-xl bg-[color:var(--osca-bg-light)] dark:!bg-[color:var(--osca-bg-dark)] border border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)] shadow-lg hover:shadow-xl hover:border-[color:var(--osca-accent)] dark:hover:border-[color:var(--osca-accent)] transition-all duration-300 group animate-fade-in z-50"
-      onMouseEnter={() => !isInitialMessage && setShowButton(true)}
-      onMouseLeave={() => !isInitialMessage && setShowButton(false)}
     >
       {/* Related Topics Label */}
       {isLastCard && !isInitialMessage &&
@@ -115,11 +104,11 @@ export default function MessageCard({
 
       {/* Show thinking indicator for entire card when thinking */}
       {isLastCard && isThinking ? (
-        <div className="border-l-4 border-[color:var(--osca-accent)] bg-[color:color-mix(in_srgb,var(--osca-accent)_20%,transparent)] transition-all duration-300 h-auto">
+        <div className="bg-[color:color-mix(in_srgb,var(--osca-accent)_20%,transparent)] transition-all duration-300 h-auto">
           <ThinkingIndicator />
         </div>
       ) : welcomeOnly ? (
-        <div className="transition-all duration-300 overflow-hidden rounded-xl border-l-4 border-[color:var(--osca-accent)]">
+        <div className="transition-all duration-300 overflow-hidden rounded-xl">
           <AgentMessage message={welcomeOnly} />
         </div>
       ) : (
@@ -138,35 +127,13 @@ export default function MessageCard({
         </>
       )}
 
-      {showInput && !isThinking && isLastCard && (
-        <div className="border-t rounded-b-xl transition-all duration-300">
-          <ChatInput handleSubmit={handleSubmit} />
+      {!isThinking && isLastCard && (
+        <div className="rounded-b-xl overflow-hidden">
+          <ChatInput handleSubmit={handleSubmit} embedded />
         </div>
       )}
 
       {isLastCard && process.env.NODE_ENV === 'development' && <ResponseTimer />}
-
-      {!isInitialMessage &&
-        showButton &&
-        !showInput &&
-        !isThinking &&
-        isLastCard &&
-        (
-          <div
-            className="fixed z-[9999]! left-1/2 transform -translate-x-1/2 transition-all duration-300 opacity-0 group-hover:opacity-100 animate-fade-up"
-            style={{
-              bottom: '-15px',
-            }}
-          >
-            <button
-              onClick={handleClick}
-              className="bg-[color:var(--osca-accent)] hover:brightness-110 text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-[0_8px_28px_color-mix(in_srgb,var(--osca-accent)_35%,transparent)] dark:shadow-[0_6px_20px_color-mix(in_srgb,var(--osca-accent)_25%,transparent)] transition-all duration-300 transform hover:scale-105 !cursor-pointer flex items-center space-x-2"
-            >
-              <BiMessageRoundedDots />
-              <span>Ask a follow up question</span>
-            </button>
-          </div>
-        )}
     </div>
   );
 }

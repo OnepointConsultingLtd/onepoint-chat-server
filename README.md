@@ -28,9 +28,8 @@ yarn run build || run_ui.ps1
 
 ## Servers
 
-- Main Chat Server: Port 4000 (WebSocket server for chat functionality)
-- History Server: Port 5000 (REST server for fetching chat history)
-- You can also run the development server using vite during development time.
+- **Single Node process** listens on **`PORT`** (default **5000**): Express serves REST, static UI, and WebSocket upgrades at path **`/ws`**.
+- You can also run the chat UI with Vite during development (`onepoint-chat-ui`).
 
 ## Config Files
 
@@ -48,8 +47,7 @@ INITIAL_PROVIDER=openai
 # GEMINI_MODEL=gemini-2.5-pro
 
 # Server Settings
-PORT=4000  # Main WebSocket server
-REST_API_PORT=5000  # Chat history REST server
+PORT=5000  # HTTP + WebSocket (chat WS path: /ws)
 
 # RAG Configuration
 PROMPT_FILE=config/prompts.toml
@@ -80,25 +78,22 @@ MongoDB setup:
 
 ## Starting Up
 
-1. Set up .env.local with all required credentials
-2. Start main server on port 4000 (WebSocket)
-3. Start history server on port 5000 (REST)
-4. UI code is in onepoint-chat-ui
+1. Set up `.env.local` with all required credentials
+2. `yarn build && yarn start` at repo root (server on `PORT`, default 5000)
+3. UI code is in `onepoint-chat-ui` (embed or Vite dev against the same `PORT`)
 
 ## Remember
 
-- Don't commit .env.local
+- Don't commit `.env.local`
 - UI is React-based
-- Keep all credentials in .env.local only
-- Frontend-backend communication:
-  - WebSocket on port 4000 for chat
-  - REST on port 5000 for history
+- Keep all credentials in `.env.local` only
+- Frontend-backend communication: **same origin/port** — REST under `/api/...`, chat WebSocket at **`/ws?token=...`**
 
 ## Troubleshooting
 
 When it breaks:
 
-1. Check .env.local
+1. Check `.env.local`
 2. Verify MongoDB connection
-3. Check if both ports (4000 and 5000) are free
-4. Verify both servers are running
+3. Check **`PORT`** is free
+4. Verify the Node server is running

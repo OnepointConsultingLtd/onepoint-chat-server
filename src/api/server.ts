@@ -13,7 +13,7 @@ import { getVerifiedUserId } from "./verifyClerkAuth";
 import cors from "cors";
 import path from "path";
 import { resolveClient } from "../middleware/resolveClient";
-import { getCachedAllowedOrigins, insertClientDoc, updateClientDoc, deleteClientDoc, listAllClients } from "../db/registry";
+import { getCachedAllowedOrigins, insertClientDoc, updateClientDoc, deleteClientDoc, listAllClients, getClientDb } from "../db/registry";
 import type { ClientDocument } from "../types/clientDocument";
 import type { LLMProviderName } from "../types/enums";
 import { sanitizeTenantPublicBranding } from "../types/tenantPublicBranding";
@@ -48,7 +48,14 @@ app.use(
       callback(null, false);
     },
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "X-Osca-Token", "X-Admin-Secret"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Osca-Token",
+      "X-Admin-Secret",
+      "x-user-id",
+      "anonymousid",
+    ],
   }),
 );
 
@@ -80,15 +87,37 @@ chatRouter.use(resolveClient);
 chatRouter.get("/share/token/:token", (async (req, res) => {
   try {
     const { token: shareToken } = req.params;
-    const db = req.clientDb!;
-    const sharesCollection = db.collection("shares");
-    const share = await sharesCollection.findOne({ token: shareToken });
+    let ownerClient = req.client!;
+    let db = req.clientDb!;
+    let sharesCollection = db.collection("shares");
+    let share = await sharesCollection.findOne({ token: shareToken });
+
+    // Fallback: if token isn't in the currently resolved tenant DB, scan other tenant DBs.
+    // This keeps clean share URLs working across tenants without requiring oscaToken in URL.
+    if (!share) {
+      const clients = await listAllClients();
+      for (const client of clients) {
+        if (client._id === req.client?._id) continue;
+        const tenantDb = await getClientDb(client.dbName);
+        const tenantShares = tenantDb.collection("shares");
+        const candidate = await tenantShares.findOne({ token: shareToken });
+        if (candidate) {
+          ownerClient = client;
+          db = tenantDb;
+          sharesCollection = tenantShares;
+          share = candidate;
+          break;
+        }
+      }
+    }
+
     if (!share) {
       return res.status(404).json({ error: "Share not found" });
     }
     if (new Date() > share.expiresAt) {
       return res.status(410).json({ error: "Share expired" });
     }
+    const shareBranding = sanitizeTenantPublicBranding(ownerClient.publicBranding);
     const collection = db.collection("conversations");
     if (share.type === "full") {
       const conversation = await collection.findOne({ conversationId: share.conversationId });
@@ -108,9 +137,21 @@ chatRouter.get("/share/token/:token", (async (req, res) => {
           referenceSources: msg.referenceSources,
         }),
       );
-      return res.json({ type: "full", messages, conversationId: share.conversationId });
+      return res.json({
+        type: "full",
+        messages,
+        conversationId: share.conversationId,
+        tenantName: ownerClient.name,
+        tenantProjectName: ownerClient.projectName,
+        ...(shareBranding ? { publicBranding: shareBranding } : {}),
+      });
     }
-    const conversation = await collection.findOne({ "chatHistory.messageId": share.messageId });
+    const conversation = await collection.findOne({
+      $or: [
+        { "chatHistory.messageId": share.messageId },
+        { "chatHistory.id": share.messageId },
+      ],
+    });
     if (!conversation) {
       return res.status(404).json({ error: "Conversation not found" });
     }
@@ -119,7 +160,10 @@ chatRouter.get("/share/token/:token", (async (req, res) => {
       if (msg.role === "assistant" && isWelcomeMessage(msg.content)) return false;
       return true;
     });
-    const messageIndex = chatHistory.findIndex((msg: { messageId?: string }) => msg.messageId === share.messageId);
+    const messageIndex = chatHistory.findIndex(
+      (msg: { messageId?: string; id?: string }) =>
+        msg.messageId === share.messageId || msg.id === share.messageId,
+    );
     if (messageIndex === -1) {
       return res.status(404).json({ error: "Message not found" });
     }
@@ -146,7 +190,14 @@ chatRouter.get("/share/token/:token", (async (req, res) => {
       timestamp: new Date(conversation.timestamp || Date.now()).toISOString(),
       referenceSources: msg.referenceSources,
     }));
-    return res.json({ type: "thread", messages, conversationId: conversation.conversationId });
+    return res.json({
+      type: "thread",
+      messages,
+      conversationId: conversation.conversationId,
+      tenantName: ownerClient.name,
+      tenantProjectName: ownerClient.projectName,
+      ...(shareBranding ? { publicBranding: shareBranding } : {}),
+    });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("Error fetching share by token:", msg);
@@ -171,6 +222,22 @@ chatRouter.post("/share/create", (async (req, res) => {
     if (type === "thread" && !messageId) {
       return res.status(400).json({ error: "messageId required for thread share" });
     }
+    let normalizedMessageId: string | undefined = undefined;
+    if (type === "thread") {
+      const conv = await req.clientDb!.collection("conversations").findOne({ conversationId });
+      if (!conv) {
+        return res.status(404).json({ error: "Conversation not found" });
+      }
+      const history = Array.isArray(conv.chatHistory) ? conv.chatHistory : [];
+      const matched = history.find(
+        (m: { messageId?: string; id?: string }) =>
+          m.messageId === messageId || m.id === messageId,
+      ) as { messageId?: string; id?: string } | undefined;
+      if (!matched) {
+        return res.status(400).json({ error: "Invalid messageId for this conversation" });
+      }
+      normalizedMessageId = matched.messageId || matched.id;
+    }
     const token = crypto.randomBytes(9).toString("base64url").slice(0, 12);
     const now = new Date();
     const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
@@ -180,7 +247,7 @@ chatRouter.post("/share/create", (async (req, res) => {
       token,
       type,
       conversationId,
-      ...(type === "thread" && { messageId }),
+      ...(type === "thread" && { messageId: normalizedMessageId }),
       ...(userId && { userId }),
       ...(anonymousId && { anonymousId }),
       createdAt: now,

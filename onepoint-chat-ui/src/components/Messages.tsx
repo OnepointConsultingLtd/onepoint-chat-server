@@ -7,6 +7,8 @@ import BackToBottom from './FloatingChat/BackToBottom';
 import RenderReactMarkdown from './RenderReactMarkdown';
 import ThinkingIndicator from './ThinkingIndicator';
 import TopicButton from './TopicButton';
+import { useTenantBranding } from '../hooks/useTenantBranding';
+import { PROJECT_INFO } from '../lib/constants';
 
 type MessagesProps = {
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
@@ -16,6 +18,8 @@ type MessagesProps = {
 export default function Messages({ messagesEndRef, sendMessageToServer }: MessagesProps) {
   const [showBackToTop, setShowBackToTop] = React.useState(false);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const branding = useTenantBranding();
+  const assistantName = branding?.assistantName?.trim() || PROJECT_INFO.NAME;
 
   const {
     messages,
@@ -142,7 +146,7 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
                           </svg>
                         </div>
                         <span className="text-sm font-semibold text-[color:var(--osca-accent)] dark:!text-[color:var(--osca-accent)]">
-                          Osca
+                          {assistantName}
                         </span>
                       </div>
                     )}

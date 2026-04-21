@@ -5,10 +5,9 @@ import { useShallow } from 'zustand/react/shallow';
 import { useDarkMode } from '../../hooks/useDarkMode';
 import { useOscaFlowBackgroundColors } from '../../hooks/useOscaFlowBackgroundColors';
 import {
-  CONNECTION_ERROR,
   DEFAULT_ZOOM,
   MAX_ZOOM,
-  MIN_ZOOM,
+  MIN_ZOOM
 } from '../../lib/constants';
 import { interceptServerError } from '../../lib/interceptServerError';
 import useChatStore from '../../store/chatStore';
@@ -53,6 +52,7 @@ export default function Flow({
   const { isDark } = useDarkMode();
   const shellColors = useOscaFlowBackgroundColors();
   const reactFlowInstance = useReactFlow();
+
   const previousMessagesLengthRef = useRef<number>(0);
 
   // Use desktop zoom settings
@@ -113,13 +113,6 @@ export default function Flow({
     setCardHeight,
   ]);
 
-  useEffect(() => {
-    if (messages.some(message => message.text.includes(CONNECTION_ERROR))) {
-      console.log('CONNECTION_ERROR');
-      window.location.reload();
-    }
-  }, [messages]);
-
 
   const filteredMessages = useMemo(() => {
     return filterDisplayableMessages(messages);
@@ -173,10 +166,33 @@ export default function Flow({
             defaultViewport={{ x: 0, y: 0, zoom: zoomSettings.defaultZoom }}
           >
             <Background color={isDark ? shellColors.dark : shellColors.light} gap={9000} size={1} />
-
             <Controls showInteractive={false} />
           </ReactFlow>
         )}
+        <div className="pointer-events-none absolute left-3 top-3 z-20">
+          <div className="pointer-events-auto w-[26rem] rounded-xl border border-[color:var(--osca-border-light)] bg-[color:color-mix(in_srgb,var(--osca-bg-light)_92%,transparent)] p-2 shadow-[0_8px_30px_color-mix(in_srgb,var(--osca-accent)_14%,transparent)] backdrop-blur-md dark:border-[color:var(--osca-border-dark)] dark:bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_86%,transparent)] dark:shadow-[0_8px_30px_color-mix(in_srgb,var(--osca-accent)_18%,transparent)]">
+            <div className="relative">
+              <svg
+                viewBox="0 0 24 24"
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--osca-text-muted)]"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search conversation..."
+                className="h-10 w-full rounded-lg border border-[color:var(--osca-border-light)] bg-[color:var(--osca-bg-light)] pl-9 pr-3 text-sm text-[color:var(--osca-surface-dark)] placeholder:text-[color:var(--osca-text-muted)] outline-none transition focus:border-[color:var(--osca-accent)] focus:ring-2 focus:ring-[color:color-mix(in_srgb,var(--osca-accent)_28%,transparent)] dark:border-[color:var(--osca-border-dark)] dark:bg-[color:var(--osca-bg-dark)] dark:text-[color:var(--osca-text-on-dark)]"
+              />
+            </div>
+          </div>
+        </div>
       </div>
       <div ref={messagesEndRef} />
     </div>

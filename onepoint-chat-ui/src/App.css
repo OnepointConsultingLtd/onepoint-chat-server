@@ -66,8 +66,8 @@ textarea {
 
 /* Apply disc styling only to lists outside of the chat markdown content */
 /* This prevents overriding the markdown styling in chat responses */
-:not([class*='markdown'])>ul,
-:not([class*='markdown'])>li {
+:not([class*='markdown']) > ul,
+:not([class*='markdown']) > li {
   list-style-type: disc;
   color: #000;
   font-weight: 500;
@@ -87,7 +87,6 @@ textarea {
     background-position: 0 50%;
   }
 }
-
 
 .skeleton-container {
   width: 100%;
@@ -154,8 +153,6 @@ menu {
   }
 }
 
-
-
 /* --- Base motion for alive effect --- */
 @keyframes progressAlive {
   0% {
@@ -180,7 +177,6 @@ menu {
 
 /* --- Subtle glow pulse --- */
 @keyframes pulseGlow {
-
   0%,
   100% {
     box-shadow: 0 0 10px rgba(154, 25, 255, 0.2);
@@ -194,7 +190,6 @@ menu {
 .animate-glow {
   animation: pulseGlow 2.5s ease-in-out infinite;
 }
-
 
 /* Hidding the clerk components */
 

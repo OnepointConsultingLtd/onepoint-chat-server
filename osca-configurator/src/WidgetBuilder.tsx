@@ -330,7 +330,7 @@ function WidgetBuilderForm({ initialClient, isNew }: WidgetBuilderFormProps) {
 							</div>
 
 							<div className="bg-white border border-gray-200 rounded-xl p-6">
-								<h2 className="text-sm font-semibold text-gray-700 mb-1">Welcome quick questions (JSON)</h2>
+								<h2 className="text-sm font-semibold text-gray-700 mb-1">Initial questions</h2>
 								<p className="text-xs text-gray-400 mb-4">
 									Buttons under the first assistant message. Empty array <code className="rounded bg-gray-100 px-1">[]</code> keeps the built-in
 									default list. Each item: <code className="rounded bg-gray-100 px-1">id</code> (number),{' '}

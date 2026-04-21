@@ -182,7 +182,7 @@ export const useClientStore = create<ClientStore>((set, get) => ({
     geminiKey: '',
     defaultPrompt,
     restPort: '5000',
-    wsPort: '4000',
+    wsPort: '5000',
   },
   setGlobalConfig: (config) => set({ globalConfig: config }),
 }))

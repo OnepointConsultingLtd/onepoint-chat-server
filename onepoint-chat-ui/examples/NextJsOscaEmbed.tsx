@@ -5,9 +5,9 @@
  *
  *    NEXT_PUBLIC_OSCA_UI_ORIGIN=https://osca.onepointltd.ai
  *
- *    Local Osca backend (run osca repo: API on 5000, WS on 4000 — see src/index.ts / src/api/server.ts):
+ *    Local Osca backend (single port; chat WS path /ws — see src/index.ts):
  *    NEXT_PUBLIC_OSCA_HTTP_URL=http://localhost:5000
- *    NEXT_PUBLIC_OSCA_WS_URL=ws://localhost:4000
+ *    NEXT_PUBLIC_OSCA_WS_URL=ws://localhost:5000
  *
  *    Production: use the public base URLs where *this* monorepo’s REST + WebSocket servers are exposed
  *    (not the LightRAG CONTEXT_API_URL / engine host unless you route chat there too).

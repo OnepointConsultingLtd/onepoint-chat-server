@@ -3,6 +3,30 @@ import type { TenantPublicBranding, TenantQuickQuestion } from '../type/tenantUi
 import { ONE_TIME_TOKEN } from './constants';
 import { applyTenantBrandingCss, bumpTenantUiRevision } from './tenantBrandingRuntime';
 
+function applyTenantDocumentBranding(projectName?: string, branding?: TenantPublicBranding): void {
+  if (typeof document === 'undefined') return;
+
+  const assistantName = branding?.assistantName?.trim();
+  const resolvedProjectName = projectName?.trim();
+  const titleBase = assistantName || resolvedProjectName || 'OSCA';
+  const titleByline = branding?.byline?.trim();
+  const includesByline =
+    Boolean(titleByline) && titleBase.toLowerCase().includes((titleByline as string).toLowerCase());
+  document.title =
+    titleByline && !includesByline ? `${titleBase} - ${titleByline}` : titleBase;
+
+  const logoUrl = branding?.logoUrl?.trim();
+  if (!logoUrl) return;
+
+  let favicon = document.querySelector<HTMLLinkElement>("link[rel='icon']");
+  if (!favicon) {
+    favicon = document.createElement('link');
+    favicon.rel = 'icon';
+    document.head.appendChild(favicon);
+  }
+  favicon.href = logoUrl;
+}
+
 function normalizeQuickQuestions(raw: unknown): TenantQuickQuestion[] {
   if (!Array.isArray(raw)) return [];
   const out: TenantQuickQuestion[] = [];
@@ -72,9 +96,10 @@ function mergeClientToken(cfg: Partial<OscaChatConfig>): OscaChatConfig {
 function localDevDefaults(): Pick<OscaChatConfig, 'httpUrl' | 'websocketUrl'> {
   const protocol = window.location.protocol;
   const wsProtocol = protocol === 'https:' ? 'wss' : 'ws';
+  const defaultPort = 5000;
   return {
-    httpUrl: `${protocol}//localhost:5000`,
-    websocketUrl: `${wsProtocol}://localhost:4000`,
+    httpUrl: `${protocol}//localhost:${defaultPort}`,
+    websocketUrl: `${wsProtocol}://localhost:${defaultPort}/ws`,
   };
 }
 
@@ -85,7 +110,7 @@ function sameOriginDefaults(): Pick<OscaChatConfig, 'httpUrl' | 'websocketUrl'> 
   const host = window.location.host;
   return {
     httpUrl: `${protocol}//${host}`,
-    websocketUrl: `${wsProtocol}://${host}`,
+    websocketUrl: `${wsProtocol}://${host}/ws`,
   };
 }
 
@@ -217,6 +242,7 @@ export async function hydrateOscaTenantProject(): Promise<void> {
         : {};
 
     applyTenantBrandingCss(hasBranding ? pb : undefined);
+    applyTenantDocumentBranding(window.oscaConfig?.projectName, hasBranding ? pb : undefined);
     bumpTenantUiRevision();
   } catch {
     /* keep prior oscaConfig / oscaTenantUi */

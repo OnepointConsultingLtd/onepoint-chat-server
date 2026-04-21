@@ -13,41 +13,26 @@ import { streamLLM } from "../service/llm";
 import { onepointCallback } from "../callbacks/onepoint";
 import { saveChatHistory } from "../api/handleApi";
 import { parsePrompt } from "../utils/prompts";
-import { getClientByToken, getClientDb, isOriginAllowedForClient, getCachedAllowedOrigins } from "../db/registry";
+import { getClientByToken, getClientDb, isOriginAllowedForClient } from "../db/registry";
 import type { ClientDocument } from "../types/clientDocument";
+import app from "../api/server";
 
 const conversations = new Map<string, Conversation>();
 
-const httpServer = http.createServer((req, res) => {
-  const origin = req.headers.origin;
-  const allowed = getCachedAllowedOrigins();
-  if (origin && allowed.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  } else if (origin && allowed.length > 0) {
-    res.setHeader("Access-Control-Allow-Origin", allowed[0]);
-  } else {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-  }
-  res.setHeader("Vary", "Origin");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Osca-Token");
-  if (req.method === "OPTIONS") {
-    res.writeHead(204);
-    res.end();
-    return;
-  }
-  res.writeHead(404);
-  res.end();
-});
+const httpServer = http.createServer(app);
 
 const wss = new WebSocketServer({ noServer: true });
 
 const WS_CLOSE_UNAUTHORIZED = 4001;
 
 httpServer.on("upgrade", (request, socket, head) => {
+  if (!request.url?.startsWith("/ws")) {
+    socket.destroy();
+    return;
+  }
   void (async () => {
     try {
-      const url = new URL(request.url ?? "/", "http://localhost");
+      const url = new URL(request.url ?? "/ws", "http://localhost");
       const token = url.searchParams.get("token")?.trim();
       if (!token) {
         console.warn("[ws] upgrade rejected: missing ?token=");
@@ -307,7 +292,7 @@ wss.on("connection", (ws: WebSocket, request: http.IncomingMessage, tenant: Clie
 
 export function startWebSocketServer(port: number) {
   httpServer.listen(port, () => {
-    console.log(`WebSocket server running on port ${port}`);
+    console.log(`HTTP + WebSocket listening on port ${port} (chat WebSocket path: /ws)`);
   });
   return httpServer;
 }

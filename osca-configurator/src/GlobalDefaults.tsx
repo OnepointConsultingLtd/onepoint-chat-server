@@ -135,10 +135,13 @@ export default function GlobalDefaults() {
 					</div>
 
 					<div className="bg-white border border-gray-200 rounded-xl p-6">
-						<h2 className="text-sm font-semibold text-gray-700 mb-4">Server ports</h2>
+						<h2 className="text-sm font-semibold text-gray-700 mb-1">Server port</h2>
+						<p className="text-xs text-gray-400 mb-4">
+							OSCA serves HTTP and WebSocket on one port; chat connects to <code className="font-mono">/ws</code>.
+						</p>
 						<div className="grid grid-cols-2 gap-4">
 							<div>
-								<label className="block text-xs font-medium text-gray-500 mb-1.5">REST API port</label>
+								<label className="block text-xs font-medium text-gray-500 mb-1.5">HTTP + REST port</label>
 								<input
 									type="text"
 									value={form.restPort}
@@ -154,6 +157,7 @@ export default function GlobalDefaults() {
 									onChange={(e) => setForm({ ...form, wsPort: e.target.value })}
 									className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent font-mono"
 								/>
+								<p className="text-[10px] text-gray-400 mt-1">Usually same as HTTP (path <span className="font-mono">/ws</span>).</p>
 							</div>
 						</div>
 					</div>
@@ -167,7 +171,7 @@ export default function GlobalDefaults() {
 							{[
 								{ label: 'Provider', value: globalConfig.defaultProvider },
 								{ label: 'Model', value: globalConfig.defaultModel, mono: true },
-								{ label: 'REST port', value: globalConfig.restPort, mono: true },
+								{ label: 'HTTP port', value: globalConfig.restPort, mono: true },
 								{ label: 'WS port', value: globalConfig.wsPort, mono: true },
 								{ label: 'OpenAI key', value: globalConfig.openaiKey ? '••••••••' : 'Not set' },
 								{ label: 'Anthropic key', value: globalConfig.anthropicKey ? '••••••••' : 'Not set' },

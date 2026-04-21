@@ -31,7 +31,7 @@ export const TOPIC_CARD = {
 };
 
 export const PROJECT_CONFIG = {
-  PROJECT: 'onepoint_v2',
+  PROJECT: 'onepoint_v3',
   ENGINE: 'lightrag',
 }
 

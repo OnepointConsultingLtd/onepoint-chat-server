@@ -3,7 +3,6 @@ dotenv.config({ path: ".env" });
 
 import "./logger";
 import { connectRegistry, ensureOnepointSeedIfEmpty, refreshAllowedOriginsCache } from "./db/registry";
-import app from "./api/server";
 import { startWebSocketServer } from "./ws/server";
 
 async function main() {
@@ -11,13 +10,11 @@ async function main() {
   await ensureOnepointSeedIfEmpty();
   await refreshAllowedOriginsCache();
 
-  const REST_PORT = parseInt(process.env.REST_API_PORT || "5000", 10);
-  const WS_PORT = parseInt(process.env.PORT || "4000", 10);
+  const port = parseInt(process.env.PORT || "5000", 10);
 
   console.log("Starting Onepoint Chat Server...");
-  app.listen(REST_PORT, () => console.log(`REST API listening on port ${REST_PORT}`));
-  startWebSocketServer(WS_PORT);
-  console.log("Started Onepoint Chat Server.");
+  startWebSocketServer(port);
+  console.log("Started Onepoint Chat Server (HTTP + WebSocket on one port).");
 }
 
 main().catch((err) => {

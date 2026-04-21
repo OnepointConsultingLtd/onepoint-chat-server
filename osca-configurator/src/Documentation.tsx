@@ -150,8 +150,12 @@ VITE_OSCA_ADMIN_SECRET=<same value as ADMIN_SECRET in repo root .env>`}</Pre>
 					</p>
 					<p>In <Code>onepoint-chat-ui/.env</Code> you can set:</p>
 					<Pre>{`VITE_OSCA_HTTP_URL=http://localhost:5000
-VITE_OSCA_WS_URL=ws://localhost:4000
+VITE_OSCA_WS_URL=ws://localhost:5000
 VITE_OSCA_CLIENT_TOKEN=<widget token for the tenant you want>`}</Pre>
+					<p className="text-xs text-gray-500 mt-2">
+						WebSocket URL uses the same port as HTTP; the client connects to path <Code>/ws</Code> (appended automatically if
+						omitted from <Code>VITE_OSCA_WS_URL</Code>).
+					</p>
 					<p>
 						If <Code>VITE_OSCA_CLIENT_TOKEN</Code> is omitted, the app falls back to <Code>ONE_TIME_TOKEN</Code> in{' '}
 						<Code>constants.ts</Code> (must match a registry <Code>token</Code> for local dev).
@@ -183,7 +187,7 @@ VITE_OSCA_CLIENT_TOKEN=<widget token for the tenant you want>`}</Pre>
 							<Code>MONGO_URI</Code>, <Code>MONGO_REGISTRY_DB=osca-registry</Code>
 						</li>
 						<li>
-							<Code>REST_API_PORT</Code> (often 5000), <Code>PORT</Code> for WebSocket (often 4000)
+							<Code>PORT</Code> — single HTTP + WebSocket listener (default 5000); chat WS path is <Code>/ws</Code>
 						</li>
 						<li>
 							<Code>ADMIN_SECRET</Code> — protects <Code>/admin/*</Code>; must match <Code>VITE_OSCA_ADMIN_SECRET</Code> here.
