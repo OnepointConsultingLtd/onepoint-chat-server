@@ -62,7 +62,7 @@ export default function ThinkingIndicator() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.4 }}
-          className="w-full px-5 md:px-10 py-6 md:py-10 bg-gradient-to-br from-[color:var(--osca-bg-light)] to-[color:var(--osca-bg-light)] dark:from-[color:var(--osca-bg-dark)] dark:to-[color:var(--osca-bg-dark)] border-t border-gray-200 dark:border-gray-600 backdrop-blur-sm shadow-inner"
+          className="w-full px-5 md:px-10 py-6 md:py-10 bg-gradient-to-br from-[color:var(--osca-bg-light)] to-[color:var(--osca-bg-light)] dark:from-[color:var(--osca-bg-dark)] dark:to-[color:var(--osca-bg-dark)] border-t border-gray-200 dark:border-gray-600 backdrop-blur-sm shadow-inner rounded-md"
         >
           {/* Header */}
           <div className="flex items-center mb-4">

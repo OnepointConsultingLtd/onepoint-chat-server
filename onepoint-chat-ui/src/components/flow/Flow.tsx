@@ -1,4 +1,4 @@
-import { Background, Controls, type Node, ReactFlow, useReactFlow } from '@xyflow/react';
+import { Background, Controls, type Node, ReactFlow, useKeyPress, useReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -54,8 +54,12 @@ export default function Flow({
   const { isDark } = useDarkMode();
   const shellColors = useOscaFlowBackgroundColors();
   const reactFlowInstance = useReactFlow();
+  const arrowRight = useKeyPress('ArrowRight');
+  const arrowLeft = useKeyPress('ArrowLeft');
 
   const previousMessagesLengthRef = useRef<number>(0);
+  const currentNodeIndexRef = useRef(0);
+  const previousCardNodesLengthRef = useRef(0);
 
   // Use desktop zoom settings
   const zoomSettings = useMemo(
@@ -131,6 +135,12 @@ export default function Flow({
     );
   }, [filteredMessages, topicState]);
 
+  const cardNodes = useMemo(() => {
+    return nodes
+      .filter(node => /^card-\d+$/.test(node.id))
+      .sort((a, b) => Number(a.id.split('-')[1]) - Number(b.id.split('-')[1]));
+  }, [nodes]);
+
   useEffect(() => {
     focusOnLatestNode(
       reactFlowInstance,
@@ -144,8 +154,56 @@ export default function Flow({
 
   const onEdgesChange = useCallback(() => { }, []);
 
+  const focusNode = useCallback((node: Node) => {
+    reactFlowInstance.fitView({
+      nodes: [{ id: node.id }],
+      duration: 500,
+      padding: 0.3,
+      maxZoom: 1,
+    });
+  }, [reactFlowInstance]);
+
+  useEffect(() => {
+    if (cardNodes.length === 0) {
+      currentNodeIndexRef.current = 0;
+      previousCardNodesLengthRef.current = 0;
+      return;
+    }
+
+    if (cardNodes.length > previousCardNodesLengthRef.current) {
+      currentNodeIndexRef.current = cardNodes.length - 1;
+    } else if (currentNodeIndexRef.current > cardNodes.length - 1) {
+      currentNodeIndexRef.current = cardNodes.length - 1;
+    }
+
+    previousCardNodesLengthRef.current = cardNodes.length;
+  }, [cardNodes]);
+
+  useEffect(() => {
+    if (!arrowRight) return;
+    const tag = document.activeElement?.tagName.toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    if (cardNodes.length === 0) return;
+
+    currentNodeIndexRef.current = Math.min(currentNodeIndexRef.current + 1, cardNodes.length - 1);
+    const nextNode = cardNodes[currentNodeIndexRef.current];
+    if (!nextNode) return;
+    focusNode(nextNode);
+  }, [arrowRight, cardNodes, focusNode]);
+
+  useEffect(() => {
+    if (!arrowLeft) return;
+    const tag = document.activeElement?.tagName.toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    if (cardNodes.length === 0) return;
+
+    currentNodeIndexRef.current = Math.max(currentNodeIndexRef.current - 1, 0);
+    const prevNode = cardNodes[currentNodeIndexRef.current];
+    if (!prevNode) return;
+    focusNode(prevNode);
+  }, [arrowLeft, cardNodes, focusNode]);
+
   const getCardTexts = useCallback((node: Node) => {
-    console.log('searching in the node', node);
     const match = /^card-(\d+)$/.exec(node.id);
     if (!match) return null;
     const cardIndex = Number(match[1]);
@@ -207,12 +265,7 @@ export default function Flow({
             }}
             getResultLabel={getSearchResultLabel}
             onSelectNode={(node: Node) => {
-              reactFlowInstance.fitView({
-                nodes: [{ id: node.id }],
-                duration: 500,
-                padding: 0.3,
-                maxZoom: 1,
-              });
+              focusNode(node);
             }}
           />
         </div>

@@ -84,6 +84,7 @@ console.log(`Serving static files from ${static_files_path}`);
 const chatRouter = Router();
 chatRouter.use(resolveClient);
 
+// Get a share by token
 chatRouter.get("/share/token/:token", (async (req, res) => {
   try {
     const { token: shareToken } = req.params;
@@ -205,6 +206,7 @@ chatRouter.get("/share/token/:token", (async (req, res) => {
   }
 }) as RequestHandler);
 
+// Create a share for a conversation in the current tenant
 chatRouter.post("/share/create", (async (req, res) => {
   try {
     const userId = req.headers["x-user-id"] as string | undefined;
@@ -261,6 +263,7 @@ chatRouter.post("/share/create", (async (req, res) => {
   }
 }) as RequestHandler);
 
+// Get the reference sources for a message
 chatRouter.get("/:conversationId/message/:messageId/references", (async (req, res) => {
   try {
     const { conversationId, messageId } = req.params;
@@ -285,6 +288,7 @@ chatRouter.get("/:conversationId/message/:messageId/references", (async (req, re
   }
 }) as RequestHandler);
 
+// Get the chat history for a conversation
 chatRouter.get("/:conversationId", (async (req, res) => {
   try {
     const { conversationId } = req.params;
@@ -309,11 +313,14 @@ chatRouter.get("/:conversationId", (async (req, res) => {
   }
 }) as RequestHandler);
 
+// Get the user conversations
 app.use("/api/chat", chatRouter);
 
 const conversationsRouter = Router();
 conversationsRouter.use(resolveClient);
 
+
+// Get the user conversations
 conversationsRouter.get("/user/:userId", (async (req, res) => {
   try {
     const { userId } = req.params;
@@ -343,6 +350,7 @@ conversationsRouter.get("/user/:userId", (async (req, res) => {
   }
 }) as RequestHandler);
 
+// Delete a conversation
 conversationsRouter.delete("/:conversationId", (async (req, res) => {
   try {
     const { conversationId } = req.params;
@@ -368,10 +376,14 @@ conversationsRouter.delete("/:conversationId", (async (req, res) => {
   }
 }) as RequestHandler);
 
+
+// Conversations API
 app.use("/api/conversations", conversationsRouter);
 
 const tenantRouter = Router();
 tenantRouter.use(resolveClient);
+
+// Get the tenant context
 tenantRouter.get("/context", ((req, res) => {
   const c = req.client!;
   const publicBranding = sanitizeTenantPublicBranding(c.publicBranding);
@@ -386,6 +398,7 @@ tenantRouter.get("/context", ((req, res) => {
 }) as RequestHandler);
 app.use("/api/tenant", tenantRouter);
 
+// Get all clients
 app.get("/admin/clients", requireAdmin, async (_req, res) => {
   try {
     const clients = await listAllClients();
@@ -396,6 +409,7 @@ app.get("/admin/clients", requireAdmin, async (_req, res) => {
   }
 });
 
+// Create a new client
 app.post("/admin/clients", requireAdmin, async (req, res) => {
   try {
     const b = req.body as Partial<ClientDocument>;
@@ -432,6 +446,7 @@ app.post("/admin/clients", requireAdmin, async (req, res) => {
   }
 });
 
+// Update a client
 app.put("/admin/clients/:id", requireAdmin, async (req, res) => {
   try {
     const body = req.body as Partial<Omit<ClientDocument, "_id" | "createdAt">> & { publicBranding?: unknown };
@@ -459,6 +474,7 @@ app.put("/admin/clients/:id", requireAdmin, async (req, res) => {
   }
 });
 
+// Delete a client
 app.delete("/admin/clients/:id", requireAdmin, async (req, res) => {
   try {
     const ok = await deleteClientDoc(req.params.id);
@@ -473,6 +489,7 @@ app.delete("/admin/clients/:id", requireAdmin, async (req, res) => {
   }
 });
 
+// Regenerate a client token
 app.post("/admin/clients/:id/regen-token", requireAdmin, async (req, res) => {
   try {
     const newToken = `osca_live_${crypto.randomBytes(24).toString("hex")}`;
@@ -488,6 +505,7 @@ app.post("/admin/clients/:id/regen-token", requireAdmin, async (req, res) => {
   }
 });
 
+// Serve the static files
 app.get(/^\/(?!api\/).*/, (_req, res) => {
   res.sendFile(path.join(static_files_path, "index.html"));
 });
