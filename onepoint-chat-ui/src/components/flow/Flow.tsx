@@ -1,4 +1,4 @@
-import { Background, Controls, ReactFlow, useReactFlow } from '@xyflow/react';
+import { Background, Controls, type Node, ReactFlow, useReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -13,10 +13,12 @@ import { interceptServerError } from '../../lib/interceptServerError';
 import useChatStore from '../../store/chatStore';
 import { nodeTypes, Topic, TopicOrQuestion } from '../../type/types';
 import { filterDisplayableMessages } from '../../utils/messageFilter';
+import { getConversationStartIndex } from '../../utils/messageUtils';
 import { createEdges } from './EdgeCreator';
 import ErrorCard from './ErrorCard';
 import { createNodes } from './NodeCreator';
 import { focusOnLatestNode } from './ViewportManager';
+import { NodeSearch } from './NodeSearch';
 
 /**
  * Flow component that displays the chat conversation in a flow diagram.
@@ -117,6 +119,10 @@ export default function Flow({
   const filteredMessages = useMemo(() => {
     return filterDisplayableMessages(messages);
   }, [messages]);
+  const conversationStartIndex = useMemo(
+    () => getConversationStartIndex(filteredMessages),
+    [filteredMessages]
+  );
 
   const edges = useMemo(() => {
     return createEdges(
@@ -137,6 +143,23 @@ export default function Flow({
   const onNodesChange = useCallback(() => { }, []);
 
   const onEdgesChange = useCallback(() => { }, []);
+
+  const getCardTexts = useCallback((node: Node) => {
+    console.log('searching in the node', node);
+    const match = /^card-(\d+)$/.exec(node.id);
+    if (!match) return null;
+    const cardIndex = Number(match[1]);
+    return {
+      user: filteredMessages[conversationStartIndex + cardIndex * 2]?.text ?? '',
+      agent: filteredMessages[conversationStartIndex + cardIndex * 2 + 1]?.text ?? '',
+    };
+  }, [conversationStartIndex, filteredMessages]);
+
+  const getSearchResultLabel = useCallback((node: Node) => {
+    const texts = getCardTexts(node);
+    const preview = (texts?.user || texts?.agent || node.id).replace(/\s+/g, ' ').trim();
+    return preview.length > 80 ? `${preview.slice(0, 80)}...` : preview;
+  }, [getCardTexts]);
 
   const isError = interceptServerError(messages);
 
@@ -169,29 +192,29 @@ export default function Flow({
             <Controls showInteractive={false} />
           </ReactFlow>
         )}
-        <div className="pointer-events-none absolute left-3 top-3 z-20">
-          <div className="pointer-events-auto w-[26rem] rounded-xl border border-[color:var(--osca-border-light)] bg-[color:color-mix(in_srgb,var(--osca-bg-light)_92%,transparent)] p-2 shadow-[0_8px_30px_color-mix(in_srgb,var(--osca-accent)_14%,transparent)] backdrop-blur-md dark:border-[color:var(--osca-border-dark)] dark:bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_86%,transparent)] dark:shadow-[0_8px_30px_color-mix(in_srgb,var(--osca-accent)_18%,transparent)]">
-            <div className="relative">
-              <svg
-                viewBox="0 0 24 24"
-                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--osca-text-muted)]"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search conversation..."
-                className="h-10 w-full rounded-lg border border-[color:var(--osca-border-light)] bg-[color:var(--osca-bg-light)] pl-9 pr-3 text-sm text-[color:var(--osca-surface-dark)] placeholder:text-[color:var(--osca-text-muted)] outline-none transition focus:border-[color:var(--osca-accent)] focus:ring-2 focus:ring-[color:color-mix(in_srgb,var(--osca-accent)_28%,transparent)] dark:border-[color:var(--osca-border-dark)] dark:bg-[color:var(--osca-bg-dark)] dark:text-[color:var(--osca-text-on-dark)]"
-              />
-            </div>
-          </div>
+        <div
+          className="flex gap-1 rounded-md bg-primary-foreground p-1 text-foreground absolute top-0 left-0"
+        >
+          <NodeSearch
+            onSearch={(query: string) => {
+              const q = query.trim().toLowerCase();
+              if (!q) return [];
+              return nodes.filter((node: Node) => {
+                const texts = getCardTexts(node);
+                if (!texts) return false;
+                return texts.user.toLowerCase().includes(q) || texts.agent.toLowerCase().includes(q);
+              });
+            }}
+            getResultLabel={getSearchResultLabel}
+            onSelectNode={(node: Node) => {
+              reactFlowInstance.fitView({
+                nodes: [{ id: node.id }],
+                duration: 500,
+                padding: 0.3,
+                maxZoom: 1,
+              });
+            }}
+          />
         </div>
       </div>
       <div ref={messagesEndRef} />
