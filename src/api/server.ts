@@ -1,25 +1,43 @@
+import cors from "cors";
 import crypto from "crypto";
 import express, { RequestHandler, Router } from "express";
-import {
-  getChatHistory,
-  getChatHistoryWithMetadata,
-  formatConversationHistory,
-  extractUserMessageContent,
-  deleteConversation,
-} from "./handleApi";
-import type { MongoConversation } from "../types";
-import { isWelcomeMessage } from "../utils/isWelcomeMessage";
-import { getVerifiedUserId } from "./verifyClerkAuth";
-import cors from "cors";
 import path from "path";
+import { deleteClientDoc, getCachedAllowedOrigins, getClientDb, insertClientDoc, listAllClients, updateClientDoc } from "../db/registry";
 import { resolveClient } from "../middleware/resolveClient";
-import { getCachedAllowedOrigins, insertClientDoc, updateClientDoc, deleteClientDoc, listAllClients, getClientDb } from "../db/registry";
+import type { MongoConversation } from "../types";
 import type { ClientDocument } from "../types/clientDocument";
 import type { LLMProviderName } from "../types/enums";
 import { sanitizeTenantPublicBranding } from "../types/tenantPublicBranding";
+import { isWelcomeMessage } from "../utils/isWelcomeMessage";
+import {
+  deleteConversation,
+  extractUserMessageContent,
+  formatConversationHistory,
+  getChatHistory,
+  getChatHistoryWithMetadata,
+} from "./handleApi";
+import { getVerifiedUserId } from "./verifyClerkAuth";
+
+/**
+ * Express app, REST routes, static file serving
+ * This is the main entry point for the API.
+ * It handles CORS, JSON parsing, static file serving, and API routes.
+ * It also uses the `resolveClient` middleware to set the `client` and `clientDb` properties on the request object.
+ * @see {@link middleware/resolveClient.ts}
+ * @see {@link types/clientDocument.ts}
+ * @see {@link types/enums.ts} - LLM provider enums
+ * @see {@link types/tenantPublicBranding.ts} - Tenant public branding
+ * @see {@link utils/isWelcomeMessage.ts} - Is welcome message utility
+ * @see {@link handleApi.ts} - API routes
+ * @see {@link verifyClerkAuth.ts} - Clerk authentication
+ */
+
 
 const app = express();
 app.use(express.json({ limit: "50mb" }));
+
+
+  // Check if the origin is a local development HTTP origin
 function isLocalDevHttpOrigin(origin: string): boolean {
   try {
     const u = new URL(origin);
@@ -29,6 +47,7 @@ function isLocalDevHttpOrigin(origin: string): boolean {
   }
 }
 
+// Configure CORS
 app.use(
   cors({
     origin(origin, callback) {
@@ -37,6 +56,7 @@ app.use(
         return;
       }
       const allowed = getCachedAllowedOrigins();
+      // Check if the origin is in the allowed origins
       if (allowed.includes(origin)) {
         callback(null, true);
         return;
@@ -47,7 +67,10 @@ app.use(
       }
       callback(null, false);
     },
+
+    // Allow credentials
     credentials: true,
+    // Allow the following headers
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -59,6 +82,8 @@ app.use(
   }),
 );
 
+
+// Require admin authentication
 function requireAdmin(
   req: express.Request,
   res: express.Response,

@@ -11,6 +11,8 @@ export function createHeaders() {
   };
 }
 
+
+// Resolve the context project name from the window.oscaConfig
 function resolvedContextProject(): string {
   const p =
     typeof window !== 'undefined' ? window.oscaConfig?.projectName?.trim() : undefined;

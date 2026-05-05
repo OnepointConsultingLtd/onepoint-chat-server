@@ -16,6 +16,5 @@ export interface ClientDocument {
   createdAt: string;
   topicsPrompt?: string;
   predefinedQuickQuestions?: { id: number; text: string; label?: string }[];
-  /** Widget-facing copy, theme, logos — returned from GET /api/tenant/context only. */
   publicBranding?: TenantPublicBranding;
 }

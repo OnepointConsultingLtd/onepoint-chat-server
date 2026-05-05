@@ -10,8 +10,12 @@ export default function Disclaimer() {
 	return (
 		<div className="pointer-events-none fixed bottom-4 left-0 right-0 z-[130] text-center mb-2 px-4">
 			<div className="mb-1 flex items-center justify-center gap-2 text-[11px] text-[color:var(--osca-text-muted)]/75">
-				<kbd className="inline-flex h-5 w-5 items-center justify-center rounded border border-[color:color-mix(in_srgb,var(--osca-border-light)_70%,transparent)] bg-[color:color-mix(in_srgb,var(--osca-bg-light)_85%,transparent)] font-mono text-[10px] dark:border-[color:color-mix(in_srgb,var(--osca-accent)_55%,transparent)] dark:bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_70%,transparent)] dark:text-[color:var(--osca-accent)]">←</kbd>
-				<kbd className="inline-flex h-5 w-5 items-center justify-center rounded border border-[color:color-mix(in_srgb,var(--osca-border-light)_70%,transparent)] bg-[color:color-mix(in_srgb,var(--osca-bg-light)_85%,transparent)] font-mono text-[10px] dark:border-[color:color-mix(in_srgb,var(--osca-accent)_55%,transparent)] dark:bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_70%,transparent)] dark:text-[color:var(--osca-accent)]">→</kbd>
+				<kbd className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-[color:color-mix(in_srgb,var(--osca-border-light)_70%,transparent)] bg-[color:color-mix(in_srgb,var(--osca-bg-light)_85%,transparent)] text-base font-semibold leading-none tracking-tight text-[color:var(--osca-text-muted)] dark:border-[color:color-mix(in_srgb,var(--osca-accent)_55%,transparent)] dark:bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_70%,transparent)] dark:text-[color:var(--osca-accent)]">
+					←
+				</kbd>
+				<kbd className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-[color:color-mix(in_srgb,var(--osca-border-light)_70%,transparent)] bg-[color:color-mix(in_srgb,var(--osca-bg-light)_85%,transparent)] text-base font-semibold leading-none tracking-tight text-[color:var(--osca-text-muted)] dark:border-[color:color-mix(in_srgb,var(--osca-accent)_55%,transparent)] dark:bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_70%,transparent)] dark:text-[color:var(--osca-accent)]">
+					→
+				</kbd>
 				<span>navigate messages</span>
 			</div>
 			<p

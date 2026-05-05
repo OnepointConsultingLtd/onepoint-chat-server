@@ -3,6 +3,10 @@ import type { TenantPublicBranding, TenantQuickQuestion } from '../type/tenantUi
 import { ONE_TIME_TOKEN } from './constants';
 import { applyTenantBrandingCss, bumpTenantUiRevision } from './tenantBrandingRuntime';
 
+
+/**
+ * Apply tenant document branding TO the title and favicon of the document.
+ */
 function applyTenantDocumentBranding(projectName?: string, branding?: TenantPublicBranding): void {
   if (typeof document === 'undefined') return;
 

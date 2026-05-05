@@ -8,8 +8,10 @@ import { Message } from '../type/types';
 
 export function filterDisplayableMessages(messages: Message[]): Message[] {
 	return messages.filter(message => {
-		// Filter out connection closed messages
-		if (message.text.includes('Connection closed')) {
+		if (
+			message.text.includes('Connection closed') ||
+			message.text.includes('Connection error')
+		) {
 			return false;
 		}
 

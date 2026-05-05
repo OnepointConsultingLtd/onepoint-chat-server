@@ -24,6 +24,8 @@ export interface ChatStore {
   topicQuestionsError: string | null;
   isSelectedTopicFromTopic: boolean;
   isFloatingOpen: boolean;
+  /** True when the WebSocket dropped unexpectedly; cleared on successful reconnect. */
+  connectionLost: boolean;
 
   // Setters
   setIsInitialMessage: (message: Message, isLastCard: boolean) => void;
@@ -46,6 +48,7 @@ export interface ChatStore {
   setTopicQuestionsLoading: (loading: boolean) => void;
   setTopicQuestionsError: (error: string | null) => void;
   setIsFloatingOpen: (open: boolean) => void;
+  setConnectionLost: (lost: boolean) => void;
 
   // Actions
   toggleSidebar: () => void;

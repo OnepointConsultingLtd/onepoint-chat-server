@@ -1,6 +1,6 @@
 import { useShallow } from 'zustand/react/shallow';
 import { useTenantBranding } from '../../hooks/useTenantBranding';
-import { interceptServerError } from '../../lib/interceptServerError';
+import { shouldShowConnectionErrorOverlay } from '../../lib/interceptServerError';
 import useChatStore from '../../store/chatStore';
 import ChatInput from '../ChatInput';
 import ErrorCard from '../flow/ErrorCard';
@@ -76,15 +76,16 @@ export default function FloatingChatMain({
   sendMessageToServer,
   messagesEndRef,
 }: FloatingChatMainProps) {
-  const { isFloatingOpen, toggleFloatingChat, messages } = useChatStore(
+  const { isFloatingOpen, toggleFloatingChat, messages, connectionLost } = useChatStore(
     useShallow(state => ({
       isFloatingOpen: state.isFloatingOpen,
       toggleFloatingChat: state.toggleFloatingChat,
       messages: state.messages,
+      connectionLost: state.connectionLost,
     }))
   );
 
-  const isError = interceptServerError(messages);
+  const isError = shouldShowConnectionErrorOverlay(messages, connectionLost);
   const branding = useTenantBranding();
   const assistantName = branding?.assistantName?.trim() || 'OSCA';
   const byline = branding?.byline?.trim() || 'by Onepoint';
@@ -386,8 +387,8 @@ export default function FloatingChatMain({
             {isError ? (
               <div className="flex h-full items-center justify-center p-6">
                 <ErrorCard
-                  title="Connection Error"
-                  message="We were unable to connect to the server. Please check your internet connection or try again later."
+                  title="Unable to connect"
+                  message="The chat service could not be reached. Check your network, then try again."
                 />
               </div>
             ) : (

@@ -1,7 +1,7 @@
-const API_KEY = process.env.CONTEXT_API_KEY;
+const CONTEXT_API_KEY = process.env.CONTEXT_API_KEY;
 const CONTEXT_API_URL = process.env.CONTEXT_API_URL;
 
-if (!API_KEY) {
+if (!CONTEXT_API_KEY) {
   throw new Error("CONTEXT_API_KEY is not set");
 }
 
@@ -16,6 +16,8 @@ if (!CONTEXT_API_URL) {
  *   template uses `{project}` (then that placeholder is replaced).
  * - Optional `CONTEXT_DEFAULT_PROJECT` in .env if a call ever lacks `projectName`.
  */
+
+
 function buildContextUrl(question: string, projectName: string): string {
   const project =
     projectName.trim() ||
@@ -23,12 +25,10 @@ function buildContextUrl(question: string, projectName: string): string {
     "onepoint_v21";
 
 
-    console.log("projectName",projectName)
-    console.log("CONTEXT_API_URL",CONTEXT_API_URL)
+    // console.log("projectName",projectName)
+    // console.log("CONTEXT_API_URL",CONTEXT_API_URL)
 
   let urlString = CONTEXT_API_URL!.replace("{question}", encodeURIComponent(question));
-
-  console.log("urlString",urlString)
 
   if (urlString.includes("{project}")) {
     return urlString.replace("{project}", encodeURIComponent(project));
@@ -49,19 +49,22 @@ export type GetContextOptions = {
   projectName: string;
 };
 
+
+// Get the context from the LightRAG engine
 export async function getContext(question: string, options?: GetContextOptions) {
   try {
     const url = buildContextUrl(question, options?.projectName ?? "");
-    console.log("url in getContext",url)
+
+
     const response = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${API_KEY!}`,
+        Authorization: `Bearer ${CONTEXT_API_KEY!}`,
       },
     });
 
 
     if (response.ok) {
-      const data = await response.json();
+      const data = await response?.json();
       return {
         data: data,
         success: true,

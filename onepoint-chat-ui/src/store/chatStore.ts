@@ -33,6 +33,7 @@ function newChat() {
     topicQuestionsLoading: false,
     topicQuestionsError: null,
     isFloatingOpen: false,
+    connectionLost: false,
   };
 }
 
@@ -61,6 +62,7 @@ const useChatStore = create<ChatStore>()(
       topicQuestionsError: null,
       isSelectedTopicFromTopic: false,
       isFloatingOpen: true,
+      connectionLost: false,
 
       // setters
       setIsInitialMessage: (_message: Message, isLastCard: boolean) => {
@@ -109,6 +111,7 @@ const useChatStore = create<ChatStore>()(
       setTopicQuestionsLoading: (loading: boolean) => set({ topicQuestionsLoading: loading }),
       setTopicQuestionsError: (error: string | null) => set({ topicQuestionsError: error }),
       setIsFloatingOpen: (open: boolean) => set({ isFloatingOpen: open }),
+      setConnectionLost: (lost: boolean) => set({ connectionLost: lost }),
 
       toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
       toggleFloatingChat: () => set(state => ({ isFloatingOpen: !state.isFloatingOpen })),

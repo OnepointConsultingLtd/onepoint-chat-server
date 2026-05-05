@@ -9,7 +9,7 @@ import {
   MAX_ZOOM,
   MIN_ZOOM
 } from '../../lib/constants';
-import { interceptServerError } from '../../lib/interceptServerError';
+import { shouldShowConnectionErrorOverlay } from '../../lib/interceptServerError';
 import useChatStore from '../../store/chatStore';
 import { nodeTypes, Topic, TopicOrQuestion } from '../../type/types';
 import { filterDisplayableMessages } from '../../utils/messageFilter';
@@ -41,6 +41,7 @@ export default function Flow({
     isInitialMessage,
     relatedTopics,
     handleTopicAction,
+    connectionLost,
   } = useChatStore(
     useShallow(state => ({
       messages: state.messages,
@@ -48,6 +49,7 @@ export default function Flow({
       isInitialMessage: state.isInitialMessage,
       relatedTopics: state.relatedTopics,
       handleTopicAction: state.handleTopicAction,
+      connectionLost: state.connectionLost,
     }))
   );
 
@@ -219,7 +221,7 @@ export default function Flow({
     return preview.length > 80 ? `${preview.slice(0, 80)}...` : preview;
   }, [getCardTexts]);
 
-  const isError = interceptServerError(messages);
+  const isError = shouldShowConnectionErrorOverlay(messages, connectionLost);
 
   return (
     <div
@@ -230,8 +232,8 @@ export default function Flow({
         {isError ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <ErrorCard
-              title="Connection Error"
-              message="We were unable to connect to the server. Please check your internet connection or try again later."
+              title="Unable to connect"
+              message="The chat service could not be reached. Check your network, then try again."
             />
           </div>
         ) : (
@@ -250,25 +252,28 @@ export default function Flow({
             <Controls showInteractive={false} />
           </ReactFlow>
         )}
-        <div
-          className="flex gap-1 rounded-md bg-primary-foreground p-1 text-foreground absolute top-0 left-0"
-        >
-          <NodeSearch
-            onSearch={(query: string) => {
-              const q = query.trim().toLowerCase();
-              if (!q) return [];
-              return nodes.filter((node: Node) => {
-                const texts = getCardTexts(node);
-                if (!texts) return false;
-                return texts.user.toLowerCase().includes(q) || texts.agent.toLowerCase().includes(q);
-              });
-            }}
-            getResultLabel={getSearchResultLabel}
-            onSelectNode={(node: Node) => {
-              focusNode(node);
-            }}
-          />
-        </div>
+
+        {!isInitialMessage && (
+          <div
+            className="flex gap-1 rounded-md bg-primary-foreground p-1 text-foreground absolute top-0 left-0"
+          >
+            <NodeSearch
+              onSearch={(query: string) => {
+                const q = query.trim().toLowerCase();
+                if (!q) return [];
+                return nodes.filter((node: Node) => {
+                  const texts = getCardTexts(node);
+                  if (!texts) return false;
+                  return texts.user.toLowerCase().includes(q) || texts.agent.toLowerCase().includes(q);
+                });
+              }}
+              getResultLabel={getSearchResultLabel}
+              onSelectNode={(node: Node) => {
+                focusNode(node);
+              }}
+            />
+          </div>
+        )}
       </div>
       <div ref={messagesEndRef} />
     </div>

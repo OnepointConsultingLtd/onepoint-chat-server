@@ -10,6 +10,9 @@ import TopicButton from './TopicButton';
 import { useTenantBranding } from '../hooks/useTenantBranding';
 import { PROJECT_INFO } from '../lib/constants';
 
+const isConnectionStatusMessage = (text: string) =>
+  text.includes('Connection closed') || text.includes('Connection error');
+
 type MessagesProps = {
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
   sendMessageToServer: (message: string) => void;
@@ -41,7 +44,7 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
 
   // Desktop sets this from MessageCard; mobile-only layout must sync the same way or quick questions never show.
   useEffect(() => {
-    const msgs = messages.filter(m => !m.text.includes('Connection closed'));
+    const msgs = messages.filter(m => !isConnectionStatusMessage(m.text));
     if (msgs.length === 0) {
       chatStore.setState({ isInitialMessage: false, showInput: false });
       return;
@@ -55,7 +58,7 @@ export default function Messages({ messagesEndRef, sendMessageToServer }: Messag
   }, [messages, setIsInitialMessage]);
 
   const filteredMessages = useMemo(() => {
-    return messages.filter(message => !message.text.includes('Connection closed'));
+    return messages.filter(message => !isConnectionStatusMessage(message.text));
   }, [messages]);
 
   useEffect(() => {

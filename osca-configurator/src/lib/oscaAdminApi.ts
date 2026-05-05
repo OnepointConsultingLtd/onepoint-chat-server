@@ -58,17 +58,17 @@ export function registryDocToClient(d: RegistryDoc): Client {
 }
 
 export async function fetchRegistryClients(): Promise<Client[]> {
-  const r = await fetch(`${base()}/admin/clients`, { headers: adminHeaders() })
-  if (!r.ok) {
-    const err = await r.text()
-    throw new Error(err || `GET /admin/clients failed (${r.status})`)
+  const response = await fetch(`${base()}/admin/clients`, { headers: adminHeaders() })
+  if (!response.ok) {
+    const err = await response.text()
+    throw new Error(err || `GET /admin/clients failed (${response.status})`)
   }
-  const docs = (await r.json()) as RegistryDoc[]
+  const docs = (await response.json()) as RegistryDoc[]
   return docs.map(registryDocToClient)
 }
 
 export async function createRegistryClient(c: Omit<Client, 'id' | 'createdAt'>): Promise<Client> {
-  const r = await fetch(`${base()}/admin/clients`, {
+  const response = await fetch(`${base()}/admin/clients`, {
     method: 'POST',
     headers: adminHeaders(),
     body: JSON.stringify({
@@ -86,16 +86,16 @@ export async function createRegistryClient(c: Omit<Client, 'id' | 'createdAt'>):
       publicBranding: c.publicBranding,
     }),
   })
-  if (!r.ok) {
-    const err = await r.text()
-    throw new Error(err || `POST /admin/clients failed (${r.status})`)
+  if (!response.ok) {
+    const err = await response.text()
+    throw new Error(err || `POST /admin/clients failed (${response.status})`)
   }
-  const doc = (await r.json()) as RegistryDoc
+  const doc = (await response.json()) as RegistryDoc
   return registryDocToClient(doc)
 }
 
 export async function updateRegistryClient(c: Client): Promise<Client> {
-  const r = await fetch(`${base()}/admin/clients/${c.id}`, {
+  const response = await fetch(`${base()}/admin/clients/${c.id}`, {
     method: 'PUT',
     headers: adminHeaders(),
     body: JSON.stringify({
@@ -113,48 +113,48 @@ export async function updateRegistryClient(c: Client): Promise<Client> {
       publicBranding: c.publicBranding,
     }),
   })
-  if (!r.ok) {
-    const err = await r.text()
-    throw new Error(err || `PUT /admin/clients/${c.id} failed (${r.status})`)
+  if (!response.ok) {
+    const err = await response.text()
+    throw new Error(err || `PUT /admin/clients/${c.id} failed (${response.status})`)
   }
-  const doc = (await r.json()) as RegistryDoc
+  const doc = (await response.json()) as RegistryDoc
   return registryDocToClient(doc)
 }
 
 export async function deleteRegistryClient(id: string): Promise<void> {
-  const r = await fetch(`${base()}/admin/clients/${id}`, {
+  const response = await fetch(`${base()}/admin/clients/${id}`, {
     method: 'DELETE',
     headers: adminHeaders(),
   })
-  if (!r.ok) {
-    const err = await r.text()
-    throw new Error(err || `DELETE failed (${r.status})`)
+  if (!response.ok) {
+    const err = await response.text()
+    throw new Error(err || `DELETE failed (${response.status})`)
   }
 }
 
 export async function patchRegistryClient(id: string, patch: Partial<Client>): Promise<Client> {
-  const r = await fetch(`${base()}/admin/clients/${id}`, {
+  const response = await fetch(`${base()}/admin/clients/${id}`, {
     method: 'PUT',
     headers: adminHeaders(),
     body: JSON.stringify(patch),
   })
-  if (!r.ok) {
-    const err = await r.text()
-    throw new Error(err || `PUT failed (${r.status})`)
+  if (!response.ok) {
+    const err = await response.text()
+    throw new Error(err || `PUT failed (${response.status})`)
   }
-  const doc = (await r.json()) as RegistryDoc
+  const doc = (await response.json()) as RegistryDoc
   return registryDocToClient(doc)
 }
 
 export async function regenRegistryToken(clientId: string): Promise<Client> {
-  const r = await fetch(`${base()}/admin/clients/${clientId}/regen-token`, {
+  const response = await fetch(`${base()}/admin/clients/${clientId}/regen-token`, {
     method: 'POST',
     headers: adminHeaders(),
   })
-  if (!r.ok) {
-    const err = await r.text()
-    throw new Error(err || `regen-token failed (${r.status})`)
+  if (!response.ok) {
+    const err = await response.text()
+    throw new Error(err || `regen-token failed (${response.status})`)
   }
-  const doc = (await r.json()) as RegistryDoc
+  const doc = (await response.json()) as RegistryDoc
   return registryDocToClient(doc)
 }

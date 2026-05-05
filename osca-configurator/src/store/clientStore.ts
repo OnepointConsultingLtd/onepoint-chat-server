@@ -53,6 +53,7 @@ const seed: Client[] = [
     predefinedQuickQuestions: [],
     active: true,
     createdAt: '2025-01-15',
+    publicBranding: emptyPublicBranding(),
   },
   {
     id: '3',

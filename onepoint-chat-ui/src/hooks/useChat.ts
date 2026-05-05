@@ -1,5 +1,5 @@
 import WebSocket from 'isomorphic-ws';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { MessageEvent } from 'ws';
 import { useAuth } from '@clerk/clerk-react';
 import { useShallow } from 'zustand/react/shallow';
@@ -29,9 +29,6 @@ export function useChat() {
         setIsSidebarOpen: state.setIsSidebarOpen,
       }))
     );
-
-  const [connectionLost, setConnectionLost] = useState(false);
-  const reloadAttemptedRef = useRef(false);
 
   const wsRef = useRef<WebSocket | null>(null);
   const wsOpen = useRef<boolean>(false);
@@ -136,6 +133,7 @@ export function useChat() {
     // Check if WebSocket URL is configured
     if (!window.oscaConfig?.websocketUrl) {
       console.error('WebSocket URL not configured');
+      useChatStore.getState().setConnectionLost(true);
       return;
     }
     
@@ -147,6 +145,7 @@ export function useChat() {
     } catch (error) {
       console.error('Failed to create WebSocket:', error);
       window.barrier = false;
+      useChatStore.getState().setConnectionLost(true);
       return;
     }
 
@@ -156,6 +155,7 @@ export function useChat() {
       console.info('WebSocket connection opened');
       wsOpen.current = true;
       window.barrier = true; // Keep barrier true while connected
+      useChatStore.getState().setConnectionLost(false);
       startHeartbeat();
     };
 
@@ -290,10 +290,10 @@ export function useChat() {
       // Only set connection lost if it was an unexpected close (not a normal close)
       // Code 1000 = normal closure, 1001 = going away
       if (event.code !== 1000 && event.code !== 1001) {
-        const closeMessage: Message = messageFactoryAgent('Connection closed');
-        setMessages((prev: Message[]) => [...prev, closeMessage]);
-        setConnectionLost(true);
+        useChatStore.getState().setConnectionLost(true);
+        window.barrier = false;
       } else {
+        useChatStore.getState().setConnectionLost(false);
         // Normal closure - reset barrier to allow reconnection
         window.barrier = false;
       }
@@ -301,7 +301,7 @@ export function useChat() {
 
     ws.onerror = (error) => {
       console.error('WebSocket error:', error);
-      // Don't set connectionLost on error - let onclose handle it
+      useChatStore.getState().setConnectionLost(true);
     };
   }, [setIsThinking, setIsStreaming, setMessages, loadChatHistory, userId, anonymousId, fetchReferenceSources]);
 
@@ -366,21 +366,6 @@ export function useChat() {
       scrollToBottom();
     }
   }, [messages, isThinking]);
-
-  // Auto-reload page when connection is lost (only once)
-  useEffect(() => {
-    if (connectionLost && !reloadAttemptedRef.current) {
-      reloadAttemptedRef.current = true;      
-      // Reset barrier before reload to allow reconnection
-      window.barrier = false;
-      
-      const timer = setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [connectionLost]);
 
   const sendMessageToServer = (text: string) => {
     if (!text.trim() || !wsRef.current) return;

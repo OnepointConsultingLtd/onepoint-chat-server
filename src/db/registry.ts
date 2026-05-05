@@ -97,6 +97,7 @@ export async function refreshAllowedOriginsCache(): Promise<void> {
   allowedOriginsCache = await collectAllowedOriginsFromRegistry();
 }
 
+//  Collect allowed origins from the registry.
 export async function collectAllowedOriginsFromRegistry(): Promise<string[]> {
   const col = getClientsCollection();
   const clients = await col.find({ active: true }).toArray();
@@ -138,6 +139,8 @@ export async function ensureOnepointSeedIfEmpty(): Promise<void> {
     `[registry] Seed client token (prefix): ${token.slice(0, 24)}… — must match chat UI token (ONE_TIME_TOKEN / VITE_OSCA_CLIENT_TOKEN).`,
   );
 
+
+  // Insert the Onepoint seed client document
   await col.insertOne({
     _id: crypto.randomUUID(),
     name: "Onepoint (seed)",
