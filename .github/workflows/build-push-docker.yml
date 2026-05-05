@@ -1,4 +1,4 @@
-name: Build and push Docker image for Onepoint Chat Server.
+name: Build and push Docker image for Onepoint Chat Server
 
 on:
   push:
@@ -39,7 +39,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -f Dockerfile -t ${{ env.IMAGE_NAME }}:deploy-${{ github.run_number }} .
+          docker build \
+            --build-arg VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }} \
+            -f Dockerfile \
+            -t ${{ env.IMAGE_NAME }}:deploy-${{ github.run_number }} \
+            .
 
       - name: Tag image for ECR
         run: |

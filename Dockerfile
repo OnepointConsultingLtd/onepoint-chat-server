@@ -4,6 +4,10 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y dos2unix
 
+# Build-time env for Vite frontend compilation
+ARG VITE_CLERK_PUBLISHABLE_KEY
+ENV VITE_CLERK_PUBLISHABLE_KEY=${VITE_CLERK_PUBLISHABLE_KEY}
+
 # Copy dependency manifests first for better layer caching
 COPY package.json yarn.lock ./
 COPY onepoint-chat-ui/package.json onepoint-chat-ui/yarn.lock ./onepoint-chat-ui/

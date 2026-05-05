@@ -69,3 +69,4 @@ example_conversations/t-1.md
 dist
 *.tsbuildinfo
 onepoint-chat-ui/tsconfig.tsbuildinfo
+.env.prod.docker
