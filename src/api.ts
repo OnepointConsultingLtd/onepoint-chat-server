@@ -70,7 +70,7 @@ export async function getContext(question: string, options?: GetContextOptions) 
         success: true,
       };
     } else {
-      console.error("Error fetching context:", response.statusText);
+      console.error("Error fetching context:", response);
       return {
         data: `Can not find data regarding this: ${question} - ${response.statusText} `,
         success: false,
