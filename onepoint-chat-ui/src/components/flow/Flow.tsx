@@ -99,9 +99,11 @@ export default function Flow({
     });
   }, []);
 
-  const nodes = useMemo(() => {
-    const filteredMessages = filterDisplayableMessages(messages);
+  const filteredMessages = useMemo(() => {
+    return filterDisplayableMessages(messages);
+  }, [messages]);
 
+  const nodes = useMemo(() => {
     return createNodes(
       filteredMessages,
       isThinking,
@@ -112,7 +114,7 @@ export default function Flow({
       cardHeights
     );
   }, [
-    messages,
+    filteredMessages,
     isThinking,
     topicState,
     handleSubmit,
@@ -120,11 +122,6 @@ export default function Flow({
     cardHeights,
     setCardHeight,
   ]);
-
-
-  const filteredMessages = useMemo(() => {
-    return filterDisplayableMessages(messages);
-  }, [messages]);
   const conversationStartIndex = useMemo(
     () => getConversationStartIndex(filteredMessages),
     [filteredMessages]
@@ -144,6 +141,10 @@ export default function Flow({
   }, [nodes]);
 
   useEffect(() => {
+    // Only recalculate viewport when a new message is added or thinking starts —
+    // not on every streamed chunk (which only changes message text, not count).
+    const countChanged = filteredMessages.length !== previousMessagesLengthRef.current;
+    if (!countChanged && !isThinking) return;
     focusOnLatestNode(
       reactFlowInstance,
       filteredMessages,

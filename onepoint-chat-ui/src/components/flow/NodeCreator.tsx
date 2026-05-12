@@ -43,7 +43,8 @@ export function createNodes(
             isLastCard={true}
             isThinking={isThinking}
             handleSubmit={handleSubmit}
-            onHeightChange={h => setCardHeight && setCardHeight(cardId, h)}
+            cardId={cardId}
+            setCardHeight={setCardHeight ?? (() => {})}
           />
         ),
       },
@@ -79,7 +80,8 @@ export function createNodes(
             isLastCard={isLastCard}
             isThinking={isThinking}
             handleSubmit={handleSubmit}
-            onHeightChange={h => setCardHeight && setCardHeight(cardId, h)}
+            cardId={cardId}
+            setCardHeight={setCardHeight ?? (() => {})}
           />
         ),
       },

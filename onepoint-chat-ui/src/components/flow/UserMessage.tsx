@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Message } from '../../type/types';
 import BaseMessage from './BaseMessage';
 
@@ -6,7 +7,7 @@ type UserMessageProps = {
   isInitialMessage?: boolean;
 };
 
-export default function UserMessage({ message, isInitialMessage }: UserMessageProps) {
+const UserMessage = memo(function UserMessage({ message, isInitialMessage }: UserMessageProps) {
   const header = !isInitialMessage ? (
     <div className="text-xs font-medium text-[color:var(--osca-accent)] dark:!text-[color:var(--osca-accent)] uppercase tracking-wider">
       You
@@ -14,4 +15,6 @@ export default function UserMessage({ message, isInitialMessage }: UserMessagePr
   ) : null;
 
   return <BaseMessage message={message} header={header} />;
-}
+});
+
+export default UserMessage;

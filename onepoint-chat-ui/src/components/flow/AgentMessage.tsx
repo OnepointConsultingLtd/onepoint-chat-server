@@ -1,9 +1,10 @@
+import { memo } from 'react';
 import { useTenantBranding } from '../../hooks/useTenantBranding';
 import { PROJECT_INFO } from '../../lib/constants';
 import { Message } from '../../type/types';
 import BaseMessage from './BaseMessage';
 
-export default function AgentMessage({ message, readOnly }: { message: Message; readOnly?: boolean }) {
+const AgentMessage = memo(function AgentMessage({ message, readOnly }: { message: Message; readOnly?: boolean }) {
   const branding = useTenantBranding();
   const assistantName = branding?.assistantName?.trim() || PROJECT_INFO.NAME;
   const assistantBadge = branding?.assistantBadge?.trim() || 'AI advisor';
@@ -23,4 +24,6 @@ export default function AgentMessage({ message, readOnly }: { message: Message; 
   );
 
   return <BaseMessage message={message} header={header} readOnly={readOnly} />;
-}
+});
+
+export default AgentMessage;

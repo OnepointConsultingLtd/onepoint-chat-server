@@ -1,11 +1,13 @@
 import { Handle, Position } from '@xyflow/react';
-import React from 'react';
+import React, { memo } from 'react';
 
-export default function CustomNode({ data }: { data: { content: React.ReactNode } }) {
+const CustomNode = memo(function CustomNode({ data }: { data: { content: React.ReactNode } }) {
   return (
     <div className="custom-node rounded-md overflow-hidden">
       {data.content}
       <Handle type="target" position={Position.Left} id="left" className="!bg-[color:var(--osca-accent)]" />
     </div>
   );
-}
+});
+
+export default CustomNode;

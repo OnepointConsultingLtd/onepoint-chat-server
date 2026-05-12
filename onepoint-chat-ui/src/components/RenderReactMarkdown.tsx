@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { FiCheck, FiShare2 } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import { useShallow } from 'zustand/react/shallow';
@@ -10,7 +10,7 @@ import { Message } from '../type/types';
 import CopyButton from './CopyButton';
 import ReferenceSources from './ReferenceSources';
 
-export default function RenderReactMarkdown({ message }: { message: Message }) {
+const RenderReactMarkdown = memo(function RenderReactMarkdown({ message }: { message: Message }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [threadShareCopied, setThreadShareCopied] = useState(false);
   const { userId, anonymousId } = useUserContext();
@@ -139,4 +139,6 @@ export default function RenderReactMarkdown({ message }: { message: Message }) {
       </div>
     </div>
   );
-}
+});
+
+export default RenderReactMarkdown;

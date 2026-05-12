@@ -1,5 +1,5 @@
 import { Handle, Position } from '@xyflow/react';
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import useChatStore from '../../store/chatStore';
 import { Message } from '../../type/types';
@@ -15,7 +15,8 @@ type MessageCardProps = {
   isLastCard: boolean;
   isThinking: boolean;
   handleSubmit: (text: string) => void;
-  onHeightChange: (height: number) => void;
+  cardId: string;
+  setCardHeight: (id: string, height: number) => void;
   /** First paint: only the tenant welcome exists (skipped for user/agent pairing). */
   welcomeOnly?: Message;
 };
@@ -31,13 +32,14 @@ function RenderHandle() {
   );
 }
 
-export default function MessageCard({
+function MessageCard({
   userMessage,
   agentMessage,
   isLastCard,
   isThinking,
   handleSubmit,
-  onHeightChange,
+  cardId,
+  setCardHeight,
   welcomeOnly,
 }: MessageCardProps) {
   const {
@@ -60,10 +62,10 @@ export default function MessageCard({
 
   const cardRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (cardRef.current && onHeightChange) {
-      onHeightChange(cardRef.current.offsetHeight);
+    if (cardRef.current) {
+      setCardHeight(cardId, cardRef.current.offsetHeight);
     }
-  }, [onHeightChange, userMessage, agentMessage]);
+  }, [cardId, setCardHeight, userMessage, agentMessage]);
 
   return (
     <div
@@ -137,3 +139,5 @@ export default function MessageCard({
     </div>
   );
 }
+
+export default memo(MessageCard);
