@@ -12,12 +12,19 @@ import {
 import { streamLLM } from "../service/llm";
 import { onepointCallback } from "../callbacks/onepoint";
 import { saveChatHistory } from "../api/handleApi";
-import { parsePrompt } from "../utils/prompts";
+import { parsePrompt, getMaxHistorySize } from "../utils/prompts";
 import { getClientByToken, getClientDb, isOriginAllowedForClient } from "../db/registry";
 import type { ClientDocument } from "../types/clientDocument";
 import app from "../api/server";
 
 const conversations = new Map<string, Conversation>();
+
+function trimHistory(conversation: Conversation): void {
+  const max = getMaxHistorySize(conversation.promptConfig);
+  if (conversation.chatHistory.length <= max + 1) return;
+  const [systemMsg] = conversation.chatHistory;
+  conversation.chatHistory = [systemMsg, ...conversation.chatHistory.slice(-(max))];
+}
 
 const httpServer = http.createServer(app);
 
@@ -129,6 +136,7 @@ async function handleUserMessage(conversation: Conversation, content: string) {
       content: fullResponse,
     };
     conversation.chatHistory.push(assistantMessage);
+    trimHistory(conversation);
 
     sendJSON(ws, {
       type: MessageType.STREAM_END,
@@ -174,6 +182,7 @@ async function handleImportHistory(
     createInitialSystemMessage(conversation.promptConfig),
     ...history.map((h) => (h.id ? h : { ...h, id: uuidv7() })),
   ];
+  trimHistory(conversation);
 
   try {
     const db = await getClientDb(conversation.tenant.dbName);
