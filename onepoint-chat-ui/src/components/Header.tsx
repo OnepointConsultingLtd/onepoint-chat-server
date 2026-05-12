@@ -9,6 +9,7 @@ import { useExport } from '../hooks/useExport';
 import { useUserContext } from '../hooks/useUserContext';
 import useChatStore from '../store/chatStore';
 import GradientButton, { MiniGradientButton } from './GradientButton';
+import { NodeSearchHeader } from './flow/NodeSearch';
 import SideBarButton from './SideBarButton';
 import ThemeToggle from './ThemeToggle';
 import Toast from './Toast';
@@ -101,7 +102,7 @@ export default function Header() {
         {/* Theme Toggle */}
         <ThemeToggle />
 
-        {/* Share Button - Only show when signed in */}
+        {/* Share Button - Only show when there is a conversation */}
         {hasConversation && (
           <GradientButton
             onClick={async () => {
@@ -117,6 +118,10 @@ export default function Header() {
             {copied ? 'Copied!' : 'Share'}
           </GradientButton>
         )}
+
+        {/* Search Button - Only show when there is a conversation to search */}
+        {hasConversation && <NodeSearchHeader />}
+
         <div className="relative w-auto">
           {/* Export Button - Only show when signed in */}
           {isLoaded && isSignedIn && (

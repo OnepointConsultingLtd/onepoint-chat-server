@@ -9,10 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog"
-import {
-  InputGroup,
-  InputGroupAddon,
-} from "../../components/ui/input-group"
 import { SearchIcon, CheckIcon } from "lucide-react"
 
 function Command({
@@ -52,7 +48,7 @@ function CommandDialog({
       </DialogHeader>
       <DialogContent
         className={cn(
-          "top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0",
+          "top-1/4 translate-y-0 overflow-hidden rounded-xl! p-0 shadow-2xl ring-1 ring-[color:var(--osca-border-light)] dark:ring-[color:var(--osca-border-dark)]",
           className
         )}
         showCloseButton={showCloseButton}
@@ -68,20 +64,22 @@ function CommandInput({
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Input>) {
   return (
-    <div data-slot="command-input-wrapper" className="p-1 pb-0">
-      <InputGroup className="h-8! rounded-lg! bg-[color:color-mix(in_srgb,var(--osca-bg-light)_92%,transparent)] shadow-none! *:data-[slot=input-group-addon]:pl-2! dark:border-[color:var(--osca-border-dark)] dark:bg-[color:color-mix(in_srgb,var(--osca-bg-dark)_88%,transparent)]">
-        <CommandPrimitive.Input
-          data-slot="command-input"
-          className={cn(
-            "w-full text-sm text-[color:var(--osca-surface-dark)] placeholder:text-[color:var(--osca-text-muted)] outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:text-[color:var(--osca-text-on-dark)]",
-            className
-          )}
-          {...props}
-        />
-        <InputGroupAddon>
-          <SearchIcon className="size-4 shrink-0 text-[color:var(--osca-text-muted)]" />
-        </InputGroupAddon>
-      </InputGroup>
+    <div
+      data-slot="command-input-wrapper"
+      className="flex w-full items-center gap-3 px-4 py-3.5 border-b border-[color:var(--osca-border-light)] dark:border-[color:var(--osca-border-dark)]"
+    >
+      <SearchIcon className="size-4 shrink-0 text-[color:var(--osca-text-muted)]" />
+      <CommandPrimitive.Input
+        data-slot="command-input"
+        className={cn(
+          "flex-1 bg-transparent text-sm text-[color:var(--osca-surface-dark)] placeholder:text-[color:var(--osca-text-muted)]",
+          "border-0 outline-none ring-0 shadow-none",
+          "focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0",
+          "disabled:cursor-not-allowed disabled:opacity-50 dark:text-[color:var(--osca-text-on-dark)]",
+          className
+        )}
+        {...props}
+      />
     </div>
   )
 }

@@ -10,6 +10,7 @@ import {
   MIN_ZOOM
 } from '../../lib/constants';
 import { shouldShowConnectionErrorOverlay } from '../../lib/interceptServerError';
+import { searchBridge } from '../../lib/searchBridge';
 import useChatStore from '../../store/chatStore';
 import { nodeTypes, Topic, TopicOrQuestion } from '../../type/types';
 import { filterDisplayableMessages } from '../../utils/messageFilter';
@@ -18,7 +19,6 @@ import { createEdges } from './EdgeCreator';
 import ErrorCard from './ErrorCard';
 import { createNodes } from './NodeCreator';
 import { focusOnLatestNode } from './ViewportManager';
-import { NodeSearch } from './NodeSearch';
 
 /**
  * Flow component that displays the chat conversation in a flow diagram.
@@ -222,6 +222,25 @@ export default function Flow({
     return preview.length > 80 ? `${preview.slice(0, 80)}...` : preview;
   }, [getCardTexts]);
 
+  // Register search/focus handlers so NodeSearchHeader in the Header can call them
+  // without needing a ReactFlow context.
+  useEffect(() => {
+    searchBridge.register({
+      search: (query) => {
+        const q = query.trim().toLowerCase();
+        if (!q) return [];
+        return nodes.filter((node: Node) => {
+          const texts = getCardTexts(node);
+          if (!texts) return false;
+          return texts.user.toLowerCase().includes(q) || texts.agent.toLowerCase().includes(q);
+        });
+      },
+      focusNode,
+      getResultLabel: getSearchResultLabel,
+    });
+    return () => searchBridge.unregister();
+  }, [nodes, getCardTexts, focusNode, getSearchResultLabel]);
+
   const isError = shouldShowConnectionErrorOverlay(messages, connectionLost);
 
   return (
@@ -254,27 +273,6 @@ export default function Flow({
           </ReactFlow>
         )}
 
-        {!isInitialMessage && (
-          <div
-            className="flex gap-1 rounded-md bg-primary-foreground p-1 text-foreground absolute top-0 left-0"
-          >
-            <NodeSearch
-              onSearch={(query: string) => {
-                const q = query.trim().toLowerCase();
-                if (!q) return [];
-                return nodes.filter((node: Node) => {
-                  const texts = getCardTexts(node);
-                  if (!texts) return false;
-                  return texts.user.toLowerCase().includes(q) || texts.agent.toLowerCase().includes(q);
-                });
-              }}
-              getResultLabel={getSearchResultLabel}
-              onSelectNode={(node: Node) => {
-                focusNode(node);
-              }}
-            />
-          </div>
-        )}
       </div>
       <div ref={messagesEndRef} />
     </div>
