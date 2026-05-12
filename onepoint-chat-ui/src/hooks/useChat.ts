@@ -37,6 +37,7 @@ export function useChat() {
   const hasInitialized = useRef<boolean>(false);
   const messageQueue = useRef<{ text: string }[]>([]);
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Restore conversationId from localStorage on mount
   useEffect(() => {
@@ -174,7 +175,7 @@ export function useChat() {
             timestamp: heartbeatTimestamp
           }));
         }
-      }, 600000); // 10 minutes
+      }, 25000); // 25 seconds — keeps connection alive through typical 30-60s proxy idle timeouts
     };
 
     const stopHeartbeat = () => {
@@ -286,16 +287,19 @@ export function useChat() {
       wsOpen.current = false;
       setIsStreaming(false);
       stopHeartbeat();
-      
-      // Only set connection lost if it was an unexpected close (not a normal close)
-      // Code 1000 = normal closure, 1001 = going away
+      window.barrier = false;
+
+      // Code 1000 = normal closure, 1001 = going away (unmount / user stopped streaming)
       if (event.code !== 1000 && event.code !== 1001) {
         useChatStore.getState().setConnectionLost(true);
-        window.barrier = false;
+        // Auto-reconnect after 3 seconds instead of waiting for user to reload
+        if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = setTimeout(() => {
+          console.info('Auto-reconnecting WebSocket...');
+          setupWebSocket();
+        }, 3000);
       } else {
         useChatStore.getState().setConnectionLost(false);
-        // Normal closure - reset barrier to allow reconnection
-        window.barrier = false;
       }
     };
 
@@ -346,10 +350,8 @@ export function useChat() {
       if (socket && socket.readyState === WebSocket.OPEN && wsOpen.current) {
         socket.close(1000, 'Component unmounting'); // Normal closure
       }
-      // Clean up heartbeat interval
-      if (heartbeatIntervalRef.current) {
-        clearInterval(heartbeatIntervalRef.current);
-      }
+      if (heartbeatIntervalRef.current) clearInterval(heartbeatIntervalRef.current);
+      if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
       // Don't reset barrier on cleanup - let it persist to prevent rapid reconnections
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

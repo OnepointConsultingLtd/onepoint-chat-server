@@ -207,6 +207,11 @@ wss.on("connection", (ws: WebSocket, request: http.IncomingMessage, tenant: Clie
   };
   conversations.set(conversationId, conversation);
 
+  // Protocol-level ping so proxies/load-balancers don't drop idle connections
+  const pingInterval = setInterval(() => {
+    if (ws.readyState === WebSocket.OPEN) ws.ping();
+  }, 25000);
+
   console.log(
     `Conversation ${conversationId} started (tenant=${tenant.projectName}, userId=${userId ?? "none"}, anonymousId=${anonymousId ?? "none"})`,
   );
@@ -285,6 +290,7 @@ wss.on("connection", (ws: WebSocket, request: http.IncomingMessage, tenant: Clie
   });
 
   ws.on("close", () => {
+    clearInterval(pingInterval);
     console.log(`Conversation ${conversationId} closed`);
     conversations.delete(conversationId);
   });
