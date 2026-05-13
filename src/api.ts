@@ -22,7 +22,7 @@ function buildContextUrl(question: string, projectName: string): string {
   const project =
     projectName.trim() ||
     process.env.CONTEXT_DEFAULT_PROJECT ||
-    "onepoint_v21";
+    "onepoint_v3";
 
 
     // console.log("projectName",projectName)
@@ -45,7 +45,7 @@ function buildContextUrl(question: string, projectName: string): string {
 }
 
 export type GetContextOptions = {
-  /** Registry `projectName` → LightRAG `project=` (e.g. `onepoint_v2`). */
+  /** Registry `projectName` → LightRAG `project=` (e.g. `onepoint_v3`). */
   projectName: string;
 };
 
