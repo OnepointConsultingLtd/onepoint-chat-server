@@ -42,7 +42,7 @@ export async function onepointCallback(
   const contextResponse = await getContext(lastMessage.content, {
     projectName: contextProjectName,
   });
-  const knowledgeBase = truncateText(contextAdapter(contextResponse), 1000);
+  const knowledgeBase = truncateText(contextAdapter(contextResponse), 3000);
   const referenceSources = extractReferenceSources(contextResponse.data);
 
   const staticPart = buildStaticBlock(promptConfig);
