@@ -18,6 +18,7 @@ RUN dos2unix /app/run_frpc.sh && chmod +x /app/run_frpc.sh
 RUN dos2unix /app/run.sh && chmod +x /app/run.sh
 
 # Install dependencies for root and UI projects
+RUN npm install -g yarn
 RUN yarn install --frozen-lockfile
 RUN yarn --cwd onepoint-chat-ui install --frozen-lockfile
 
