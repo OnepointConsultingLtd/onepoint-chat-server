@@ -1,8 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { ChatMessage } from "../types";
 
-const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
-
 function toGeminiMessages(messages: ChatMessage[]) {
   const systemMsg = messages.find((m) => m.role === "system");
   const nonSystem = messages.filter((m) => m.role !== "system");
@@ -21,6 +19,11 @@ export async function* streamGemini(
   messages: ChatMessage[],
   model?: string,
 ): AsyncGenerator<string> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is not configured");
+  }
+  const client = new GoogleGenAI({ apiKey });
   const { systemInstruction, history, lastMessage } =
     toGeminiMessages(messages);
 

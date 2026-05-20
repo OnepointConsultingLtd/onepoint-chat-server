@@ -24,10 +24,6 @@ function buildContextUrl(question: string, projectName: string): string {
     process.env.CONTEXT_DEFAULT_PROJECT ||
     "onepoint_v3";
 
-
-    // console.log("projectName",projectName)
-    // console.log("CONTEXT_API_URL",CONTEXT_API_URL)
-
   let urlString = CONTEXT_API_URL!.replace("{question}", encodeURIComponent(question));
 
   if (urlString.includes("{project}")) {
@@ -54,8 +50,6 @@ export type GetContextOptions = {
 export async function getContext(question: string, options?: GetContextOptions) {
   try {
     const url = buildContextUrl(question, options?.projectName ?? "");
-
-
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${CONTEXT_API_KEY!}`,
