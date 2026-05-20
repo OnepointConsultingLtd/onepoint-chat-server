@@ -146,8 +146,14 @@ export async function ensureOnepointSeedIfEmpty(): Promise<void> {
     projectName: "osca-onepoint",
     token,
     domains: ["localhost:5173", "127.0.0.1:5173", "localhost:3000", "osca.onepointltd.ai"],
-    provider: (process.env.SEED_LLM_PROVIDER as LLMProviderName) || "openai",
-    model: process.env.SEED_LLM_MODEL || "gpt-4o",
+    provider: (process.env.LLM_PROVIDER as LLMProviderName) || (process.env.SEED_LLM_PROVIDER as LLMProviderName) || "openai",
+    model: process.env.SEED_LLM_MODEL || (
+      ((process.env.LLM_PROVIDER || process.env.SEED_LLM_PROVIDER) === "claude")
+        ? process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514"
+        : ((process.env.LLM_PROVIDER || process.env.SEED_LLM_PROVIDER) === "gemini")
+        ? process.env.GEMINI_MODEL || "gemini-2.0-flash"
+        : process.env.OPENAI_MODEL || "gpt-4o"
+    ),
     prompt: "",
     dbName,
     active: true,

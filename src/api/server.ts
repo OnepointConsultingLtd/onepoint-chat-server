@@ -448,8 +448,14 @@ app.post("/admin/clients", requireAdmin, async (req, res) => {
       projectName: b.projectName,
       token,
       domains: b.domains,
-      provider: (b.provider as LLMProviderName) || "openai",
-      model: b.model || "gpt-4o",
+      provider: (b.provider as LLMProviderName) || (process.env.LLM_PROVIDER as LLMProviderName) || "openai",
+      model: b.model || (
+        ((b.provider || process.env.LLM_PROVIDER) === "claude")
+          ? process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514"
+          : ((b.provider || process.env.LLM_PROVIDER) === "gemini")
+          ? process.env.GEMINI_MODEL || "gemini-2.0-flash"
+          : process.env.OPENAI_MODEL || "gpt-4o"
+      ),
       prompt: typeof b.prompt === "string" ? b.prompt : "",
       dbName: b.dbName,
       active: b.active !== false,
