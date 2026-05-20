@@ -13,6 +13,7 @@ export async function* streamOpenAI(
   model?: string,
 ): AsyncGenerator<string> {
   const apiKey = process.env.OPENAI_API_KEY;
+  console.log("apiKey for OpenAI");
   if (!apiKey) {
     throw new Error("OPENAI_API_KEY is not configured");
   }

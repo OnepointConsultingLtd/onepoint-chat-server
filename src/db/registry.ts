@@ -22,7 +22,6 @@ export async function connectRegistry(): Promise<void> {
   mongoClient = new MongoClient(getUri());
   await mongoClient.connect();
   registryConnected = true;
-  console.log(`Connected to MongoDB registry database: ${REGISTRY_DB}`);
 
   const col = getClientsCollection();
   await col.createIndex({ token: 1 }, { unique: true });

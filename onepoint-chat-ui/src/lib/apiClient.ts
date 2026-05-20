@@ -29,7 +29,6 @@ export async function fetchRelatedTopics(selectedTopic: string, text: string): P
   const project = resolvedContextProject();
   const url = `${getServer()}/project/related_topics?project=${encodeURIComponent(project)}&engine=${PROJECT_CONFIG.ENGINE}`;
 
-  console.log('resolvedTopicsPrompt', resolvedTopicsPrompt());
   const body: RelatedTopicsBody = {
     samples: 25000,
     restart_prob: 0.15,

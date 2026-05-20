@@ -46,11 +46,9 @@ export function useChat() {
       if (userId) {
         // User is logged in - restore their conversationId
         // The Header component will handle clearing anonymous conversationId when user logs in
-        console.log(`[useChat] User is logged in (userId: ${userId}), restoring conversationId: ${savedConversationId}`);
         currentConversationId.current = savedConversationId;
       } else if (anonymousId) {
         // User is anonymous - safe to restore
-        console.log(`[useChat] Restoring anonymous conversationId: ${savedConversationId}`);
         currentConversationId.current = savedConversationId;
       }
     }
@@ -283,7 +281,7 @@ export function useChat() {
     };
 
     ws.onclose = (event) => {
-      console.log('WebSocket connection closed', event.code, event.reason);
+      // console.log('WebSocket connection closed', event.code, event.reason);
       wsOpen.current = false;
       setIsStreaming(false);
       stopHeartbeat();
@@ -376,13 +374,11 @@ export function useChat() {
     const userMetadata = { userId, anonymousId };
 
     if (!currentConversationId.current) {
-      console.log(`[useChat] No conversationId, requesting new one with metadata:`, userMetadata);
       messageQueue.current.push({ text: text.trim() });
       sendMessage(wsRef.current, 'request-conversation-id', '', '', userMetadata);
       return;
     }
 
-    console.log(`[useChat] Sending message with conversationId: ${currentConversationId.current}, metadata:`, userMetadata);
     setIsThinking(true);
     const userMessage: Message = messageFactoryUser(text, currentConversationId.current);
     setMessages((prev: Message[]) => [...prev, userMessage]);

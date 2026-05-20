@@ -300,7 +300,6 @@ wss.on("connection", (ws: WebSocket, request: http.IncomingMessage, tenant: Clie
 
   ws.on("close", () => {
     clearInterval(pingInterval);
-    console.log(`Conversation ${conversationId} closed`);
     conversations.delete(conversationId);
   });
 });

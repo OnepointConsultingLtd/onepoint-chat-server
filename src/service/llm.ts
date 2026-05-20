@@ -14,14 +14,18 @@ export async function* streamLLM({
   provider,
   model,
 }: StreamLLMOptions): AsyncGenerator<string> {
+  console.log("provider", provider);
   switch (provider) {
     case "openai":
+      console.log("Streaming from OpenAI with model:", model);
       yield* streamOpenAI(messages, model);
       break;
     case "claude":
+      console.log("Streaming from Claude with model:", model);
       yield* streamClaude(messages, model);
       break;
     case "gemini":
+      console.log("Streaming from Gemini with model:", model);
       yield* streamGemini(messages, model);
       break;
     default:

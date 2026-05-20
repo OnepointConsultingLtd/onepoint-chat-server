@@ -6,7 +6,6 @@ import { htmlContent } from './htmlContent';
 
 export function exportChatToMarkdown(chatHistory: Message[], filename = 'chat-history.md') {
 	if (!chatHistory.length) {
-		console.log('No chat history to export');
 		return;
 	}
 
@@ -31,14 +30,11 @@ export function exportChatToMarkdown(chatHistory: Message[], filename = 'chat-hi
 	link.href = URL.createObjectURL(blob);
 	link.download = filename;
 	link.click();
-
-	console.log(`Exporting chat history to ${filename}`);
 }
 
 // export to pdf using new API
 export async function exportChatToPDFApi(chatHistory: Message[], filename = 'chat-history.pdf') {
 	if (!chatHistory.length) {
-		console.log('No chat history to export');
 		return;
 	}
 
